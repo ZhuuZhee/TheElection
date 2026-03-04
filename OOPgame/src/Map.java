@@ -1,11 +1,13 @@
+import Card.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
 public class Map extends JPanel {
-    private final int rows = 10;
-    private final int cols = 10;
+    private final int rows = 20;
+    private final int cols = 20;
     private final int[][] map = new int[rows][cols];
     private int hoverRow = -1;
     private int hoverCol = -1;
@@ -14,6 +16,12 @@ public class Map extends JPanel {
     public Map() {
         this.setBackground(Color.BLACK);
         generateRandomMap(); // เรียกใช้ฟังก์ชันสุ่มตอนสร้าง Object
+
+        add(new CardSlot(400, 200, 100, 150));
+
+        add(new Card("Red Dragon", 50, 1100, 150, 225, true, false));
+        add(new Card("Blue Eyes", 225, 1100, 150, 225, true, false));
+        add(new Card("Rock Golem", 400, 1100, 150, 225, true, false));
         this.addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -83,6 +91,19 @@ public class Map extends JPanel {
         });
     }
 
+    private Polygon createHexagon(int x, int y, int radius) {
+        int[] xPoints = new int[6];
+        int[] yPoints = new int[6];
+
+        for (int i = 0; i < 6; i++) {
+            double angle = Math.PI / 3 * i + Math.PI / 6;  // Rotate 30 degrees for flat-top
+            xPoints[i] = (int) (x + radius * Math.cos(angle));
+            yPoints[i] = (int) (y + radius * Math.sin(angle));
+        }
+
+        return new Polygon(xPoints, yPoints, 6);
+    }
+
     private void generateRandomMap() {
         Random rand = new Random();
         double obstacleChance = 0.2; // กำหนดโอกาสพื้นที่
@@ -132,7 +153,8 @@ public class Map extends JPanel {
                 } else {
                     g2d.setColor(Color.GREEN);
                 }
-                g2d.fillRect(drawX, y, drawW, cellSize);
+                Polygon hexagon = createHexagon(drawX, y, cellSize / 2);
+                g2d.fillPolygon(hexagon);
 
                 // วาดเส้นขอบ (Hover หรือ ปกติ)
                 if (i == hoverRow && j == hoverCol) {
@@ -142,7 +164,7 @@ public class Map extends JPanel {
                     g2d.setColor(Color.BLACK);
                     g2d.setStroke(new BasicStroke(1));
                 }
-                g2d.drawRect(drawX, y, drawW, cellSize);
+                g2d.drawPolygon(hexagon);
             }
         }
     }
