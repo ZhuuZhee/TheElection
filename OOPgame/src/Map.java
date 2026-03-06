@@ -11,6 +11,11 @@ public class Map extends JPanel {
     private final int[][] map = new int[rows][cols];
     private int hoverRow = -1;
     private int hoverCol = -1;
+    private int cameraX = 0;
+    private int cameraY = 0;
+    private int lastMouseX;
+    private int lastMouseY;
+    private boolean rightDragging = false;
     private final Camera camera = new Camera();
 
     public Map() {
@@ -66,13 +71,27 @@ public class Map extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
-
+                if (rightDragging) {
+                    int dx = e.getX() - lastMouseX;
+                    int dy = e.getY() - lastMouseY;
+                    cameraX += dx;
+                    cameraY += dy;
+                    lastMouseX = e.getX();
+                    lastMouseY = e.getY();
+                    repaint();
+                }
             }
         });
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
+                    if (SwingUtilities.isRightMouseButton(e)) {
+                        rightDragging = true;
+                        lastMouseX = e.getX();
+                        lastMouseY = e.getY();
+                        return;
+                    }
                 // 1. หาตำแหน่ง Grid
                 Point cell = camera.getGridPoint(e.getX(), e.getY(), getWidth(), getHeight(), rows, cols);
 
@@ -87,6 +106,12 @@ public class Map extends JPanel {
 
                 // 3. สั่งวาดใหม่
                 repaint();
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    rightDragging = false;
+                }
             }
         });
     }
@@ -131,8 +156,8 @@ public class Map extends JPanel {
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                int x = startPt.x + j * cellSize;
-                int y = startPt.y + i * cellSize;
+                int x = startPt.x + j * cellSize + cameraX;
+                int y = startPt.y + i * cellSize + cameraY;
                 int drawX = x;
                 int drawW = cellSize;
 

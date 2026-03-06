@@ -8,6 +8,7 @@ public class Camera {
     private final int zoomedCellSize = 50;
     private int currentCellSize = defaultCellSize;
 
+
     public int getCurrentCellSize() {
         return currentCellSize;
     }
