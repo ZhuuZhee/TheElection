@@ -1,30 +1,40 @@
 package Card;
 
-import javax.swing.*;
+import Scene2D.GameObject;
+
 import java.awt.*;
 
-public class CardSlot extends JPanel {
-
+public class CardSlot extends GameObject {
+    private static final float Z_INDEX_BACKGROUND = -1f;
+    private static final float[] DASH_PATTERN = {5.0f}; // ความห่างของเส้นประ
+    private static final float STROKE_DASHED_WIDTH = 2.0f; // ความหนาเส้นประ
+    private static final float STROKE_NORMAL_WIDTH = 1.0f; // ความหนาเส้นปกติ (สำหรับข้อความ)
+    private static final Color SLOT_COLOR = Color.GRAY; // สีของช่อง
+    private static final String SLOT_TEXT = "Drop Here";
     public CardSlot(int x, int y, int width, int height) {
-        setBounds(x, y, width, height);
+        super(x, y, width, height);
+        this.setzIndex(Z_INDEX_BACKGROUND);
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        float[] dash = {5.0f};
-        g2d.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
-        g2d.setColor(Color.GRAY);
-
-        g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
-
-        g2d.setStroke(new BasicStroke(1.0f));
+        g2d.setStroke(new BasicStroke(
+            STROKE_DASHED_WIDTH,
+            BasicStroke.CAP_BUTT,
+            BasicStroke.JOIN_MITER,
+            10.0f,
+            DASH_PATTERN,
+            0.0f
+        ));
+        g2d.setColor(SLOT_COLOR);
+        g2d.drawRect(position.x, position.y, size.x, size.y);
+        g2d.setStroke(new BasicStroke(STROKE_NORMAL_WIDTH));
         FontMetrics fm = g2d.getFontMetrics();
-        String text = "Drop Here";
-        int textX = (getWidth() - fm.stringWidth(text)) / 2;
-        int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-        g2d.drawString(text, textX, textY);
+        int textX = position.x + (size.x - fm.stringWidth(SLOT_TEXT)) / 2;
+        int textY = position.y + (size.y - fm.getHeight()) / 2 + fm.getAscent();
+
+        g2d.drawString(SLOT_TEXT, textX, textY);
     }
 }
