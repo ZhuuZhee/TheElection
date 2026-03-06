@@ -13,16 +13,18 @@ import java.util.List;
 
 public class Scene extends JPanel {
     protected List<GameObject> gameObjects;
-    //sigelton
-    public static Scene Instance;
     private MouseHandler mouseHandler;
+    public JFrame MainFrame; // for prototype
 
-    public Scene() {
+    /// can access this object by using Scene.Instance (this is called Sigelton)
+    public static Scene Instance;
+
+    public Scene(JFrame mainFrame) {
         Instance = this;
+        MainFrame = mainFrame;
         gameObjects = new ArrayList<>();
         mouseHandler = new MouseHandler(this);
         initializeGameObjects();
-        setupMouseListener();
     }
 
     public static void initialize(GameObject gameObject) {
@@ -35,6 +37,7 @@ public class Scene extends JPanel {
     public List<GameObject> getGameObjects() {
         return gameObjects;
     }
+
     //not globalize, for test only
     private void initializeGameObjects() {
         gameObjects.add(new CardSlot(50, 150, 100, 150));
@@ -45,42 +48,7 @@ public class Scene extends JPanel {
         gameObjects.add(card2);
     }
 
-    private void setupMouseListener() {
-        MouseAdapter mouseAdapter = new MouseAdapter() {
-            private int getWorldX(MouseEvent e) {
-                return e.getX() - (getWidth() / 2);
-            }
-
-            private int getWorldY(MouseEvent e) {
-                return e.getY() - (getHeight() / 2);
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                mouseHandler.handleMouseMoved(getWorldX(e), getWorldY(e));
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                mouseHandler.handleMousePressed(getWorldX(e), getWorldY(e));
-            }
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                mouseHandler.handleMouseDragged(getWorldX(e), getWorldY(e));
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                mouseHandler.handleMouseReleased();
-            }
-        };
-
-        addMouseListener(mouseAdapter);
-        addMouseMotionListener(mouseAdapter);
-    }
-
-    /// sorting rendering squences of gameObjects by z index
+    // sorting rendering squences of gameObjects by z index
     public void sortGameObjects() {
         gameObjects.sort((o1, o2) -> Float.compare(o1.getzIndex(), o2.getzIndex()));
     }
@@ -101,12 +69,15 @@ public class Scene extends JPanel {
         }
     }
 
+
     // for test (Dot not change now)
     public static void main(String[] args) {
         JFrame frame = new JFrame("Scene");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
-        frame.add(new Scene());
+
+        var scene = new Scene(frame);
+        frame.add(scene);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

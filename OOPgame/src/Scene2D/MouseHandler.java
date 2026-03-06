@@ -1,6 +1,9 @@
 package Scene2D;
 
 import Card.Card;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class MouseHandler {
@@ -8,6 +11,44 @@ public class MouseHandler {
 
     public MouseHandler(Scene scene) {
         this.scene = scene;
+        setupMouseListener();
+    }
+
+    private void setupMouseListener() {
+        //get Main Scene form singelton
+        var scene = Scene.Instance;
+
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            private int getWorldX(MouseEvent e) {
+                return e.getX() - (scene.getWidth() / 2);
+            }
+
+            private int getWorldY(MouseEvent e) {
+                return e.getY() - (scene.getHeight() / 2);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                handleMouseMoved(getWorldX(e), getWorldY(e));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                handleMousePressed(getWorldX(e), getWorldY(e));
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                handleMouseDragged(getWorldX(e), getWorldY(e));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                handleMouseReleased();
+            }
+        };
+        scene.addMouseListener(mouseAdapter);
+        scene.addMouseMotionListener(mouseAdapter);
     }
 
     public void handleMouseMoved(int mouseX, int mouseY) {
