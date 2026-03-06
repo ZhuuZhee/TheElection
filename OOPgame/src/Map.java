@@ -49,7 +49,7 @@ public class Map extends JPanel {
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
                 // ส่งค่า width/height ปัจจุบันให้ camera คำนวณ
-                Point cell = camera.getGridPoint(e.getX(), e.getY(), getWidth(), getHeight(), rows, cols);
+                Point cell = camera.getGridPoint(e.getX(), e.getY(), getWidth(), getHeight(), rows, cols, cameraX, cameraY);
 
                 int row = cell.y;
                 int col = cell.x;
@@ -79,6 +79,25 @@ public class Map extends JPanel {
                     lastMouseX = e.getX();
                     lastMouseY = e.getY();
                     repaint();
+                } else {
+                    // Update hover position while dragging cards
+                    Point cell = camera.getGridPoint(e.getX(), e.getY(), getWidth(), getHeight(), rows, cols, cameraX, cameraY);
+                    int row = cell.y;
+                    int col = cell.x;
+
+                    if (row >= 0 && row < rows && col >= 0 && col < cols) {
+                        if (hoverRow != row || hoverCol != col) {
+                            hoverRow = row;
+                            hoverCol = col;
+                            repaint();
+                        }
+                    } else {
+                        if (hoverRow != -1) {
+                            hoverRow = -1;
+                            hoverCol = -1;
+                            repaint();
+                        }
+                    }
                 }
             }
         });
@@ -93,7 +112,7 @@ public class Map extends JPanel {
                         return;
                     }
                 // 1. หาตำแหน่ง Grid
-                Point cell = camera.getGridPoint(e.getX(), e.getY(), getWidth(), getHeight(), rows, cols);
+                Point cell = camera.getGridPoint(e.getX(), e.getY(), getWidth(), getHeight(), rows, cols, cameraX, cameraY);
 
                 // 2. ถ้า Click ใน Grid ให้สลับโหมดซูม
                 if (cell.y >= 0 && cell.y < rows && cell.x >= 0 && cell.x < cols) {

@@ -74,11 +74,11 @@ public class Camera {
         offsetX = 0;
         offsetY = 0;
     }
-    public Point getGridPoint(int mouseX, int mouseY, int width, int height, int rows, int cols) {
+    public Point getGridPoint(int mouseX, int mouseY, int width, int height, int rows, int cols, int cameraX, int cameraY) {
         Point start = getDrawOffset(width, height, rows, cols);
 
-        int row = (mouseY - start.y) / currentCellSize;
-        int relativeX = mouseX - start.x;
+        int row = (mouseY - start.y - cameraY) / currentCellSize;
+        int relativeX = mouseX - start.x - cameraX;
         int col;
 
         if (row >= 0 && row < rows && row % 2 == 0) {
