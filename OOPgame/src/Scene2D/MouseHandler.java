@@ -10,7 +10,6 @@ public class MouseHandler {
         this.scene = scene;
     }
 
-    // แก้ตรงนี้: เอาคำว่า static ออกให้หมด
     public void handleMouseMoved(int mouseX, int mouseY) {
         boolean foundHover = false;
         List<GameObject> gameObjects = scene.getGameObjects();
