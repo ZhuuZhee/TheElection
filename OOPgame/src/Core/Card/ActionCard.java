@@ -1,4 +1,4 @@
-package Card;
+package Core.Card;
 import Dummy.*;
 public class ActionCard extends Card {
     private static final int CARD_WIDTH = 100;

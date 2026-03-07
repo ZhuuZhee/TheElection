@@ -1,6 +1,6 @@
 package ZhuzheeEngine.Scene2D;
 
-import Card.Card;
+import Core.Card.Card;
 
 import java.util.List;
 

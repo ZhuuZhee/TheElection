@@ -1,7 +1,7 @@
 package Dummy;
 
-import Card.ActionCard;
-import Card.CardSlot;
+import Core.Card.ActionCard;
+import Core.Card.CardSlot;
 import ZhuzheeEngine.Scene2D.Scene;
 
 public class Tester {

@@ -1,4 +1,4 @@
-package Card;
+package Core.Card;
 
 public abstract class PassiveCard extends Card {
 

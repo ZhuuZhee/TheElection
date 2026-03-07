@@ -9,7 +9,7 @@ public class Scene extends JPanel {
     protected List<GameObject> gameObjects;
     private MouseHandler mouseHandler;
     public JFrame MainFrame; // for prototype
-
+    private Point origin = new Point(0,0);
     /// can access this object by using Scene.Instance (this is called Sigelton)
     public static Scene Instance;
 
@@ -26,7 +26,13 @@ public class Scene extends JPanel {
             System.out.println("Does not create scene object");
         }
     }
-    // Getter เพื่อให้ Card สามารถเข้าถึง List ไปเช็ค Slot ได้
+    public static void SetSceneOrigin(Point newPoint){
+        if(Instance != null){
+            Instance.origin = newPoint;
+        }
+        else System.out.println("Scene Object is not created, can't set origin");
+    }
+    // Getter เพื่อให้ Core.Card สามารถเข้าถึง List ไปเช็ค Slot ได้
     public List<GameObject> getGameObjects() {
         return gameObjects;
     }
@@ -44,7 +50,8 @@ public class Scene extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         //set the origin of drawing any objects to center of component
-        g2d.translate(getWidth() / 2, getHeight() / 2);
+        Point centerPoint = new Point(getWidth() / 2, getHeight() / 2);
+        g2d.translate(centerPoint.x + origin.x, centerPoint.y + origin.y);
 
         // render object
         for (GameObject obj : gameObjects) {

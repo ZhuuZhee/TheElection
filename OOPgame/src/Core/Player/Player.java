@@ -1,4 +1,4 @@
-package Player;
+package Core.Player;
 
 public class Player {
 }
