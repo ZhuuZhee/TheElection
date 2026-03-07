@@ -11,7 +11,7 @@ public class GameObject {
         this.position = new Point(x, y);
         this.size = new Point(width, height);
         this.zIndex = 0f;
-//        Scene.initialize(this);
+        Scene.register(this);
     }
 
     public float getzIndex() {

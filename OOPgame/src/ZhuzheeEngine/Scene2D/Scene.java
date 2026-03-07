@@ -1,13 +1,7 @@
 package ZhuzheeEngine.Scene2D;
 
-import Card.ActionCard;
-import Card.Card;
-import Card.CardSlot;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +18,9 @@ public class Scene extends JPanel {
         MainFrame = mainFrame;
         gameObjects = new ArrayList<>();
         mouseHandler = new MouseHandler(this);
-        initializeGameObjects();
     }
 
-    public static void initialize(GameObject gameObject) {
+    public static void register(GameObject gameObject) {
         if (Instance != null) Instance.gameObjects.add(gameObject);
         else {
             System.out.println("Does not create scene object");
@@ -36,16 +29,6 @@ public class Scene extends JPanel {
     // Getter เพื่อให้ Card สามารถเข้าถึง List ไปเช็ค Slot ได้
     public List<GameObject> getGameObjects() {
         return gameObjects;
-    }
-
-    //not globalize, for test only
-    private void initializeGameObjects() {
-        gameObjects.add(new CardSlot(50, 150, 100, 150));
-        ActionCard card1 = new ActionCard("Red Dragon", 0, 0, true);
-        gameObjects.add(card1);
-        ActionCard card2 = new ActionCard("Blue Eyes", 150, 0, true);
-        card2.setDraggable(false); // <--- setDraggable # default true
-        gameObjects.add(card2);
     }
 
     // sorting rendering squences of gameObjects by z index
@@ -68,29 +51,4 @@ public class Scene extends JPanel {
             obj.draw(g2d);
         }
     }
-
-
-    // for test (Dot not change now)
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Scene");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-
-        var scene = new Scene(frame);
-        frame.add(scene);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-
-    //for test only
-//    JFrame frame;
-//    JPanel current;
-//    public void ChangeScreen(JPanel newScreen){
-//        frame.remove(current);
-//        current = newScreen;
-//        frame.add(current);
-//    }
-    //screeen
-    //onDeposeScreen(){ } // called when current screen is close
-    //onOpenScreen() { } // called when current screen is open
 }
