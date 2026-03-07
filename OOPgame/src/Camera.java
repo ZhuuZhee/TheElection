@@ -8,30 +8,56 @@ public class Camera {
     private final int zoomedCellSize = 50;
     private int currentCellSize = defaultCellSize;
 
-
+    /**
+     * ดึงขนาดเซลล์ปัจจุบัน
+     * @return ขนาดเซลล์ในหน่วย pixel
+     */
     public int getCurrentCellSize() {
         return currentCellSize;
     }
 
+    /**
+     * ตั้งค่าขนาดเซลล์ปัจจุบัน
+     * @param currentCellSize ขนาดเซลล์ใหม่ในหน่วย pixel
+     */
     public void setCurrentCellSize(int currentCellSize) {
         this.currentCellSize = currentCellSize;
     }
 
+    /**
+     * ตรวจสอบว่ากล้องอยู่ในโหมดซูมหรือไม่
+     * @return true ถ้าอยู่ในโหมดซูม, false ถ้าไม่
+     */
     public boolean getIsZoomed() {
         return isZoomed;
     }
 
+    /**
+     * คำนวณตำแหน่งเริ่มต้นในการวาด grid บนหน้าจอ
+     * @param panelWidth ความกว้างของ panel
+     * @param panelHeight ความสูงของ panel
+     * @param rows จำนวนแถวของ grid
+     * @param cols จำนวนคอลัมน์ของ grid
+     * @return จุดเริ่มต้นในการวาด (x, y)
+     */
     public Point getDrawOffset(int panelWidth, int panelHeight, int rows, int cols) {
         if (isZoomed) {
             return new Point(offsetX, offsetY);
         } else {
-            // อยู่ตรงกลางจอแบบปกติ
+            // สูตรที่ทำให้อยู่ตรงกลางจอ
             int x = (panelWidth - (cols * currentCellSize)) / 2;
             int y = (panelHeight - (rows * currentCellSize)) / 2;
             return new Point(x, y);
         }
     }
 
+    /**
+     * ซูมเข้าไปที่เซลล์ที่ระบุ หรือซูมออกถ้าอยู่ในโหมดซูมอยู่แล้ว
+     * @param col คอลัมน์ของเซลล์ที่ต้องการซูม
+     * @param row แถวของเซลล์ที่ต้องการซูม
+     * @param width ความกว้างของหน้าจอ
+     * @param height ความสูงของหน้าจอ
+     */
     public void zoomToCell(int col, int row, int width, int height) {
         if (!isZoomed) {
             isZoomed = true;
@@ -68,12 +94,31 @@ public class Camera {
             resetZoom();
         }
     }
+    /**
+     * รีเซ็ตการซูมกลับไปเป็นค่าปกติ
+     */
     public void resetZoom() {
         isZoomed = false;
         currentCellSize = defaultCellSize;
         offsetX = 0;
         offsetY = 0;
     }
+    /**
+     * แปลงตำแหน่งเมาส์บนหน้าจอเป็นตำแหน่งเซลล์ใน grid
+     * @param mouseX ตำแหน่ง X ของเมาส์
+     * @param mouseY ตำแหน่ง Y ของเมาส์
+     * @param width ความกว้างของหน้าจอ
+     * @param height ความสูงของหน้าจอ
+     * @param rows จำนวนแถวของ grid
+     * @param cols จำนวนคอลัมน์ของ grid
+     * @param cameraX ตำแหน่ง X ของกล้อง (สำหรับการเลื่อน)
+     * @param cameraY ตำแหน่ง Y ของกล้อง (สำหรับการเลื่อน)
+     * @return จุดของเซลล์ที่เมาส์ชี้อยู่ (col, row)
+     */
+
+    //-----------------------------------------------------------------------------------
+    //---เป็น method ที่เอาไว้ใช้หาตำแหน่ง mouse ความกว้างยาวของจอ และจำนวนของ rows และ cols-----
+    //-----------------------------------------------------------------------------------
     public Point getGridPoint(int mouseX, int mouseY, int width, int height, int rows, int cols, int cameraX, int cameraY) {
         Point start = getDrawOffset(width, height, rows, cols);
 

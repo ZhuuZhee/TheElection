@@ -1,6 +1,6 @@
 package Card;
 
-import ZhuzheeEngine.Scene2D.GameObject;
+import Scene2D.GameObject;
 
 import java.awt.*;
 
