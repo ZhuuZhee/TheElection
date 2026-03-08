@@ -1,172 +1,131 @@
-## ZhuzheeEngine Structure and Workflow
+# ZhuzheeEngine
 
-### High-level architecture
+ZhuzheeEngine is a lightweight 2D game engine for Java Swing, designed for rapid prototyping and building simple games. It provides a basic structure for managing game loops, screens, scenes, and game objects.
 
-- **`ZhuzheeEngine.Application`**: Abstract base for any game/app. Owns the main `JFrame`, manages the fixed-frame render loop (default 60 FPS), and exposes `getDeltaTime()` for time-based updates.
-- **`ZhuzheeEngine.ApplicationAdapter`**: Interface that defines the core lifecycle methods (`create`, `resize`, `render`, `depose`) that screens and scenes implement.
-- **`ZhuzheeEngine.Screen`**: Abstract `JPanel` that represents a logical screen (main menu, gameplay, etc.). Implements `ApplicationAdapter` and provides static `currentScreen` and `ChangeScreen(...)` for swapping screens.
-- **`ZhuzheeEngine.Scene.Scene2D`**: A `JPanel` that implements `ApplicationAdapter`, owns and updates a list of `GameObject`s, and is responsible for rendering them each frame.
-- **`ZhuzheeEngine.Scene.GameObject`**: Base class for anything that can be drawn in the scene2D (has position, size, and `zIndex`), with lifecycle hooks (`start()`, `render(Graphics)`, `onDestroy()`).
+## High-level architecture
 
-### Application and frame loop
+- **`ZhuzheeEngine.Application`**: The core of the application. It creates and manages the main `JFrame`, runs the game loop, and delegates lifecycle events (`create`, `render`, `dispose`) to a root `ApplicationAdapter`.
+- **`ZhuzheeEngine.ApplicationAdapter`**: An interface that defines the application's lifecycle methods. Your main game class will implement this.
+- **`ZhuzheeEngine.ScreenManager`**: Manages the flow of screens in your application. It handles transitions between different game states (e.g., main menu, gameplay, game over).
+- **`ZhuzheeEngine.Screen`**: A `JPanel` that represents a single screen in the game. It can be a menu, a level, or any other distinct part of the application.
+- **`ZhuzheeEngine.Scene.Scene2D`**: A specialized `Screen` that manages and renders a list of `SceneObject`s. It provides a 2D world with a coordinate system centered on the screen.
+- **`ZhuzheeEngine.Scene.SceneObject`**: An interface for any object that can be placed in a `Scene2D`.
+- **`ZhuzheeEngine.Scene.GameObject`**: A concrete implementation of `SceneObject`. It's the base class for all entities in your game world.
 
-1. **Launch**: The entry point is `Main` in `OOPgame/src/Main.java`, which calls:
-   - `Application.LuchApp(new Core.ZhuzheeGame());`
-2. **Create phase**:
-   - `Application.LuchApp(...)` calls `Create()` on the `ZhuzheeGame` instance.
-   - `Application.Create()` builds the main `JFrame`, sets size, and makes it visible.
-3. **Render loop**:
-   - A Swing `Timer` is created with a delay derived from the target FPS.
-   - On every tick, `Application.Render()` is invoked and the frame is repainted.
-   - `Core.ZhuzheeGame.Render()` extends this by calling `screenManager.currentScreen.render()`, where actual game logic per frame should live.
-4. **Delta time**:
-   - `Application.SetTargetFrameRate(int targetFPS)` controls how often `Render()` is called.
-   - `Application.getDeltaTime()` returns the time between frames in seconds, so gameplay can be made frame-rate independent.
+## Getting Started
 
-### Scene2D rendering and game objects
+### Prerequisites
 
-- **Scene singleton**:
-  - A `Scene2D` is created with the main frame: `new Scene2D(Application.getMainFrame());`
-  - The constructor sets `Scene2D.Instance = this`, allowing global registration via `Scene2D.register(GameObject)` and removal via `Scene2D.remove(GameObject)`.
-- **Registration, lifecycle, and drawing**:
-  - Every `GameObject` registers itself in its constructor via `Scene2D.register(this);` and immediately calls its `start()` method once.
-  - `Scene2D.render()`:
-    - Gets a `Graphics2D` from the component, translates the origin to the center (plus an optional offset origin).
-    - Sorts `gameObjects` by `zIndex` and calls `obj.render(g2d)` for each object every frame.
-  - `GameObject.Destroy(gameObject)` calls `onDestroy()` and removes the object from the current `Scene2D`.
-- **Z ordering**:
-  - Objects with higher `zIndex` are rendered later and appear on top of lower `zIndex` objects.
-  - `GameObject` exposes `getzIndex()` / `setzIndex(...)` for controlling draw order.
-- **Screen Point and World Point**:
-  - Screen Point is point in `javax.SWING` coordination system that (0,0) is a `Top Left` of Screen.
-  - World Point is point in `Scene2D` coordination system that (0,0) is a `Middle Center` of Screen.
-  - Use `Scene2D.World2ScreenPoint(x,y)` or `Scene2D.Screen2WorldPoint(x,y)` to translate between these coordination system
-### Input handling (cards example)
+- Java JDK 8 or newer.
+- A Java IDE like IntelliJ IDEA, Eclipse, or VS Code with Java extensions.
 
-- **MouseHandler**:
-  - `Core.Player.MouseHandler` works with the active `Scene2D` to:
-    - Track hover state over `Core.Card.Card` instances.
-    - Forward mouse pressed/dragged/released events to cards.
-- **Cards as GameObjects**:
-  - `Core.Card.Card` extends `GameObject` and implements:
-    - **Dragging** (`onMousePressed`, `onMouseDragged`, `onMouseReleased`) with offset tracking and top `zIndex` while grabbed.
-    - **Hover effect**: Scales the card slightly when hovered but not grabbed.
-    - **Snapping**: On release, checks nearby `CardSlot`s and snaps into place if inside the slot’s magnetic field.
+### Running the Project
 
-### Screens and game flow
+1.  Clone the repository.
+2.  Open the project in your IDE.
+3.  Set the main class to `Main.java`.
+4.  Run the application.
 
-- **Game-level application**: `Core.ZhuzheeGame` extends `Application` and is responsible for wiring the engine to the concrete game.
-- **Screen management**:
-  - An inner `ScreenManager` class in `ZhuzheeGame` holds `currentScreen` and `lastScreen`.
-  - `ChangeScreen(Screen next)` calls `onScreenExit()` on the current screen and `onScreenEnter()` on the new one.
-- **Scene and Screen**:
-  - `ZhuzheeEngine.Scene.Scene2D` extends `ZhuzheeEngine.Screen`.
-  - Its `create`, `render`, and `depose` methods are where the main game behavior should be implemented.
+## Creating Your Own Game
 
+To create a game with ZhuzheeEngine, you'll follow these steps:
 
-## Quick Start and Using ZhuzheeEngine
+### 1. Create a Game Class
 
-### Running this project
-
-- **Requirements**:
-  - **Java**: JDK 8+ (any modern JDK should work).
-  - **Build tool/IDE**: Any Java IDE (IntelliJ IDEA, Eclipse, VS Code with Java) that can compile and run a standard Swing project.
-- **Steps**:
-  - **1. Clone the repository** into your workspace.
-  - **2. Open the project** in your Java IDE.
-  - **3. Set the run configuration** to use the `Main` class in `OOPgame/src/Main.java` as the entry point.
-  - **4. Run the application**. A Swing window should appear with the prototype card scene2D.
-
-### Creating your own game application
-
-To build your own game on top of ZhuzheeEngine, you typically:
-
-1. **Create an `Application` subclass**:
-   - Extend `ZhuzheeEngine.Application`.
-   - Override `Create()` to:
-     - Call `super.Create()` (to build the main frame).
-     - Create a `Scene` with `new Scene(Application.getMainFrame());`.
-     - Instantiate your `ScreenManager` (or reuse the pattern in `ZhuzheeGame`).
-     - Create and set your initial `Screen` or `Scene2D`.
-     - Set your `currentScreen` to initial `Screen` by `ScreenManager`.ChangeScreen(`your initial Screen`)
-   - Optionally override `Render()` to call `currentScreen.render()` and any global per-frame logic.
-2. **Create one or more `Screen` subclasses**:
-   - Extend `ZhuzheeEngine.Screen`.
-   - Implement `create`, `render`, and `depose`:
-     - **`create`**: Allocate resources, initialize game objects, register listeners.
-     - **`render`**: Per-frame logic, state updates (drawing is handled by `Scene`).
-     - **`depose`**: Cleanup when leaving the screen.
-3. **Use `Scene` and `GameObject`**:
-   - For visual entities, extend `GameObject` and override `draw(Graphics g)` to render your content.
-   - Construct your objects (they auto-register with the current `Scene`).
-4. **Wire the entry point**:
-   - In your `Main` class, call:
+Create a class that implements `ApplicationAdapter`. This will be the main entry point for your game logic.
 
 ```java
-public class Main {
-    public static void main(String[] args) {
-        Application.LuchApp(new YourGameApplication());
+import ZhuzheeEngine.ApplicationAdapter;
+import ZhuzheeEngine.ScreenManager;
+import ZhuzheeEngine.Scene.Scene2D;
+
+public class MyGame implements ApplicationAdapter {
+    private ScreenManager screenManager;
+    private Scene2D mainScene;
+
+    @Override
+    public void create() {
+        mainScene = new Scene2D();
+        screenManager = new ScreenManager();
+        screenManager.ChangeScreen(mainScene);
+        // ... initialize your game objects here
+    }
+
+    @Override
+    public void render() {
+        // This is called every frame
+    }
+
+    @Override
+    public void dispose() {
+        // Clean up resources
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // Handle window resize
     }
 }
 ```
 
-5. **Tune performance and behavior**:
-   - Adjust frame rate using `Application.SetTargetFrameRate(...)`.
-   - Use `Application.getDeltaTime()` in your update logic to achieve smooth animations.
+### 2. Launch the Application
 
-### Using the card system example
+In your `main` method, instantiate your game class and pass it to `Application.LuchApp()`.
 
-- **Core.Card.Card** is an example of a more complex `GameObject` with:
-  - Hover animations.
-  - Drag-and-drop behavior.
-  - Slot snapping (`CardSlot`).
-- You can:
-  - Create new card types (e.g., `ActionCard`, `PassiveCard`) by extending `Card`.
-  - Configure their behavior via:
-    - `setDraggable(boolean)`.
-    - Enabling/disabling.
-    - Customizing `isDroppable(Object bottom)` and extending the snapping logic if needed.
+```java
+import ZhuzheeEngine.Application;
 
+public class Main {
+    public static void main(String[] args) {
+        Application.LaunchApp(new MyGame());
+    }
+}
+```
 
-## About This Project (`Core` and `Dummy`)
+### 3. Create GameObjects
 
-### Core package
+Create classes that extend `GameObject` to represent the entities in your game.
 
-- **`Core.ZhuzheeGame`**:
-  - The main game controller that extends `Application`.
-  - Sets up the `ScreenManager`, the primary `Scene`, and the initial `MainGameScreen`.
-  - Currently calls `Dummy.Tester.CardsTestingOnScene(scene2D)` in `Create()` to populate the scene2D with sample cards and slots.
-- **`Core.GameScreens.MainGameScreen`**:
-  - Represents the main gameplay screen.
-  - Holds a reference to the shared `Scene`.
-  - Intended to contain the primary game logic in its `create`, `render`, and `depose` methods.
-- **`Core.Card` package**:
-  - **`Card`**: Abstract base for all cards (rendering, dragging, snapping behavior).
-  - **`ActionCard` / `PassiveCard`**: Concrete card types used in the current prototype.
-  - **`CardSlot`**: Represents a location a card can snap into (used by `Card.snapToSlot()`).
-- **`Core.Player.Player`**:
-  - Placeholder for player-related data and logic.
-  - Can be extended to track hand of cards, resources, health, or other gameplay stats.
+```java
+import ZhuzheeEngine.Scene.GameObject;
+import java.awt.*;
 
-### Dummy package
+public class Player extends GameObject {
+    public Player(int x, int y) {
+        super(x, y, 50, 50); // x, y, width, height
+    }
 
-- **Purpose**:
-  - Contains **prototype, test, and demo code** that showcases how to use the engine and card system without being part of the final game logic.
-- **Key classes**:
-  - **`Dummy.Tester`**:
-    - Method `CardsTestingOnScene(Scene scene2D)` creates a `CardSlot` and a couple of `ActionCard` instances.
-    - Demonstrates:
-      - How to place card slots and cards on a `Scene`.
-      - How to use `setDraggable(false)` to lock a card in place.
-  - **`Dummy.Citybanna`**:
-    - Simple example data class storing a `cityName`.
-    - Serves as a placeholder for future domain objects in the project.
+    @Override
+    public void render(Graphics g) {
+        g.setColor(Color.BLUE);
+        g.fillRect(position.x, position.y, size.width, size.height);
+    }
+}
+```
 
-### Intended usage
+Then, in your `MyGame` class, you can add them to the scene:
 
-- **Engine vs. game code**:
-  - The **ZhuzheeEngine** package is the reusable mini-engine: windowing, loop, screens, scene2D graph, and input helper.
-  - The **Core** package is the actual game built on the engine (for “The Election”), including cards, players, and screens.
-  - The **Dummy** package is a scratchpad for experiments and examples that help you understand and test the engine.
+```java
+// in MyGame.create()
+Player player = new Player(0, 0);
+```
 
-As you develop the project, you can move stable patterns out of `Dummy` into `Core` (or new feature packages) and keep `ZhuzheeEngine` focused on engine-level, reusable functionality.
+The `GameObject` will automatically be added to the `Scene2D` when it's created.
+
+## Engine Features
+
+### Game Loop
+
+The `Application` class manages a fixed-step game loop. You can set the target frame rate with `Application.SetTargetFrameRate()`. The default is 60 FPS. You can get the time between frames using `Application.getDeltaTime()`.
+
+### Scene and Coordinates
+
+`Scene2D` provides a simple scene graph. Game objects are rendered based on their `zIndex`. You can convert between screen coordinates and world coordinates using `Scene2D.Screen2WorldPoint()` and `Scene2D.World2ScreenPoint()`. The world origin (0,0) is at the center of the screen.
+
+### Input
+
+The engine does not have a built-in input system. You can add your own mouse and key listeners to your `Screen`s. The `Core.Player.MouseHandler` in the project provides an example of how to handle mouse input for `GameObject`s.
+
+### Screen Management
+
+The `ScreenManager` handles transitions between screens. To change screens, simply call `screenManager.ChangeScreen(newNextScreen)`. This will call `onScreenExit()` on the current screen and `onScreenEnter()` on the new one.

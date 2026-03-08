@@ -6,27 +6,27 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Scene2D extends Screen {
-    protected ArrayList<GameObject> gameObjects;
+    protected ArrayList<SceneObject> sceneObjects;
     private Point origin = new Point(0,0);
-    /// can access this object by using Scene.Instance (this is called Sigelton)
+    /// can access this object by using Scene.Instance (this is called Singleton)
     public static Scene2D Instance;
 
     public Scene2D() {
         Instance = this;
-        gameObjects = new ArrayList<>();
+        sceneObjects = new ArrayList<>();
     }
 
-    public static void register(GameObject gameObject) {
+    public static void register(SceneObject sceneObject) {
         if (Instance == null) {
             throw new IllegalStateException("Scene.register called before any Scene instance was created.");
         }
-        Instance.gameObjects.add(gameObject);
+        Instance.sceneObjects.add(sceneObject);
     }
-    public static void remove(GameObject gameObject){
+    public static void remove(SceneObject sceneObject){
         if (Instance == null) {
             throw new IllegalStateException("Scene.remove called before any Scene instance was created.");
         }
-        Instance.gameObjects.remove(gameObject);
+        Instance.sceneObjects.remove(sceneObject);
     }
     public static void SetSceneOrigin(Point newPoint){
         if (Instance == null) {
@@ -35,13 +35,13 @@ public class Scene2D extends Screen {
         Instance.origin = newPoint;
     }
     /// Getter เพื่อให้ Core.Card สามารถเข้าถึง List ไปเช็ค Slot ได้
-    public ArrayList<GameObject> getGameObjects() {
-        return gameObjects;
+    public ArrayList<SceneObject> getGameObjects() {
+        return sceneObjects;
     }
 
     /// sorting rendering squences of gameObjects by z index
     public void sortGameObjects() {
-        gameObjects.sort((o1, o2) -> Float.compare(o1.getzIndex(), o2.getzIndex()));
+        sceneObjects.sort((o1, o2) -> Float.compare(o1.getZIndex(), o2.getZIndex()));
     }
 
     /**
@@ -102,7 +102,7 @@ public class Scene2D extends Screen {
 
             sortGameObjects();
             // render object
-            for (GameObject obj : gameObjects) {
+            for (SceneObject obj : sceneObjects) {
                 obj.render(g2d);
             }
         } finally {

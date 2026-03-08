@@ -3,7 +3,6 @@ package Core.Card;
 import ZhuzheeEngine.Scene.*;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 public abstract class Card extends GameObject {
     protected String name;
@@ -13,8 +12,8 @@ public abstract class Card extends GameObject {
     protected boolean isHovered = false;
     protected Point offset = new Point(0, 0);
 
-    private static final float Z_INDEX_TOP = 999f;
-    private static final float Z_INDEX_NORMAL = 0f;
+    private static final int Z_INDEX_TOP = 999;
+    private static final int Z_INDEX_NORMAL = 0;
     private static final int SNAP_MARGIN = 15;
     private static final double ZOOM_OFFSET = 20.0;
 
@@ -53,7 +52,7 @@ public abstract class Card extends GameObject {
 
             offset.x = mouseX - position.x;
             offset.y = mouseY - position.y;
-            setzIndex(Z_INDEX_TOP);
+            setZIndex(Z_INDEX_TOP);
             return true;
         }
         return false;
@@ -74,7 +73,7 @@ public abstract class Card extends GameObject {
             return false;
         }
         isGrabbed = false;
-        setzIndex(Z_INDEX_NORMAL);
+        setZIndex(Z_INDEX_NORMAL);
         snapToSlot();
         return true;
     }
@@ -84,16 +83,16 @@ public abstract class Card extends GameObject {
     // --------------------------------------------------
 
     private void snapToSlot() {
-        Rectangle cardRect = new Rectangle(position.x, position.y, size.x, size.y);
+        Rectangle cardRect = new Rectangle(position.x, position.y, size.width, size.height);
         // ดึง GameObjects ทั้งหมดจาก Scene เพื่อหา Slot
-        for (GameObject obj : Scene2D.Instance.getGameObjects()) {
+        for (SceneObject obj : Scene2D.Instance.getGameObjects()) {
             if (!(obj instanceof CardSlot)) continue;
 
             Rectangle slotMagneticField = new Rectangle(
                     obj.getPosition().x - SNAP_MARGIN,
                     obj.getPosition().y - SNAP_MARGIN,
-                    obj.getSize().x + (SNAP_MARGIN * 2),
-                    obj.getSize().y + (SNAP_MARGIN * 2)
+                    obj.getSize().width + (SNAP_MARGIN * 2),
+                    obj.getSize().height + (SNAP_MARGIN * 2)
             );
 
             if (cardRect.intersects(slotMagneticField)) {
@@ -114,11 +113,11 @@ public abstract class Card extends GameObject {
             // --------- Hover Effect --------- //
             if (isHovered && !isGrabbed) {
                 // คำนวณจุดศูนย์กลางของ Card
-                int cx = position.x + (size.x / 2);
-                int cy = position.y + (size.y / 2);
+                int cx = position.x + (size.width / 2);
+                int cy = position.y + (size.height / 2);
 
-                float scaleX = (float) (size.x + ZOOM_OFFSET) / size.x;
-                float scaleY = (float) (size.y + ZOOM_OFFSET) / size.y;
+                float scaleX = (float) (size.width + ZOOM_OFFSET) / size.width;
+                float scaleY = (float) (size.height + ZOOM_OFFSET) / size.height;
 
                 // Step การขยายจากจุดศูนย์กลาง:
                 g2d.translate(cx, cy);           // 1. เลื่อนจุดศูนย์กลาง Card ไปที่ 0,0
@@ -131,14 +130,14 @@ public abstract class Card extends GameObject {
             else if (isGrabbed) g2d.setColor(new Color(255, 165, 0));
             else g2d.setColor(new Color(176, 255, 183));
 
-            g2d.fillRect(position.x, position.y, size.x, size.y);
+            g2d.fillRect(position.x, position.y, size.width, size.height);
 
             g2d.setColor(Color.BLACK);
-            g2d.drawRect(position.x, position.y, size.x, size.y);
+            g2d.drawRect(position.x, position.y, size.width, size.height);
 
             FontMetrics fm = g2d.getFontMetrics();
-            int textX = position.x + (size.x - fm.stringWidth(name)) / 2;
-            int textY = position.y + (size.y - fm.getHeight()) / 2 + fm.getAscent();
+            int textX = position.x + (size.width - fm.stringWidth(name)) / 2;
+            int textY = position.y + (size.height - fm.getHeight()) / 2 + fm.getAscent();
             g2d.drawString(name, textX, textY);
 
         } finally {

@@ -3,7 +3,8 @@ import ZhuzheeEngine.Application;
 
 /// Main Entry point of Game
 public class Main {
-    static void main(String[] args) {
-        Application.LuchApp(new ZhuzheeGame());
+    public static void main(String[] args) {
+        var myGame = new ZhuzheeGame();
+        Application.LaunchApp(myGame);
     }
 }

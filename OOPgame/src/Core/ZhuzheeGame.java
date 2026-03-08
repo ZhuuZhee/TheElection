@@ -2,16 +2,18 @@ package Core;
 
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
+import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Scene.Scene2D;
-import ZhuzheeEngine.Screen;
+import ZhuzheeEngine.ScreenManager;
 
 /// Game Logic Handler
-public class ZhuzheeGame extends Application {
+public class ZhuzheeGame implements ApplicationAdapter{
     public ScreenManager screenManager;
 
     @Override
-    protected void create() {
-        super.create();
+    public void create() {
+        //set Application title
+        Application.setMainFrameTitle("Zhuzhee The Game");
 
         screenManager = new ScreenManager();
 
@@ -24,30 +26,18 @@ public class ZhuzheeGame extends Application {
     }
 
     @Override
-    protected void render(){
-        super.render();
-        screenManager.currentScreen.render();
+    public void resize(int width, int height) {
+
     }
 
-    //---------------------------------------------
-    /// use to manage screen changing.
-    public class ScreenManager{
-        private Screen currentScreen;
-        private Screen lastScreen;
-
-        public Screen getCurrentScreen() {
-            return currentScreen;
-        }
-
-        public Screen getLastScreen() {
-            return lastScreen;
-        }
-
-        public void ChangeScreen(Screen next){
-            if(currentScreen != null) currentScreen.onScreenExit();
-            if(next != null) next.onScreenEnter();
-            currentScreen = next;
-            lastScreen = currentScreen;
-        }
+    @Override
+    public void render(){
+        screenManager.getCurrentScreen().render();
     }
+
+    @Override
+    public void dispose() {
+
+    }
+
 }

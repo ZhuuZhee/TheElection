@@ -1,7 +1,7 @@
 package Core.Player;
 
 import Core.Card.Card;
-import ZhuzheeEngine.Scene.GameObject;
+import ZhuzheeEngine.Scene.SceneObject;
 import ZhuzheeEngine.Scene.Scene2D;
 
 import java.awt.*;
@@ -49,10 +49,10 @@ public class MouseHandler {
 
     public void handleMouseMoved(int mouseX, int mouseY) {
         boolean foundHover = false;
-        List<GameObject> gameObjects = scene2D.getGameObjects();
+        List<SceneObject> sceneObjects = scene2D.getGameObjects();
 
-        for (int i = gameObjects.size() - 1; i >= 0; i--) {
-            GameObject obj = gameObjects.get(i);
+        for (int i = sceneObjects.size() - 1; i >= 0; i--) {
+            SceneObject obj = sceneObjects.get(i);
             if (obj instanceof Card) {
                 Card card = (Card) obj;
                 if (!foundHover && card.isInsideBoundaries(mouseX, mouseY)) {
@@ -67,10 +67,10 @@ public class MouseHandler {
 
     public void handleMousePressed(int mouseX, int mouseY) {
         System.out.println("Pressed " + mouseX + "," + mouseY);
-        List<GameObject> gameObjects = scene2D.getGameObjects();
+        List<SceneObject> sceneObjects = scene2D.getGameObjects();
 
-        for (int i = gameObjects.size() - 1; i >= 0; i--) {
-            GameObject obj = gameObjects.get(i);
+        for (int i = sceneObjects.size() - 1; i >= 0; i--) {
+            SceneObject obj = sceneObjects.get(i);
             if (obj instanceof Card) {
                 Card card = (Card) obj;
                 if (card.onMousePressed(mouseX, mouseY)) {
@@ -82,7 +82,7 @@ public class MouseHandler {
     }
 
     public void handleMouseDragged(int mouseX, int mouseY) {
-        for (GameObject obj : scene2D.getGameObjects()) {
+        for (SceneObject obj : scene2D.getGameObjects()) {
             if (obj instanceof Card) {
                 ((Card) obj).onMouseDragged(mouseX, mouseY);
             }
@@ -90,7 +90,7 @@ public class MouseHandler {
     }
 
     public void handleMouseReleased() {
-        for (GameObject obj : scene2D.getGameObjects()) {
+        for (SceneObject obj : scene2D.getGameObjects()) {
             if (obj instanceof Card) {
                 ((Card) obj).onMouseReleased();
             }
