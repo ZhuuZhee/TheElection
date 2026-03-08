@@ -26,10 +26,11 @@ public class ZhuzheeGame implements ApplicationAdapter{
        screenManager.ChangeScreen(MainScene);
 
         //test
-        Tester.CardsTestingOnScene(MainScene);
-        Tester.MainMenu(screenManager);
-        audioManagerTester = new AudioManagerTester();
+//        Tester.CardsTestingOnScene(MainScene);
+//        Tester.MainMenu(screenManager);
+//        audioManagerTester = new AudioManagerTester();
 //        Tester.AudioManagerTest();
+        Tester.main();
     }
 
     @Override

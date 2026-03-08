@@ -23,4 +23,8 @@ public class Tester {
     public static void MainMenu(ScreenManager screenManager) {
         screenManager.ChangeScreen(new MainMenu());
     }
+
+    public static void main() {
+        Map map = new Map();
+    }
 }
