@@ -1,5 +1,6 @@
 package Core;
 
+import Core.GameScreens.MainMenu;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -19,11 +20,12 @@ public class ZhuzheeGame implements ApplicationAdapter{
 
         Scene2D scene2D = new Scene2D();
         //set current screen
-        screenManager.ChangeScreen(scene2D);
+       screenManager.ChangeScreen(scene2D);
 
         //test
 //        Tester.CardsTestingOnScene(scene2D);
-        Tester.AudioManagerTest();
+        Tester.MainMenu(screenManager);
+//        Tester.AudioManagerTest();
     }
 
     @Override

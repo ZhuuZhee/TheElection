@@ -2,8 +2,10 @@ package Dummy;
 
 import Core.Card.ActionCard;
 import Core.Card.CardSlot;
+import Core.GameScreens.MainMenu;
 import Core.Player.MouseHandler;
 import ZhuzheeEngine.Scene.Scene2D;
+import ZhuzheeEngine.ScreenManager;
 
 public class Tester {
     public static void CardsTestingOnScene(Scene2D scene2D){
@@ -16,5 +18,9 @@ public class Tester {
 
     public static void AudioManagerTest(){
         AudioManagerTester Test = new AudioManagerTester();
+    }
+
+    public static void MainMenu(ScreenManager screenManager) {
+        screenManager.ChangeScreen(new MainMenu());
     }
 }
