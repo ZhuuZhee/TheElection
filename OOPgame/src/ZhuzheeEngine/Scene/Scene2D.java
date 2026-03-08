@@ -14,6 +14,7 @@ public class Scene2D extends Screen {
     public Scene2D() {
         Instance = this;
         sceneObjects = new ArrayList<>();
+        setLayout(new BorderLayout());
     }
 
     public static void register(SceneObject sceneObject) {
@@ -82,6 +83,23 @@ public class Scene2D extends Screen {
         int screenY = worldPos.y + centerY + Instance.origin.y;
 
         return new Point(screenX, screenY);
+    }
+
+    @Override
+    public Component add(Component comp){
+        super.add(comp);
+
+        if(comp instanceof Canvas){
+            ((Canvas) comp).isAttachWithPanel = true;
+        }
+        return comp;
+    }
+    @Override
+    public void remove(Component comp){
+        super.remove(comp);
+        if(comp instanceof Canvas){
+            ((Canvas) comp).isAttachWithPanel = false;
+        }
     }
     //--------------------------------------------------------------------
     //------- this is the main update method for scene! (DO NOT CHANGE) ------------

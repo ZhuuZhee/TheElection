@@ -1,6 +1,7 @@
 package Core.GameScreens;
 
 import Core.ZhuzheeGame;
+import Dummy.Tester;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 
@@ -45,11 +46,11 @@ public class MainMenu extends Screen implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == startBtn){
 //            JOptionPane.showMessageDialog(this,"Game Started!");
-            ZhuzheeGame.screenManager.ChangeScreen(ZhuzheeGame.MainScene);
+            Screen.ChangeScreen(ZhuzheeGame.MAIN_SCENE);
         }
         if(e.getSource() == optionBtn){
 //            JOptionPane.showMessageDialog(this,"Settings Menu");
-            ZhuzheeGame.audioManagerTester.setVisible(true);
+            Tester.audioManagerTester.setVisible(true);
         }
         if(e.getSource() == exitBtn){
             System.exit(0);

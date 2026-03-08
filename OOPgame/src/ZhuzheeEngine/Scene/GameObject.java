@@ -12,6 +12,7 @@ public class GameObject implements SceneObject {
         this.size = new Dimension(width, height);
         this.zIndex = 0;
         Scene2D.register(this);
+        start();
     }
 
     @Override

@@ -3,6 +3,7 @@
  */
 
 package ZhuzheeEngine.Audios;
+
 import javax.sound.sampled.*;
 import java.io.File;
 import java.util.HashMap;
@@ -39,11 +40,15 @@ public class AudioManager {
         return instance;
     }
 
-    /// เมธอดสำหรับโหลดไฟล์เสียงเข้าสู่ RAM
+    /**
+     * โหลดไฟล์เสียงเข้าสู่ RAM และเก็บไว้ใน Map. Default Directory คือ `OOPgame\Assets\Sounds`
+     * @param name     ชื่อที่ตั้งให้คลิปเสียง (สำหรับเรียกใช้ภายหลัง)
+     * @param fileName ชื่อไฟล์เสียงพร้อมนามสกุล (เช่น "jump.wav")
+     */
     public void loadSound(String name, String fileName) {
         try {
             // ปรับ Path ให้ตรงกับโครงสร้างโฟลเดอร์ในเครื่อง
-            String path = System.getProperty("user.dir") + File.separator + "OOPgame" + File.separator + "Sounds" + File.separator + fileName;
+            String path = System.getProperty("user.dir") + File.separator + "OOPgame" + File.separator + "Assets" + File.separator + "Sounds" + File.separator + fileName;
             File soundFile = new File(path);
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
             Clip clip = AudioSystem.getClip();

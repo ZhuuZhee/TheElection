@@ -1,35 +1,32 @@
 package Core;
 
 import Core.GameScreens.MainMenu;
-import Dummy.AudioManagerTester;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Scene.Scene2D;
-import ZhuzheeEngine.ScreenManager;
+import ZhuzheeEngine.Screen;
 
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter{
-    public static ScreenManager screenManager;
-    public static Scene2D MainScene;
+    public static Scene2D MAIN_SCENE;
+    public static MainMenu MAIN_MENU;
 
-    public static AudioManagerTester audioManagerTester;
     @Override
     public void create() {
         //set Application title
         Application.setMainFrameTitle("Zhuzhee The Game");
 
-        screenManager = new ScreenManager();
-
-        MainScene = new Scene2D();
+        MAIN_SCENE = new Scene2D();
+        MAIN_MENU = new MainMenu();
         //set current screen
-       screenManager.ChangeScreen(MainScene);
+        Screen.ChangeScreen(MAIN_MENU);
 
         //test
-        Tester.CardsTestingOnScene(MainScene);
-        Tester.MainMenu(screenManager);
-        audioManagerTester = new AudioManagerTester();
-//        Tester.AudioManagerTest();
+//        Tester.MainMenu(screenManager);
+        Tester.SampleCanvasTest();
+        Tester.CardsTestingOnScene(MAIN_SCENE);
+        Tester.AudioManagerTesterInitialize();
     }
 
     @Override
@@ -39,7 +36,7 @@ public class ZhuzheeGame implements ApplicationAdapter{
 
     @Override
     public void render(){
-        screenManager.getCurrentScreen().render();
+        Screen.currentScreen.render();
     }
 
     @Override

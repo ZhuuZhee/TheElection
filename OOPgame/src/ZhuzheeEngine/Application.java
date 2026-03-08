@@ -119,22 +119,34 @@ public class Application {
         mainFrame.setSize(screenWidth,screenHeight);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
-        if(rootAdapter instanceof Application) return;
-        rootAdapter.create();
+        if(!(rootAdapter instanceof Application))
+            rootAdapter.create();
+        if(Screen.currentScreen != null)
+            Screen.currentScreen.create();
     }
 
     protected void resize(int width, int height) {
-        if(rootAdapter instanceof Application) return;
-        rootAdapter.resize(width,height);
+        if(!(rootAdapter instanceof Application))
+            rootAdapter.resize(width,height);
+        if(Screen.currentScreen != null)
+            Screen.currentScreen.resize(width,height);
     }
 
     /// Called every frame after LaunchApp() succeeds.
     protected void render() {
         mainFrame.repaint();
+        if(!(rootAdapter instanceof Application))
+            rootAdapter.render();
+        if(Screen.currentScreen != null)
+            Screen.currentScreen.render();
     }
 
     /// Called when AppKill() is called
     protected void dispose() {
         mainFrame.dispose();
+        if(!(rootAdapter instanceof Application))
+            rootAdapter.dispose();
+        if(Screen.currentScreen != null)
+            Screen.currentScreen.dispose();
     }
 }

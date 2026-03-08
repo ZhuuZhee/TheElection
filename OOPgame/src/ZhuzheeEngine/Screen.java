@@ -1,6 +1,7 @@
 package ZhuzheeEngine;
 
 import javax.swing.*;
+import java.awt.*;
 
 public abstract class Screen extends JPanel implements ApplicationAdapter {
     public static Screen currentScreen;
@@ -32,8 +33,7 @@ public abstract class Screen extends JPanel implements ApplicationAdapter {
 
     @Override
     public void render() {
-        //call self to paint by graphics
-//        repaint();
+
     }
 
     @Override
