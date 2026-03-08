@@ -39,7 +39,8 @@ public class MainMenu extends Screen implements ActionListener {
     }
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == startBtn){
-            JOptionPane.showMessageDialog(this,"Game Started!");
+//            JOptionPane.showMessageDialog(this,"Game Started!");
+            ZhuzheeGame.screenManager.ChangeScreen(ZhuzheeGame.MainScene);
         }
         if(e.getSource() == optionBtn){
             JOptionPane.showMessageDialog(this,"Settings Menu");

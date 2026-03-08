@@ -16,9 +16,9 @@ import java.util.Map;
  */
 public class AudioManager {
     // Instance เดียวของคลาส (Singleton Pattern)
-    private static AudioManager instance = new AudioManager();
+    private static final AudioManager instance = new AudioManager();
 
-    private Map<String, Clip> soundMap = new HashMap<>();
+    private final Map<String, Clip> soundMap = new HashMap<>();
     private Clip currentBgmClip;
 
     private float bgmVolume = 0.7f;

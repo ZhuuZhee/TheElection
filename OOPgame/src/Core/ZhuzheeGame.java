@@ -9,8 +9,8 @@ import ZhuzheeEngine.ScreenManager;
 
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter{
-    public ScreenManager screenManager;
-
+    public static ScreenManager screenManager;
+    public static Scene2D MainScene;
     @Override
     public void create() {
         //set Application title
@@ -18,12 +18,12 @@ public class ZhuzheeGame implements ApplicationAdapter{
 
         screenManager = new ScreenManager();
 
-        Scene2D scene2D = new Scene2D();
+        MainScene = new Scene2D();
         //set current screen
-       screenManager.ChangeScreen(scene2D);
+       screenManager.ChangeScreen(MainScene);
 
         //test
-//        Tester.CardsTestingOnScene(scene2D);
+        Tester.CardsTestingOnScene(MainScene);
         Tester.MainMenu(screenManager);
 //        Tester.AudioManagerTest();
     }
