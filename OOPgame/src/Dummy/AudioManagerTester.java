@@ -27,6 +27,10 @@ public class AudioManagerTester extends JFrame {
         button.addActionListener(e -> AudioManager.getInstance().playSound("clap"));
         add(button);
 
+        JLabel volLabel = new JLabel("Master Volume");
+        volLabel.setBounds(20, 100, 100, 20);
+        add(volLabel);
+
         // --- Slider ปรับ BGM ---
         JSlider musicSlider = new JSlider(0, 100, 70);
         musicSlider.setBounds(20, 120, 240, 40);
@@ -34,6 +38,10 @@ public class AudioManagerTester extends JFrame {
             AudioManager.getInstance().setBGMVolume(musicSlider.getValue() / 100f);
         });
         add(musicSlider);
+
+        JLabel SFXLabel = new JLabel("SFX Volume");
+        SFXLabel.setBounds(20, 180, 100, 20);
+        add(SFXLabel);
 
         // --- Slider ปรับ SFX ---
         JSlider sfxSlider = new JSlider(0, 100, 70);
