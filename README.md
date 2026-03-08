@@ -11,6 +11,7 @@ ZhuzheeEngine is a lightweight 2D game engine for Java Swing, designed for rapid
 - **`ZhuzheeEngine.Scene.Scene2D`**: A specialized `Screen` that manages and renders a list of `SceneObject`s. It provides a 2D world with a coordinate system centered on the screen.
 - **`ZhuzheeEngine.Scene.SceneObject`**: An interface for any object that can be placed in a `Scene2D`.
 - **`ZhuzheeEngine.Scene.GameObject`**: A concrete implementation of `SceneObject`. It's the base class for all entities in your game world.
+- **`ZhuzheeEngine.Audios.AudioManager`**: : A Singleton service providing global audio control. It handles asset preloading and independent BGM/SFX volume management outside the scene hierarchy.
 
 ## Getting Started
 

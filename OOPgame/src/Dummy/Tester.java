@@ -13,4 +13,8 @@ public class Tester {
         card2.setDraggable(false); // <--- setDraggable # default true
         new MouseHandler(scene2D);
     }
+
+    public static void AudioManagerTest(){
+        AudioManagerTester Test = new AudioManagerTester();
+    }
 }

@@ -22,7 +22,8 @@ public class ZhuzheeGame implements ApplicationAdapter{
         screenManager.ChangeScreen(scene2D);
 
         //test
-        Tester.CardsTestingOnScene(scene2D);
+//        Tester.CardsTestingOnScene(scene2D);
+        Tester.AudioManagerTest();
     }
 
     @Override
