@@ -1,8 +1,8 @@
-package ZhuzheeEngine.Audios;/*
 /**
- *
  * @WILLY 8/3/2026 14:10
  */
+
+package ZhuzheeEngine.Audios;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.util.HashMap;
@@ -39,8 +39,8 @@ public class AudioManager {
         return instance;
     }
 
-    // เมธอดสำหรับโหลดไฟล์เสียงเข้าสู่ RAM
-    private void loadSound(String name, String fileName) {
+    /// เมธอดสำหรับโหลดไฟล์เสียงเข้าสู่ RAM
+    public void loadSound(String name, String fileName) {
         try {
             // ปรับ Path ให้ตรงกับโครงสร้างโฟลเดอร์ในเครื่อง
             String path = System.getProperty("user.dir") + File.separator + "OOPgame" + File.separator + "Sounds" + File.separator + fileName;

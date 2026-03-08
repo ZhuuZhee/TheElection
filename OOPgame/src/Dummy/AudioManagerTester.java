@@ -19,12 +19,12 @@ public class AudioManagerTester extends JFrame {
         setLayout(null);
 
         // เริ่มเล่น BGM ทันที
-        AudioManager.getInstance().playLoop("bgm_main");
+//        AudioManager.getInstance().playLoop("bgm_main");
 
         // --- ปุ่ม SFX ---
         JButton button = new JButton("PLAY SFX!");
         button.setBounds(80, 30, 120, 40);
-        button.addActionListener(e -> AudioManager.getInstance().playSound("clap"));
+//        button.addActionListener(e -> AudioManager.getInstance().playSound("clap"));
         add(button);
 
         // --- Slider ปรับ BGM ---
@@ -42,7 +42,5 @@ public class AudioManagerTester extends JFrame {
             AudioManager.getInstance().setSFXVolume(sfxSlider.getValue() / 100f);
         });
         add(sfxSlider);
-
-        setVisible(true);
     }
 }
