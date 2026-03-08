@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.util.List;
 
 public class MouseHandler {
-    private Scene2D scene2D;
+    private final Scene2D scene2D;
 
     public MouseHandler(Scene2D scene2D) {
         this.scene2D = scene2D;
@@ -53,8 +53,7 @@ public class MouseHandler {
 
         for (int i = sceneObjects.size() - 1; i >= 0; i--) {
             SceneObject obj = sceneObjects.get(i);
-            if (obj instanceof Card) {
-                Card card = (Card) obj;
+            if (obj instanceof Card card) {
                 if (!foundHover && card.isInsideBoundaries(mouseX, mouseY)) {
                     card.setHovered(true);
                     foundHover = true;
@@ -71,8 +70,7 @@ public class MouseHandler {
 
         for (int i = sceneObjects.size() - 1; i >= 0; i--) {
             SceneObject obj = sceneObjects.get(i);
-            if (obj instanceof Card) {
-                Card card = (Card) obj;
+            if (obj instanceof Card card) {
                 if (card.onMousePressed(mouseX, mouseY)) {
                     return;
                 }

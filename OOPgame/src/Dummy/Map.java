@@ -1,6 +1,7 @@
 package Dummy;
 
 import ZhuzheeEngine.Scene.GameObject;
+import ZhuzheeEngine.Scene.Scene2D;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -9,6 +10,7 @@ import java.awt.geom.Path2D;
 public class Map extends GameObject {
     public Map() {
         super(0, 0, 1280, 720);
+
     }
 
     private Path2D.Double createHexagon(double x, double y, double radius) {
@@ -28,6 +30,10 @@ public class Map extends GameObject {
         }
         path.closePath(); // ลากเส้นปิดกลับมาจุดเริ่มต้น
         return path;
+    }
+
+    public void GenerateMap() {
+
     }
 
     @Override
