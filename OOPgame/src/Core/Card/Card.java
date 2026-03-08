@@ -1,6 +1,6 @@
 package Core.Card;
 
-import ZhuzheeEngine.Scene2D.*;
+import ZhuzheeEngine.Scene.*;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -44,11 +44,13 @@ public abstract class Card extends GameObject {
         if (!enabled){
             return false;
         }
-        if (GameObject.isInsideBoundaries(mouseX, mouseY, this)) {
+        if (isInsideBoundaries(mouseX, mouseY)) {
+            System.out.println("Grabbed");
             if (!isDraggable) {
                 return true;
             }
             isGrabbed = true;
+
             offset.x = mouseX - position.x;
             offset.y = mouseY - position.y;
             setzIndex(Z_INDEX_TOP);
@@ -61,6 +63,7 @@ public abstract class Card extends GameObject {
         if (!enabled || !isGrabbed) {
             return false;
         }
+        System.out.println("Drag");
         position.x = mouseX - offset.x;
         position.y = mouseY - offset.y;
         return true;
@@ -77,13 +80,13 @@ public abstract class Card extends GameObject {
     }
 
     // --------------------------------------------------
-    // ---------- logic about slot suction -------------
+    // ---------- logic about slot suction --------------
     // --------------------------------------------------
 
     private void snapToSlot() {
         Rectangle cardRect = new Rectangle(position.x, position.y, size.x, size.y);
         // ดึง GameObjects ทั้งหมดจาก Scene เพื่อหา Slot
-        for (GameObject obj : Scene.Instance.getGameObjects()) {
+        for (GameObject obj : Scene2D.Instance.getGameObjects()) {
             if (!(obj instanceof CardSlot)) continue;
 
             Rectangle slotMagneticField = new Rectangle(
@@ -103,37 +106,44 @@ public abstract class Card extends GameObject {
     protected abstract boolean isDroppable(Object bottom);
 
     @Override
-    public void draw(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        AffineTransform oldTransform = g2d.getTransform();
+    public void render(Graphics g) {
+        // 1. สร้างก๊อปปี้ของ Graphics เพื่อไม่ให้ Scale ไปกระทบตัวอื่น
+        Graphics2D g2d = (Graphics2D) g.create();
 
-        // --------- Hover Effect --------- //
+        try {
+            // --------- Hover Effect --------- //
+            if (isHovered && !isGrabbed) {
+                // คำนวณจุดศูนย์กลางของ Card
+                int cx = position.x + (size.x / 2);
+                int cy = position.y + (size.y / 2);
 
-        if (isHovered && !isGrabbed) {
-            int cx = position.x + (size.x / 2);
-            int cy = position.y + (size.y / 2);
-            double scaleX = (size.x + ZOOM_OFFSET) / size.x;
-            double scaleY = (size.y + ZOOM_OFFSET) / size.y;
+                float scaleX = (float) (size.x + ZOOM_OFFSET) / size.x;
+                float scaleY = (float) (size.y + ZOOM_OFFSET) / size.y;
 
-            g2d.translate(cx, cy);
-            g2d.scale(scaleX, scaleY);
-            g2d.translate(-cx, -cy);
+                // Step การขยายจากจุดศูนย์กลาง:
+                g2d.translate(cx, cy);           // 1. เลื่อนจุดศูนย์กลาง Card ไปที่ 0,0
+                g2d.scale(scaleX, scaleY);       // 2. ขยาย
+                g2d.translate(-cx, -cy);         // 3. เลื่อนกลับมาตำแหน่งเดิม
+            }
+
+            // --------- Drawing Logic --------- //
+            if (!enabled) g2d.setColor(Color.LIGHT_GRAY);
+            else if (isGrabbed) g2d.setColor(new Color(255, 165, 0));
+            else g2d.setColor(new Color(176, 255, 183));
+
+            g2d.fillRect(position.x, position.y, size.x, size.y);
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawRect(position.x, position.y, size.x, size.y);
+
+            FontMetrics fm = g2d.getFontMetrics();
+            int textX = position.x + (size.x - fm.stringWidth(name)) / 2;
+            int textY = position.y + (size.y - fm.getHeight()) / 2 + fm.getAscent();
+            g2d.drawString(name, textX, textY);
+
+        } finally {
+            // 2. ทำลายก๊อปปี้ทิ้ง เพื่อคืนค่าเดิมให้ Graphics หลักสำหรับ Card ใบถัดไป
+            g2d.dispose();
         }
-
-        if (!enabled) g2d.setColor(Color.LIGHT_GRAY);
-        else if (isGrabbed) g2d.setColor(new Color(255, 165, 0));
-        else g2d.setColor(new Color(176, 255, 183));
-
-        g2d.fillRect(position.x, position.y, size.x, size.y);
-
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect(position.x, position.y, size.x, size.y);
-
-        FontMetrics fm = g2d.getFontMetrics();
-        int textX = position.x + (size.x - fm.stringWidth(name)) / 2;
-        int textY = position.y + (size.y - fm.getHeight()) / 2 + fm.getAscent();
-        g2d.drawString(name, textX, textY);
-
-        g2d.setTransform(oldTransform);
     }
 }

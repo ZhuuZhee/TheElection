@@ -1,4 +1,4 @@
-package ZhuzheeEngine.Scene2D;
+package ZhuzheeEngine.Scene;
 
 import java.awt.*;
 
@@ -11,7 +11,7 @@ public class GameObject {
         this.position = new Point(x, y);
         this.size = new Point(width, height);
         this.zIndex = 0f;
-        Scene.register(this);
+        Scene2D.register(this);
     }
 
     public float getzIndex() {
@@ -30,17 +30,21 @@ public class GameObject {
         return this.size;
     }
 
-    //called by scene
-    public void draw(Graphics g) {
+    // lifecycle hooks
+    public void start(){}
+    public void render(Graphics g) {
     }
 
     //is position inside bounds of this object
     public boolean isInsideBoundaries(int x, int y) {
-        return isInsideBoundaries(x, y, this);
+        return x >= position.x && x <= position.x + getSize().x &&
+                y >= position.y && y <= position.y + getSize().y;
     }
 
-    public static boolean isInsideBoundaries(int x, int y, GameObject obj) {
-        return x >= obj.getPosition().x && x <= obj.getPosition().x + obj.getSize().x &&
-                y >= obj.getPosition().y && y <= obj.getPosition().y + obj.getSize().y;
+    //destroying game object
+    public static void Destroy(GameObject gameObject){
+        gameObject.onDestroy();
+        Scene2D.remove(gameObject);
     }
+    public void onDestroy(){}
 }

@@ -1,6 +1,6 @@
 package Core.Card;
 
-import ZhuzheeEngine.Scene2D.GameObject;
+import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
 
@@ -17,7 +17,7 @@ public class CardSlot extends GameObject {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setStroke(new BasicStroke(
