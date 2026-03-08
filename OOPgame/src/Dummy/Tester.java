@@ -27,4 +27,8 @@ public class Tester {
     public static void MainMenuTest() {
         Screen.ChangeScreen(new MainMenu());
     }
+
+    public static void main() {
+        Map map = new Map();
+    }
 }
