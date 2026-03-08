@@ -1,6 +1,7 @@
 package Core.GameScreens;
 
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 
 import javax.swing.*;
@@ -36,13 +37,19 @@ public class MainMenu extends Screen implements ActionListener {
         JPanel wrapper = new JPanel(new GridBagLayout());
         wrapper.add(buttonPanel);
         add(wrapper, BorderLayout.CENTER);
+
+        // audio test
+        AudioManager.getInstance().loadSound("Kuy","guntrum.WAV");
+        AudioManager.getInstance().playLoop("Kuy");
     }
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == startBtn){
-            JOptionPane.showMessageDialog(this,"Game Started!");
+//            JOptionPane.showMessageDialog(this,"Game Started!");
+            ZhuzheeGame.screenManager.ChangeScreen(ZhuzheeGame.MainScene);
         }
         if(e.getSource() == optionBtn){
-            JOptionPane.showMessageDialog(this,"Settings Menu");
+//            JOptionPane.showMessageDialog(this,"Settings Menu");
+            ZhuzheeGame.audioManagerTester.setVisible(true);
         }
         if(e.getSource() == exitBtn){
             System.exit(0);

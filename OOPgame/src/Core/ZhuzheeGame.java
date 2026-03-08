@@ -1,6 +1,7 @@
 package Core;
 
 import Core.GameScreens.MainMenu;
+import Dummy.AudioManagerTester;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -9,8 +10,10 @@ import ZhuzheeEngine.ScreenManager;
 
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter{
-    public ScreenManager screenManager;
+    public static ScreenManager screenManager;
+    public static Scene2D MainScene;
 
+    public static AudioManagerTester audioManagerTester;
     @Override
     public void create() {
         //set Application title
@@ -18,13 +21,14 @@ public class ZhuzheeGame implements ApplicationAdapter{
 
         screenManager = new ScreenManager();
 
-        Scene2D scene2D = new Scene2D();
+        MainScene = new Scene2D();
         //set current screen
-       screenManager.ChangeScreen(scene2D);
+       screenManager.ChangeScreen(MainScene);
 
         //test
-//        Tester.CardsTestingOnScene(scene2D);
+        Tester.CardsTestingOnScene(MainScene);
         Tester.MainMenu(screenManager);
+        audioManagerTester = new AudioManagerTester();
 //        Tester.AudioManagerTest();
     }
 

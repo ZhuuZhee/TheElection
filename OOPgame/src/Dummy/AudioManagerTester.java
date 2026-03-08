@@ -19,13 +19,17 @@ public class AudioManagerTester extends JFrame {
         setLayout(null);
 
         // เริ่มเล่น BGM ทันที
-        AudioManager.getInstance().playLoop("bgm_main");
+//        AudioManager.getInstance().playLoop("bgm_main");
 
         // --- ปุ่ม SFX ---
         JButton button = new JButton("PLAY SFX!");
         button.setBounds(80, 30, 120, 40);
-        button.addActionListener(e -> AudioManager.getInstance().playSound("clap"));
+//        button.addActionListener(e -> AudioManager.getInstance().playSound("clap"));
         add(button);
+
+        JLabel volLabel = new JLabel("Master Volume");
+        volLabel.setBounds(20, 100, 100, 20);
+        add(volLabel);
 
         // --- Slider ปรับ BGM ---
         JSlider musicSlider = new JSlider(0, 100, 70);
@@ -35,6 +39,10 @@ public class AudioManagerTester extends JFrame {
         });
         add(musicSlider);
 
+        JLabel SFXLabel = new JLabel("SFX Volume");
+        SFXLabel.setBounds(20, 180, 100, 20);
+        add(SFXLabel);
+
         // --- Slider ปรับ SFX ---
         JSlider sfxSlider = new JSlider(0, 100, 70);
         sfxSlider.setBounds(20, 200, 240, 40);
@@ -42,7 +50,5 @@ public class AudioManagerTester extends JFrame {
             AudioManager.getInstance().setSFXVolume(sfxSlider.getValue() / 100f);
         });
         add(sfxSlider);
-
-        setVisible(true);
     }
 }
