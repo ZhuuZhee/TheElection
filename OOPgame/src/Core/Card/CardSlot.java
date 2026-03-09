@@ -2,7 +2,7 @@ package Core.Card;
 
 import ZhuzheeEngine.Scene.GameObject;
 import ZhuzheeEngine.Scene.SceneObject;
-
+import Dummy.Citybanna;
 import java.awt.*;
 
 public class CardSlot extends GameObject {
@@ -12,9 +12,15 @@ public class CardSlot extends GameObject {
     private static final float STROKE_NORMAL_WIDTH = 1.0f; // ความหนาเส้นปกติ (สำหรับข้อความ)
     private static final Color SLOT_COLOR = Color.GRAY; // สีของช่อง
     private static final String SLOT_TEXT = "Drop Here";
-    public CardSlot(int x, int y, int width, int height) {
+    private Citybanna city;
+    public CardSlot(int x, int y, int width, int height, Citybanna city) {
         super(x, y, width, height);
         this.setZIndex(Z_INDEX_BACKGROUND);
+        this.city = city;
+    }
+
+    public Citybanna getCity() {
+        return city;
     }
 
     @Override

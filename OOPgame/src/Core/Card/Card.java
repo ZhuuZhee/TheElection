@@ -1,7 +1,6 @@
 package Core.Card;
 
 import ZhuzheeEngine.Scene.*;
-
 import java.awt.*;
 
 public abstract class Card extends GameObject {
@@ -97,12 +96,15 @@ public abstract class Card extends GameObject {
 
             if (cardRect.intersects(slotMagneticField)) {
                 position.setLocation(obj.getPosition().x, obj.getPosition().y);
+                onDroppedInSlot((CardSlot) obj);
                 break;
             }
         }
     }
 
     protected abstract boolean isDroppable(Object bottom);
+
+    protected abstract void onDroppedInSlot(CardSlot slot);
 
     @Override
     public void render(Graphics g) {

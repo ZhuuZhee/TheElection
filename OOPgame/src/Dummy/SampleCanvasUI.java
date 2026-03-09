@@ -14,7 +14,7 @@ public class SampleCanvasUI extends Canvas {
     public JButton MainMenuBtn;
     @Override
     public void start() {
-        System.out.println("SampleScene start " + getPosition().toString());
+        //System.out.println("SampleScene start " + getPosition().toString());
         setLayout(new FlowLayout(FlowLayout.CENTER));
         MainMenuBtn = new JButton("main menu");
         //back to menu screen on click
@@ -34,7 +34,7 @@ public class SampleCanvasUI extends Canvas {
     @Override
     public void render(Graphics g) {
 //        repaint();
-        System.out.println("SampleScene render " + getPosition().toString());
+       // System.out.println("SampleScene render " + getPosition().toString());
     }
 
     @Override
