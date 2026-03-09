@@ -12,9 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainMenu extends Screen implements ActionListener {
+
+    GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
     JButton startBtn;
     JButton optionBtn;
     JButton exitBtn;
+
     public MainMenu() {
         setLayout(new BorderLayout());
         JLabel title = new JLabel("The Election");
@@ -57,6 +61,17 @@ public class MainMenu extends Screen implements ActionListener {
         if(e.getSource() == exitBtn){
             System.exit(0);
         }
+    }
+    private void enableFullscreen() {
+        dispose();
+//        device.setFullScreenWindow();
+        setVisible(true);
+    }
+
+    private void disableFullscreen() {
+        device.setFullScreenWindow(null);
+        dispose();
+        setVisible(true);
     }
 
 //        JFrame frame = new JFrame();
