@@ -12,6 +12,7 @@ public class ZhuzheeGame implements ApplicationAdapter{
     public static Scene2D MAIN_SCENE;
     public static MainMenu MAIN_MENU;
 
+
     @Override
     public void create() {
         //set Application title

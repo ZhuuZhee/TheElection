@@ -1,6 +1,7 @@
 package Core.GameScreens;
 
 import Core.ZhuzheeGame;
+import Dummy.Taro;
 import Dummy.Tester;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
@@ -50,7 +51,8 @@ public class MainMenu extends Screen implements ActionListener {
         }
         if(e.getSource() == optionBtn){
 //            JOptionPane.showMessageDialog(this,"Settings Menu");
-            Tester.audioManagerTester.setVisible(true);
+//            Tester.audioManagerTester.setVisible(true);
+            Taro.option.setVisible(true);
         }
         if(e.getSource() == exitBtn){
             System.exit(0);
