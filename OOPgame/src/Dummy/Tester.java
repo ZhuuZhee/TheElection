@@ -33,6 +33,6 @@ public class Tester {
     }
 
     public static void main() {
-        Map map = new Map();
+        new Map();
     }
 }
