@@ -1,3 +1,6 @@
+/**
+ * @Xynezter 9/3/2026 18:50
+ */
 package Core.Card;
 
 import ZhuzheeEngine.Scene.*;
@@ -96,6 +99,7 @@ public abstract class Card extends GameObject {
 
             if (cardRect.intersects(slotMagneticField)) {
                 position.setLocation(obj.getPosition().x, obj.getPosition().y);
+                // เรียก method when card ทับ กับ Magnetic Field ของ slot
                 onDroppedInSlot((CardSlot) obj);
                 break;
             }
@@ -103,7 +107,7 @@ public abstract class Card extends GameObject {
     }
 
     protected abstract boolean isDroppable(Object bottom);
-
+    // add method for business logic when card DroppedInSlot
     protected abstract void onDroppedInSlot(CardSlot slot);
 
     @Override

@@ -1,3 +1,8 @@
+/**
+ * @Xynezter 9/3/2026 18:50
+ */
+
+// เพิ่ม Attributes set Constructor เพิ่ม method applyStats # for test can Change to map
 package Dummy;
 import java.util.List;
 public class Citybanna {
@@ -17,7 +22,7 @@ public class Citybanna {
     public String getCityName() {
         return this.cityName;
     }
-
+    // เพิ่มค่า List จาก Card follow Index add to city
     public void applyStats(List<Integer> cardStats) {
         if (cardStats != null && cardStats.size() >= 4) {
             this.economic += cardStats.get(0);
