@@ -24,7 +24,7 @@ public class AudioManagerTester extends JFrame {
         // --- ปุ่ม SFX ---
         JButton button = new JButton("PLAY SFX!");
         button.setBounds(80, 30, 120, 40);
-//        button.addActionListener(e -> AudioManager.getInstance().playSound("clap"));
+        button.addActionListener(e -> AudioManager.getInstance().playSound("clap"));
         add(button);
 
         JLabel volLabel = new JLabel("Master Volume");
