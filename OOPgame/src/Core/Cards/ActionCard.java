@@ -38,7 +38,7 @@ public class ActionCard extends Card {
             // find card in Scene
             for (SceneObject obj : scene.getGameObjects()) {
                 // check if obj --> Policy
-                if (obj instanceof PolicyCard) {
+                if (obj instanceof PassiveCard) {
                     // แปลงกลับเป็น PassiveCard เพื่อเรียกใช้ isInSlot() และ onActionCardPlayed()
                     PassiveCard passive = (PassiveCard) obj;
                     // if passivecard is in slot and passivecard isactivate โยนเข้า business logic onActionCardPlayed()

@@ -8,7 +8,7 @@ import Dummy.Citybanna;
 import java.util.List;
 
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
-public class PolicyCardA extends PassiveCard implements PolicyCard {
+public class PolicyCardA extends PassiveCard {
 
     public PolicyCardA(String name, int x, int y, boolean enabled) {
         super(name, x, y, enabled); // โยนค่าไปให้ PassiveCard จัดการ
