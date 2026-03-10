@@ -17,6 +17,7 @@ public class MainMenu extends Screen implements ActionListener {
 
     JButton startBtn;
     JButton optionBtn;
+    JButton creditBtn;
     JButton exitBtn;
 
     public MainMenu() {
@@ -29,7 +30,7 @@ public class MainMenu extends Screen implements ActionListener {
         add(title, BorderLayout.NORTH);
 //        นี่คือส่วนปุ่มต่างๆ
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(3,1,10,10));
+        buttonPanel.setLayout(new GridLayout(4,1,10,10));
         startBtn = new JButton("Start Game");
         startBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         startBtn.addActionListener(this);
@@ -38,6 +39,10 @@ public class MainMenu extends Screen implements ActionListener {
         optionBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         optionBtn.addActionListener(this);
         HoverButton(optionBtn);
+        creditBtn = new JButton("Credit");
+        creditBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
+        creditBtn.addActionListener(this);
+        HoverButton(creditBtn);
         exitBtn = new JButton("Exit");
         exitBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         exitBtn.addActionListener(this);
@@ -45,6 +50,7 @@ public class MainMenu extends Screen implements ActionListener {
 
         buttonPanel.add(startBtn);
         buttonPanel.add(optionBtn);
+        buttonPanel.add(creditBtn);
         buttonPanel.add(exitBtn);
         JPanel wrapper = new JPanel(new GridBagLayout());
         wrapper.add(buttonPanel);
