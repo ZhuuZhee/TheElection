@@ -23,14 +23,6 @@ public class Map extends GameObject {
         district = new District(10, 10);
         city = new City(1, 1, 1, 2, 10);
         board = GenerateMap();
-//        Scene2D scene2d = new Scene2D();
-//        scene2d.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//                super.mousePressed(e);
-//                System.out.println("Mouse pressed at: " + e.getX() + ", " + e.getY());
-//            }
-//        });
     }
 
     private District[][] GenerateMap() {
