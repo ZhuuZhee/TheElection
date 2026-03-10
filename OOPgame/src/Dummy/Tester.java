@@ -19,8 +19,8 @@ public class Tester {
         card2.setDraggable(false); // <--- setDraggable # default true
         new MouseHandler(scene2D);
     }
-    public static void SampleCanvasTest(){
-        new SampleCanvasUI();
+    public static void SampleCanvasTest(Scene2D scene2D){
+        new SampleCanvasUI(scene2D);
     }
 
     public static AudioManagerTester audioManagerTester;
@@ -30,9 +30,5 @@ public class Tester {
 
     public static void MainMenuTest() {
         Screen.ChangeScreen(new MainMenu());
-    }
-
-    public static void main() {
-        new Map();
     }
 }

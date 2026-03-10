@@ -25,10 +25,9 @@ public class ZhuzheeGame implements ApplicationAdapter{
 
         //test
 //        Tester.MainMenu(screenManager);
-        Tester.SampleCanvasTest();
+        Tester.SampleCanvasTest(MAIN_SCENE);
         Tester.CardsTestingOnScene(MAIN_SCENE);
-        Tester.AudioManagerTesterInitialize();
-        Tester.main();
+//        Tester.AudioManagerTesterInitialize();
     }
 
     @Override

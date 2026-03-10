@@ -19,7 +19,7 @@ public class MouseHandler {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                Point worldPoint = Scene2D.Screen2WorldPoint(new Point(e.getX(),e.getY()));
+                Point worldPoint = scene2D.Screen2WorldPoint(new Point(e.getX(),e.getY()));
                 handleMousePressed(worldPoint.x,worldPoint.y);
             }
 
@@ -34,14 +34,14 @@ public class MouseHandler {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
-                Point worldPoint = Scene2D.Screen2WorldPoint(new Point(e.getX(),e.getY()));
+                Point worldPoint = scene2D.Screen2WorldPoint(new Point(e.getX(),e.getY()));
                 handleMouseDragged(worldPoint.x,worldPoint.y);
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
-                Point worldPoint = Scene2D.Screen2WorldPoint(new Point(e.getX(),e.getY()));
+                Point worldPoint = scene2D.Screen2WorldPoint(new Point(e.getX(),e.getY()));
                 handleMouseMoved(worldPoint.x,worldPoint.y);
             }
         });

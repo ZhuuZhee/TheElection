@@ -41,14 +41,12 @@ import ZhuzheeEngine.ScreenManager;
 import ZhuzheeEngine.Scene.Scene2D;
 
 public class MyGame implements ApplicationAdapter {
-    private ScreenManager screenManager;
     private Scene2D mainScene;
 
     @Override
     public void create() {
         mainScene = new Scene2D();
-        screenManager = new ScreenManager();
-        screenManager.ChangeScreen(mainScene);
+        Screen.ChangeScreen(mainScene);
         // ... initialize your game objects here
     }
 
@@ -108,7 +106,9 @@ Then, in your `MyGame` class, you can add them to the scene:
 
 ```java
 // in MyGame.create()
-Player player = new Player(0, 0);
+public void creat() {
+    Player player = new Player(0, 0);
+}
 ```
 
 The `GameObject` will automatically be added to the `Scene2D` when it's created.
@@ -130,3 +130,31 @@ The engine does not have a built-in input system. You can add your own mouse and
 ### Screen Management
 
 The `ScreenManager` handles transitions between screens. To change screens, simply call `screenManager.ChangeScreen(newNextScreen)`. This will call `onScreenExit()` on the current screen and `onScreenEnter()` on the new one.
+
+
+## Project Testing Protocol
+
+### Dummy Package
+for testing any things you **MUST** create new method in `Dummy.Tester` Class.
+```java
+
+public class Tester {
+    // example for testing new UI
+    public static void SampleCanvasTest() {
+        new SampleCanvasUI();
+    }
+}
+```
+then in `Core.ZhuzheeGame` call your method for testing
+```java
+public class ZhuzheeGame implements ApplicationAdapter{
+
+    public void create() {
+        //create main screen
+        MAIN_SCENE = new Scene2D();
+        Screen.ChangeScreen(MAIN_SCENE);
+        //your testing method
+        Tester.SampleCanvasTest();
+    }
+}
+```

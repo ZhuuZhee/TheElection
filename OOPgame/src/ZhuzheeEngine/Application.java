@@ -2,7 +2,7 @@ package ZhuzheeEngine;
 
 import javax.swing.*;
 
-public class Application {
+public sealed class Application {
     private static int TARGET_FPS = 60;
 
     /// frame time delay in milliseconds
@@ -19,7 +19,7 @@ public class Application {
     private ApplicationAdapter rootAdapter;
 
     /// Singletons
-    protected static Application Instance;
+    public static Application Instance;
     public Application(ApplicationAdapter rootAdapter) {
         Instance = this;
         this.rootAdapter = rootAdapter;
@@ -119,15 +119,11 @@ public class Application {
         mainFrame.setSize(screenWidth,screenHeight);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
-        if(!(rootAdapter instanceof Application))
-            rootAdapter.create();
         if(Screen.currentScreen != null)
             Screen.currentScreen.create();
     }
 
     protected void resize(int width, int height) {
-        if(!(rootAdapter instanceof Application))
-            rootAdapter.resize(width,height);
         if(Screen.currentScreen != null)
             Screen.currentScreen.resize(width,height);
     }
@@ -135,8 +131,6 @@ public class Application {
     /// Called every frame after LaunchApp() succeeds.
     protected void render() {
         mainFrame.repaint();
-        if(!(rootAdapter instanceof Application))
-            rootAdapter.render();
         if(Screen.currentScreen != null)
             Screen.currentScreen.render();
     }
@@ -144,8 +138,6 @@ public class Application {
     /// Called when AppKill() is called
     protected void dispose() {
         mainFrame.dispose();
-        if(!(rootAdapter instanceof Application))
-            rootAdapter.dispose();
         if(Screen.currentScreen != null)
             Screen.currentScreen.dispose();
     }

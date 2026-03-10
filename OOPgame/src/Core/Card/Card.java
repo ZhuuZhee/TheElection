@@ -87,7 +87,7 @@ public abstract class Card extends GameObject {
     private void snapToSlot() {
         Rectangle cardRect = new Rectangle(position.x, position.y, size.width, size.height);
         // ดึง GameObjects ทั้งหมดจาก Scene เพื่อหา Slot
-        for (SceneObject obj : Scene2D.Instance.getGameObjects()) {
+        for (SceneObject obj : getGameObjects()) {
             if (!(obj instanceof CardSlot)) continue;
 
             Rectangle slotMagneticField = new Rectangle(
