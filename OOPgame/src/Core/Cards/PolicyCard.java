@@ -16,7 +16,7 @@ public abstract class PolicyCard extends Card {
         return isInSlot;
     }
 
-    public abstract void onActionCardPlayed(ActionCard playedCard, Dummy.Citybanna city);
+    public abstract void onActionCardPlayed(ActionCard playedCard,Dummy.Maps.City city);
 
     @Override
     protected void onDroppedInSlot(CardSlot slot) {

@@ -21,7 +21,7 @@ public class Map extends GameObject {
     public Map() {
         super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE);
         district = new District(10, 10);
-        city = new City(1, 1, 1, 2, 10);
+        city = new City("Kuy_Jeng",1, 1, 1, 2, 10);
         board = GenerateMap();
     }
 
