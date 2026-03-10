@@ -4,7 +4,7 @@
 /// just create class do nothing
 package Core.Cards;
 
-public abstract class ArcanaCard extends PassiveCard{
+public abstract class ArcanaCard extends PolicyCard {
 
     public ArcanaCard(String name, int x, int y, boolean enabled) {
         super(name, x, y, enabled);

@@ -40,7 +40,7 @@ public class ActionCard extends Card {
                 // check if obj --> Policy
                 if (obj instanceof PolicyCard) {
                     // แปลงกลับเป็น PassiveCard เพื่อเรียกใช้ isInSlot() และ onActionCardPlayed()
-                    PassiveCard passive = (PassiveCard) obj;
+                    PolicyCard passive = (PolicyCard) obj;
                     // if passivecard is in slot and passivecard isactivate โยนเข้า business logic onActionCardPlayed()
                     if (passive.isInSlot() && passive.IsActivate()) {
                         passive.onActionCardPlayed(this, targetCity);
