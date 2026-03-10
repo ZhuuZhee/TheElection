@@ -1,4 +1,4 @@
-package Dummy.Map;
+package Dummy.Maps;
 
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;

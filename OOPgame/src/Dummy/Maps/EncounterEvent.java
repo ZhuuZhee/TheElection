@@ -1,3 +1,3 @@
-package Dummy.Map;
+package Dummy.Maps;
 
 public interface EncounterEvent { }
