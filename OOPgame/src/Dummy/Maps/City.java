@@ -6,11 +6,11 @@ public class City {
     public Grid[] Grids;
 
     public City(int facility,
-                int military,
+                int environment,
                 int economy,
                 int population,
                 int size) {
-        this.stats = new PoliticsStats(facility, military, economy);
+        this.stats = new PoliticsStats(facility, environment, economy);
         this.population = population;
         Grids = new Grid[size];
     }

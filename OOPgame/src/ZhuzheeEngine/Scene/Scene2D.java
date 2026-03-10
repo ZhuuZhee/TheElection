@@ -101,8 +101,9 @@ public class Scene2D extends Screen {
             g2d.translate(centerPoint.x + origin.x, centerPoint.y + origin.y);
 
             sortGameObjects();
-            // render object
-            for (SceneObject obj : sceneObjects) {
+            // render object - iterate over a copy to avoid ConcurrentModificationException
+            ArrayList<SceneObject> objectsCopy = new ArrayList<>(sceneObjects);
+            for (SceneObject obj : objectsCopy) {
                 obj.render(g2d);
             }
         } finally {
