@@ -102,7 +102,7 @@ public class Scene2D extends Screen {
 
             sortGameObjects();
             // render object
-            for (SceneObject obj : sceneObjects) {
+            for (SceneObject obj : new ArrayList<>(sceneObjects)) {
                 obj.render(g2d);
             }
         } finally {
