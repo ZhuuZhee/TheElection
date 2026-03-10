@@ -1,12 +1,12 @@
 package Dummy;
 
-import Core.Card.ActionCard;
-import Core.Card.CardSlot;
+import Core.Cards.ActionCard;
+import Core.Cards.CardSlot;
 import Core.GameScreens.MainMenu;
 import Core.Player.MouseHandler;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
-import Core.Card.PolicyCardA;
+import Core.Cards.PolicyCardA;
 
 import java.util.Arrays;
 

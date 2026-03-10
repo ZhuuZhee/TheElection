@@ -1,4 +1,4 @@
-//import Core.Card.*;
+//import Core.Cards.*;
 //
 //import javax.swing.*;
 //import java.awt.*;

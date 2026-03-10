@@ -1,7 +1,7 @@
 /**
  * @Xynezter 10/3/2026 19:30
  */
-package Core.Card;
+package Core.Cards;
 import Dummy.*;
 import ZhuzheeEngine.Scene.SceneObject;
 

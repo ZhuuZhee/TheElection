@@ -1,10 +1,9 @@
-package Core.Board;
+package Core.Model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Stats {
-    // Using the Map interface for the type is a Java best practice (Coding to Interfaces)
     private final Map<Byte, Integer> stats = new HashMap<>();
 
     public static final byte FACILITY = 0;
