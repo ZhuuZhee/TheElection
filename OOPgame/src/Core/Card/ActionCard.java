@@ -1,8 +1,9 @@
 /**
- * @Xynezter 9/3/2026 18:50
+ * @Xynezter 10/3/2026 19:30
  */
 package Core.Card;
 import Dummy.*;
+import ZhuzheeEngine.Scene.SceneObject;
 
 import java.util.List;
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
@@ -14,6 +15,10 @@ public class ActionCard extends Card {
     public ActionCard(String name, int x, int y, boolean enabled, List<Integer> stat) {
         super(name, x, y, CARD_WIDTH, CARD_HEIGHT, enabled);
         this.stat = stat;
+    }
+    // getter stat
+    public List<Integer> getStat() {
+        return this.stat;
     }
     // โยนให้ city จัดการ stat
     public void ActionOn(Citybanna city) {
@@ -30,6 +35,18 @@ public class ActionCard extends Card {
 
         // if slot have city stat --> add
         if (targetCity != null) {
+            // find card in Scene
+            for (SceneObject obj : scene.getGameObjects()) {
+                // check if obj --> Policy
+                if (obj instanceof PolicyCard) {
+                    // แปลงกลับเป็น PassiveCard เพื่อเรียกใช้ isInSlot() และ onActionCardPlayed()
+                    PassiveCard passive = (PassiveCard) obj;
+                    // if passivecard is in slot and passivecard isactivate โยนเข้า business logic onActionCardPlayed()
+                    if (passive.isInSlot() && passive.IsActivate()) {
+                        passive.onActionCardPlayed(this, targetCity);
+                    }
+                }
+            }
             this.ActionOn(targetCity);
             this.enabled = false;
             this.isDraggable = false;
