@@ -1,11 +1,10 @@
 /**
  * @Xynezter 9/3/2026 18:50
  */
-package Core.Card;
+package Core.Cards;
 
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
-import ZhuzheeEngine.Scene.SceneObject;
 import Dummy.Citybanna;
 import java.awt.*;
 

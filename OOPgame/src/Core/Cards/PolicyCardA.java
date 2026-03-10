@@ -1,14 +1,14 @@
 /**
  * @Xynezter 10/3/2026 19:30
  */
-/// create policycard for test
-package Core.Card;
+// create policycard for test
+package Core.Cards;
 
 import Dummy.Citybanna;
 import java.util.List;
 
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
-public class PolicyCardA extends PassiveCard implements PolicyCard {
+public class PolicyCardA extends PolicyCard {
 
     public PolicyCardA(String name, int x, int y, boolean enabled) {
         super(name, x, y, enabled); // โยนค่าไปให้ PassiveCard จัดการ
@@ -29,7 +29,7 @@ public class PolicyCardA extends PassiveCard implements PolicyCard {
             List<Integer> stats = playedCard.getStat();
             if (stats != null && !stats.isEmpty()) {
                 // business logic confix stat
-                stats.set(0, stats.get(0) * 10); // ex: add stat index[0]
+                stats.set(0, stats.getFirst() * 10); // ex: add stat index[0]
             }
         }
     }
@@ -37,9 +37,6 @@ public class PolicyCardA extends PassiveCard implements PolicyCard {
     @Override
     protected boolean isDroppable(Object bottom) {
         // ให้วางทับ CardSlot ได้
-        if (bottom instanceof CardSlot) {
-            return true;
-        }
-        return false;
+        return bottom instanceof CardSlot;
     }
 }

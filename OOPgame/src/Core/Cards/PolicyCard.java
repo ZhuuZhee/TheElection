@@ -1,12 +1,12 @@
 /**
  * @Xynezter 10/3/2026 19:30
  */
-package Core.Card;
+package Core.Cards;
 
-public abstract class PassiveCard extends Card {
+public abstract class PolicyCard extends Card {
     protected boolean isInSlot = false;
 
-    public PassiveCard(String name, int x, int y, boolean enabled) {
+    public PolicyCard(String name, int x, int y, boolean enabled) {
         super(name, x, y, 100, 150, enabled);
     }
 

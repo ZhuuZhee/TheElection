@@ -25,7 +25,7 @@ public class Scene2D extends Screen {
     public void SetSceneOrigin(Point newPoint){
         origin = newPoint;
     }
-    /// Getter เพื่อให้ Core.Card สามารถเข้าถึง List ไปเช็ค Slot ได้
+    /// Getter เพื่อให้ Core.Cards สามารถเข้าถึง List ไปเช็ค Slot ได้
     public ArrayList<SceneObject> getGameObjects() {
         return sceneObjects;
     }
@@ -101,8 +101,9 @@ public class Scene2D extends Screen {
             g2d.translate(centerPoint.x + origin.x, centerPoint.y + origin.y);
 
             sortGameObjects();
-            // render object
-            for (SceneObject obj : sceneObjects) {
+            // render object - iterate over a copy to avoid ConcurrentModificationException
+            ArrayList<SceneObject> objectsCopy = new ArrayList<>(sceneObjects);
+            for (SceneObject obj : objectsCopy) {
                 obj.render(g2d);
             }
         } finally {

@@ -1,6 +1,6 @@
 package Core.Player;
 
-import Core.Card.*;
+import Core.Cards.*;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -10,7 +10,7 @@ public class Player {
     private boolean isLocal;
     private int coin;
     private ArrayList<ActionCard> actionCards;
-    private ArrayList<PassiveCard> passiveCards;
+    private ArrayList<PolicyCard> policyCards;
     private String[] cityOwn;
 //    private ActionCardHolderUI: CardHolderUI  ???
 
@@ -19,7 +19,7 @@ public class Player {
         this.isLocal = isLocal;
         this.coin = 100; // setไว้ 100 ก่อน
         this.actionCards = new ArrayList<>();
-        this.passiveCards = new ArrayList<>();
+        this.policyCards = new ArrayList<>();
         this.cityOwn = new String[0];
     }
 

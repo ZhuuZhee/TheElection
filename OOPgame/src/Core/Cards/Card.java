@@ -1,7 +1,7 @@
 /**
  * @Xynezter 9/3/2026 18:50
  */
-package Core.Card;
+package Core.Cards;
 
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.*;
@@ -126,7 +126,7 @@ public abstract class Card extends GameObject {
         try {
             // --------- Hover Effect --------- //
             if (isHovered && !isGrabbed) {
-                // คำนวณจุดศูนย์กลางของ Card
+                // คำนวณจุดศูนย์กลางของ Cards
                 int cx = position.x + (size.width / 2);
                 int cy = position.y + (size.height / 2);
 
@@ -134,7 +134,7 @@ public abstract class Card extends GameObject {
                 float scaleY = (float) (size.height + ZOOM_OFFSET) / size.height;
 
                 // Step การขยายจากจุดศูนย์กลาง:
-                g2d.translate(cx, cy);           // 1. เลื่อนจุดศูนย์กลาง Card ไปที่ 0,0
+                g2d.translate(cx, cy);           // 1. เลื่อนจุดศูนย์กลาง Cards ไปที่ 0,0
                 g2d.scale(scaleX, scaleY);       // 2. ขยาย
                 g2d.translate(-cx, -cy);         // 3. เลื่อนกลับมาตำแหน่งเดิม
             }
@@ -155,7 +155,7 @@ public abstract class Card extends GameObject {
             g2d.drawString(name, textX, textY);
 
         } finally {
-            // 2. ทำลายก๊อปปี้ทิ้ง เพื่อคืนค่าเดิมให้ Graphics หลักสำหรับ Card ใบถัดไป
+            // 2. ทำลายก๊อปปี้ทิ้ง เพื่อคืนค่าเดิมให้ Graphics หลักสำหรับ Cards ใบถัดไป
             g2d.dispose();
         }
     }

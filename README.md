@@ -158,3 +158,12 @@ public class ZhuzheeGame implements ApplicationAdapter{
     }
 }
 ```
+
+## Core Project
+
+### Structure
+- `ZhuzheeGame`(Class) : the main `RootAdapter` for `Application`, contains main logic of game.
+- `GameScreens`(Package) : The package that contains in-game screens.
+- ### `Card`(Package) : contains card classes
+  - `Card`(abstract class) base class for `ActiveCard`, `PassiveCard`. 
+  - "มาเขียนด้วย"
