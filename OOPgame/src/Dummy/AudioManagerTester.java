@@ -32,7 +32,7 @@ public class AudioManagerTester extends JFrame {
         add(volLabel);
 
         // --- Slider ปรับ BGM ---
-        JSlider musicSlider = new JSlider(0, 100, 70);
+        JSlider musicSlider = new JSlider(0, 100, 50);
         musicSlider.setBounds(20, 120, 240, 40);
         musicSlider.addChangeListener(e -> {
             AudioManager.getInstance().setBGMVolume(musicSlider.getValue() / 100f);
@@ -44,7 +44,7 @@ public class AudioManagerTester extends JFrame {
         add(SFXLabel);
 
         // --- Slider ปรับ SFX ---
-        JSlider sfxSlider = new JSlider(0, 100, 70);
+        JSlider sfxSlider = new JSlider(0, 100, 50);
         sfxSlider.setBounds(20, 200, 240, 40);
         sfxSlider.addChangeListener(e -> {
             AudioManager.getInstance().setSFXVolume(sfxSlider.getValue() / 100f);
