@@ -3,6 +3,7 @@
  */
 package Core.Card;
 
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.*;
 import java.awt.*;
 
@@ -20,7 +21,7 @@ public abstract class Card extends GameObject {
     private static final double ZOOM_OFFSET = 20.0;
 
     public Card(String name, int x, int y, int width, int height, boolean enabled) {
-        super(x, y, width, height);
+        super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
         this.enabled = enabled;
     }
@@ -87,7 +88,7 @@ public abstract class Card extends GameObject {
     private void snapToSlot() {
         Rectangle cardRect = new Rectangle(position.x, position.y, size.width, size.height);
         // ดึง GameObjects ทั้งหมดจาก Scene เพื่อหา Slot
-        for (SceneObject obj : getGameObjects()) {
+        for (SceneObject obj : scene.getGameObjects()) {
             if (!(obj instanceof CardSlot)) continue;
 
             Rectangle slotMagneticField = new Rectangle(

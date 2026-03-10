@@ -3,6 +3,7 @@
  */
 package Core.Card;
 
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 import ZhuzheeEngine.Scene.SceneObject;
 import Dummy.Citybanna;
@@ -19,7 +20,7 @@ public class CardSlot extends GameObject {
     private Citybanna city;
     // setup Constructor รับค่า city มาตอนสร้าง slot
     public CardSlot(int x, int y, int width, int height, Citybanna city) {
-        super(x, y, width, height);
+        super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.setZIndex(Z_INDEX_BACKGROUND);
         this.city = city;
     }

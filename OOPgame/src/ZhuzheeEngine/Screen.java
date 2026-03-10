@@ -21,6 +21,7 @@ public abstract class Screen extends JPanel implements ApplicationAdapter {
             frame.revalidate();
             frame.repaint();
         }
+        this.setVisible(true);
     }
     public void onScreenExit(){
 

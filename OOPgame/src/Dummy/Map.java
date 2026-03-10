@@ -1,5 +1,6 @@
 package Dummy;
 
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
@@ -14,7 +15,7 @@ public class Map extends GameObject {
     private final int cols = 10; // ความสูง
     private final String[][] board = GenerateMap(); // array ของช่องแต่ละช่องว่าเป็น city หรือ water
 
-    public Map() { super(0, 0, 1280, 720); }
+    public Map() { super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE); }
 
     private String[][] GenerateMap() {
         String[][] grid = new String[rows][cols];

@@ -47,7 +47,11 @@ public class MainMenu extends Screen implements ActionListener {
         // audio test
         AudioManager.getInstance().loadSound("Kuy","guntrum.WAV");
         AudioManager.getInstance().playLoop("Kuy");
+
+        System.out.println("Main Menu is Created");
     }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == startBtn){
 //            JOptionPane.showMessageDialog(this,"Game Started!");
