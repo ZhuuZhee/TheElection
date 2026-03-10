@@ -159,4 +159,8 @@ public abstract class Card extends GameObject {
             g2d.dispose();
         }
     }
+
+    public String getName() {
+        return this.name;
+    }
 }

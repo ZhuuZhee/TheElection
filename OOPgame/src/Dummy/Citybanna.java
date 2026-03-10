@@ -5,42 +5,36 @@
 // เพิ่ม Attributes set Constructor เพิ่ม method applyStats # for test can Change to map
 package Dummy;
 import java.util.List;
+import Dummy.Maps.PoliticsStats;
 public class Citybanna {
     private String cityName;
-    private float economic;
-    private float facility;
-    private float environment;
-    private float population;
+    private PoliticsStats cityStats;
 
-    public Citybanna(String cityName, float economic, float facility, float environment, float population) {
+    public Citybanna(String cityName, int economic, int facility, int environment) {
         this.cityName = cityName;
-        this.economic = economic;
-        this.facility = facility;
-        this.environment = environment;
-        this.population = population;
+        this.cityStats = new PoliticsStats(facility, environment, economic);
     }
     public String getCityName() {
         return this.cityName;
     }
+
     // เพิ่มค่า List จาก Cards follow Index add to city
-    public void applyStats(List<Integer> cardStats) {
-        if (cardStats != null && cardStats.size() >= 4) {
-            this.economic += cardStats.get(0);
-            this.facility += cardStats.get(1);
-            this.environment += cardStats.get(2);
-            this.population += cardStats.get(3);
-            System.out.println(cityName);
-            printStats();
-        }
-    }
+//    public void applyStats(PoliticsStats cardStats) {
+//        if (cardStats != null) {
+//            this.cityStats.addStats(PoliticsStats.Economy, cardStats.getStats(PoliticsStats.Economy));
+//            this.cityStats.addStats(PoliticsStats.Facility, cardStats.getStats(PoliticsStats.Facility));
+//            this.cityStats.addStats(PoliticsStats.Environment, cardStats.getStats(PoliticsStats.Environment));
+//            System.out.println(cityName);
+//            printStats();
+//        }
+//    }
 
     // for debug in consol
     public void printStats() {
         System.out.println("----------------------------------");
-        System.out.println("Economic: " + economic);
-        System.out.println("Facility: " + facility);
-        System.out.println("Environment: " + environment);
-        System.out.println("Population: " + population);
+        System.out.println("Economic: " + cityStats.getStats(PoliticsStats.Economy));
+        System.out.println("Facility: " + cityStats.getStats(PoliticsStats.Facility));
+        System.out.println("Environment: " + cityStats.getStats(PoliticsStats.Environment));
         System.out.println("----------------------------------");
     }
 }
