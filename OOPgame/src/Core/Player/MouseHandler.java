@@ -65,7 +65,7 @@ public class MouseHandler {
     }
 
     public void handleMousePressed(int mouseX, int mouseY) {
-        System.out.println("Pressed " + mouseX + "," + mouseY);
+//        System.out.println("Pressed " + mouseX + "," + mouseY);
         List<SceneObject> sceneObjects = scene2D.getGameObjects();
 
         for (int i = sceneObjects.size() - 1; i >= 0; i--) {

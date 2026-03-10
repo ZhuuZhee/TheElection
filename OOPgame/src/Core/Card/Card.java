@@ -47,7 +47,7 @@ public abstract class Card extends GameObject {
             return false;
         }
         if (isInsideBoundaries(mouseX, mouseY)) {
-            System.out.println("Grabbed");
+//            System.out.println("Grabbed");
             if (!isDraggable) {
                 return true;
             }
@@ -65,7 +65,7 @@ public abstract class Card extends GameObject {
         if (!enabled || !isGrabbed) {
             return false;
         }
-        System.out.println("Drag");
+//        System.out.println("Drag");
         position.x = mouseX - offset.x;
         position.y = mouseY - offset.y;
         return true;
