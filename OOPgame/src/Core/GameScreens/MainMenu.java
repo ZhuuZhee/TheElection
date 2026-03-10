@@ -1,6 +1,7 @@
 package Core.GameScreens;
 
 import Core.ZhuzheeGame;
+import Dummy.Taro;
 import Dummy.Tester;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
@@ -11,9 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainMenu extends Screen implements ActionListener {
+
+    GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
     JButton startBtn;
     JButton optionBtn;
     JButton exitBtn;
+
     public MainMenu() {
         setLayout(new BorderLayout());
         JLabel title = new JLabel("The Election");
@@ -42,7 +47,11 @@ public class MainMenu extends Screen implements ActionListener {
         // audio test
         AudioManager.getInstance().loadSound("Kuy","guntrum.WAV");
         AudioManager.getInstance().playLoop("Kuy");
+
+        System.out.println("Main Menu is Created");
     }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == startBtn){
 //            JOptionPane.showMessageDialog(this,"Game Started!");
@@ -50,11 +59,23 @@ public class MainMenu extends Screen implements ActionListener {
         }
         if(e.getSource() == optionBtn){
 //            JOptionPane.showMessageDialog(this,"Settings Menu");
-            Tester.audioManagerTester.setVisible(true);
+//            Tester.audioManagerTester.setVisible(true);
+            Taro.option.setVisible(true);
         }
         if(e.getSource() == exitBtn){
             System.exit(0);
         }
+    }
+    private void enableFullscreen() {
+        dispose();
+//        device.setFullScreenWindow();
+        setVisible(true);
+    }
+
+    private void disableFullscreen() {
+        device.setFullScreenWindow(null);
+        dispose();
+        setVisible(true);
     }
 
 //        JFrame frame = new JFrame();

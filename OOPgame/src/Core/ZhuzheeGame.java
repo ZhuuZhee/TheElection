@@ -1,6 +1,7 @@
 package Core;
 
 import Core.GameScreens.MainMenu;
+import Dummy.Map;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -12,21 +13,24 @@ public class ZhuzheeGame implements ApplicationAdapter{
     public static Scene2D MAIN_SCENE;
     public static MainMenu MAIN_MENU;
 
+
     @Override
     public void create() {
         //set Application title
         Application.setMainFrameTitle("Zhuzhee The Game");
 
         MAIN_SCENE = new Scene2D();
-        MAIN_MENU = new MainMenu();
+//        MAIN_MENU = new MainMenu();
         //set current screen
-        Screen.ChangeScreen(MAIN_MENU);
+//        Screen.ChangeScreen(MAIN_MENU);
+        Screen.ChangeScreen(MAIN_SCENE);
 
         //test
 //        Tester.MainMenu(screenManager);
-        Tester.SampleCanvasTest();
-        Tester.CardsTestingOnScene(MAIN_SCENE);
-        Tester.AudioManagerTesterInitialize();
+//        Tester.SampleCanvasTest(MAIN_SCENE);
+//        Tester.CardsTestingOnScene(MAIN_SCENE);
+        new Map();
+//        Tester.AudioManagerTesterInitialize();
     }
 
     @Override

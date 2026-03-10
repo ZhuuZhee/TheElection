@@ -10,9 +10,15 @@ public abstract class Canvas extends JPanel implements SceneObject {
     public static final int CANVAS_Z_INDEX = 1000;
     private int zIndex = 0;
     boolean isAttachWithPanel;
-    public Canvas(){
-        Scene2D.register(this);
+    protected Scene2D scene;
+    public Canvas(Scene2D scene){
+        this.scene = scene;
+        scene.register(this);
         start();
+    }
+    @Override
+    public Scene2D getScene() {
+        return scene;
     }
     @Override
     public int getZIndex() {
@@ -27,13 +33,13 @@ public abstract class Canvas extends JPanel implements SceneObject {
 
     @Override
     public Point getPosition() {
-        return Scene2D.Screen2WorldPoint(super.getLocation());
+        return scene.Screen2WorldPoint(super.getLocation());
     }
 
     /// @param position must be Scene2D's World Position
     @Override
     public void setPosition(Point position) {
         if(isAttachWithPanel) return;
-        super.setLocation(Scene2D.World2ScreenPoint(position));
+        super.setLocation(scene.World2ScreenPoint(position));
     }
 }

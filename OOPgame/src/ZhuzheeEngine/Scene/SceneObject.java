@@ -3,6 +3,7 @@ package ZhuzheeEngine.Scene;
 import java.awt.*;
 
 public interface SceneObject {
+    public Scene2D getScene();
     public int getZIndex();
     public void setZIndex(int zIndex);
 

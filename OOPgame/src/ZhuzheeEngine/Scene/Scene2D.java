@@ -1,5 +1,6 @@
 package ZhuzheeEngine.Scene;
 
+import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Screen;
 
 import java.awt.*;
@@ -9,31 +10,20 @@ public class Scene2D extends Screen {
     protected ArrayList<SceneObject> sceneObjects;
     private Point origin = new Point(0,0);
     /// can access this object by using Scene.Instance (this is called Singleton)
-    public static Scene2D Instance;
 
     public Scene2D() {
-        Instance = this;
         sceneObjects = new ArrayList<>();
         setLayout(new BorderLayout());
     }
 
-    public static void register(SceneObject sceneObject) {
-        if (Instance == null) {
-            throw new IllegalStateException("Scene.register called before any Scene instance was created.");
-        }
-        Instance.sceneObjects.add(sceneObject);
+    public void register(SceneObject sceneObject) {
+        sceneObjects.add(sceneObject);
     }
-    public static void remove(SceneObject sceneObject){
-        if (Instance == null) {
-            throw new IllegalStateException("Scene.remove called before any Scene instance was created.");
-        }
-        Instance.sceneObjects.remove(sceneObject);
+    public void remove(SceneObject sceneObject){
+        sceneObjects.remove(sceneObject);
     }
-    public static void SetSceneOrigin(Point newPoint){
-        if (Instance == null) {
-            throw new IllegalStateException("Scene.SetSceneOrigin called before any Scene instance was created.");
-        }
-        Instance.origin = newPoint;
+    public void SetSceneOrigin(Point newPoint){
+        origin = newPoint;
     }
     /// Getter เพื่อให้ Core.Card สามารถเข้าถึง List ไปเช็ค Slot ได้
     public ArrayList<SceneObject> getGameObjects() {
@@ -50,17 +40,13 @@ public class Scene2D extends Screen {
      * แปลงพิกัดจากหน้าจอ (Mouse/Screen) -> พิกัดในโลกของเกม (World)
      * เหมาะสำหรับ: เช็คการคลิกเมาส์บน Object ในฉาก
      */
-    public static Point Screen2WorldPoint(Point screenPos) {
-        if (Instance == null) {
-            throw new IllegalStateException("Scene.Screen2WorldPoint called before any Scene instance was created.");
-        }
-
+    public Point Screen2WorldPoint(Point screenPos) {
         // คำนวณย้อนกลับจากการ Translate ใน paintComponent
-        int centerX = Instance.getWidth() / 2;
-        int centerY = Instance.getHeight() / 2;
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
 
-        int worldX = screenPos.x - (centerX + Instance.origin.x);
-        int worldY = screenPos.y - (centerY + Instance.origin.y);
+        int worldX = screenPos.x - (centerX + origin.x);
+        int worldY = screenPos.y - (centerY + origin.y);
 
         return new Point(worldX, worldY);
     }
@@ -70,17 +56,13 @@ public class Scene2D extends Screen {
      * แปลงพิกัดจากโลกของเกม (World) -> พิกัดบนหน้าจอ (Screen/Pixel)
      * เหมาะสำหรับ: วาด UI, หลอดเลือด หรือ Tooltip ให้ตามตัวละคร
      */
-    public static Point World2ScreenPoint(Point worldPos) {
-        if (Instance == null) {
-            throw new IllegalStateException("Scene.World2ScreenPoint called before any Scene instance was created.");
-        }
-
+    public Point World2ScreenPoint(Point worldPos) {
         // คำนวณตาม Logic การ Translate ใน paintComponent
-        int centerX = Instance.getWidth() / 2;
-        int centerY = Instance.getHeight() / 2;
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
 
-        int screenX = worldPos.x + centerX + Instance.origin.x;
-        int screenY = worldPos.y + centerY + Instance.origin.y;
+        int screenX = worldPos.x + centerX + origin.x;
+        int screenY = worldPos.y + centerY + origin.y;
 
         return new Point(screenX, screenY);
     }

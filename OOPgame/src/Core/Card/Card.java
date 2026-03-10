@@ -1,7 +1,10 @@
+/**
+ * @Xynezter 9/3/2026 18:50
+ */
 package Core.Card;
 
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.*;
-
 import java.awt.*;
 
 public abstract class Card extends GameObject {
@@ -18,7 +21,7 @@ public abstract class Card extends GameObject {
     private static final double ZOOM_OFFSET = 20.0;
 
     public Card(String name, int x, int y, int width, int height, boolean enabled) {
-        super(x, y, width, height);
+        super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
         this.enabled = enabled;
     }
@@ -85,7 +88,7 @@ public abstract class Card extends GameObject {
     private void snapToSlot() {
         Rectangle cardRect = new Rectangle(position.x, position.y, size.width, size.height);
         // ดึง GameObjects ทั้งหมดจาก Scene เพื่อหา Slot
-        for (SceneObject obj : Scene2D.Instance.getGameObjects()) {
+        for (SceneObject obj : scene.getGameObjects()) {
             if (!(obj instanceof CardSlot)) continue;
 
             Rectangle slotMagneticField = new Rectangle(
@@ -97,12 +100,16 @@ public abstract class Card extends GameObject {
 
             if (cardRect.intersects(slotMagneticField)) {
                 position.setLocation(obj.getPosition().x, obj.getPosition().y);
+                // เรียก method when card ทับ กับ Magnetic Field ของ slot
+                onDroppedInSlot((CardSlot) obj);
                 break;
             }
         }
     }
 
     protected abstract boolean isDroppable(Object bottom);
+    // add method for business logic when card DroppedInSlot
+    protected abstract void onDroppedInSlot(CardSlot slot);
 
     @Override
     public void render(Graphics g) {

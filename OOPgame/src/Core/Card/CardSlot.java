@@ -1,8 +1,12 @@
+/**
+ * @Xynezter 9/3/2026 18:50
+ */
 package Core.Card;
 
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 import ZhuzheeEngine.Scene.SceneObject;
-
+import Dummy.Citybanna;
 import java.awt.*;
 
 public class CardSlot extends GameObject {
@@ -12,9 +16,17 @@ public class CardSlot extends GameObject {
     private static final float STROKE_NORMAL_WIDTH = 1.0f; // ความหนาเส้นปกติ (สำหรับข้อความ)
     private static final Color SLOT_COLOR = Color.GRAY; // สีของช่อง
     private static final String SLOT_TEXT = "Drop Here";
-    public CardSlot(int x, int y, int width, int height) {
-        super(x, y, width, height);
+    // เพิ่ม Attributes city เพื่อเอาไว้อางอิง เมือง
+    private Citybanna city;
+    // setup Constructor รับค่า city มาตอนสร้าง slot
+    public CardSlot(int x, int y, int width, int height, Citybanna city) {
+        super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.setZIndex(Z_INDEX_BACKGROUND);
+        this.city = city;
+    }
+
+    public Citybanna getCity() {
+        return city;
     }
 
     @Override

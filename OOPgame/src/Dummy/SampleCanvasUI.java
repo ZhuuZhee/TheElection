@@ -12,9 +12,14 @@ import java.awt.event.ActionEvent;
 public class SampleCanvasUI extends Canvas {
 
     public JButton MainMenuBtn;
+
+    public SampleCanvasUI(Scene2D scene) {
+        super(scene);
+    }
+
     @Override
     public void start() {
-        System.out.println("SampleScene start " + getPosition().toString());
+        //System.out.println("SampleScene start " + getPosition().toString());
         setLayout(new FlowLayout(FlowLayout.CENTER));
         MainMenuBtn = new JButton("main menu");
         //back to menu screen on click
@@ -26,7 +31,7 @@ public class SampleCanvasUI extends Canvas {
         });
         add(MainMenuBtn);
         setPreferredSize(new Dimension(400, 84));
-        Scene2D.Instance.add(this, BorderLayout.NORTH);
+        scene.add(this, BorderLayout.NORTH);
         setBackground(Color.CYAN);
         setVisible(true);
     }
@@ -34,7 +39,7 @@ public class SampleCanvasUI extends Canvas {
     @Override
     public void render(Graphics g) {
 //        repaint();
-        System.out.println("SampleScene render " + getPosition().toString());
+       // System.out.println("SampleScene render " + getPosition().toString());
     }
 
     @Override

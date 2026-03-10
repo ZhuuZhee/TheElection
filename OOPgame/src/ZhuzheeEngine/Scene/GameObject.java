@@ -6,13 +6,20 @@ public class GameObject implements SceneObject {
     protected Point position;
     protected Dimension size;
     protected int zIndex;
+    protected Scene2D scene;
 
-    public GameObject(int x, int y, int width, int height) {
+    public GameObject(int x, int y, int width, int height, Scene2D scene) {
         this.position = new Point(x, y);
         this.size = new Dimension(width, height);
         this.zIndex = 0;
-        Scene2D.register(this);
+        this.scene = scene;
+        scene.register(this);
         start();
+    }
+
+    @Override
+    public Scene2D getScene() {
+        return scene;
     }
 
     @Override
@@ -61,7 +68,7 @@ public class GameObject implements SceneObject {
     //destroying game object
     public static void Destroy(GameObject gameObject) {
         gameObject.onDestroy();
-        Scene2D.remove(gameObject);
+        gameObject.getScene().remove(gameObject);
     }
 
     public void onDestroy() {
