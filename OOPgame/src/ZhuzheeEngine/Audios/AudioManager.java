@@ -22,8 +22,8 @@ public class AudioManager {
     private final Map<String, Clip> soundMap = new HashMap<>();
     private Clip currentBgmClip;
 
-    private float bgmVolume = 0.7f;
-    private float sfxVolume = 0.7f;
+    private float bgmVolume = 0.5f;
+    private float sfxVolume = 0.5f;
 
     // Private Constructor: ทำการโหลดเสียงทั้งหมดในจุดนี้
     private AudioManager() {
