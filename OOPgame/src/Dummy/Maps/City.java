@@ -1,4 +1,4 @@
-package Dummy.Map;
+package Dummy.Maps;
 
 public class City {
     public PoliticsStats stats;

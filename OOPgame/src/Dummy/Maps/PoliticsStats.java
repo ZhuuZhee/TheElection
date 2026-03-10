@@ -1,4 +1,4 @@
-package Dummy.Map;
+package Dummy.Maps;
 
 import java.util.HashMap;
 import java.util.Map;

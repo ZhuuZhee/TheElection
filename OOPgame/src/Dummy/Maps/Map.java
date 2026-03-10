@@ -1,7 +1,7 @@
 /** @Munin 10/3/25 - 16:28 - edited : เพิ่มการคำนวนตำแหน่งจาก GameObject.position
  * @Jeng {มาใส่วันที่ด้วย} created
  */
-package Dummy.Map;
+package Dummy.Maps;
 
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
