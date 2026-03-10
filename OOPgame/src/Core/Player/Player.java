@@ -1,6 +1,6 @@
 package Core.Player;
 
-import Core.Card.*;
+import Core.Cards.*;
 import org.json.JSONObject;
 
 import java.util.*;
