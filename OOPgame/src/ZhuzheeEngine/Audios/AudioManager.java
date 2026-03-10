@@ -61,6 +61,20 @@ public class AudioManager {
     }
 
     /**
+     * ลบเสียงที่โหลดไว้ออกจากหน่วยความจำ (Unload specific sound)
+     * @param name ชื่อ Key ของเสียงที่ต้องการลบ
+     */
+    public void unloadSound(String name) {
+        Clip clip = soundMap.remove(name);
+        if (clip != null) {
+            if (clip.isRunning()) {
+                clip.stop();
+            }
+            clip.close(); // ปิด Clip เพื่อคืนทรัพยากรให้กับระบบ
+        }
+    }
+
+    /**
      * เล่นเสียงแบบครั้งเดียวจบ Ex(SFX)
      */
     public void playSound(String name) {
