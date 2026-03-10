@@ -83,6 +83,13 @@ public class Map extends GameObject {
     @Override
     public void render(Graphics g) {
         super.render(g);
+
+        // Guard against null board - prevent NPE
+        if (board == null) {
+            System.err.println("Warning: Map.board is null, cannot render");
+            return;
+        }
+
         int radius = 25; // ใช้รัศมี 25 (เท่ากับ cellSize / 2 เดิม)
 
         Graphics2D g2d = (Graphics2D) g.create();
