@@ -192,16 +192,11 @@ public class PolicyCardA extends PassiveCard implements PolicyCard {
 
 ```java
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
-public class PolicyCardA extends PassiveCard implements PolicyCard {
+public abstract class PassiveCard  {
     //...
     @Override
-    public boolean IsActivate() {
-        // put business logic in here
-    }
-    
-    @Override
     public void onActionCardPlayed(ActionCard playedCard, Citybanna city) {
-        IsActivate();
+        // put business logic in here
     }
 
     @Override
