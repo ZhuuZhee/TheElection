@@ -1,3 +1,6 @@
+/** @Munin 10/3/25 - 16:28 - edited : เพิ่มการคำนวนตำแหน่งจาก GameObject.position
+ * @Jeng {มาใส่วันที่ด้วย} created
+ */
 package Dummy;
 
 import Core.ZhuzheeGame;
@@ -90,6 +93,13 @@ public class Map extends GameObject {
                 // 1. คำนวณจุดศูนย์กลาง x, y พื้นฐาน
                 double x = j * hexWidth;
                 double y = i * vertSpacing;
+
+                // @Munin 10/3/25 - 16:28 - edited
+                //บวกตำแหน่งของ GameObject นี้ เพื่อใช้เป็นจุดอ้างอิง
+                // ex. เมื่อขยับ position gameObject นี้เป็น Point(20,5) -> ตำแหน่งของ grid แรกจะเป็น 20, 5
+                // (ถ้าไม่บวก GameObject.position จะเป็น 0,0 ทั้งที่ตำแหน่ง GameObject ขยับเป็น 20,5 แล้ว)
+                x += position.x;
+                y += position.y;
 
                 // 2. สลับฟันปลา: ถ้าเป็นแถวคี่ ให้ขยับแกน x ถอยไปทางขวาครึ่งช่อง
                 if (i % 2 == 0) {
