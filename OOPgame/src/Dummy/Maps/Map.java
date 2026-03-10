@@ -10,26 +10,26 @@ import java.awt.*;
 import java.awt.geom.Path2D;
 import java.util.Random;
 
-
 public class Map extends GameObject {
     /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
     private final int rows = 10; // ความกว้าง
     private final int cols = 10; // ความสูง
-    private District district;
-    private City city;
-    private final String[][] board = GenerateMap(); // array ของช่องแต่ละช่องว่าเป็น city หรือ water
+    private final District district;
+    private final City city;
+    private final District[][] board; // array ของช่องแต่ละช่องว่าเป็น city หรือ water
 
     public Map() {
         super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE);
         district = new District(10, 10);
         city = new City(1, 1, 1, 2, 10);
+        board = GenerateMap();
     }
 
-    private String[][] GenerateMap() {
-        String[][] grid = new String[rows][cols];
+    private District[][] GenerateMap() {
+        District[][] grid = new District[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                grid[i][j] = "City";
+                grid[i][j] = district;
             }
         }
         int currentX = rows / 2;
@@ -51,8 +51,8 @@ public class Map extends GameObject {
             if (x >= 0 && x < rows && y >= 0 && y < cols) {
                 currentX = x;
                 currentY = y;
-                if (grid[x][y].equals("City")) {
-                    grid[x][y] = "Water";
+                if (grid[x][y] != null) {
+                    grid[x][y] = null;
                     tilesCreated++;
                 }
             }
@@ -119,13 +119,17 @@ public class Map extends GameObject {
                 Path2D.Double hexagon = createHexagon(cx, cy, radius);
 
                 // 4. วาดรูปหกเหลี่ยม
-                if (board[i][j].equals("Water")) {
+                if (board[i][j] == null) {
                     g2d.setColor(Color.BLUE);
                 } else {
                     g2d.setColor(Color.GREEN);
                 }
                 g2d.fill(hexagon);
-                g2d.setColor(Color.BLACK);
+                if (board[i][j] != null) {
+                    g2d.setColor(Color.BLACK);
+                } else {
+                    g2d.setColor(Color.RED);
+                }
                 g2d.setStroke(new BasicStroke(3));
                 g2d.draw(hexagon);
             }

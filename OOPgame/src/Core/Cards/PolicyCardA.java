@@ -1,7 +1,7 @@
 /**
  * @Xynezter 10/3/2026 19:30
  */
-/// create policycard for test
+// create policycard for test
 package Core.Cards;
 
 import Dummy.Citybanna;
@@ -29,7 +29,7 @@ public class PolicyCardA extends PolicyCard {
             List<Integer> stats = playedCard.getStat();
             if (stats != null && !stats.isEmpty()) {
                 // business logic confix stat
-                stats.set(0, stats.get(0) * 10); // ex: add stat index[0]
+                stats.set(0, stats.getFirst() * 10); // ex: add stat index[0]
             }
         }
     }
@@ -37,9 +37,6 @@ public class PolicyCardA extends PolicyCard {
     @Override
     protected boolean isDroppable(Object bottom) {
         // ให้วางทับ CardSlot ได้
-        if (bottom instanceof CardSlot) {
-            return true;
-        }
-        return false;
+        return bottom instanceof CardSlot;
     }
 }

@@ -33,12 +33,15 @@ public class MainMenu extends Screen implements ActionListener {
         startBtn = new JButton("Start Game");
         startBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         startBtn.addActionListener(this);
+        HoverButton(startBtn);
         optionBtn = new JButton("Option");
         optionBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         optionBtn.addActionListener(this);
+        HoverButton(optionBtn);
         exitBtn = new JButton("Exit");
         exitBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         exitBtn.addActionListener(this);
+        HoverButton(exitBtn);
 
         buttonPanel.add(startBtn);
         buttonPanel.add(optionBtn);
@@ -53,6 +56,22 @@ public class MainMenu extends Screen implements ActionListener {
         AudioManager.getInstance().playLoop("Kuy");
 
         System.out.println("Main Menu is Created");
+    }
+    private void HoverButton(JButton b) {
+        b.setFocusPainted(false);// ปิดเส้นกรอบ focus ของปุ่ม (เส้นที่ขึ้นตอนปุ่มถูกเลือก)
+        // เพิ่มตัวดักจับ event ของเมาส์ให้กับปุ่ม
+        b.addMouseListener(new java.awt.event.MouseAdapter() {
+            // ทำงานเมื่อเมาส์เคลื่อนเข้ามาอยู่บนปุ่ม
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                b.setBackground(Color.GRAY);// เปลี่ยนสีพื้นหลังของปุ่ม
+                b.setForeground(Color.GREEN);// เปลี่ยนสีตัวอักษรบนปุ่ม
+            }
+            // ทำงานเมื่อเมาส์ออกจากพื้นที่ของปุ่ม
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                b.setBackground(Color.WHITE);// เปลี่ยนสีพื้นหลังของปุ่ม
+                b.setForeground(Color.BLACK);// เปลี่ยนสีตัวอักษรบนปุ่ม
+            }
+        });
     }
 
     @Override

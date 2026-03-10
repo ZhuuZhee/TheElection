@@ -1,6 +1,5 @@
 package Dummy;
 
-
 import Core.Cards.ActionCard;
 import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
@@ -11,6 +10,7 @@ import UI.Shop;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 import Core.Cards.PolicyCardA;
+import Dummy.Maps.Map;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +41,10 @@ public class Tester {
 
     public static void MainMenuTest() {
         Screen.ChangeScreen(new MainMenu());
+    }
+
+    public static void MapTest() {
+        new Map();
     }
 
 
