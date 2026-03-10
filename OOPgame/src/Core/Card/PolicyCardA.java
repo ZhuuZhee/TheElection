@@ -1,7 +1,7 @@
 /**
  * @Xynezter 10/3/2026 19:30
  */
-/// create policycard
+/// create policycard for test
 package Core.Card;
 
 import Dummy.Citybanna;

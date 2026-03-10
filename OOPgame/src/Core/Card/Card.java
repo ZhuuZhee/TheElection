@@ -77,15 +77,20 @@ public abstract class Card extends GameObject {
         }
         isGrabbed = false;
         setZIndex(Z_INDEX_NORMAL);
-        snapToSlot();
+
+        // handle when drop card on slot
+        var slot = getCardSlotOnButtom();
+        if(slot != null){
+            snapToSlot(slot);
+            onDroppedInSlot(slot);
+        }
         return true;
     }
 
     // --------------------------------------------------
     // ---------- logic about slot suction --------------
     // --------------------------------------------------
-
-    private void snapToSlot() {
+    private CardSlot getCardSlotOnButtom(){
         Rectangle cardRect = new Rectangle(position.x, position.y, size.width, size.height);
         // ดึง GameObjects ทั้งหมดจาก Scene เพื่อหา Slot
         for (SceneObject obj : scene.getGameObjects()) {
@@ -99,12 +104,14 @@ public abstract class Card extends GameObject {
             );
 
             if (cardRect.intersects(slotMagneticField)) {
-                position.setLocation(obj.getPosition().x, obj.getPosition().y);
-                // เรียก method when card ทับ กับ Magnetic Field ของ slot
-                onDroppedInSlot((CardSlot) obj);
-                break;
+                return (CardSlot)obj;
             }
         }
+        return null;
+    }
+    private void snapToSlot(CardSlot slot) {
+        position.setLocation(slot.getPosition().x, slot.getPosition().y);
+        // เรียก method when card ทับ กับ Magnetic Field ของ slot
     }
 
     protected abstract boolean isDroppable(Object bottom);
