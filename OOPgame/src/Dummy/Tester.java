@@ -52,18 +52,26 @@ public class Tester {
 
 
     public static void ShopTest() {
-        System.out.println("ShopTest called");
-        System.out.println("Scene width: " + ZhuzheeGame.MAIN_SCENE.getWidth());
-        System.out.println("Scene height: " + ZhuzheeGame.MAIN_SCENE.getHeight());
-
         List<PolicyCard> cards = new ArrayList<>();
         cards.add(new PolicyCardA("Kuy Sega", 0, 0, true));
         cards.add(new PolicyCardA("Red Policy", 0, 0, true));
         cards.add(new PolicyCardA("Blue Policy", 0, 0, true));
 
-        Shop shopTest = new Shop(ZhuzheeGame.MAIN_SCENE, cards, 500, null);
-        System.out.println("Shop created, visible: " + shopTest.isVisible());
-        System.out.println("Shop bounds: " + shopTest.getBounds());
+        new Shop(ZhuzheeGame.MAIN_SCENE, cards, 500, new Shop.ShopListener() {
+            @Override
+            public void onCardPurchased(PolicyCard card, int remainingMoney) {
+                System.out.println("Bought: " + card.getName() + " | money left: " + remainingMoney);
+            }
+            @Override
+            public void onShopClosed() {
+                System.out.println("Shop closed");
+            }
+        });
+
+        // debug: ดู position ของการ์ดแต่ละใบ
+        for (PolicyCard card : cards) {
+            System.out.println(card.getName() + " position: " + card.getPosition());
+        }
     }
 
 }
