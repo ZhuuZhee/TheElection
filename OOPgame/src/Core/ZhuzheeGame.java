@@ -1,8 +1,7 @@
 package Core;
 
 import Core.GameScreens.MainMenu;
-import Dummy.Map;
-import Dummy.Tester;
+import Dummy.Map.Map;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Scene.Scene2D;

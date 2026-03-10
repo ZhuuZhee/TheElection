@@ -1,13 +1,12 @@
 /** @Munin 10/3/25 - 16:28 - edited : เพิ่มการคำนวนตำแหน่งจาก GameObject.position
  * @Jeng {มาใส่วันที่ด้วย} created
  */
-package Dummy;
+package Dummy.Map;
 
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.geom.Path2D;
 import java.util.Random;
 
@@ -16,9 +15,15 @@ public class Map extends GameObject {
     /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
     private final int rows = 10; // ความกว้าง
     private final int cols = 10; // ความสูง
+    private District district;
+    private City city;
     private final String[][] board = GenerateMap(); // array ของช่องแต่ละช่องว่าเป็น city หรือ water
 
-    public Map() { super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE); }
+    public Map() {
+        super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE);
+        district = new District(10, 10);
+        city = new City(1, 1, 1, 2, 10);
+    }
 
     private String[][] GenerateMap() {
         String[][] grid = new String[rows][cols];
@@ -56,6 +61,7 @@ public class Map extends GameObject {
     }
 
     private Path2D.Double createHexagon(double x, double y, double radius) {
+        // ส่วนนี้ให้ AI ทำ
         Path2D.Double path = new Path2D.Double();
 
         for (int i = 0; i < 6; i++) {
