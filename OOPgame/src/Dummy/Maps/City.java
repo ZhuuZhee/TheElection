@@ -1,5 +1,5 @@
 package Dummy.Maps;
-import Dummy.Maps.PoliticsStats;
+
 public class City {
     private final String cityName;
     public PoliticsStats stats;
@@ -12,6 +12,7 @@ public class City {
         Grids = new Grid[size];
         this.cityName = cityName;
     }
+
     public String getCityName() {
         return this.cityName;
     }
@@ -25,6 +26,7 @@ public class City {
             printStats();
         }
     }
+
     public void printStats() {
         System.out.println("----------------------------------");
         System.out.println("City: " + this.getCityName());
