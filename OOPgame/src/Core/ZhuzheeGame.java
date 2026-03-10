@@ -2,6 +2,7 @@ package Core;
 
 import Core.GameScreens.MainMenu;
 import Dummy.Map.Map;
+import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Scene.Scene2D;
@@ -28,6 +29,7 @@ public class ZhuzheeGame implements ApplicationAdapter{
 //        Tester.MainMenu(screenManager);
 //        Tester.SampleCanvasTest(MAIN_SCENE);
         Tester.CardsTestingOnScene(MAIN_SCENE);
+        Tester.ShopTest();
 //        new Map();
 //        Tester.AudioManagerTesterInitialize();
     }

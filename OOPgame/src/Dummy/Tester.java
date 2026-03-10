@@ -2,13 +2,18 @@ package Dummy;
 
 import Core.Card.ActionCard;
 import Core.Card.CardSlot;
+import Core.Card.PassiveCard;
 import Core.GameScreens.MainMenu;
 import Core.Player.MouseHandler;
+import Core.ZhuzheeGame;
+import UI.Shop;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 import Core.Card.PolicyCardA;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Tester {
     public static void CardsTestingOnScene(Scene2D scene2D){
@@ -36,4 +41,21 @@ public class Tester {
     public static void MainMenuTest() {
         Screen.ChangeScreen(new MainMenu());
     }
+
+
+    public static void ShopTest() {
+        System.out.println("ShopTest called");
+        System.out.println("Scene width: " + ZhuzheeGame.MAIN_SCENE.getWidth());
+        System.out.println("Scene height: " + ZhuzheeGame.MAIN_SCENE.getHeight());
+
+        List<PassiveCard> cards = new ArrayList<>();
+        cards.add(new PolicyCardA("Kuy Sega", 0, 0, true));
+        cards.add(new PolicyCardA("Red Policy", 0, 0, true));
+        cards.add(new PolicyCardA("Blue Policy", 0, 0, true));
+
+        Shop shopTest = new Shop(ZhuzheeGame.MAIN_SCENE, cards, 500, null);
+        System.out.println("Shop created, visible: " + shopTest.isVisible());
+        System.out.println("Shop bounds: " + shopTest.getBounds());
+    }
+
 }
