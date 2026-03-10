@@ -47,7 +47,6 @@ public class Tester {
         new Map();
     }
 
-
     public static void ShopTest() {
         System.out.println("ShopTest called");
         System.out.println("Scene width: " + ZhuzheeGame.MAIN_SCENE.getWidth());
@@ -62,5 +61,4 @@ public class Tester {
         System.out.println("Shop created, visible: " + shopTest.isVisible());
         System.out.println("Shop bounds: " + shopTest.getBounds());
     }
-
 }

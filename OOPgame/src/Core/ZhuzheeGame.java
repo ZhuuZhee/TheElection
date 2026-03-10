@@ -6,12 +6,12 @@ import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
+import Dummy.Maps.Map;
 
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter{
     public static Scene2D MAIN_SCENE;
     public static MainMenu MAIN_MENU;
-
 
     @Override
     public void create() {
