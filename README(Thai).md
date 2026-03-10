@@ -176,19 +176,7 @@ public class ZhuzheeGame implements ApplicationAdapter{
 คุณต้องการให้ฉันช่วยอธิบายส่วนไหนของโค้ดเพิ่มเติม หรือสร้างตัวอย่างคลาส GameObject แบบที่ซับซ้อนขึ้นไหมครับ?
 
 ## การสร้าง Policy Card
-### Frist : Create Class and extands PassiveCard implements PolicyCard
-
-จากนั้น set constructor ให้ส่งค่าเข้า Passive card
-
-```java
-public class PolicyCardA extends PassiveCard implements PolicyCard {
-    public PolicyCardA(String name, int x, int y, boolean enabled) {
-        super(name, x, y, enabled); // โยนค่าไปให้ PassiveCard จัดการ
-    }
-}
-```
-
-จากนั้น Overridden method ที่มาจาก PassiveCard #ตัวอย่าง
+### Create Class and extands PassiveCard implements PolicyCard
 
 ```java
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
