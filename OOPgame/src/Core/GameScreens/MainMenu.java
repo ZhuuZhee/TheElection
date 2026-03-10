@@ -21,27 +21,31 @@ public class MainMenu extends Screen implements ActionListener {
 
     public MainMenu() {
         setLayout(new BorderLayout());
+//        นี่คือส่วนชข้อความชื่อเกม
         JLabel title = new JLabel("The Election");
         title.setFont(new Font("Arial", Font.BOLD, 40));
         title.setHorizontalAlignment(JLabel.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(40,0,20,0));
         add(title, BorderLayout.NORTH);
+//        นี่คือส่วนปุ่มต่างๆ
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(3,1,10,10));
         startBtn = new JButton("Start Game");
-        startBtn.setPreferredSize(new Dimension(120,30));
+        startBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         startBtn.addActionListener(this);
         optionBtn = new JButton("Option");
-        optionBtn.setPreferredSize(new Dimension(120,30));
+        optionBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         optionBtn.addActionListener(this);
         exitBtn = new JButton("Exit");
-        exitBtn.setPreferredSize(new Dimension(120,30));
+        exitBtn.setPreferredSize(new Dimension(120,30));//เอาไว้กำหนดขนาดของปุ่ม
         exitBtn.addActionListener(this);
+
         buttonPanel.add(startBtn);
         buttonPanel.add(optionBtn);
         buttonPanel.add(exitBtn);
         JPanel wrapper = new JPanel(new GridBagLayout());
         wrapper.add(buttonPanel);
+
         add(wrapper, BorderLayout.CENTER);
 
         // audio test
@@ -54,11 +58,11 @@ public class MainMenu extends Screen implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == startBtn){
-//            JOptionPane.showMessageDialog(this,"Game Started!");
+//            JOptionPane.showMessageDialog(this);
             Screen.ChangeScreen(ZhuzheeGame.MAIN_SCENE);
         }
         if(e.getSource() == optionBtn){
-//            JOptionPane.showMessageDialog(this,"Settings Menu");
+//            JOptionPane.showMessageDialog(this);
 //            Tester.audioManagerTester.setVisible(true);
             Taro.option.setVisible(true);
         }

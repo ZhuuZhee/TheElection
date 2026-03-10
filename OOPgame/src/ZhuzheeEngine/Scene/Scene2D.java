@@ -25,7 +25,7 @@ public class Scene2D extends Screen {
     public void SetSceneOrigin(Point newPoint){
         origin = newPoint;
     }
-    /// Getter เพื่อให้ Core.Card สามารถเข้าถึง List ไปเช็ค Slot ได้
+    /// Getter เพื่อให้ Core.Cards สามารถเข้าถึง List ไปเช็ค Slot ได้
     public ArrayList<SceneObject> getGameObjects() {
         return sceneObjects;
     }

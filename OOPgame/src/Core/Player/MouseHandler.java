@@ -1,6 +1,6 @@
 package Core.Player;
 
-import Core.Card.Card;
+import Core.Cards.Card;
 import ZhuzheeEngine.Scene.SceneObject;
 import ZhuzheeEngine.Scene.Scene2D;
 

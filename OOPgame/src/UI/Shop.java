@@ -1,7 +1,6 @@
 package UI;
 
-import Core.Card.PassiveCard;
-import Core.Card.PolicyCard;
+import Core.Cards.PolicyCard;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Scene.SceneObject;
@@ -36,7 +35,7 @@ public class Shop extends Canvas {
      * เก็บเป็น PassiveCard เพราะ PolicyCard เป็นแค่ marker interface
      * แต่ทุกใบจะต้อง implement PolicyCard ด้วย
      */
-    private List<PassiveCard> shopCards = new ArrayList<>();
+    private List<PolicyCard> shopCards = new ArrayList<>();
     private int playerMoney;
     private boolean purchased = false;
 
@@ -47,7 +46,7 @@ public class Shop extends Canvas {
          * @param card           การ์ดที่ซื้อ (สามารถ cast เป็น PolicyCard ได้)
          * @param remainingMoney เงินที่เหลือหลังซื้อ
          */
-        void onCardPurchased(PassiveCard card, int remainingMoney);
+        void onCardPurchased(PolicyCard card, int remainingMoney);
 
         /** ถูกเรียกเมื่อร้านปิด */
         void onShopClosed();
@@ -62,7 +61,7 @@ public class Shop extends Canvas {
      * @param listener    callback เมื่อซื้อ / ปิดร้าน (nullable)
      */
     public Shop(Scene2D scene,
-                List<PassiveCard> allCards,
+                List<PolicyCard> allCards,
                 int playerMoney,
                 ShopListener listener) {
         super(scene);
@@ -110,9 +109,9 @@ public class Shop extends Canvas {
 
     // ==================== Card Rolling ====================
     /** กรองเฉพาะ PassiveCard ที่ implement PolicyCard แล้วสุ่ม 3 ใบ */
-    private void rollCards(List<PassiveCard> allCards) {
-        List<PassiveCard> pool = new ArrayList<>();
-        for (PassiveCard c : allCards) {
+    private void rollCards(List<PolicyCard> allCards) {
+        List<PolicyCard> pool = new ArrayList<>();
+        for (PolicyCard c : allCards) {
             if (c instanceof PolicyCard) pool.add(c);
         }
         Collections.shuffle(pool);
@@ -147,14 +146,14 @@ public class Shop extends Canvas {
     private JPanel buildCardArea() {
         JPanel area = new JPanel(new FlowLayout(FlowLayout.CENTER, 24, 16));
         area.setBackground(BG_PANEL);
-        for (PassiveCard card : shopCards) {
+        for (PolicyCard card : shopCards) {
             area.add(buildCardPanel(card));
         }
         return area;
     }
 
     /** สร้าง panel ของการ์ดแต่ละใบ */
-    private JPanel buildCardPanel(PassiveCard card) {
+    private JPanel buildCardPanel(PolicyCard card) {
         JPanel wrapper = new JPanel();
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
         wrapper.setBackground(BG_PANEL);
@@ -226,12 +225,12 @@ public class Shop extends Canvas {
      * ราคาการ์ด
      * TODO: แก้ให้ตรงกับ field/method จริงใน PassiveCard เช่น return card.price;
      */
-    private int getPrice(PassiveCard card) {
+    private int getPrice(PolicyCard card) {
         return 100; // placeholder
     }
 
     // ==================== Buy Logic ====================
-    private void handleBuy(PassiveCard card) {
+    private void handleBuy(PolicyCard card) {
         if (purchased) return;
         if (playerMoney < getPrice(card)) return;
 

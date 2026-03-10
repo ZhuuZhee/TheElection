@@ -22,7 +22,7 @@ public class Citybanna {
     public String getCityName() {
         return this.cityName;
     }
-    // เพิ่มค่า List จาก Card follow Index add to city
+    // เพิ่มค่า List จาก Cards follow Index add to city
     public void applyStats(List<Integer> cardStats) {
         if (cardStats != null && cardStats.size() >= 4) {
             this.economic += cardStats.get(0);
