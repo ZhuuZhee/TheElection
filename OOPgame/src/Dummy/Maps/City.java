@@ -14,4 +14,8 @@ public class City {
         this.population = population;
         Grids = new Grid[size];
     }
+
+    public void updatePopulation() {
+
+    }
 }
