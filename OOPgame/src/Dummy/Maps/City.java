@@ -1,7 +1,7 @@
 package Dummy.Maps;
 import Dummy.Maps.PoliticsStats;
 public class City {
-    private String cityName;
+    private final String cityName;
     public PoliticsStats stats;
     public int population;
     public Grid[] Grids;
