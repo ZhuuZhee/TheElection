@@ -6,6 +6,7 @@ import Core.GameScreens.MainMenu;
 import Core.Player.MouseHandler;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
+import Core.Card.PolicyCardA;
 
 import java.util.Arrays;
 
@@ -13,11 +14,15 @@ public class Tester {
     public static void CardsTestingOnScene(Scene2D scene2D){
         Citybanna Bkk = new Citybanna("Bangkok", 50, 50, 50, 50);
         CardSlot cardSlot = new CardSlot(0, 0, 100, 150, Bkk);
+        CardSlot policySlot = new CardSlot(150, 0, 100, 150, Bkk);
         ActionCard card1 = new ActionCard("Red Dragon", -100, 200, true, Arrays.asList(10, 0, -5, 0));
         ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, true, Arrays.asList(0, 10, 0, 0));
+        PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200, true);
         Citybanna myCity = new Citybanna("Bangkok", 50, 50, 50, 50);
         card2.setDraggable(false); // <--- setDraggable # default true
         new MouseHandler(scene2D);
+        myCity.printStats();
+        System.out.println("Put 'kuy sega' in to right slot");
     }
     public static void SampleCanvasTest(Scene2D scene2D){
         new SampleCanvasUI(scene2D);
