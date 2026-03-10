@@ -4,10 +4,10 @@
 /// just create class do nothing
 package Core.Cards;
 
-public abstract class ArcanaCard extends PolicyCard {
+public abstract class ArcanaCard extends Card {
 
-    public ArcanaCard(String name, int x, int y, boolean enabled) {
-        super(name, x, y, enabled);
+    public ArcanaCard(String name, int x, int y, int width, int height, boolean enabled) {
+        super(name, x, y, 100, 150, enabled);
     }
 
     @Override

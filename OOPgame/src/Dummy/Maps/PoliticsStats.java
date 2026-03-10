@@ -23,4 +23,6 @@ public class PoliticsStats {
     public void addStats(long statType, int value) {
         stats.put(statType, getStats(statType) + value);
     }
+
+    public void setStats(long statType, int value) { stats.put(statType, value); }
 }
