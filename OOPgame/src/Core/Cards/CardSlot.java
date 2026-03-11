@@ -17,7 +17,7 @@ public class CardSlot extends GameObject {
     private static final Color SLOT_COLOR = Color.GRAY; // สีของช่อง
     private static final String SLOT_TEXT = "Drop Here";
     // เพิ่ม Attributes city เพื่อเอาไว้อางอิง เมือง
-    private City city;
+    private final City city;
     // setup Constructor รับค่า city มาตอนสร้าง slot
     public CardSlot(int x, int y, int width, int height, City city) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);

@@ -42,49 +42,41 @@ public abstract class Card extends GameObject {
     // ------------  Mouse Events  ------------
     // ----------------------------------------
 
-    public boolean onMousePressed(int mouseX, int mouseY) {
-        if (!enabled){
-            return false;
-        }
-        if (isInsideBoundaries(mouseX, mouseY)) {
-//            System.out.println("Grabbed");
-            if (!isDraggable) {
-                return true;
-            }
-            isGrabbed = true;
+    public void onMousePressed(int mouseX, int mouseY) {
+        if (enabled) {
+            if (isInsideBoundaries(mouseX, mouseY)) {
+    //            System.out.println("Grabbed");
+                if (isDraggable) {
+                    isGrabbed = true;
 
-            offset.x = mouseX - position.x;
-            offset.y = mouseY - position.y;
-            setZIndex(Z_INDEX_TOP);
-            return true;
+                    offset.x = mouseX - position.x;
+                    offset.y = mouseY - position.y;
+                    setZIndex(Z_INDEX_TOP);
+                }
+            }
         }
-        return false;
     }
 
-    public boolean onMouseDragged(int mouseX, int mouseY) {
-        if (!enabled || !isGrabbed) {
-            return false;
+    public void onMouseDragged(int mouseX, int mouseY) {
+        if (enabled && isGrabbed) {
+            position.x = mouseX - offset.x;
+            position.y = mouseY - offset.y;
         }
 //        System.out.println("Drag");
-        position.x = mouseX - offset.x;
-        position.y = mouseY - offset.y;
-        return true;
     }
 
-    public boolean onMouseReleased() {
-        if (!enabled || !isGrabbed) {
-            return false;
-        }
-        isGrabbed = false;
-        setZIndex(Z_INDEX_NORMAL);
+    public void onMouseReleased() {
+        if (enabled && isGrabbed) {
+            isGrabbed = false;
+            setZIndex(Z_INDEX_NORMAL);
 
-        // handle when drop card on slot
-        var slot = getCardSlotOnButtom();
-        if(slot != null){
-            snapToSlot(slot);
-            onDroppedInSlot(slot);
+            // handle when drop card on slot
+            var slot = getCardSlotOnButtom();
+            if(slot != null){
+                snapToSlot(slot);
+                onDroppedInSlot(slot);
+            }
         }
-        return true;
     }
 
     // --------------------------------------------------

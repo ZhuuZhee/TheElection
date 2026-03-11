@@ -20,13 +20,25 @@ public class MouseHandler {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 Point worldPoint = scene2D.Screen2WorldPoint(new Point(e.getX(),e.getY()));
-                handleMousePressed(worldPoint.x,worldPoint.y);
+
+                List<SceneObject> sceneObjects = scene2D.getGameObjects();
+
+                for (int i = sceneObjects.size() - 1; i >= 0; i--) {
+                    SceneObject obj = sceneObjects.get(i);
+                    if (obj instanceof Card card) {
+                        card.onMousePressed(worldPoint.x, worldPoint.y);
+                    }
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                handleMouseReleased();
+                for (SceneObject obj : scene2D.getGameObjects()) {
+                    if (obj instanceof Card card) {
+                        card.onMouseReleased();
+                    }
+                }
             }
         });
 
@@ -35,7 +47,11 @@ public class MouseHandler {
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
                 Point worldPoint = scene2D.Screen2WorldPoint(new Point(e.getX(),e.getY()));
-                handleMouseDragged(worldPoint.x,worldPoint.y);
+                for (SceneObject obj : scene2D.getGameObjects()) {
+                    if (obj instanceof Card) {
+                        ((Card) obj).onMouseDragged(worldPoint.x, worldPoint.y);
+                    }
+                }
             }
 
             @Override
@@ -60,37 +76,6 @@ public class MouseHandler {
                 } else {
                     card.setHovered(false);
                 }
-            }
-        }
-    }
-
-    public void handleMousePressed(int mouseX, int mouseY) {
-//        System.out.println("Pressed " + mouseX + "," + mouseY);
-        List<SceneObject> sceneObjects = scene2D.getGameObjects();
-
-        for (int i = sceneObjects.size() - 1; i >= 0; i--) {
-            SceneObject obj = sceneObjects.get(i);
-            if (obj instanceof Card card) {
-                if (card.onMousePressed(mouseX, mouseY)) {
-                    return;
-                }
-            }
-        }
-
-    }
-
-    public void handleMouseDragged(int mouseX, int mouseY) {
-        for (SceneObject obj : scene2D.getGameObjects()) {
-            if (obj instanceof Card) {
-                ((Card) obj).onMouseDragged(mouseX, mouseY);
-            }
-        }
-    }
-
-    public void handleMouseReleased() {
-        for (SceneObject obj : scene2D.getGameObjects()) {
-            if (obj instanceof Card) {
-                ((Card) obj).onMouseReleased();
             }
         }
     }
