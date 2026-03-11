@@ -16,7 +16,9 @@ public abstract class Canvas extends JPanel implements SceneObject {
 
     public Canvas(Scene2D scene){
         this.scene = scene;
-        scene.register(this);
+        if (scene != null) {
+            scene.register(this);
+        }
         start();
     }
     @Override
@@ -36,14 +38,14 @@ public abstract class Canvas extends JPanel implements SceneObject {
 
     @Override
     public Point getPosition() {
-        return scene.Screen2WorldPoint(super.getLocation());
+        return scene != null ? scene.Screen2WorldPoint(super.getLocation()) : super.getLocation();
     }
 
     /// @param position must be Scene2D's World Position
     @Override
     public void setPosition(Point position) {
         if(isAttachWithPanel) return;
-        super.setLocation(scene.World2ScreenPoint(position));
+        super.setLocation(scene != null ? scene.World2ScreenPoint(position) : position);
     }
 
     @Override
@@ -64,4 +66,13 @@ public abstract class Canvas extends JPanel implements SceneObject {
     public boolean getEnable(){
         return isEnable;
     }
+
+    @Override
+    public void start() {}
+    @Override
+    public void update() {}
+    @Override
+    public void render(Graphics g) {}
+    @Override
+    public void onDestroy() {}
 }
