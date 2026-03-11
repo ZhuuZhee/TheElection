@@ -25,7 +25,7 @@ public class ActionCard extends Card {
     public void ActionOn(City city) {
         if (!enabled) return;
 
-        city.updatePopulation(this.stats);
+        city.applyStats(this.stats);
 
     }
     // ถ้า card ถูกวางใน slot จะดึงข้อมูล เมื่องที่ slot อยู่ และเรียกใช้ ActionOn โยนค่าเข้าเมือง

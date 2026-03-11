@@ -16,8 +16,8 @@ public class City {
     public String getCityName() {
         return this.cityName;
     }
-
-    public void updatePopulation(PoliticsStats cardStats) {
+    /** Xynezter 11/3/2026 17:42 : fix method stat**/
+    public void applyStats(PoliticsStats cardStats) {
         if (cardStats != null) {
             this.stats.addStats(PoliticsStats.Economy, cardStats.getStats(PoliticsStats.Economy));
             this.stats.addStats(PoliticsStats.Facility, cardStats.getStats(PoliticsStats.Facility));
@@ -25,6 +25,10 @@ public class City {
             System.out.println(cityName);
             printStats();
         }
+    }
+    // wait for business logic
+    public void updatePopulation(PoliticsStats cardStats) {
+        return;
     }
 
     public void printStats() {
