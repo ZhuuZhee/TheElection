@@ -33,6 +33,13 @@ public class GameServerManager {
     }
 
     public void removeClient(String playerId) {
+        clients.removeIf(client -> {
+            if (client.getPlayerId() != null && client.getPlayerId().equals(playerId)) {
+                return true;
+            }
+            return false;
+        });
+        System.out.println("Player removed: " + playerId);
     }
 
     public synchronized void nextTurn() {
