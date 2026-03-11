@@ -3,6 +3,7 @@ package Core.Network.Server;
 import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
+import java.util.UUID;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
@@ -14,13 +15,39 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket s, GameServerManager svr) {
         this.socket = s;
         this.server = svr;
+        // สร้าง playerId แบบสุ่ม จาก java.util.UUID มันจะเป็นเลข 128 bit แบบ 123asd-12das1
+        this.playerId = UUID.randomUUID().toString();
+        try {
+            this.output = new PrintWriter(socket.getOutputStream(), true);
+            this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void run() {
+        try {
+            String message;
+            while ((message = input.readLine()) != null) {
+                JSONObject json = new JSONObject(message);
+                server.processAction(playerId, json);
+            }
+        } catch (IOException e) {
+            System.out.println("Client disconnected: " + playerId);
+        } finally {
+            server.removeClient(playerId);
+            try {
+                if (socket != null) socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void sendMessage(JSONObject mes) {
-        output.println(mes.toString());
+        if (output != null) {
+            output.println(mes.toString());
+        }
     }
 
     public String getPlayerId() {
