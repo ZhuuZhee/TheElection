@@ -1,15 +1,19 @@
 /**
+ * @Munin 11/3/2026 20:33 - move mouse listener to this class
  * @Xynezter 9/3/2026 18:50
  */
 package Core.Cards;
 
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 public abstract class Card extends GameObject {
     protected String name;
-    protected boolean enabled;
     protected boolean isGrabbed = false;
     protected boolean isDraggable = true;
     protected boolean isHovered = false;
@@ -20,16 +24,60 @@ public abstract class Card extends GameObject {
     private static final int SNAP_MARGIN = 15;
     private static final double ZOOM_OFFSET = 20.0;
 
-    public Card(String name, int x, int y, int width, int height, boolean enabled) {
+    public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
-        this.enabled = enabled;
+        System.out.println("--------------------");
+        System.out.println(name + " : enable : " + getEnable());
+        System.out.println("--------------------");
+
+        // @Munin 11/3/2026 20:33 - move mouse listener to this class
+        //mouse button interactions
+        scene.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                Point wolrdPoint = scene.Screen2WorldPoint(e.getPoint());
+                onMousePressed(wolrdPoint.x,wolrdPoint.y);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                onMouseReleased();
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                Point wolrdPoint = scene.Screen2WorldPoint(e.getPoint());
+                if(isInsideBoundaries(wolrdPoint.x,wolrdPoint.y))
+                    onMouseClick();
+            }
+        });
+        //mouse motion interactions
+        scene.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                Point wolrdPoint = scene.Screen2WorldPoint(e.getPoint());
+                onMouseDragged(wolrdPoint.x,wolrdPoint.y);
+            }
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                Point wolrdPoint = scene.Screen2WorldPoint(e.getPoint());
+
+                if(isInsideBoundaries(wolrdPoint.x,wolrdPoint.y))
+                    setHovered(true);
+                else if (isHovered)
+                    setHovered(false);
+            }
+
+        });
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
+    //------------ setter getter -------------
     public void setHovered(boolean hovered) {
         this.isHovered = hovered;
     }
@@ -43,9 +91,9 @@ public abstract class Card extends GameObject {
     // ----------------------------------------
 
     public void onMousePressed(int mouseX, int mouseY) {
-        if (enabled) {
+        if ( getEnable()) {
             if (isInsideBoundaries(mouseX, mouseY)) {
-    //            System.out.println("Grabbed");
+                System.out.println(name +": Grabbed");
                 if (isDraggable) {
                     isGrabbed = true;
 
@@ -56,22 +104,21 @@ public abstract class Card extends GameObject {
             }
         }
     }
+    public void onMouseClick(){}
 
     public void onMouseDragged(int mouseX, int mouseY) {
-        if (enabled && isGrabbed) {
-            position.x = mouseX - offset.x;
-            position.y = mouseY - offset.y;
+        if ( getEnable() && isGrabbed) {
+            position.setLocation(mouseX - offset.x, mouseY - offset.y);
         }
-//        System.out.println("Drag");
     }
 
     public void onMouseReleased() {
-        if (enabled && isGrabbed) {
+        if ( getEnable() && isGrabbed) {
             isGrabbed = false;
             setZIndex(Z_INDEX_NORMAL);
 
             // handle when drop card on slot
-            var slot = getCardSlotOnButtom();
+            var slot = getCardSlotOnBottom();
             if(slot != null){
                 snapToSlot(slot);
                 onDroppedInSlot(slot);
@@ -82,7 +129,7 @@ public abstract class Card extends GameObject {
     // --------------------------------------------------
     // ---------- logic about slot suction --------------
     // --------------------------------------------------
-    private CardSlot getCardSlotOnButtom(){
+    private CardSlot getCardSlotOnBottom(){
         Rectangle cardRect = new Rectangle(position.x, position.y, size.width, size.height);
         // ดึง GameObjects ทั้งหมดจาก Scene เพื่อหา Slot
         for (SceneObject obj : scene.getGameObjects()) {
@@ -110,6 +157,7 @@ public abstract class Card extends GameObject {
     // add method for business logic when card DroppedInSlot
     protected abstract void onDroppedInSlot(CardSlot slot);
 
+
     @Override
     public void render(Graphics g) {
         // 1. สร้างก๊อปปี้ของ Graphics เพื่อไม่ให้ Scale ไปกระทบตัวอื่น
@@ -132,7 +180,7 @@ public abstract class Card extends GameObject {
             }
 
             // --------- Drawing Logic --------- //
-            if (!enabled) g2d.setColor(Color.LIGHT_GRAY);
+            if (! getEnable()) g2d.setColor(Color.LIGHT_GRAY);
             else if (isGrabbed) g2d.setColor(new Color(255, 165, 0));
             else g2d.setColor(new Color(176, 255, 183));
 

@@ -139,7 +139,7 @@ for testing any things you **MUST** create new method in `Dummy.Tester` Class.
 ```java
 
 public class Tester {
-    // example for testing new UI
+    // example for testing new Core.UI
     public static void SampleCanvasTest() {
         new SampleCanvasUI();
     }

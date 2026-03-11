@@ -13,8 +13,8 @@ public class ActionCard extends Card {
     private static final int CARD_HEIGHT = 150;
     private PoliticsStats stats;
     // setup Constructor while card builded add stat in stat
-    public ActionCard(String name, int x, int y, boolean enabled, PoliticsStats stats) {
-        super(name, x, y, CARD_WIDTH, CARD_HEIGHT, enabled);
+    public ActionCard(String name, int x, int y, PoliticsStats stats) {
+        super(name, x, y, CARD_WIDTH, CARD_HEIGHT);
         this.stats = stats;
     }
     // getter stat
@@ -23,7 +23,7 @@ public class ActionCard extends Card {
     }
     // โยนให้ city จัดการ stat
     public void ActionOn(City city) {
-        if (!enabled) return;
+        if (!getEnable()) return;
 
         city.applyStats(this.stats);
 
@@ -49,7 +49,7 @@ public class ActionCard extends Card {
                 }
             }
             this.ActionOn(targetCity);
-            this.enabled = false;
+            this.setEnable(false);
             this.isDraggable = false;
         }
     }

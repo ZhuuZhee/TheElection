@@ -50,8 +50,8 @@ public class MainMenu extends Screen implements ActionListener {
         add(wrapper, BorderLayout.CENTER);
 
         // audio test
-        AudioManager.getInstance().loadSound("Kuy","guntrum.WAV");
-        AudioManager.getInstance().playLoop("Kuy");
+//        AudioManager.getInstance().loadSound("Kuy","guntrum.WAV");
+//        AudioManager.getInstance().playLoop("Kuy");
 
         System.out.println("Main Menu is Created");
     }

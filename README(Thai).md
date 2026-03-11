@@ -2,17 +2,18 @@
 
 ZhuzheeEngine คือเกมเอนจิน 2D น้ำหนักเบา (Lightweight) สำหรับ Java Swing ออกแบบมาเพื่อการทำต้นแบบ (Rapid Prototyping) และการสร้างเกมที่ไม่ซับซ้อน โดยตัวเอนจินมีโครงสร้างพื้นฐานสำหรับจัดการ Game Loop, หน้าจอ (Screens), ฉาก (Scenes) และวัตถุในเกม (Game Objects)
 
-## สถาปัตยกรรมระดับสูง (High-level architecture)
+- ### สถาปัตยกรรมระดับสูง (High-level architecture)
 
-- **`ZhuzheeEngine.Application`**: หัวใจหลักของแอปพลิเคชัน ทำหน้าที่สร้างและจัดการ `JFrame`, รัน Game Loop และส่งต่อเหตุการณ์วงจรชีวิต (`create`, `render`, `dispose`) ไปยัง `ApplicationAdapter` หลัก
-- **`ZhuzheeEngine.ApplicationAdapter`**: อินเทอร์เฟซที่กำหนด Method ของวงจรชีวิตแอปพลิเคชัน โดยคลาสหลักของเกมคุณจะต้อง Implement อินเทอร์เฟซนี้
-- **`ZhuzheeEngine.ScreenManager`**: จัดการลำดับการแสดงผลของหน้าจอในแอปพลิเคชัน รับผิดชอบการเปลี่ยนสถานะเกม (เช่น จากเมนูหลัก ไปยังหน้าเล่นเกม หรือหน้า Game Over)
-- **`ZhuzheeEngine.Screen`**: `JPanel` ที่แทนหน้าจอหนึ่งหน้าจอในเกม อาจเป็นเมนู ระดับเลเวล หรือส่วนอื่น ๆ ของแอปพลิเคชัน
-- **`ZhuzheeEngine.Scene.Scene2D`**: `Screen` รูปแบบพิเศษที่จัดการและเรนเดอร์รายการของ `SceneObject` โดยมีระบบพิกัด 2D ที่มีจุดศูนย์กลางอยู่ที่กลางหน้าจอ
-- **`ZhuzheeEngine.Scene.SceneObject`**: อินเทอร์เฟซสำหรับวัตถุใด ๆ ที่สามารถวางลงใน `Scene2D` ได้
-- **`ZhuzheeEngine.Scene.GameObject`**: คลาสที่ Implement มาจาก `SceneObject` เพื่อใช้งานจริง เป็นคลาสฐานสำหรับเอนทิตี (Entities) ทั้งหมดในโลกของเกมคุณ
-- **`ZhuzheeEngine.Audios.AudioManager`**: บริการแบบ Singleton สำหรับควบคุมเสียงในระดับ Global จัดการการโหลด Asset ล่วงหน้า และจัดการระดับเสียง BGM/SFX แยกกัน โดยอยู่นอกเหนือโครงสร้างลำดับชั้นของ Scene
-
+  - **`ZhuzheeEngine.Application`**: หัวใจหลักของแอปพลิเคชัน ทำหน้าที่สร้างและจัดการ `JFrame`, รัน Game Loop และส่งต่อเหตุการณ์วงจรชีวิต (`create`, `render`, `dispose`) ไปยัง `ApplicationAdapter` หลัก
+  - **`ZhuzheeEngine.ApplicationAdapter`**: อินเทอร์เฟซที่กำหนด Method ของวงจรชีวิตแอปพลิเคชัน โดยคลาสหลักของเกมคุณจะต้อง Implement อินเทอร์เฟซนี้
+  - **`ZhuzheeEngine.ScreenManager`**: จัดการลำดับการแสดงผลของหน้าจอในแอปพลิเคชัน รับผิดชอบการเปลี่ยนสถานะเกม (เช่น จากเมนูหลัก ไปยังหน้าเล่นเกม หรือหน้า Game Over)
+  - **`ZhuzheeEngine.Screen`**: `JPanel` ที่แทนหน้าจอหนึ่งหน้าจอในเกม อาจเป็นเมนู ระดับเลเวล หรือส่วนอื่น ๆ ของแอปพลิเคชัน
+  - **`ZhuzheeEngine.Scene.Scene2D`**: `Screen` รูปแบบพิเศษที่จัดการและเรนเดอร์รายการของ `SceneObject` โดยมีระบบพิกัด 2D ที่มีจุดศูนย์กลางอยู่ที่กลางหน้าจอ
+  - **`ZhuzheeEngine.Scene.SceneObject`**: อินเทอร์เฟซสำหรับวัตถุใด ๆ ที่สามารถวางลงใน `Scene2D` ได้
+  - **`ZhuzheeEngine.Scene.GameObject`**: คลาสที่ Implement มาจาก `SceneObject` เพื่อใช้งานจริง เป็นคลาสฐานสำหรับเอนทิตี (Entities) ทั้งหมดในโลกของเกมคุณ
+  - **`ZhuzheeEngine.Audios.AudioManager`**: บริการแบบ Singleton สำหรับควบคุมเสียงในระดับ Global จัดการการโหลด Asset ล่วงหน้า และจัดการระดับเสียง BGM/SFX แยกกัน โดยอยู่นอกเหนือโครงสร้างลำดับชั้นของ Scene
+- ### Zhuzhee.Utills
+  - **`Vector2`,`Vector3`**: คลาสสำหรับช่วยคำนวนเกี่ยวกับ Vector ใช้ใน `SceneObject.getPosition`
 ## การเริ่มต้นใช้งาน
 
 ### สิ่งที่จำเป็นต้องมี (Prerequisites)
@@ -126,7 +127,7 @@ public void create() {
 ### Scene และระบบพิกัด (Coordinates)
 
 `Scene2D` มีระบบ Scene Graph อย่างง่าย วัตถุในเกมจะถูกเรนเดอร์ตามค่า `zIndex` คุณสามารถแปลงพิกัดระหว่างหน้าจอ (Screen) และโลกในเกม (World) ได้โดยใช้ `Scene2D.Screen2WorldPoint()` และ `Scene2D.World2ScreenPoint()` โดยจุดกำเนิดของโลก (0,0) จะอยู่ที่จุดศูนย์กลางของหน้าจอ
-
+`GameObject` จะถูก `Scene2D` เรียกใช้ `update()` เมื่อ `getEnable() == true` จะถูกเรียกใช้ `render(Graphic g)` เมื่อ `getVisible() == true`;
 ### การรับข้อมูล (Input)
 
 เอนจินนี้ไม่มีระบบ Input สำเร็จรูปในตัว คุณสามารถเพิ่ม Mouse Listener หรือ Key Listener ของคุณเองลงใน `Screen` ได้ ทั้งนี้ในโปรเจกต์มี `Core.Player.MouseHandler` เป็นตัวอย่างการจัดการ Input เมาส์สำหรับ `GameObject`
@@ -146,7 +147,7 @@ public void create() {
 ```java
 
 public class Tester {
-    // ตัวอย่างสำหรับการทดสอบ UI ใหม่
+    // ตัวอย่างสำหรับการทดสอบ Core.UI ใหม่
     public static void SampleCanvasTest() {
         new SampleCanvasUI();
     }
@@ -196,3 +197,32 @@ public void onActionCardPlayed(ActionCard playedCard, Citybanna city) {
     }
 }
 ````
+
+---
+## Error Reports
+
+### **`ConcurrentModificationException`** (@Munin)
+คือ Error ที่เกิดขึ้นเมื่อคุณพยายาม **"แก้ไข"** ข้อมูลใน List (เช่น เพิ่มหรือลบข้อมูล) ในขณะที่กำลัง **"วน Loop" (Iterate)** อ่านข้อมูลใน List นั้นอยู่ครับ
+เปรียบเทียบง่าย ๆ เหมือนคุณกำลัง **นับจำนวนคนในแถว** แต่ในขณะที่คุณกำลังนับ มีคนกระโดดออกจากแถว หรือมีคนใหม่วิ่งเข้ามาแทรก ทำให้ตัวเลขที่คุณกำลังนับ "รวน" และระบบ Java จะเลือกหยุดการทำงานทันทีเพื่อป้องกันข้อมูลพัง
+### ทำไมในโค้ด Game ของคุณถึงมีโอกาสเกิด?
+ในระบบ Game Loop มักจะมีเหตุการณ์แบบนี้เกิดขึ้น:
+1. **Thread การวาด (Render):** กำลังวน Loop `sceneObjects` เพื่อวาดรูปลงหน้าจอ
+2. **Thread การคำนวณ (Update/Logic):** ในวินาทีเดียวกันนั้น กระสุนวิ่งไปชนศัตรู ทำให้ศัตรูตัวนั้นต้องถูกลบออกจาก `sceneObjects`
+เมื่อมีการ **ลบ (Remove)** ขณะที่ฝั่ง Render ยังวาดไม่เสร็จ Java จะพ่น `ConcurrentModificationException` ออกมาทันที
+### วิธีแก้ที่คุณใช้ (Copying the List)
+โค้ดที่คุณคอมเมนต์ไว้ว่า `-AI` ใช้วิธี **"ถ่ายเอกสาร"** ครับ:
+```java
+ArrayList<SceneObject> objectsCopy = new ArrayList<>(sceneObjects);
+```
+* **หลักการ:** คุณสร้าง List ใหม่ที่เป็นสำเนาของ `sceneObjects` ณ วินาทีนั้นขึ้นมา
+* **ผลลัพธ์:** แม้ว่าในขณะที่วาด จะมีการเพิ่มหรือลบ Object ใน `sceneObjects` ตัวจริง (ต้นฉบับ) แต่มันจะไม่ส่งผลกระทบต่อ `objectsCopy` (ใบปลิวที่ก๊อปมาแล้ว) ทำให้ Loop วาดจนจบได้อย่างปลอดภัย
+---
+### วิธีแก้ทางเลือกอื่น ๆ
+นอกจากวิธี Copy แล้ว ยังมีวิธีที่นิยมในงาน Game Development อีก 2 วิธีครับ:
+1. **ใช้ `CopyOnWriteArrayList**`:
+   เป็น List ประเภทพิเศษที่ออกแบบมาเพื่อปัญหานี้โดยเฉพาะ ทุกครั้งที่มีการแก้ไข มันจะก๊อปปี้ตัวเองให้อัตโนมัติ (แต่จะกิน RAM และ CPU หน่อยถ้ามีการแก้ไขบ่อยมาก)
+```java
+List<SceneObject> sceneObjects = new CopyOnWriteArrayList<>();
+```
+
+**สรุป:** โค้ดที่คุณส่งมานั้นแก้ปัญหาได้ถูกต้องแล้วครับ เป็นวิธีมาตรฐานสำหรับการแยกส่วนแสดงผลออกจากส่วนข้อมูลเพื่อความปลอดภัย (Thread-safety)

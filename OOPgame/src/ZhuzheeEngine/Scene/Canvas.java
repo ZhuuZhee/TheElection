@@ -11,6 +11,9 @@ public abstract class Canvas extends JPanel implements SceneObject {
     private int zIndex = 0;
     boolean isAttachWithPanel;
     protected Scene2D scene;
+    private boolean isVisible = true;
+    private boolean isEnable = true;
+
     public Canvas(Scene2D scene){
         this.scene = scene;
         scene.register(this);
@@ -41,5 +44,24 @@ public abstract class Canvas extends JPanel implements SceneObject {
     public void setPosition(Point position) {
         if(isAttachWithPanel) return;
         super.setLocation(scene.World2ScreenPoint(position));
+    }
+
+    @Override
+    public void setVisible(boolean v) {
+        isVisible = v;
+    }
+
+    @Override
+    public boolean getVisible() {
+        return isVisible;
+    }
+
+    @Override
+    public void setEnable(boolean e){
+        isEnable = e;
+    }
+    @Override
+    public boolean getEnable(){
+        return isEnable;
     }
 }

@@ -7,6 +7,8 @@ public class GameObject implements SceneObject {
     protected Dimension size;
     protected int zIndex;
     protected Scene2D scene;
+    private boolean isVisible = true;
+    private boolean isEnable = true;
 
     public GameObject(int x, int y, int width, int height, Scene2D scene) {
         this.position = new Point(x, y);
@@ -52,8 +54,31 @@ public class GameObject implements SceneObject {
         this.position = position;
     }
 
+    @Override
+    public void setVisible(boolean v) {
+        isVisible = v;
+    }
+
+    @Override
+    public boolean getVisible() {
+        return isVisible;
+    }
+
+    @Override
+    public void setEnable(boolean e){
+        isEnable = e;
+    }
+    @Override
+    public boolean getEnable(){
+        return isEnable;
+    }
     // lifecycle hooks
     public void start() {
+    }
+
+    @Override
+    public void update() {
+
     }
 
     public void render(Graphics g) {

@@ -1,5 +1,6 @@
 package ZhuzheeEngine.Scene;
 
+import Core.Cards.Card;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Screen;
 
@@ -104,7 +105,8 @@ public class Scene2D extends Screen {
             // render object - iterate over a copy to avoid ConcurrentModificationException -AI
             ArrayList<SceneObject> objectsCopy = new ArrayList<>(sceneObjects);
             for (SceneObject obj : objectsCopy) {
-                obj.render(g2d);
+                if(obj.getEnable()) obj.update();
+                if(obj.getVisible()) obj.render(g2d);
             }
         } finally {
             g2d.dispose();

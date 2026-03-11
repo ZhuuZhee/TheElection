@@ -6,8 +6,8 @@ package Core.Cards;
 
 public abstract class ArcanaCard extends Card {
 
-    public ArcanaCard(String name, int x, int y, int width, int height, boolean enabled) {
-        super(name, x, y, 100, 150, enabled);
+    public ArcanaCard(String name, int x, int y, int width, int height) {
+        super(name, x, y, 100, 150);
     }
 
     @Override

@@ -11,8 +11,8 @@ import Dummy.Maps.PoliticsStats;
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
 public class PolicyCardA extends PolicyCard {
 
-    public PolicyCardA(String name, int x, int y, boolean enabled) {
-        super(name, x, y, enabled); // โยนค่าไปให้ PassiveCard จัดการ
+    public PolicyCardA(String name, int x, int y) {
+        super(name, x, y); // โยนค่าไปให้ PassiveCard จัดการ
     }
 
     @Override

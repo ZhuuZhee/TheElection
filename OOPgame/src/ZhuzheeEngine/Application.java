@@ -1,6 +1,8 @@
 package ZhuzheeEngine;
 
 import javax.swing.*;
+import java.awt.event.*;
+import java.util.ArrayList;
 
 public final class Application {
     private static int TARGET_FPS = 60;
@@ -17,6 +19,9 @@ public final class Application {
 
     /// main application class for running in Application
     private ApplicationAdapter rootAdapter;
+
+    /// for other adapters usually for in case of add new Engine-Class
+    private ArrayList<ApplicationAdapter> adapters = new ArrayList<ApplicationAdapter>();
 
     /// Singletons
     private static Application Instance;
@@ -56,6 +61,19 @@ public final class Application {
     public static JFrame getMainFrame() {
         return Instance.mainFrame;
     }
+    public static void addAdapter(ApplicationAdapter adapter){
+        if(Instance == null){
+            throw  new IllegalStateException("Make sure your Application subclass calls super.create().");
+        }
+        if(Instance.adapters.contains(adapter)){
+            System.err.println("Application already add this adapter.");
+            throw new RuntimeException("Application already add this adapter.");
+        }
+        Instance.adapters.add(adapter);
+    }
+    public static void removeAdapter(ApplicationAdapter adapter){
+        Instance.adapters.remove(adapter);
+    }
 
     private static void LaunchApp(Application app) {
         app.create();
@@ -67,6 +85,7 @@ public final class Application {
     public static void LaunchApp(ApplicationAdapter appAdapter) {
         LaunchApp(new Application(appAdapter));
     }
+
     /**
      * Stops the render loop and calls Depose(). Call when exiting the application.
      */
@@ -122,13 +141,28 @@ public final class Application {
         mainFrame.setSize(screenWidth,screenHeight);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                KillApp(Instance);
+                super.windowClosing(e);
+            }
+        });
+
         rootAdapter.create();
+
+        for(ApplicationAdapter adapter : adapters){
+            adapter.create();
+        }
         if(Screen.currentScreen != null)
             Screen.currentScreen.create();
     }
 
     private void resize(int width, int height) {
         rootAdapter.resize(width,height);
+        for(ApplicationAdapter adapter : adapters){
+            adapter.resize(width,height);
+        }
         if(Screen.currentScreen != null)
             Screen.currentScreen.resize(width,height);
     }
@@ -137,6 +171,9 @@ public final class Application {
     private void render() {
         mainFrame.repaint();
         rootAdapter.render();
+        for(ApplicationAdapter adapter : adapters){
+            adapter.render();
+        }
         if(Screen.currentScreen != null)
             Screen.currentScreen.render();
     }
@@ -145,6 +182,9 @@ public final class Application {
     private void dispose() {
         mainFrame.dispose();
         rootAdapter.dispose();
+        for(ApplicationAdapter adapter : adapters){
+            adapter.dispose();
+        }
         if(Screen.currentScreen != null)
             Screen.currentScreen.dispose();
     }
