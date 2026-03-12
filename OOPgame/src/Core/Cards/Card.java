@@ -27,9 +27,9 @@ public abstract class Card extends GameObject {
     public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
-        System.out.println("--------------------");
-        System.out.println(name + " : enable : " + getEnable());
-        System.out.println("--------------------");
+//        System.out.println("--------------------");
+//        System.out.println(name + " : enable : " + getEnable());
+//        System.out.println("--------------------");
 
         // @Munin 11/3/2026 20:33 - move mouse listener to this class
         //mouse button interactions

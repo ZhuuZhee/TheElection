@@ -4,13 +4,13 @@ import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
+import ZhuzheeEngine.Scene.NineSliceButton;
+import Core.UI.UIButtonFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
@@ -19,11 +19,20 @@ public class OptionMenu extends Screen {
     JCheckBox fullscreen = null;
     JSlider soundSlider = null;
     JSlider musicSlider = null;
+    java.awt.image.BufferedImage btnNormalImg;
+    java.awt.image.BufferedImage btnHoverImg;
 
     GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
     public OptionMenu(){
         setSize(450,300);
+        
+        try {
+            btnNormalImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_normal.png"));
+            btnHoverImg  = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_hover.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -86,13 +95,7 @@ public class OptionMenu extends Screen {
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        JButton back = new JButton("Back");
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
-            }
-        });
+        NineSliceButton back = UIButtonFactory.createMenuButton("Back", btnNormalImg, btnHoverImg, e -> Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU));
         panel.add(back, gbc);
 
         add(panel);

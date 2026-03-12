@@ -1,5 +1,6 @@
 package Core.Network.Server;
 
+import Core.Network.NetworkProtocol;
 import java.net.*;
 import java.util.*;
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ public class GameServerManager {
         if (!action.has("actionType")) return;
         String type = action.getString("actionType");
 
-        if (type.equals("JOIN")) {
+        if (type.equals(NetworkProtocol.JOIN.name())) {
             // กันชื่อแตก ถ้าเกิดหาชื่อไม่เจอ ใช้ Unknown- id 4 ตัว
             String pName = action.optString("playerName", "Unknown-" + playerId.substring(0, 4));
             
@@ -53,14 +54,19 @@ public class GameServerManager {
 
             // ส่งข้อมูลยืนยันรับเข้าห้องให้คนที่เข้ามา
             JSONObject ack = new JSONObject();
-            ack.put("type", "JOIN_ACK");
+            ack.put("type", NetworkProtocol.JOIN_ACK.name());
             ack.put("assignedId", playerId);
             sendToClient(playerId, ack);
 
             broadcast(gameState.generateSyncData());
-        } else if (type.equals("END_TURN")) {
+        } else if (type.equals(NetworkProtocol.START_GAME.name())) {
+            System.out.println("START_GAME all clients");
+            org.json.JSONObject startPacket = new org.json.JSONObject();
+            startPacket.put("type", NetworkProtocol.START_GAME.name());
+            broadcast(startPacket);
+        } else if (type.equals(NetworkProtocol.END_TURN.name())) {
             nextTurn();
-        } else if (type.equals("USE_CARD")) {
+        } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
             // Logic อัพเดตเมือง ???
 
             broadcast(gameState.generateSyncData());

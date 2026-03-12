@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
 import ZhuzheeEngine.Scene.NineSliceButton;
+import Core.UI.UIButtonFactory;
 
 public class MainMenu extends Screen implements ActionListener {
 
@@ -60,26 +61,11 @@ public class MainMenu extends Screen implements ActionListener {
         buttonPanel.setOpaque(false); // ทำให้ปุ่มโปร่งใสเพื่อเห็นพื้นหลัง
         buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));
 
-        // สมมติระยะตัดขอบปุ่มเป็น 10 พิกเซล
-        startBtn = new NineSliceButton("Start Game", btnNormalImg, 6, 6, 6, 6);
-        startBtn.setPreferredSize(new Dimension(120, 30));// เอาไว้กำหนดขนาดของปุ่ม
-        startBtn.addActionListener(this);
-        HoverButton(startBtn);
-
-        optionBtn = new NineSliceButton("Option", btnNormalImg, 6, 6, 6, 6);
-        optionBtn.setPreferredSize(new Dimension(120, 30));// เอาไว้กำหนดขนาดของปุ่ม
-        optionBtn.addActionListener(this);
-        HoverButton(optionBtn);
-
-        creditBtn = new NineSliceButton("Credit", btnNormalImg, 6, 6, 6, 6);
-        creditBtn.setPreferredSize(new Dimension(120, 30));// เอาไว้กำหนดขนาดของปุ่ม
-        creditBtn.addActionListener(this);
-        HoverButton(creditBtn);
-
-        exitBtn = new NineSliceButton("Exit", btnNormalImg, 6, 6, 6, 6);
-        exitBtn.setPreferredSize(new Dimension(120, 30));// เอาไว้กำหนดขนาดของปุ่ม
-        exitBtn.addActionListener(this);
-        HoverButton(exitBtn);
+        // สร้างปุ้มโดยใช้ UIButtonFactory
+        startBtn = UIButtonFactory.createMenuButton("Start Game", btnNormalImg, btnHoverImg, this);
+        optionBtn = UIButtonFactory.createMenuButton("Options", btnNormalImg, btnHoverImg, this);
+        creditBtn = UIButtonFactory.createMenuButton("Credits", btnNormalImg, btnHoverImg, this);
+        exitBtn = UIButtonFactory.createMenuButton("Exit", btnNormalImg, btnHoverImg, this);
 
         buttonPanel.add(startBtn);
         buttonPanel.add(optionBtn);
@@ -99,33 +85,14 @@ public class MainMenu extends Screen implements ActionListener {
         // AudioManager.getInstance().loadSound("Kuy","guntrum.WAV");
         // AudioManager.getInstance().playLoop("Kuy");
 
-        System.out.println("Main Menu is Created");
-    }
-
-    private void HoverButton(NineSliceButton b) {
-        // b.setFocusPainted(false); // ปิดเส้นกรอบ focus ของปุ่ม
-        // (เส้นที่ขึ้นตอนปุ่มถูกเลือก)
-        // เพิ่มตัวดักจับ event ของเมาส์ให้กับปุ่ม
-        b.addMouseListener(new java.awt.event.MouseAdapter() {
-            // ทำงานเมื่อเมาส์เคลื่อนเข้ามาอยู่บนปุ่ม
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                b.setSourceImage(btnHoverImg); // เปลี่ยนเป็นรูป Hover
-//                b.setForeground(Color.GREEN);// เปลี่ยนสีตัวอักษรบนปุ่ม
-            }
-
-            // ทำงานเมื่อเมาส์ออกจากพื้นที่ของปุ่ม
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                b.setSourceImage(btnNormalImg); // กลับมาเป็นรูปดั้งเดิม
-                //b.setForeground(Color.BLACK);// เปลี่ยนสีตัวอักษรบนปุ่ม
-            }
-        });
+//        System.out.println("Main Menu is Created");
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startBtn) {
             // JOptionPane.showMessageDialog(this);
-            Screen.ChangeScreen(ZhuzheeGame.MAIN_SCENE);
+            Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);
         }
         if (e.getSource() == optionBtn) {
             // JOptionPane.showMessageDialog(this);
@@ -148,13 +115,4 @@ public class MainMenu extends Screen implements ActionListener {
         dispose();
         setVisible(true);
     }
-
-    // JFrame frame = new JFrame();
-    // MainMenu menu = new MainMenu();
-    // frame.setTitle("The Election");
-    // frame.add(menu);
-    // frame.setSize(800,600);
-    // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    // frame.setLocationRelativeTo(null);
-    // frame.setVisible(true);
 }

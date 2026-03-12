@@ -1,5 +1,6 @@
 package Core.Network.Server;
 
+import Core.Network.NetworkProtocol;
 import Core.Player.Player;
 import org.json.JSONObject;
 import java.util.*;
@@ -33,7 +34,7 @@ public class GameState {
 
     public JSONObject generateSyncData() {
         JSONObject data = new JSONObject();
-        data.put("type", "SYNC_STATE");
+        data.put("type", NetworkProtocol.SYNC_STATE.name());
         data.put("phaseCounter", phaseCounter);
         if (hostId != null) {
             data.put("hostId", hostId);

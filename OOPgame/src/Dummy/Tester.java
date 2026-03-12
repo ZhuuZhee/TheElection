@@ -27,8 +27,8 @@ public class Tester {
         PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200);
 //        Citybanna myCity = new Citybanna("Bangkok", 50, 50, 50);
         card2.setDraggable(false); // <--- setDraggable # default true
-        KuyJang.printStats();
-        System.out.println("Put 'kuy sega' in to right slot");
+//        KuyJang.printStats();
+//        System.out.println("Put 'kuy sega' in to right slot");
     }
     public static void SampleCanvasTest(Scene2D scene2D){
         new SampleCanvasUI(scene2D);
