@@ -18,6 +18,7 @@ public class MainMenu extends Screen implements ActionListener {
 
     NineSliceButton startBtn;
     NineSliceButton optionBtn;
+    NineSliceButton creditBtn;
     NineSliceButton exitBtn;
 
     BufferedImage bgImage;
