@@ -5,13 +5,14 @@
 package Core.Cards;
 
 import Dummy.Citybanna;
-import java.util.List;
+import Dummy.Maps.City;
+import Dummy.Maps.PoliticsStats;
 
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
 public class PolicyCardA extends PolicyCard {
 
-    public PolicyCardA(String name, int x, int y, boolean enabled) {
-        super(name, x, y, enabled); // โยนค่าไปให้ PassiveCard จัดการ
+    public PolicyCardA(String name, int x, int y) {
+        super(name, x, y); // โยนค่าไปให้ PassiveCard จัดการ
     }
 
     @Override
@@ -21,15 +22,16 @@ public class PolicyCardA extends PolicyCard {
 
     // Business Logic
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, Citybanna city) {
+    public void onActionCardPlayed(ActionCard playedCard, City city) {
         if (IsActivate()) {
             System.out.println("----------------------------------");
             System.out.println("PolicyCardA: " + this.name + " Buff for " + playedCard.name);
             System.out.println("----------------------------------");
-            List<Integer> stats = playedCard.getStat();
-            if (stats != null && !stats.isEmpty()) {
-                // business logic confix stat
-                stats.set(0, stats.getFirst() * 10); // ex: add stat index[0]
+            PoliticsStats stats = playedCard.getStats();
+            if (stats != null) {
+                // business logic confix stat # ตัวอย่าง Business Logic: คูณค่า Facility เดิมด้วย 10
+                int currentFacility = stats.getStats(PoliticsStats.Facility);
+                stats.setStats(PoliticsStats.Facility, currentFacility * 10);
             }
         }
     }

@@ -37,6 +37,11 @@ public class SampleCanvasUI extends Canvas {
     }
 
     @Override
+    public void update() {
+
+    }
+
+    @Override
     public void render(Graphics g) {
 //        repaint();
        // System.out.println("SampleScene render " + getPosition().toString());

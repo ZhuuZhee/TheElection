@@ -21,7 +21,7 @@ public class Map extends GameObject {
     public Map() {
         super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE);
         district = new District(10, 10);
-        city = new City(1, 1, 1, 2, 10);
+        city = new City("Kuy_Jeng",1, 1, 1, 2, 10);
         board = GenerateMap();
     }
 
@@ -83,22 +83,34 @@ public class Map extends GameObject {
     @Override
     public void render(Graphics g) {
         super.render(g);
+
+        // Guard against null board - prevent NPE
+        if (board == null) {
+            System.err.println("Warning: Map.board is null, cannot render");
+            return;
+        }
+
         int radius = 25; // ใช้รัศมี 25 (เท่ากับ cellSize / 2 เดิม)
 
-        Graphics2D g2d = (Graphics2D) g;
+        Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // คำนวณระยะห่างทางคณิตศาสตร์สำหรับหกเหลี่ยมแบบรังผึ้ง
         double hexWidth = Math.sqrt(3) * radius; // ระยะห่างแนวนอนระหว่างชิ้น
         double vertSpacing = 1.5 * radius;       // ระยะห่างแนวตั้งระหว่างแถว
 
+        double halfSizeX = cols * hexWidth / 2;
+        double halfSizeY = rows * vertSpacing / 2;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
 
                 // 1. คำนวณจุดศูนย์กลาง x, y พื้นฐาน
-                double x = j * hexWidth;
-                double y = i * vertSpacing;
+                // ตำแน่งปัจจุุบัน - ขนาดครึ่งนึงของ Map
+                // ex. ตำแหน่งแรกก่อนลบ ครึ่งนึง = 0,0 ซึ่งอยู่ตรงกลาง ตำแหน่งถัดไปจะเป็น 1,0 ซึ่งไปทางขาวและลงไปเรื่อยๆ
+                // แต่เราอยากให้ตำแหน่งตรงกลางคือ ครึ่งนึง ดังนั้นจึงเอา ครึ่งนึง มาลบ
+                double x = j * hexWidth - halfSizeX;
+                double y = i * vertSpacing - halfSizeY;
 
                 // @Munin 10/3/25 - 16:28 - edited
                 //บวกตำแหน่งของ GameObject นี้ เพื่อใช้เป็นจุดอ้างอิง
@@ -134,5 +146,6 @@ public class Map extends GameObject {
                 g2d.draw(hexagon);
             }
         }
+        g2d.dispose();
     }
 }

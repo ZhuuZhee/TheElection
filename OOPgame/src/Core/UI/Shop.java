@@ -1,4 +1,4 @@
-package UI;
+package Core.UI;
 
 import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
@@ -35,28 +35,21 @@ public class Shop extends Canvas {
     private int playerMoney;
     private boolean purchased = false;
 
-    // Listener สำหรับแจ้งผลการซื้อ
-    public interface ShopListener {
-        void onCardPurchased(PolicyCard card, int remainingMoney);
-        void onShopClosed();
-    }
-    private ShopListener shopListener;
-
-    public Shop(Scene2D scene, List<PolicyCard> allCards, int playerMoney, ShopListener listener) {
+    public Shop(Scene2D scene, List<PolicyCard> allCards, int playerMoney) {
         super(scene);
         this.playerMoney  = playerMoney;
-        this.shopListener = listener;
 
 //        สุ่มการ์ดมา 3 ใบ
-        rollCards(allCards);
+        shopCards = rollCards(allCards);
 
 //        ซ่อนการ์ดทุกใบออกจาก scene ก่อน จะวาดเองใน buildCardArea
         for (PolicyCard card : shopCards) {
-            card.setEnabled(false);
+            card.setEnable(false);
+            card.setVisible(false);
             card.setDraggable(false);
         }
 
-//        สร้าง UI
+//        สร้าง Core.UI
         setLayout(new BorderLayout());
         setBackground(BG_PANEL);
         setBorder(new LineBorder(CARD_BORDER, 2));
@@ -85,10 +78,10 @@ public class Shop extends Canvas {
     }
 
     // สุ่มการ์ดจาก pool
-    private void rollCards(List<PolicyCard> allCards) {
+    private ArrayList<PolicyCard> rollCards(List<PolicyCard> allCards) {
         List<PolicyCard> pool = new ArrayList<>(allCards);
         Collections.shuffle(pool);
-        shopCards = new ArrayList<>(pool.subList(0, Math.min(3, pool.size())));
+        return new ArrayList<>(pool.subList(0, Math.min(3, pool.size())));
     }
 
     // ส่วนหัว "Shop"
@@ -151,8 +144,24 @@ public class Shop extends Canvas {
         }
     }
 
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+
     @Override
     public void render(Graphics g) { }
+
+    @Override
+    public void onDestroy() {
+
+    }
 
     // สร้าง panel ของการ์ดแต่ละใบ
     private JPanel buildCardPanel(PolicyCard card) {
@@ -239,21 +248,15 @@ public class Shop extends Canvas {
         for (PolicyCard c : shopCards) {
             if (c != card) {
                 PolicyCard other = (PolicyCard) c;
-                other.setEnabled(false);
                 scene.remove((SceneObject) other);
             }
         }
 
-//        snap การ์ดที่ซื้อเข้า CardSlot ที่ว่าง
-        CardSlot slot = findEmptyPolicySlot();
-        if (slot != null) {
-            PolicyCard boughtCard = (PolicyCard) card;
-            boughtCard.setPosition(slot.getPosition());
-            boughtCard.setDraggable(false);
-            boughtCard.setEnabled(false);
-        }
+//      show bought card
+        card.setPosition(new Point(0,200));
+        card.setVisible(true);
+        card.setEnable(true);
 
-        if (shopListener != null) shopListener.onCardPurchased(card, playerMoney);
         closeShop();
     }
 
@@ -264,10 +267,6 @@ public class Shop extends Canvas {
         scene.remove((SceneObject) this);
         scene.revalidate();
         scene.repaint();
-        if (shopListener != null) shopListener.onShopClosed();
     }
 
-    @Override public void start() { }
-    @Override public void onDestroy() { }
-    @Override public Dimension getSize() { return new Dimension(SHOP_WIDTH, SHOP_HEIGHT); }
 }

@@ -1,16 +1,21 @@
 package Core.GameScreens;
 
+import Core.ZhuzheeGame;
+import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Audios.AudioManager;
+import ZhuzheeEngine.Screen;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 
-public class OptionMenu extends JFrame {
+public class OptionMenu extends Screen {
     JCheckBox fullscreen = null;
     JSlider soundSlider = null;
     JSlider musicSlider = null;
@@ -18,9 +23,7 @@ public class OptionMenu extends JFrame {
     GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
     public OptionMenu(){
-        setTitle("Settings Menu");
         setSize(450,300);
-        setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -84,7 +87,12 @@ public class OptionMenu extends JFrame {
         gbc.gridy = 3;
         gbc.gridwidth = 1;
         JButton back = new JButton("Back");
-        back.addActionListener(e -> dispose());
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
+            }
+        });
         panel.add(back, gbc);
 
         add(panel);
@@ -92,21 +100,14 @@ public class OptionMenu extends JFrame {
     }
     private void enableFullscreen() {
         dispose();
-        setUndecorated(true);
-        device.setFullScreenWindow(this);
+        device.setFullScreenWindow(Application.getMainFrame());
         setVisible(true);
     }
 
     private void disableFullscreen() {
         device.setFullScreenWindow(null);
         dispose();
-        setUndecorated(false);
         setSize(450, 300);
-        setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    public static void main(String[] args){
-        new OptionMenu();
     }
 }
