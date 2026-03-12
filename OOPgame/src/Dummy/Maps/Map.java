@@ -1,4 +1,5 @@
-/** @Munin 10/3/25 - 16:28 - edited : เพิ่มการคำนวนตำแหน่งจาก GameObject.position
+/**
+ * @Munin 10/3/25 - 16:28 - edited : เพิ่มการคำนวนตำแหน่งจาก GameObject.position
  * @Jeng {มาใส่วันที่ด้วย} created
  */
 package Dummy.Maps;
@@ -14,50 +15,71 @@ public class Map extends GameObject {
     /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
     private final int rows = 10; // ความกว้าง
     private final int cols = 10; // ความสูง
-    private final District district;
-    private final City city;
-    private final District[][] board; // array ของช่องแต่ละช่องว่าเป็น city หรือ water
+    private int citiesCount = 4;
+    private int districtCount = 2;
+    private int maxCitiesPerDistrict = 6;
+    private int maxGridPerCties = 12;
+    private final Grid[][] board; // array ของช่องแต่ละช่องว่าเป็น city หรือ water
 
     public Map() {
         super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE);
-        district = new District(10, 10);
-        city = new City("Kuy_Jeng",1, 1, 1, 2, 10);
         board = GenerateMap();
     }
 
-    private District[][] GenerateMap() {
-        District[][] grid = new District[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                grid[i][j] = district;
-            }
-        }
-        int currentX = rows / 2;
-        int currentY = cols / 2;
+    private Grid[][] GenerateMap() {
+        Grid[][] grid = new Grid[rows][cols];
 
-        int tilesCreated = 1;
         Random random = new Random();
+        //generate the city on grid
+        for (int i = 0; i < citiesCount; i++) {
+            City city = new City("City Test : " + i, 1, 1, 1, 1);
 
-        int x = 0, y = 0;
-
-        // สามารถเปลี่ยนจำนวนช่องที่เป็น water ได้ตรงนี้
-        while (tilesCreated < 15) {
-            int direction = random.nextInt(4);
-            if (direction == 0) { y = currentY - 1; }
-            else if (direction == 1) {  y = currentY + 1; }
-            else if (direction == 2) { x = currentX - 1; }
-            else { x = currentX + 1; }
-
-            if (x >= 0 && x < rows && y >= 0 && y < cols) {
-                currentX = x;
-                currentY = y;
-                if (grid[x][y] != null) {
-                    grid[x][y] = null;
-                    tilesCreated++;
-                }
-            }
+            //random color
+            int r = random.nextInt(1, 5) * 255 / 5;
+            int g = random.nextInt(1, 5) * 255 / 5;
+            int b = random.nextInt(1, 5) * 255 / 5;
+            city.setColor(new Color(r, g, b));
+            //random start position inside map
+            Point startPosition = new Point(random.nextInt(grid.length), random.nextInt(grid[0].length));
+            setCityOnGridMapByRandomWalk(grid, city, random.nextInt(1, maxGridPerCties), startPosition);
         }
         return grid;
+    }
+
+    /**
+     * set the `City` on grid map(2D Array) by random walk algorithm
+     *
+     * @param city          the city want to set on gridMap.
+     * @param grid          grid Map.
+     * @param gridCount     amount of grid on map that want to set city in.
+     * @param startPosition start position of walker in grid map
+     */
+    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition) {
+
+        int x = startPosition.x;
+        int y = startPosition.y;
+
+        Random random = new Random();
+        int tilesCreated = 1;
+        while (tilesCreated < gridCount) {
+
+            // random direction
+            int rX = random.nextInt(-1, 2), rY = random.nextInt(-1, 2);
+            if (rX == 0) y += rY;
+            else x += rX;
+            //modulation for looping position for prevent walking out of map boundaries.
+            //using Math.abs() for preventing negative numbers. ex. x = -1, y = 1 -> array have no index -1
+            x = Math.abs(x) % grid.length;
+            y = Math.abs(y) % grid[0].length;
+
+            //if this grid doesn't have a city -> set the city to this grid
+            if (grid[x][y] == null) {
+                grid[x][y] = new Grid(city, null);
+
+                //notify that this grid is have set city on.
+                tilesCreated++;
+            }
+        }
     }
 
     private Path2D.Double createHexagon(double x, double y, double radius) {
@@ -131,18 +153,20 @@ public class Map extends GameObject {
                 Path2D.Double hexagon = createHexagon(cx, cy, radius);
 
                 // 4. วาดรูปหกเหลี่ยม
+                // set color of grid
                 if (board[i][j] == null) {
                     g2d.setColor(Color.BLUE);
                 } else {
-                    g2d.setColor(Color.GREEN);
+                    g2d.setColor(board[i][j].getCity().getColor());
                 }
+                // drawing
                 g2d.fill(hexagon);
                 if (board[i][j] != null) {
                     g2d.setColor(Color.BLACK);
                 } else {
                     g2d.setColor(Color.RED);
                 }
-                g2d.setStroke(new BasicStroke(3));
+//                g2d.setStroke(new BasicStroke(3));
                 g2d.draw(hexagon);
             }
         }

@@ -1,15 +1,18 @@
 package Dummy.Maps;
 
+import java.awt.*;
+import java.util.ArrayList;
+
 public class City {
     private final String cityName;
     public PoliticsStats stats;
     public int population;
-    public Grid[] Grids;
+    public ArrayList<Grid> Grids = new ArrayList<Grid>();
+    private Color color;
 
-    public City(String cityName, int facility, int environment, int economy, int population, int size) {
+    public City(String cityName, int facility, int environment, int economy, int population) {
         this.stats = new PoliticsStats(facility, environment, economy);
         this.population = population;
-        Grids = new Grid[size];
         this.cityName = cityName;
     }
 
@@ -26,6 +29,15 @@ public class City {
             printStats();
         }
     }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
     // wait for business logic
     public void updatePopulation(PoliticsStats cardStats) {
         return;
