@@ -58,7 +58,7 @@ public class MainMenu extends Screen implements ActionListener {
         // นี่คือส่วนปุ่มต่างๆ
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false); // ทำให้ปุ่มโปร่งใสเพื่อเห็นพื้นหลัง
-        buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
+        buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));
 
         // สมมติระยะตัดขอบปุ่มเป็น 10 พิกเซล
         startBtn = new NineSliceButton("Start Game", btnNormalImg, 6, 6, 6, 6);
@@ -71,6 +71,11 @@ public class MainMenu extends Screen implements ActionListener {
         optionBtn.addActionListener(this);
         HoverButton(optionBtn);
 
+        creditBtn = new NineSliceButton("Credit", btnNormalImg, 6, 6, 6, 6);
+        creditBtn.setPreferredSize(new Dimension(120, 30));// เอาไว้กำหนดขนาดของปุ่ม
+        creditBtn.addActionListener(this);
+        HoverButton(creditBtn);
+
         exitBtn = new NineSliceButton("Exit", btnNormalImg, 6, 6, 6, 6);
         exitBtn.setPreferredSize(new Dimension(120, 30));// เอาไว้กำหนดขนาดของปุ่ม
         exitBtn.addActionListener(this);
@@ -78,6 +83,7 @@ public class MainMenu extends Screen implements ActionListener {
 
         buttonPanel.add(startBtn);
         buttonPanel.add(optionBtn);
+        buttonPanel.add(creditBtn);
         buttonPanel.add(exitBtn);
 
         JPanel wrapper = new JPanel(new GridBagLayout());
