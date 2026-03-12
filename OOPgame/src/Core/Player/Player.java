@@ -7,15 +7,16 @@ import java.util.*;
 
 public class Player {
     private String playerId;
+    private String playerName;
     private boolean isLocal;
     private int coin;
     private ArrayList<ActionCard> actionCards;
     private ArrayList<PolicyCard> policyCards;
     private String[] cityOwn;
-//    private ActionCardHolderUI: CardHolderUI  ???
 
-    public Player(String playerId, boolean isLocal) {
+    public Player(String playerId, String playerName, boolean isLocal) {
         this.playerId = playerId;
+        this.playerName = playerName;
         this.isLocal = isLocal;
         this.coin = 100; // setไว้ 100 ก่อน
         this.actionCards = new ArrayList<>();
@@ -23,7 +24,18 @@ public class Player {
         this.cityOwn = new String[0];
     }
 
-//    method
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
     public void DrawCard() {
     }
 
@@ -39,11 +51,41 @@ public class Player {
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
         json.put("playerId", playerId);
+        json.put("playerName", playerName);
         json.put("coin", coin);
-//        json.put("cityOwn", Arrays.asList(cityOwn));
+
+        org.json.JSONArray cityArray = new org.json.JSONArray();
+        for (String city : cityOwn) {
+            cityArray.put(city);
+        }
+        json.put("cityOwn", cityArray);
+
+        org.json.JSONArray actionArray = new org.json.JSONArray();
+        for (ActionCard card : actionCards) {
+            actionArray.put(card.getName());
+        }
+        json.put("actionCards", actionArray);
+
+        org.json.JSONArray policyArray = new org.json.JSONArray();
+        for (PolicyCard card : policyCards) {
+            policyArray.put(card.getName());
+        }
+        json.put("policyCards", policyArray);
+
         return json;
     }
 
-    public void updateFromJSON() {
+    public void updateFromJSON(JSONObject data) {
+        if (data.has("playerName")) {
+            this.playerName = data.getString("playerName");
+        }
+        if (data.has("coin")) {
+            this.coin = data.getInt("coin");
+        }
+        if (data.has("cityOwn")) {
+            org.json.JSONArray cityArray = data.getJSONArray("cityOwn");
+            this.cityOwn = new String[cityArray.length()];
+            // ค่อยๆ
+        }
     }
 }

@@ -29,7 +29,42 @@ public class GameServerManager {
         }
     }
 
+    public void sendToClient(String targetPlayerId, JSONObject mes) {
+        for (ClientHandler client : clients) {
+            if (client.getPlayerId() != null && client.getPlayerId().equals(targetPlayerId)) {
+                client.sendMessage(mes);
+                break;
+            }
+        }
+    }
+
     public synchronized void processAction(String playerId, JSONObject action) {
+        if (!action.has("actionType")) return;
+        String type = action.getString("actionType");
+
+        if (type.equals("JOIN")) {
+            // กันชื่อแตก ถ้าเกิดหาชื่อไม่เจอ ใช้ Unknown- id 4 ตัว
+            String pName = action.optString("playerName", "Unknown-" + playerId.substring(0, 4));
+            
+            // สร้างตัวละครแล้วเพิ่มลงใน gameState
+            Core.Player.Player newPlayer = new Core.Player.Player(playerId, pName, false);
+            gameState.getPlayers().add(newPlayer);
+            System.out.println(pName + " ("+ playerId +") joined the game.");
+
+            // ส่งข้อมูลยืนยันรับเข้าห้องให้คนที่เข้ามา
+            JSONObject ack = new JSONObject();
+            ack.put("type", "JOIN_ACK");
+            ack.put("assignedId", playerId);
+            sendToClient(playerId, ack);
+
+            broadcast(gameState.generateSyncData());
+        } else if (type.equals("END_TURN")) {
+            nextTurn();
+        } else if (type.equals("USE_CARD")) {
+            // Logic อัพเดตเมือง ???
+
+            broadcast(gameState.generateSyncData());
+        }
     }
 
     public void removeClient(String playerId) {
@@ -43,6 +78,9 @@ public class GameServerManager {
     }
 
     public synchronized void nextTurn() {
+        gameState.incrementPhaseCounter();
+
+        broadcast(gameState.generateSyncData());
     }
 
 }
