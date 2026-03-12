@@ -1,11 +1,12 @@
 package Dummy.Maps;
 
+import java.util.ArrayList;
+
 public class District {
-    public City[] cities;
+    public ArrayList<City> cities;
     public EncounterEvent[] event;
 
     public District(int cities, int event) {
-        this.cities = new City[cities];
         this.event = new EncounterEvent[event];
     }
 }

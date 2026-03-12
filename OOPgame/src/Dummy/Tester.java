@@ -19,7 +19,7 @@ import Dummy.Maps.PoliticsStats;
 public class Tester {
     public static void CardsTestingOnScene(Scene2D scene2D){
 //        Citybanna Bkk = new Citybanna("Bangkok", 50, 50, 50);
-        City KuyJang = new City("Kuy_Jeng", 50, 50, 50, 100,10);
+        City KuyJang = new City("Kuy_Jeng", 50, 50, 50, 100);
         CardSlot cardSlot = new CardSlot(0, 0, 100, 150, KuyJang);
         CardSlot policySlot = new CardSlot(150, 0, 100, 150, KuyJang);
         ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30));
