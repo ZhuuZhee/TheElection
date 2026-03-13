@@ -17,6 +17,11 @@ public class District {
 
     public District(String districtName) {
         this.districtName = districtName;
+        cities = new ArrayList<>();
+    }
+
+    public String getDistrictName() {
+        return districtName;
     }
 
     public void setColor(Color color) {
@@ -25,5 +30,22 @@ public class District {
 
     public Color getColor() {
         return color;
+    }
+
+    public void addCity(City city) {
+        cities.add(city);
+    }
+
+    public City getCity(String cityName) {
+        for (City city : cities) {
+            if (city.getCityName().equals(cityName)) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<City> getCities() {
+        return cities;
     }
 }

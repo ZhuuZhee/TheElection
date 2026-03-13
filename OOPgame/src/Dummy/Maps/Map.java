@@ -55,13 +55,20 @@ public class Map extends GameObject {
             int b = random.nextInt(1, 5) * 255 / 5;
             city.setColor(new Color(r, g, b));
 
+            District district = districts.get(random.nextInt(districtCount));
+            district.addCity(city);
             //random start position inside map
             Point startPosition = new Point(random.nextInt(grid.length), random.nextInt(grid[0].length));
-            setCityOnGridMapByRandomWalk(grid, city, districts.get(random.nextInt(districtCount)), random.nextInt(1, maxGridPerCties), startPosition);
+            setCityOnGridMapByRandomWalk(grid, city, district, random.nextInt(1, maxGridPerCties), startPosition);
         }
 
+        // check District and Cities in District
         for (District district : districts) {
-            System.out.println(district.districtName + " : " + district.getColor());
+            System.out.println(district.getDistrictName());
+            for (City city : districts.get(districts.indexOf(district)).getCities()) {
+                System.out.println(city.getCityName());
+                city.printStats();
+            }
         }
 
         return grid;
@@ -185,7 +192,6 @@ public class Map extends GameObject {
                 g2d.fill(hexagon);
                 if (board[i][j] != null) {
                     g2d.setColor(board[i][j].getDistrict().getColor());
-                    System.out.println(board[i][j].getDistrict().getColor());
                 } else {
                     g2d.setColor(Color.BLACK);
                 }
