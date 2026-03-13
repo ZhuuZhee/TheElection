@@ -10,15 +10,17 @@ import ZhuzheeEngine.Scene.GameObject;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Map extends GameObject {
     /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
     private final int rows = 10; // ความกว้าง
     private final int cols = 10; // ความสูง
-    private int citiesCount = 4;
-    private int districtCount = 2;
-    private int maxCitiesPerDistrict = 6;
-    private int maxGridPerCties = 12;
+    private final int citiesCount = 9;
+    private final int districtCount = 2;
+//    private int maxCitiesPerDistrict = 6;
+    private final int maxGridPerCties = 12;
+    private City[] cities;
     private final Grid[][] board; // array ของช่องแต่ละช่องว่าเป็น city หรือ water
 
     public Map() {
@@ -30,19 +32,38 @@ public class Map extends GameObject {
         Grid[][] grid = new Grid[rows][cols];
 
         Random random = new Random();
+        ArrayList<District> districts = new ArrayList<>(districtCount);
+
+        while (districts.size() < districtCount) {
+            int r = random.nextInt(1, 5) * 255 / 5;
+            int g = random.nextInt(1, 5) * 255 / 5;
+            int b = random.nextInt(1, 5) * 255 / 5;
+            District district = new District("District Test : " + districts.size());
+            district.setColor(new Color(r, g, b));
+            districts.add(district);
+        }
+
         //generate the city on grid
         for (int i = 0; i < citiesCount; i++) {
-            City city = new City("City Test : " + i, 1, 1, 1, 1);
-
+            City city = new City("City Test : " + i, random.nextInt(1, 5),
+                                                            random.nextInt(1, 5),
+                                                            random.nextInt(1, 5),
+                                                            random.nextInt(1, 5));
             //random color
             int r = random.nextInt(1, 5) * 255 / 5;
             int g = random.nextInt(1, 5) * 255 / 5;
             int b = random.nextInt(1, 5) * 255 / 5;
             city.setColor(new Color(r, g, b));
+
             //random start position inside map
             Point startPosition = new Point(random.nextInt(grid.length), random.nextInt(grid[0].length));
-            setCityOnGridMapByRandomWalk(grid, city, random.nextInt(1, maxGridPerCties), startPosition);
+            setCityOnGridMapByRandomWalk(grid, city, districts.get(random.nextInt(districtCount)), random.nextInt(1, maxGridPerCties), startPosition);
         }
+
+        for (District district : districts) {
+            System.out.println(district.districtName + " : " + district.getColor());
+        }
+
         return grid;
     }
 
@@ -54,7 +75,7 @@ public class Map extends GameObject {
      * @param gridCount     amount of grid on map that want to set city in.
      * @param startPosition start position of walker in grid map
      */
-    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition) {
+    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, District district, int gridCount, Point startPosition) {
 
         int x = startPosition.x;
         int y = startPosition.y;
@@ -74,7 +95,7 @@ public class Map extends GameObject {
 
             //if this grid doesn't have a city -> set the city to this grid
             if (grid[x][y] == null) {
-                grid[x][y] = new Grid(city, null);
+                grid[x][y] = new Grid(city, district);
 
                 //notify that this grid is have set city on.
                 tilesCreated++;
@@ -155,18 +176,20 @@ public class Map extends GameObject {
                 // 4. วาดรูปหกเหลี่ยม
                 // set color of grid
                 if (board[i][j] == null) {
-                    g2d.setColor(Color.BLUE);
+                    g2d.setColor(Color.WHITE);
                 } else {
                     g2d.setColor(board[i][j].getCity().getColor());
                 }
+
                 // drawing
                 g2d.fill(hexagon);
                 if (board[i][j] != null) {
-                    g2d.setColor(Color.BLACK);
+                    g2d.setColor(board[i][j].getDistrict().getColor());
+                    System.out.println(board[i][j].getDistrict().getColor());
                 } else {
-                    g2d.setColor(Color.RED);
+                    g2d.setColor(Color.BLACK);
                 }
-//                g2d.setStroke(new BasicStroke(3));
+                g2d.setStroke(new BasicStroke(3));
                 g2d.draw(hexagon);
             }
         }
