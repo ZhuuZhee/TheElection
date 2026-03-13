@@ -6,11 +6,13 @@ import java.net.Socket;
 import java.util.UUID;
 
 public class ClientHandler implements Runnable {
+    private static final long PONG_TIMEOUT_MS = 10000;
     private Socket socket;
     private PrintWriter output;
     private BufferedReader input;
     private GameServerManager server;
     private String playerId;
+    private long lastPongTime = System.currentTimeMillis();
 
     public ClientHandler(Socket s, GameServerManager svr) {
         this.socket = s;
@@ -23,6 +25,14 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void updatePongTime() {
+        lastPongTime = System.currentTimeMillis();
+    }
+
+    public boolean isTimedOut() {
+        return System.currentTimeMillis() - lastPongTime > PONG_TIMEOUT_MS;
     }
 
     public void run() {
@@ -52,5 +62,15 @@ public class ClientHandler implements Runnable {
 
     public String getPlayerId() {
         return playerId;
+    }
+
+    public void disconnect() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

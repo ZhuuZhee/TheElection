@@ -80,12 +80,33 @@ public class GameClientManager {
                 // เริ่มเกม
                 ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.MAIN_SCENE);
             }
+            else if (type.equals(NetworkProtocol.HOST_LEFT.name())) {
+                System.out.println("Host left the room");
+                Core.ZhuzheeGame.CLIENT = null;
+                // กลับ LOBBY_MENU
+                ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.LOBBY_MENU);
+            }
+            else if (type.equals(NetworkProtocol.PING.name())) {
+                JSONObject pong = new JSONObject();
+                pong.put("actionType", NetworkProtocol.PONG.name());
+                sendAction(pong);
+            }
         }
     }
 
     public void sendAction(JSONObject action) {
         if (out != null) {
             out.println(action.toString());
+        }
+    }
+
+    public void disconnect() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
         }
     }
 }

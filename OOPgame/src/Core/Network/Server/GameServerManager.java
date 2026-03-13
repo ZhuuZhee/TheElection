@@ -6,22 +6,70 @@ import java.util.*;
 import org.json.JSONObject;
 
 public class GameServerManager {
+    private static final int PING_INTERVAL_MS = 5000;
     private ServerSocket serverSocket;
-    private List<ClientHandler> clients = new ArrayList<>(); //
+    private List<ClientHandler> clients = new ArrayList<>();
     private GameState gameState = new GameState();
-    private boolean isStarted = false;
+    private boolean running = false;
 
     public void startServer(int port) {
+        running = true;
+        // Ping loop ลบคนที่ timeout
+        new Thread(() -> {
+            while (running) {
+                try { Thread.sleep(PING_INTERVAL_MS); } catch (InterruptedException ex) { break; }
+
+                org.json.JSONObject ping = new org.json.JSONObject();
+                ping.put("type", NetworkProtocol.PING.name());
+                broadcast(ping);
+
+                List<String> timedOut = new ArrayList<>();
+                for (ClientHandler c : new ArrayList<>(clients)) {
+                    if (c.isTimedOut()) timedOut.add(c.getPlayerId());
+                }
+                for (String id : timedOut) {
+                    System.out.println("Ping timeout: " + id);
+                    removeClient(id);
+                }
+            }
+        }).start();
+
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("Server start");
-            while (true) {
+            while (running) {
                 Socket socket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(socket, this);
                 clients.add(handler);
                 new Thread(handler).start();
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            if (running) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Host ออก stopServer
+    public void stopServer() {
+        running = false;
+        try {
+            // บอก client ว่า Host ออก
+            org.json.JSONObject kickPacket = new org.json.JSONObject();
+            kickPacket.put("type", NetworkProtocol.HOST_LEFT.name());
+            broadcast(kickPacket);
+
+            for (ClientHandler client : clients) {
+                client.disconnect();
+            }
+            clients.clear();
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+            System.out.println("Server stop");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void broadcast(JSONObject mes) {
@@ -64,6 +112,14 @@ public class GameServerManager {
             org.json.JSONObject startPacket = new org.json.JSONObject();
             startPacket.put("type", NetworkProtocol.START_GAME.name());
             broadcast(startPacket);
+        } else if (type.equals(NetworkProtocol.PONG.name())) {
+            // อัพเดตเวลา PONG ของ client คนนี้
+            for (ClientHandler c : clients) {
+                if (c.getPlayerId() != null && c.getPlayerId().equals(playerId)) {
+                    c.updatePongTime();
+                    break;
+                }
+            }
         } else if (type.equals(NetworkProtocol.END_TURN.name())) {
             nextTurn();
         } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
@@ -74,13 +130,26 @@ public class GameServerManager {
     }
 
     public void removeClient(String playerId) {
-        clients.removeIf(client -> {
-            if (client.getPlayerId() != null && client.getPlayerId().equals(playerId)) {
-                return true;
+        ClientHandler target = null;
+        for (ClientHandler c : clients) {
+            if (c.getPlayerId() != null && c.getPlayerId().equals(playerId)) {
+                target = c;
+                break;
             }
-            return false;
-        });
+        }
+        if (target != null) clients.remove(target);
+
+        Core.Player.Player targetPlayer = null;
+        for (Core.Player.Player p : gameState.getPlayers()) {
+            if (p.getPlayerId().equals(playerId)) {
+                targetPlayer = p;
+                break;
+            }
+        }
+        if (targetPlayer != null) gameState.getPlayers().remove(targetPlayer);
+
         System.out.println("Player removed: " + playerId);
+        broadcast(gameState.generateSyncData());
     }
 
     public synchronized void nextTurn() {

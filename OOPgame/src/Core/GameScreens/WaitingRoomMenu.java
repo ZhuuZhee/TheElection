@@ -152,8 +152,13 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         }
         else if (e.getSource() == leaveBtn) {
             refreshTimer.stop();
+            if (ZhuzheeGame.SERVER != null) {
+                ZhuzheeGame.SERVER.stopServer();
+                ZhuzheeGame.SERVER = null;
+            } else if (ZhuzheeGame.CLIENT != null) {
+                ZhuzheeGame.CLIENT.disconnect();
+            }
             ZhuzheeGame.CLIENT = null;
-            ZhuzheeGame.SERVER = null;
             Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);
         }
     }
