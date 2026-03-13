@@ -69,8 +69,8 @@ public class Map extends GameObject {
                 System.out.println(city.getCityName());
                 city.printStats();
             }
+            System.out.println();
         }
-
         return grid;
     }
 
