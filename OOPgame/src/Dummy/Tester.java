@@ -7,11 +7,18 @@ import Core.GameScreens.MainMenu;
 import Core.ZhuzheeGame;
 import Dummy.Maps.City;
 import Core.UI.Shop;
+import ZhuzheeEngine.Application;
+import ZhuzheeEngine.Scene.Camera2D;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 import Core.Cards.PolicyCardA;
 import Dummy.Maps.Map;
 
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 import Dummy.Maps.PoliticsStats;
@@ -54,4 +61,47 @@ public class Tester {
         cards.add(new PolicyCardA("Blue Policy", 0, 0));
         new Shop(ZhuzheeGame.MAIN_SCENE,cards,100);
     }
+
+    private Point mousePoint = new Point();
+    public void TestingCamera(Scene2D MAIN_SCENE){
+
+        //dragging camera
+        MAIN_SCENE.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
+                    // Calculate delta x,y
+                    int dx = e.getX() - mousePoint.x;
+                    int dy = e.getY() - mousePoint.y;
+
+                    // Update camera based on pixel movement
+                    MAIN_SCENE.getCamera().translate(-dx, -dy);
+
+                    // Update reference point
+                    mousePoint = e.getPoint();
+                    MAIN_SCENE.repaint();
+                }
+            }
+        });
+        //update mouse position on new dragging
+        MAIN_SCENE.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
+                    mousePoint = e.getPoint();
+                }
+            }
+        });
+
+        //zooming
+        MAIN_SCENE.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                var cam = MAIN_SCENE.getCamera();
+                System.out.println(cam.getZoom());
+                cam.setZoom(cam.getZoom() + e.getWheelRotation() * Application.getDeltaTime());
+            }
+        });
+    }
+
 }

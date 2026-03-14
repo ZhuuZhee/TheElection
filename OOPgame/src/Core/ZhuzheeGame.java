@@ -8,8 +8,14 @@ import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
 /// Game Logic Handler
-public class ZhuzheeGame implements ApplicationAdapter{
+public class ZhuzheeGame implements ApplicationAdapter {
     public static Scene2D MAIN_SCENE;
     public static MainMenu MAIN_MENU;
 
@@ -28,15 +34,15 @@ public class ZhuzheeGame implements ApplicationAdapter{
         Application.setMainFrameTitle("Zhuzhee The Game");
 
         MAIN_SCENE = new Scene2D();
-        MAIN_MENU = new MainMenu();
-        LOBBY_MENU = new Core.GameScreens.LobbyMenu();
-        CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
-        JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
-        WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
-        OPTION_MENU = new OptionMenu();
+//        MAIN_MENU = new MainMenu();
+//        LOBBY_MENU = new Core.GameScreens.LobbyMenu();
+//        CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
+//        JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
+//        WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
+//        OPTION_MENU = new OptionMenu();
         //set current screen
-        Screen.ChangeScreen(MAIN_MENU);
-//        Screen.ChangeScreen(MAIN_SCENE);
+//        Screen.ChangeScreen(MAIN_MENU);
+        Screen.ChangeScreen(MAIN_SCENE);
 
         //test
 //        Tester.MainMenu(screenManager);
@@ -45,6 +51,7 @@ public class ZhuzheeGame implements ApplicationAdapter{
         Tester.MapTest();
 //        Tester.ShopTest();
 //        Tester.AudioManagerTesterInitialize();
+        new Tester().TestingCamera(MAIN_SCENE);
     }
 
     @Override
@@ -53,7 +60,7 @@ public class ZhuzheeGame implements ApplicationAdapter{
     }
 
     @Override
-    public void render(){
+    public void render() {
         Screen.currentScreen.render();
     }
 
@@ -61,5 +68,4 @@ public class ZhuzheeGame implements ApplicationAdapter{
     public void dispose() {
 
     }
-
 }

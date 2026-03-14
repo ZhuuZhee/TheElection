@@ -18,16 +18,16 @@ public class Grid extends GameObject{
         setCity(city);
         setDistrict(district);
         Scene2D scene = getScene();
-        scene.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                System.out.println("Pressed");
-            }
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                System.out.println("Move");
-            }
-        });
+//        scene.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//                System.out.println("Pressed");
+//            }
+//            @Override
+//            public void mouseMoved(MouseEvent e) {
+//                System.out.println("Move");
+//            }
+//        });
     }
 
     public District getDistrict() {
