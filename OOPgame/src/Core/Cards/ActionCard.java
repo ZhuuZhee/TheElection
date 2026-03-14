@@ -4,9 +4,8 @@
 package Core.Cards;
 import Dummy.*;
 import Dummy.Maps.*;
-import ZhuzheeEngine.Scene.SceneObject;
+import ZhuzheeEngine.Scene.GameObject;
 
-import java.util.List;
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
     private static final int CARD_WIDTH = 100;
@@ -37,7 +36,7 @@ public class ActionCard extends Card {
         // if slot have city stat --> add
         if (targetCity != null) {
             // find card in Scene
-            for (SceneObject obj : scene.getGameObjects()) {
+            for (GameObject obj : scene.getGameObjects()) {
                 // check if obj --> Policy
                 if (obj instanceof PolicyCard) {
                     // แปลงกลับเป็น PassiveCard เพื่อเรียกใช้ isInSlot() และ onActionCardPlayed()

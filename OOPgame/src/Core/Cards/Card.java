@@ -132,7 +132,7 @@ public abstract class Card extends GameObject {
     private CardSlot getCardSlotOnBottom(){
         Rectangle cardRect = new Rectangle(position.x, position.y, size.width, size.height);
         // ดึง GameObjects ทั้งหมดจาก Scene เพื่อหา Slot
-        for (SceneObject obj : scene.getGameObjects()) {
+        for (GameObject obj : scene.getGameObjects()) {
             if (!(obj instanceof CardSlot)) continue;
 
             Rectangle slotMagneticField = new Rectangle(

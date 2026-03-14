@@ -1,39 +1,33 @@
 package ZhuzheeEngine.Scene;
 
-import Core.Cards.Card;
-import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Screen;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 public class Scene2D extends Screen {
-    protected ArrayList<SceneObject> sceneObjects;
-    private Point origin = new Point(0,0);
+    protected ArrayList<GameObject> gameObjects;
     /// can access this object by using Scene.Instance (this is called Singleton)
 
     public Scene2D() {
-        sceneObjects = new ArrayList<>();
+        gameObjects = new ArrayList<>();
         setLayout(new BorderLayout());
     }
 
-    public void register(SceneObject sceneObject) {
-        sceneObjects.add(sceneObject);
+    public void register(GameObject gameObject) {
+        gameObjects.add(gameObject);
     }
-    public void remove(SceneObject sceneObject){
-        sceneObjects.remove(sceneObject);
-    }
-    public void SetSceneOrigin(Point newPoint){
-        origin = newPoint;
+    public void remove(GameObject gameObject){
+        gameObjects.remove(gameObject);
     }
     /// Getter เพื่อให้ Core.Cards สามารถเข้าถึง List ไปเช็ค Slot ได้
-    public ArrayList<SceneObject> getGameObjects() {
-        return sceneObjects;
+    public ArrayList<GameObject> getGameObjects() {
+        return gameObjects;
     }
 
     /// sorting rendering squences of gameObjects by z index
     public void sortGameObjects() {
-        sceneObjects.sort((o1, o2) -> Float.compare(o1.getZIndex(), o2.getZIndex()));
+        gameObjects.sort((o1, o2) -> Float.compare(o1.getZIndex(), o2.getZIndex()));
     }
 
     private Camera2D camera = new Camera2D();
@@ -48,22 +42,6 @@ public class Scene2D extends Screen {
         return camera.worldToScreen(worldPos, getWidth(), getHeight());
     }
 
-    @Override
-    public Component add(Component comp){
-        super.add(comp);
-
-        if(comp instanceof Canvas){
-            ((Canvas) comp).isAttachWithPanel = true;
-        }
-        return comp;
-    }
-    @Override
-    public void remove(Component comp){
-        super.remove(comp);
-        if(comp instanceof Canvas){
-            ((Canvas) comp).isAttachWithPanel = false;
-        }
-    }
     //--------------------------------------------------------------------
     //------- this is the main update method for scene! (DO NOT CHANGE) ------------
     //--------------------------------------------------------------------
@@ -84,10 +62,11 @@ public class Scene2D extends Screen {
             g2d.translate(-camera.getPosition().x, -camera.getPosition().y);
 
             sortGameObjects();
-            ArrayList<SceneObject> objectsCopy = new ArrayList<>(sceneObjects);
-            for (SceneObject obj : objectsCopy) {
-                if(obj.getEnable()) obj.update();
-                if(obj.getVisible()) obj.render(g2d);
+            ArrayList<GameObject> objectsCopy = new ArrayList<>(gameObjects);
+            for (GameObject obj : objectsCopy) {
+
+                // วาด Object ทั่วไป
+                if (obj.getVisible()) obj.render(g2d);
             }
         } finally {
             g2d.dispose();

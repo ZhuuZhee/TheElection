@@ -1,5 +1,6 @@
 package ZhuzheeEngine.Scene;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -8,7 +9,7 @@ import java.awt.image.BufferedImage;
  * Draws a 9-sliced image background. 
  * Allows corners to retain original size while edges and center stretch to fill the component.
  */
-public abstract class NineSliceCanvas extends Canvas {
+public abstract class NineSliceCanvas extends JPanel {
     
     protected BufferedImage sourceImage;
     
@@ -18,8 +19,7 @@ public abstract class NineSliceCanvas extends Canvas {
     protected int topSlice;
     protected int bottomSlice;
 
-    public NineSliceCanvas(Scene2D scene, BufferedImage sourceImage, int left, int right, int top, int bottom) {
-        super(scene);
+    public NineSliceCanvas(BufferedImage sourceImage, int left, int right, int top, int bottom) {
         this.sourceImage = sourceImage;
         this.leftSlice = left;
         this.rightSlice = right;
@@ -28,8 +28,7 @@ public abstract class NineSliceCanvas extends Canvas {
         setOpaque(false); // Make sure the panel itself is transparent
     }
     
-    public NineSliceCanvas(Scene2D scene) {
-        super(scene);
+    public NineSliceCanvas() {
         setOpaque(false);
     }
     

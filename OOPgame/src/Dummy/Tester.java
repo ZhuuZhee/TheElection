@@ -37,9 +37,6 @@ public class Tester {
 //        KuyJang.printStats();
 //        System.out.println("Put 'kuy sega' in to right slot");
     }
-    public static void SampleCanvasTest(Scene2D scene2D){
-        new SampleCanvasUI(scene2D);
-    }
 
     public static AudioManagerTester audioManagerTester;
     public static void AudioManagerTesterInitialize(){

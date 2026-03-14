@@ -61,7 +61,7 @@ public class Camera2D {
         setPosition(new Point(current.x + dx, current.y + dy));
     }
 
-    public void centerCameraOn(SceneObject target) {
+    public void centerCameraOn(GameObject target) {
         if (target != null) {
             // Assuming your SceneObject has a getPosition() returning a Point
             Point targetPos = target.getPosition();

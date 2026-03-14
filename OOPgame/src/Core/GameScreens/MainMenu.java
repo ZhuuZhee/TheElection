@@ -44,7 +44,7 @@ public class MainMenu extends Screen implements ActionListener {
         // สร้าง NineSliceCanvas (เนื่องจากไม่ได้ใช้ใน Scene2D จึงใส่ null
         // ได้เลยหลังจากอัปเดตระบบแล้ว)
         // อย่าลืมกำหนดระยะตัดขอบ (ซ้าย, ขวา, บน, ล่าง) ตามความเหมาะสมของรูปภาพ
-        bgCanvas = new NineSliceCanvas(null, bgImage, 25, 25, 25, 25) {
+        bgCanvas = new NineSliceCanvas(bgImage, 25, 25, 25, 25) {
         };
         bgCanvas.setLayout(new BorderLayout());
 

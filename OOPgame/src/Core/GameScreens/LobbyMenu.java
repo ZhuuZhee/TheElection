@@ -34,7 +34,7 @@ public class LobbyMenu extends Screen implements ActionListener {
             e.printStackTrace();
         }
 
-        bgCanvas = new NineSliceCanvas(null, bgImage, 25, 25, 25, 25) {};
+        bgCanvas = new NineSliceCanvas(bgImage, 25, 25, 25, 25) {};
         bgCanvas.setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Game Lobby");

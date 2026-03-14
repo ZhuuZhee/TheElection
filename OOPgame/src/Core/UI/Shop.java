@@ -1,10 +1,8 @@
 package Core.UI;
 
-import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
-import ZhuzheeEngine.Scene.Canvas;
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.Scene2D;
-import ZhuzheeEngine.Scene.SceneObject;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Shop extends Canvas {
+public class Shop extends JPanel {
 
     // ขนาดของ Shop และ Card
     private static final int SHOP_WIDTH  = 620;
@@ -36,7 +34,6 @@ public class Shop extends Canvas {
     private boolean purchased = false;
 
     public Shop(Scene2D scene, List<PolicyCard> allCards, int playerMoney) {
-        super(scene);
         this.playerMoney  = playerMoney;
 
 //        สุ่มการ์ดมา 3 ใบ
@@ -144,25 +141,6 @@ public class Shop extends Canvas {
         }
     }
 
-
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void update() {
-
-    }
-
-    @Override
-    public void render(Graphics g) { }
-
-    @Override
-    public void onDestroy() {
-
-    }
-
     // สร้าง panel ของการ์ดแต่ละใบ
     private JPanel buildCardPanel(PolicyCard card) {
         JPanel wrapper = new JPanel();
@@ -226,16 +204,6 @@ public class Shop extends Canvas {
         return 100;
     }
 
-    // หา CardSlot ที่ว่างใบแรกบน scene
-    private CardSlot findEmptyPolicySlot() {
-        for (SceneObject obj : scene.getGameObjects()) {
-            if (obj instanceof CardSlot) {
-                return (CardSlot) obj;
-            }
-        }
-        return null;
-    }
-
     // จัดการการซื้อการ์ด → snap card เข้า slot แล้วปิด shop
     private void handleBuy(PolicyCard card) {
         if (purchased) return;
@@ -248,7 +216,7 @@ public class Shop extends Canvas {
         for (PolicyCard c : shopCards) {
             if (c != card) {
                 PolicyCard other = (PolicyCard) c;
-                scene.remove((SceneObject) other);
+                ZhuzheeGame.MAIN_SCENE.remove(other);
             }
         }
 
@@ -263,10 +231,10 @@ public class Shop extends Canvas {
     // ปิดร้านและลบออกจาก scene
     private void closeShop() {
         setVisible(false);
-        scene.remove((Component) this);
-        scene.remove((SceneObject) this);
-        scene.revalidate();
-        scene.repaint();
+        ZhuzheeGame.MAIN_SCENE.remove((Component) this);
+        ZhuzheeGame.MAIN_SCENE.remove( this);
+        ZhuzheeGame.MAIN_SCENE.revalidate();
+        ZhuzheeGame.MAIN_SCENE.repaint();
     }
 
 }

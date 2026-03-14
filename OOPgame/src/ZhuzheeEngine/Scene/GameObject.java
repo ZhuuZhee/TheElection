@@ -2,7 +2,7 @@ package ZhuzheeEngine.Scene;
 
 import java.awt.*;
 
-public class GameObject implements SceneObject {
+public class GameObject {
     protected Point position;
     protected Dimension size;
     protected int zIndex;
@@ -17,58 +17,48 @@ public class GameObject implements SceneObject {
         this.scene = scene;
         scene.register(this);
         start();
+
     }
 
-    @Override
     public Scene2D getScene() {
         return scene;
     }
 
-    @Override
     public int getZIndex() {
         return zIndex;
     }
 
-    @Override
     public void setZIndex(int zIndex) {
         this.zIndex = zIndex;
     }
 
-    @Override
     public Dimension getSize() {
         return size;
     }
 
-    @Override
     public void setSize(Dimension size) {
         this.size = size;
     }
 
-    @Override
     public Point getPosition() {
         return position;
     }
 
-    @Override
     public void setPosition(Point position) {
         this.position = position;
     }
 
-    @Override
     public void setVisible(boolean v) {
         isVisible = v;
     }
 
-    @Override
     public boolean getVisible() {
         return isVisible;
     }
 
-    @Override
     public void setEnable(boolean e){
         isEnable = e;
     }
-    @Override
     public boolean getEnable(){
         return isEnable;
     }
@@ -76,7 +66,6 @@ public class GameObject implements SceneObject {
     public void start() {
     }
 
-    @Override
     public void update() {
 
     }
