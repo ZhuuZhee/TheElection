@@ -12,6 +12,7 @@ public class Player {
     private int coin;
     private ArrayList<ActionCard> actionCards;
     private ArrayList<PolicyCard> policyCards;
+    private ArcanaCard arcanaCard;
     private String[] cityOwn;
 
     public Player(String playerId, String playerName, boolean isLocal) {

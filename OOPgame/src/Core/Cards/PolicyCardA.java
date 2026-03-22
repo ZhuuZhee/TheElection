@@ -4,7 +4,6 @@
 // create policycard for test
 package Core.Cards;
 
-import Dummy.Citybanna;
 import Dummy.Maps.City;
 import Dummy.Maps.PoliticsStats;
 

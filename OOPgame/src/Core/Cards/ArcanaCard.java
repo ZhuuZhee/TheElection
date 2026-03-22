@@ -1,22 +1,43 @@
 /**
- * @Xynezter 10/3/2026 19:30
+ * @Xynezter 14/3/2026 15:03
  */
-/// just create class do nothing
 package Core.Cards;
 
+import Dummy.Maps.City;
+import ZhuzheeEngine.Scene.SceneObject;
+
 public abstract class ArcanaCard extends Card {
-
-    public ArcanaCard(String name, int x, int y, int width, int height) {
-        super(name, x, y, 100, 150);
+    private final int maxCooldown;
+    private int currentCooldown;
+    public ArcanaCard(String name,CardSlot targetSlot, int maxCooldown) {
+        super(name, targetSlot.getPosition().x, targetSlot.getPosition().y, 100, 150);
+        this.maxCooldown = maxCooldown;
+        this.currentCooldown = 0;
     }
+
+    protected abstract void activateSkill();
 
     @Override
-    protected boolean isDroppable(Object bottom) {
-        return false;
+    public final void onMouseClick() {
+        // รอ นับเทริน
+//        if (this.currentCooldown == 0) {
+//            System.out.println("Used skill : " + this.name);
+//            activateSkill();
+//
+//            // Reset cooldown
+//            this.currentCooldown = this.maxCooldown;
+//        } else {
+//            System.out.println(this.name + " Cant use! wait for " + this.currentCooldown + " tern");
+//        }
+        activateSkill();
+        this.currentCooldown = this.maxCooldown;
     }
 
-    @Override
-    protected void onDroppedInSlot(CardSlot slot) {
-        return;
+    // รอ นับเทริน เรียกใช้
+    public void decreaseCooldown() {
+        if (this.currentCooldown > 0) {
+            this.currentCooldown--;
+        }
     }
+
 }

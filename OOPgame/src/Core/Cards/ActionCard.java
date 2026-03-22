@@ -55,6 +55,6 @@ public class ActionCard extends Card {
 
     @Override
     protected boolean isDroppable(Object bottom) {
-        return bottom instanceof Citybanna;
+        return bottom instanceof City;
     }
 }

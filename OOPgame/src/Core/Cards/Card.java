@@ -152,10 +152,12 @@ public abstract class Card extends GameObject {
         position.setLocation(slot.getPosition().x, slot.getPosition().y);
         // เรียก method when card ทับ กับ Magnetic Field ของ slot
     }
-
-    protected abstract boolean isDroppable(Object bottom);
+    /**Xynezter 14/3/2569 14:12 : Update method is non abstract Arcanacards dont need to Override**/
+    protected boolean isDroppable(Object bottom) {
+        return false;
+    }
     // add method for business logic when card DroppedInSlot
-    protected abstract void onDroppedInSlot(CardSlot slot);
+    protected void onDroppedInSlot(CardSlot slot) {}
 
 
     @Override

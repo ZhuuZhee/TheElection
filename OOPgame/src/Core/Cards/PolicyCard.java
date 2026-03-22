@@ -3,6 +3,8 @@
  */
 package Core.Cards;
 
+import Dummy.Maps.City;
+
 public abstract class PolicyCard extends Card {
     protected boolean isInSlot = false;
 
@@ -16,7 +18,7 @@ public abstract class PolicyCard extends Card {
         return isInSlot;
     }
 
-    public abstract void onActionCardPlayed(ActionCard playedCard,Dummy.Maps.City city);
+    public abstract void onActionCardPlayed(ActionCard playedCard, City city);
 
     @Override
     protected void onDroppedInSlot(CardSlot slot) {

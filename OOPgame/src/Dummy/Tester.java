@@ -1,6 +1,7 @@
 package Dummy;
 
 import Core.Cards.ActionCard;
+import Core.Cards.AllArcanaCards.TheFoolCard;
 import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
 import Core.GameScreens.MainMenu;
@@ -27,11 +28,16 @@ public class Tester {
     public static void CardsTestingOnScene(Scene2D scene2D){
 //        Citybanna Bkk = new Citybanna("Bangkok", 50, 50, 50);
         City KuyJang = new City("Kuy_Jeng", 50, 50, 50, 100);
+
         CardSlot cardSlot = new CardSlot(0, 0, 100, 150, KuyJang);
         CardSlot policySlot = new CardSlot(150, 0, 100, 150, KuyJang);
+        CardSlot arcanaSlot = new CardSlot(300, 0, 100, 150, KuyJang);
+
         ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30));
         ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0));
         PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200);
+
+        TheFoolCard theFool = new TheFoolCard(arcanaSlot);
 //        Citybanna myCity = new Citybanna("Bangkok", 50, 50, 50);
         card2.setDraggable(false); // <--- setDraggable # default true
 //        KuyJang.printStats();
