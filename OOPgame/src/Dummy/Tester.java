@@ -5,6 +5,7 @@ import Core.Cards.AllArcanaCards.TheFoolCard;
 import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
 import Core.GameScreens.MainMenu;
+import Core.UI.ActionCardHolderUI;
 import Core.ZhuzheeGame;
 import Dummy.Maps.City;
 import Core.UI.Shop;
@@ -52,7 +53,9 @@ public class Tester {
     public static void MainMenuTest() {
         Screen.ChangeScreen(new MainMenu());
     }
-
+    public static void CardHolderUITest(Scene2D scene2D){
+        new ActionCardHolderUI(scene2D);
+    }
     public static void MapTest() {
         new Map();
     }

@@ -50,8 +50,8 @@ public class Shop extends JPanel {
         setLayout(new BorderLayout());
         setBackground(BG_PANEL);
         setBorder(new LineBorder(CARD_BORDER, 2));
-        setPreferredSize(new Dimension(SHOP_WIDTH, SHOP_HEIGHT));
-        setSize(SHOP_WIDTH, SHOP_HEIGHT);
+//        setPreferredSize(new Dimension(SHOP_WIDTH, SHOP_HEIGHT));
+//        setSize(SHOP_WIDTH, SHOP_HEIGHT);
 
 //        เพิ่มส่วนต่างๆ ของ Shop
         add(buildHeader(),   BorderLayout.NORTH);
@@ -59,19 +59,10 @@ public class Shop extends JPanel {
         add(buildMoneyBar(), BorderLayout.SOUTH);
 
 //        add เข้า scene และวางตรงกลาง
-        scene.setLayout(null);
         scene.add(this);
-
-        SwingUtilities.invokeLater(() -> {
-            setLocation(
-                    (scene.getWidth()  - SHOP_WIDTH)  / 2,
-                    (scene.getHeight() - SHOP_HEIGHT) / 2
-            );
-            scene.revalidate();
-            scene.repaint();
-        });
-
+        scene.revalidate();
         setVisible(true);
+//        scene.repaint();
     }
 
     // สุ่มการ์ดจาก pool

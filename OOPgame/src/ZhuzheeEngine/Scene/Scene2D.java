@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class Scene2D extends Screen {
     protected ArrayList<GameObject> gameObjects;
     /// can access this object by using Scene.Instance (this is called Singleton)
-
     public Scene2D() {
+        super();
         gameObjects = new ArrayList<>();
         setLayout(new BorderLayout());
     }
@@ -48,6 +48,7 @@ public class Scene2D extends Screen {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        revalidate();
         if (!(g instanceof Graphics2D)) return;
 
         Graphics2D g2d = (Graphics2D) g.create();
