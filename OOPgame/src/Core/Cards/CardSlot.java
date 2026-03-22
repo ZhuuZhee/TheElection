@@ -6,7 +6,6 @@ package Core.Cards;
 import Core.ZhuzheeGame;
 import Dummy.Maps.City;
 import ZhuzheeEngine.Scene.GameObject;
-import Dummy.Citybanna;
 import java.awt.*;
 
 public class CardSlot extends GameObject {
@@ -30,7 +29,8 @@ public class CardSlot extends GameObject {
     }
 
     @Override
-    public void render(Graphics g) {
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setStroke(new BasicStroke(
@@ -42,11 +42,11 @@ public class CardSlot extends GameObject {
             0.0f
         ));
         g2d.setColor(SLOT_COLOR);
-        g2d.drawRect(position.x, position.y, size.width, size.height);
+        g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1); // Draw local at 0,0
         g2d.setStroke(new BasicStroke(STROKE_NORMAL_WIDTH));
         FontMetrics fm = g2d.getFontMetrics();
-        int textX = position.x + (size.width - fm.stringWidth(SLOT_TEXT)) / 2;
-        int textY = position.y + (size.height - fm.getHeight()) / 2 + fm.getAscent();
+        int textX = (getWidth() - fm.stringWidth(SLOT_TEXT)) / 2;
+        int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
 
         g2d.drawString(SLOT_TEXT, textX, textY);
     }

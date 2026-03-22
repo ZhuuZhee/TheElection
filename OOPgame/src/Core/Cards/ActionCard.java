@@ -48,7 +48,7 @@ public class ActionCard extends Card {
                 }
             }
             this.ActionOn(targetCity);
-            this.setEnable(false);
+//            this.setEnable(false);
             this.isDraggable = false;
         }
     }

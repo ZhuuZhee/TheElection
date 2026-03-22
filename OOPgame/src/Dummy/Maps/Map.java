@@ -145,9 +145,7 @@ public class Map extends GameObject {
     }
 
     @Override
-    public void render(Graphics g) {
-        super.render(g);
-
+    public void paintComponent(Graphics g) {
         // Guard against null board - prevent NPE
         if (gridMap == null) {
             System.err.println("Warning: Map.board is null, cannot render");
@@ -180,8 +178,8 @@ public class Map extends GameObject {
                 //บวกตำแหน่งของ GameObject นี้ เพื่อใช้เป็นจุดอ้างอิง
                 // ex. เมื่อขยับ position gameObject นี้เป็น Point(20,5) -> ตำแหน่งของ grid แรกจะเป็น 20, 5
                 // (ถ้าไม่บวก GameObject.position จะเป็น 0,0 ทั้งที่ตำแหน่ง GameObject ขยับเป็น 20,5 แล้ว)
-                x += position.x;
-                y += position.y;
+//                x += position.x;
+//                y += position.y;
 
                 // 2. สลับฟันปลา: ถ้าเป็นแถวคี่ ให้ขยับแกน x ถอยไปทางขวาครึ่งช่อง
                 if (i % 2 == 0) {

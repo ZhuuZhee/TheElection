@@ -41,7 +41,7 @@ public class Shop extends JPanel {
 
 //        ซ่อนการ์ดทุกใบออกจาก scene ก่อน จะวาดเองใน buildCardArea
         for (PolicyCard card : shopCards) {
-            card.setEnable(false);
+//            card.setEnable(false);
             card.setVisible(false);
             card.setDraggable(false);
         }
@@ -124,7 +124,7 @@ public class Shop extends JPanel {
                 Graphics2D cardG = (Graphics2D) g2d.create();
                 cardG.translate(cardX - shopCards.get(i).getPosition().x,
                         cardY - shopCards.get(i).getPosition().y);
-                shopCards.get(i).render(cardG);
+                shopCards.get(i).paintComponent(cardG);
                 cardG.dispose();
             }
         } finally {
@@ -214,7 +214,7 @@ public class Shop extends JPanel {
 //      show bought card
         card.setPosition(new Point(0,200));
         card.setVisible(true);
-        card.setEnable(true);
+//        card.setEnable(true);
 
         closeShop();
     }
