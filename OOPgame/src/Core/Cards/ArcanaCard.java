@@ -4,7 +4,6 @@
 package Core.Cards;
 
 import Dummy.Maps.City;
-import ZhuzheeEngine.Scene.SceneObject;
 
 public abstract class ArcanaCard extends Card {
     private final int maxCooldown;
