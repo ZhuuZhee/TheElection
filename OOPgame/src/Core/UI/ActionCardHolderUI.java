@@ -1,3 +1,6 @@
+/**
+ * @Xynezter 23/3/2026 16:54
+ */
 package Core.UI;
 
 import Core.Cards.Card;
@@ -41,39 +44,10 @@ public class ActionCardHolderUI extends Canvas {
 
         onResize(scene.getWidth(),scene.getHeight());
 
-        // เพิ่ม Listener ที่ Scene เพื่อดักจับจังหวะ "ปล่อยเมาส์" (Drop)
-        // เปลี่ยนมาใช้ Listener ที่ UI (this) เพื่อดักจับการเข้า/ออกพื้นที่ของเมาส์
-        this.addMouseListener(new MouseAdapter() {
-            private Card enteredCard;
+        cardContainer.setOpaque(false);
+        add(cardContainer, BorderLayout.CENTER);
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // enter -> ใส่cardลงใน enteredCard ถ้ามีการลากอยู่
-                System.out.println("Enter Card Holder");
-                if (Card.CURRENT_GRABBED_CARD != null) {
-                    enteredCard = Card.CURRENT_GRABBED_CARD;
-                }
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // exit -> เอาcardออก
-                System.out.println("Exit Card Holder");
-                enteredCard = null;
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // เช็ค enteredCard แทนการเช็ค Bounds
-                System.out.println("Drop at Card Holder");
-                if (enteredCard != null) {
-                    addCard(enteredCard);
-                    Card.CURRENT_GRABBED_CARD = null;
-                    enteredCard = null;
-                }
-            }
-        });
-
+        onResize(scene.getWidth(),scene.getHeight());
 
         scene.revalidate();
         setVisible(true);
@@ -85,6 +59,7 @@ public class ActionCardHolderUI extends Canvas {
         setBounds(0, height - panelHeight, width, panelHeight);
         revalidate();
     }
+
     public void addCard(Card card){
         if(cards.contains(card)) return;
 

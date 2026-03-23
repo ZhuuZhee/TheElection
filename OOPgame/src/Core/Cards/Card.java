@@ -1,13 +1,15 @@
 /**
  * @Munin 11/3/2026 20:33 - move mouse listener to this class
- * @Xynezter 9/3/2026 18:50
+ * @Xynezter 23/3/2026 16:54 - confix onmousepressed onMouseReleased
  */
 package Core.Cards;
 
+import Core.UI.ActionCardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.*;
 
+import Core.UI.ActionCardHolderUI.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,7 +18,7 @@ public abstract class Card extends GameObject {
     protected String name;
     protected boolean isGrabbed = false;
     protected boolean isDraggable = true;
-    protected boolean isHovered = false;
+    public boolean isHovered = false;
     protected Point offset = new Point(0, 0);
     public static Card CURRENT_GRABBED_CARD;
     private static final int Z_INDEX_TOP = Scene2D.Layer.DRAGGED;
@@ -30,7 +32,8 @@ public abstract class Card extends GameObject {
         // Swing Component Setup
         this.setBackground(Color.CYAN);
         this.setOpaque(true); // ให้พื้นหลังใส เพื่อให้เห็น Scene หรือ Card ที่ซ้อนกัน
-
+        //set size forever
+        this.setPreferredSize(new Dimension(width, height));
 //        System.out.println("--------------------");
 //        System.out.println(name + " : enable : " + getEnable());
 //        System.out.println("--------------------");
@@ -131,6 +134,14 @@ public abstract class Card extends GameObject {
             CURRENT_GRABBED_CARD = null;
             setZIndex(Z_INDEX_NORMAL); // Optional: Reorder logic if needed
 
+            if (getParent() != null && !(getParent().getLayout() instanceof FlowLayout)) {
+                setZIndex(Z_INDEX_NORMAL);
+            }
+            ActionCardHolderUI handUI = getHandUIOnBottom();
+            if (handUI != null) {
+                handUI.addCard(this); // สั่งยัดการ์ดเข้ามือ
+                return; // จบการทำงาน ไม่ต้องไปเช็ค Slot ต่อ
+            }
             // handle when drop card on slot
             var slot = getCardSlotOnBottom();
             if (slot != null) {
@@ -138,6 +149,23 @@ public abstract class Card extends GameObject {
                 onDroppedInSlot(slot);
             }
         }
+    }
+    // check ว่า card ชนกับขอบของ yourhand มั้ย " ให้ card เป้นตัวเช็ค "
+    private ActionCardHolderUI getHandUIOnBottom() {
+        if (getParent() == null) return null;
+        Rectangle cardRect = this.getBounds();
+
+        // วนหา Component ใน Scene
+        for (Component comp : getParent().getComponents()) {
+            if (comp instanceof ActionCardHolderUI) {
+                Rectangle handRect = comp.getBounds();
+                // ถ้ากล่องของการ์ด ตัดกับ(ทับ) กล่องของ Hand UI
+                if (cardRect.intersects(handRect)) {
+                    return (ActionCardHolderUI) comp;
+                }
+            }
+        }
+        return null;
     }
 
     // --------------------------------------------------
@@ -234,4 +262,13 @@ public abstract class Card extends GameObject {
     public String getName() {
         return this.name;
     }
+
+    public boolean isHovered() {
+        return this.isHovered;
+    }
+
+    public boolean isGrabbed() {
+        return this.isGrabbed;
+    }
+
 }
