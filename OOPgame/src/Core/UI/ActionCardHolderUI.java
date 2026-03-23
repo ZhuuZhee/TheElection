@@ -85,7 +85,6 @@ public class ActionCardHolderUI extends Canvas {
         setBounds(0, height - panelHeight, width, panelHeight);
         revalidate();
     }
-
     public void addCard(Card card){
         if(cards.contains(card)) return;
 

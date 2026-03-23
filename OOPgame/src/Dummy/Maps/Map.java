@@ -25,6 +25,8 @@ public class Map extends GameObject {
     public Map() {
         super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE);
         gridMap = GenerateMap();
+//        setBackground(Color.CYAN);
+//        setOpaque(true);
     }
 
     private Grid[][] GenerateMap() {

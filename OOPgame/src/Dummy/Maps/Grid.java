@@ -9,8 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Grid extends GameObject{
-    private Point position;
-    private float size;
     private District district;
     private City city;
     public Grid(City city, District district) {

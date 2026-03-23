@@ -19,8 +19,8 @@ public abstract class Card extends GameObject {
     protected boolean isHovered = false;
     protected Point offset = new Point(0, 0);
     public static Card CURRENT_GRABBED_CARD;
-    private static final int Z_INDEX_TOP = 0;
-    private static final int Z_INDEX_NORMAL = 999;
+    private static final int Z_INDEX_TOP = Scene2D.Layer.DRAGGED;
+    private static final int Z_INDEX_NORMAL = Scene2D.Layer.DEFAULT;
     private static final int SNAP_MARGIN = 15;
     private static final double ZOOM_OFFSET = 20.0;
 
@@ -99,8 +99,8 @@ public abstract class Card extends GameObject {
                 offset.x = mouseX;
                 offset.y = mouseY;
 
-                // Swing Z-Order: 0 is Top
                 setZIndex(Z_INDEX_TOP);
+//                scene.setComponentZOrder(this,0);
             }
         }
     }

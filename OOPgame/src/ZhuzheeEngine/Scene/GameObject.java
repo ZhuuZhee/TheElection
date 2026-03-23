@@ -3,7 +3,7 @@ package ZhuzheeEngine.Scene;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameObject extends JPanel {
+public class GameObject extends JPanel implements IZIndex {
     protected Point worldPosition;
     protected Scene2D scene;
     private boolean isEnable = true;
@@ -25,12 +25,18 @@ public class GameObject extends JPanel {
 
     }
 
+    @Override
     public int getZIndex() {
         return zIndex;
     }
+    @Override
     public void setZIndex(int index){
         zIndex = index;
-        if (scene != null) scene.sortGameObjects();
+        if (scene != null) scene.sortZOrderObjects();
+    }
+    @Override
+    public Component asComponent() {
+        return this;
     }
     public Scene2D getScene() {
         return scene;
@@ -83,9 +89,8 @@ public class GameObject extends JPanel {
     //destroying game object
     public static void Destroy(GameObject gameObject) {
         gameObject.onDestroy();
-        gameObject.getScene().remove(gameObject);
         // ลบออกจาก Swing Container
-        gameObject.getScene().remove((Component) gameObject);
+        gameObject.getScene().remove((Component)gameObject);
         gameObject.getScene().repaint();
     }
 
