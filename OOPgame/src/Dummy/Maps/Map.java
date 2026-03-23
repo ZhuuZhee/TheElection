@@ -20,7 +20,7 @@ public class Map extends GameObject {
     private final int districtCount = 4;
     private final int maxGridPerCties = 12;
     private City[] cities;
-    private final Grid[][] gridMap; // array ของช่องแต่ละช่องว่าเป็น city หรือ water
+    private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
 
     public Map() {
         super(0, 0, 1280, 720, ZhuzheeGame.MAIN_SCENE);
@@ -146,9 +146,10 @@ public class Map extends GameObject {
 
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         // Guard against null board - prevent NPE
         if (gridMap == null) {
-            System.err.println("Warning: Map.board is null, cannot render");
+            System.err.println("Warning: Map.gridMap is null, cannot render");
             return;
         }
 
@@ -187,8 +188,8 @@ public class Map extends GameObject {
                 }
 
                 // 3. บวกค่าชดเชยเริ่มต้น (Offset) ไม่ให้หกเหลี่ยมตกขอบซ้ายบนของจอ
-                int cx = (int) (x + radius);
-                int cy = (int) (y + radius);
+                int cx = (int) (x + getWidth() / 2.0);
+                int cy = (int) (y + getHeight() / 2.0);
 
                 Path2D.Double hexagon = createHexagon(cx, cy, radius);
 
