@@ -10,17 +10,15 @@ import ZhuzheeEngine.Scene.Canvas;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class ActionCardHolderUI extends Canvas {
+public class CardHolderUI extends Canvas {
     private ArrayList<Card> cards = new ArrayList<>();
     private int panelHeight = 220;
     private JPanel cardContainer;
     private Scene2D scene;
 
-    public ActionCardHolderUI(Scene2D scene){
+    public CardHolderUI(Scene2D scene){
         super(scene);
         this.scene = scene;
         setLayout(new BorderLayout());
@@ -63,21 +61,27 @@ public class ActionCardHolderUI extends Canvas {
     public void addCard(Card card){
         if(cards.contains(card)) return;
 
-        // 1. ลบการ์ดออกจาก GameObject List ของ Scene
-        // เพื่อหยุด Scene ไม่ให้คำนวณตำแหน่ง World Position ทับตำแหน่งใน UI
         scene.remove(card);
 
-        // 2. เพิ่มการ์ดเข้าสู่ Container ของ UI (Swing จะจัดการย้าย Parent ให้)
         cardContainer.add(card);
         cards.add(card);
 
-        // 3. ปรับสถานะการ์ดให้เหมาะสมกับการแสดงผลใน UI
-        card.setVisible(true);
-        card.setEnable(true);
-        // หากต้องการล็อกไม่ให้ลากต่อเมื่ออยู่ในมือ สามารถสั่ง card.setDraggable(false); ได้ที่นี่
-
-        // 4. สั่งวาดใหม่
         System.out.println("Card added to hand: " + card.getName());
+        cardContainer.revalidate();
+        cardContainer.repaint();
+    }
+    public void removeCard(Card card){
+        if(!cards.contains(card)) return;
+
+        Point location = card.getLocationOnScreen();
+        cardContainer.remove(card);
+        cards.remove(card);
+
+        scene.add(card);
+
+        card.setPosition(scene.Screen2WorldPoint(location));
+
+        System.out.println("Card removed to hand: " + card.getName());
         cardContainer.revalidate();
         cardContainer.repaint();
     }

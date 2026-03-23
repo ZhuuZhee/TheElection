@@ -26,11 +26,19 @@ public class Scene2D extends Screen {
         setLayout(null); // เปลี่ยนเป็น Absolute Layout เพื่อให้กำหนดพิกัด GameObject ได้เอง
     }
 
+    @Override
+    public Component add(Component comp) {
+        if (comp instanceof IZIndex z)
+            register(z);
+        return super.add(comp);
+    }
+
     public void register(IZIndex obj) {
+        if (zOrderedObjects.contains(obj)) return;
         zOrderedObjects.add(obj);
         // ถ้าเป็น GameObject ให้เพิ่มเข้า list สำหรับ update loop ด้วย
-        if (obj instanceof GameObject) {
-            gameObjects.add((GameObject) obj);
+        if (obj instanceof GameObject gameObject) {
+            gameObjects.add(gameObject);
         }
         sortZOrderObjects(); // จัดเรียงทันทีเมื่อมีวัตถุใหม่
     }
@@ -38,12 +46,14 @@ public class Scene2D extends Screen {
     @Override
     public void remove(Component comp) {
         super.remove(comp);
-        if(comp instanceof IZIndex z)
+        if (comp instanceof IZIndex z)
             remove(z);
     }
-    public void remove(GameObject gameObject){
+
+    public void remove(GameObject gameObject) {
         remove((Component) gameObject);
     }
+
     public void remove(IZIndex obj) {
         zOrderedObjects.remove(obj);
         if (obj instanceof GameObject) {
@@ -55,10 +65,11 @@ public class Scene2D extends Screen {
     public ArrayList<GameObject> getGameObjects() {
         return gameObjects;
     }
+
     /// sorting rendering squences of gameObjects by z index
     public void sortZOrderObjects() {
         // 1. เรียงลำดับใน List ตามค่า Z-Index (น้อย -> มาก)
-        zOrderedObjects.sort((o1, o2) -> Integer.compare(o1.getZIndex(),o2.getZIndex()));
+        zOrderedObjects.sort((o1, o2) -> Integer.compare(o1.getZIndex(), o2.getZIndex()));
 
         // 2. ปรับลำดับใน Swing (Component Z-Order)
         // เทคนิค: วนลูปจากตัวที่ Z-Index มากสุด (ท้าย List) แล้วสั่ง setComponentZOrder ให้ไปอยู่ "ล่างสุด" (Last Index)

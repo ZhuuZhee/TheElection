@@ -4,7 +4,7 @@
  */
 package Core.Cards;
 
-import Core.UI.ActionCardHolderUI;
+import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.*;
 
@@ -91,6 +91,9 @@ public abstract class Card extends GameObject {
     public void onMousePressed(int mouseX, int mouseY) {
         if (getEnable()) {
             // No need to check boundaries, event is fired on component
+            if(getParent() != null && getParent().getParent() instanceof CardHolderUI holderUI){
+                holderUI.removeCard(this);
+            }
             System.out.println(name + ": Grabbed");
             if (isDraggable) {
                 isGrabbed = true;
@@ -111,8 +114,9 @@ public abstract class Card extends GameObject {
     public void onMouseDragged(int mouseX, int mouseY) {
         if (getEnable() && isGrabbed) {
             // 1. Calculate target Screen Position
-            int targetScreenX = getX() + mouseX - offset.x;
-            int targetScreenY = getY() + mouseY - offset.y;
+            Point pos = getLocationOnScreen();
+            int targetScreenX = pos.x + mouseX - offset.x;
+            int targetScreenY = pos.y + mouseY - offset.y;
 
             // 2. Convert Screen to World (Logic is in Scene/Camera)
             Point worldPos = scene.Screen2WorldPoint(new Point(targetScreenX, targetScreenY));
@@ -134,7 +138,7 @@ public abstract class Card extends GameObject {
             if (getParent() != null && !(getParent().getLayout() instanceof FlowLayout)) {
                 setZIndex(Z_INDEX_NORMAL);
             }
-            ActionCardHolderUI handUI = getHandUIOnBottom();
+            CardHolderUI handUI = getHandUIOnBottom();
             if (handUI != null) {
                 handUI.addCard(this); // สั่งยัดการ์ดเข้ามือ
                 return; // จบการทำงาน ไม่ต้องไปเช็ค Slot ต่อ
@@ -148,17 +152,17 @@ public abstract class Card extends GameObject {
         }
     }
     // check ว่า card ชนกับขอบของ yourhand มั้ย " ให้ card เป้นตัวเช็ค "
-    private ActionCardHolderUI getHandUIOnBottom() {
+    private CardHolderUI getHandUIOnBottom() {
         if (getParent() == null) return null;
         Rectangle cardRect = this.getBounds();
 
         // วนหา Component ใน Scene
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof ActionCardHolderUI) {
+            if (comp instanceof CardHolderUI) {
                 Rectangle handRect = comp.getBounds();
                 // ถ้ากล่องของการ์ด ตัดกับ(ทับ) กล่องของ Hand UI
                 if (cardRect.intersects(handRect)) {
-                    return (ActionCardHolderUI) comp;
+                    return (CardHolderUI) comp;
                 }
             }
         }
