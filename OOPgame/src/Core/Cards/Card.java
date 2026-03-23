@@ -6,11 +6,8 @@ package Core.Cards;
 
 import Core.UI.ActionCardHolderUI;
 import Core.ZhuzheeGame;
-import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.*;
 
-import Core.UI.ActionCardHolderUI.*;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 

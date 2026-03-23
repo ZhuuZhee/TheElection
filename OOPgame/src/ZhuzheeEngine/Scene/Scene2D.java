@@ -113,8 +113,15 @@ public class Scene2D extends Screen {
             int screenX = (int) ((wp.x - camPos.x) * zoom + centerX);
             int screenY = (int) ((wp.y - camPos.y) * zoom + centerY);
 
+            // Calculate scaled size based on camera zoom
+            Dimension baseSize = obj.getBaseSize();
+            int scaledWidth = (int) (baseSize.width * zoom);
+            int scaledHeight = (int) (baseSize.height * zoom);
+
             // Update Swing Component Location
             obj.setLocation(screenX, screenY);
+            // Update Swing Component Size
+            obj.setSize(scaledWidth, scaledHeight);
         }
     }
 }

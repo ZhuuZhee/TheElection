@@ -6,6 +6,7 @@ import java.awt.*;
 public class GameObject extends JPanel implements IZIndex {
     protected Point worldPosition;
     protected Scene2D scene;
+    protected Dimension baseSize;
     private boolean isEnable = true;
     private int zIndex;
 
@@ -14,6 +15,7 @@ public class GameObject extends JPanel implements IZIndex {
         // Setup Swing Component
         this.setLayout(null); // รองรับ Child Component แบบอิสระ
         this.setOpaque(false); // พื้นหลังใส เพื่อให้เห็น Scene ด้านหลัง
+        this.baseSize = new Dimension(width, height);
         this.setSize(width, height); // กำหนดขนาด (ตำแหน่งจะถูกจัดการโดย Scene)
 
         this.worldPosition = new Point(x, y);
@@ -44,6 +46,10 @@ public class GameObject extends JPanel implements IZIndex {
 
     public Point getPosition() {
         return worldPosition;
+    }
+
+    public Dimension getBaseSize() {
+        return baseSize;
     }
 
     public void setWorldPosition(Point pos) {
