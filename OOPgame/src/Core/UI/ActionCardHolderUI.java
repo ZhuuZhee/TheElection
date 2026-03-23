@@ -1,3 +1,6 @@
+/**
+ * @Xynezter 23/3/2026 16:54 
+ */
 package Core.UI;
 
 import Core.Cards.Card;
@@ -35,7 +38,32 @@ public class ActionCardHolderUI extends Canvas {
         add(titleLabel, BorderLayout.NORTH);
 
         // Container สำหรับใส่การ์ด
-        cardContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        cardContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)) {
+
+            // ปิด Optimize เพื่อบอก Swing ว่าในนี้มี Component ที่วาดทับซ้อนกันได้ (Zoom effect)
+            @Override
+            public boolean isOptimizedDrawingEnabled() {
+                return false;
+            }
+
+            // แทรกแซงการวาดของลูกๆ (การ์ด) เพื่อให้ใบที่ Hover/Grab อยู่บนสุดเสมอ
+            @Override
+            protected void paintChildren(Graphics g) {
+                super.paintChildren(g); // วาดการ์ดทุกใบตามปกติลงไปก่อน
+
+                // วนลูปหาการ์ดที่กำลังสนใจ เพื่อวาดทับลงไปเป็นลำดับสุดท้าย (บนสุด)
+                for (Component comp : getComponents()) {
+                    if (comp instanceof Card) {
+                        Card c = (Card) comp;
+                        if (c.isHovered() || c.isGrabbed()) {
+                            Graphics cg = g.create(c.getX(), c.getY(), c.getWidth(), c.getHeight());
+                            c.paint(cg);
+                            cg.dispose();
+                        }
+                    }
+                }
+            }
+        };
         cardContainer.setOpaque(false); // โปร่งใสเพื่อให้เห็นพื้นหลังของ UI หลัก
         add(cardContainer, BorderLayout.CENTER);
 
@@ -43,37 +71,41 @@ public class ActionCardHolderUI extends Canvas {
 
         // เพิ่ม Listener ที่ Scene เพื่อดักจับจังหวะ "ปล่อยเมาส์" (Drop)
         // เปลี่ยนมาใช้ Listener ที่ UI (this) เพื่อดักจับการเข้า/ออกพื้นที่ของเมาส์
-        this.addMouseListener(new MouseAdapter() {
-            private Card enteredCard;
+//        this.addMouseListener(new MouseAdapter() {
+//            private Card enteredCard;
+//
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                // enter -> ใส่cardลงใน enteredCard ถ้ามีการลากอยู่
+//                System.out.println("Enter Card Holder");
+//                if (Card.CURRENT_GRABBED_CARD != null) {
+//                    enteredCard = Card.CURRENT_GRABBED_CARD;
+//                }
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                // exit -> เอาcardออก
+//                System.out.println("Exit Card Holder");
+//                enteredCard = null;
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//                // เช็ค enteredCard แทนการเช็ค Bounds
+//                System.out.println("Drop at Card Holder");
+//                if (enteredCard != null) {
+//                    addCard(enteredCard);
+//                    Card.CURRENT_GRABBED_CARD = null;
+//                    enteredCard = null;
+//                }
+//            }
+//        });
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // enter -> ใส่cardลงใน enteredCard ถ้ามีการลากอยู่
-                System.out.println("Enter Card Holder");
-                if (Card.CURRENT_GRABBED_CARD != null) {
-                    enteredCard = Card.CURRENT_GRABBED_CARD;
-                }
-            }
+        cardContainer.setOpaque(false);
+        add(cardContainer, BorderLayout.CENTER);
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // exit -> เอาcardออก
-                System.out.println("Exit Card Holder");
-                enteredCard = null;
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                // เช็ค enteredCard แทนการเช็ค Bounds
-                System.out.println("Drop at Card Holder");
-                if (enteredCard != null) {
-                    addCard(enteredCard);
-                    Card.CURRENT_GRABBED_CARD = null;
-                    enteredCard = null;
-                }
-            }
-        });
-
+        onResize(scene.getWidth(),scene.getHeight());
 
         scene.revalidate();
         setVisible(true);
@@ -84,6 +116,12 @@ public class ActionCardHolderUI extends Canvas {
         // ยึดตำแหน่งไว้ที่ด้านล่างของหน้าจอเสมอ
         setBounds(0, height - panelHeight, width, panelHeight);
         revalidate();
+    }
+    // set size card (FlowLayout) swing จะ set size to 0x0
+    @Override
+    public Dimension getPreferredSize() {
+        // ใช้ getWidth() กับ getHeight() เดิมของการ์ดที่เราเซ็ตไว้ตอนแรก
+        return new Dimension(super.getWidth(), super.getHeight());
     }
 
     public void addCard(Card card){
@@ -101,7 +139,6 @@ public class ActionCardHolderUI extends Canvas {
         card.setVisible(true);
         card.setEnable(true);
         // หากต้องการล็อกไม่ให้ลากต่อเมื่ออยู่ในมือ สามารถสั่ง card.setDraggable(false); ได้ที่นี่
-
         // 4. สั่งวาดใหม่
         System.out.println("Card added to hand: " + card.getName());
         cardContainer.revalidate();
