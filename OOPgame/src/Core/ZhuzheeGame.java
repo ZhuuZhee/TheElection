@@ -49,7 +49,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 //        Tester.MainMenu(screenManager);
         Tester.CardsTestingOnScene(MAIN_SCENE);
 //        Tester.TestCardStream();
-//        Tester.MapTest();
+        Tester.MapTest();
 //        Tester.ShopTest();
 //        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
 //        Tester.AudioManagerTesterInitialize();
