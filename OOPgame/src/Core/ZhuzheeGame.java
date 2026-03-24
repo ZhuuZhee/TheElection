@@ -43,7 +43,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         OPTION_MENU = new OptionMenu();
         //set current screen
 //        Screen.ChangeScreen(MAIN_MENU);
-        Screen.ChangeScreen(MAIN_MENU);
+        Screen.ChangeScreen(MAIN_SCENE);
 
         //test
 //        Tester.MainMenu(screenManager);
