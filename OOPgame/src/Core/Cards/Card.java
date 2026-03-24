@@ -359,4 +359,12 @@ public abstract class Card extends GameObject {
             super.setBounds(x, y, width, height);
         }
     }
+
+    public void setBaseWidth(int width)
+    {
+        baseWidth = width;
+    }
+    public void setBaseHeight(int height){
+        baseHeight = height;
+    }
 }
