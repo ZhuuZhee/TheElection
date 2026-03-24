@@ -4,12 +4,17 @@
 package Core.Cards;
 
 import Dummy.Maps.City;
+import Dummy.Maps.PoliticsStats;
 
 public abstract class PolicyCard extends Card {
     protected boolean isInSlot = false;
 
     public PolicyCard(String name, int x, int y) {
         super(name, x, y, 100, 150);
+    }
+
+    public PolicyCard(String name, int x, int y, String imagePath) {
+        super(name, x, y, 100, 150, imagePath);
     }
 
     public abstract boolean IsActivate();
