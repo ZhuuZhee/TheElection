@@ -25,21 +25,29 @@ public abstract class Card extends GameObject {
     private static final int Z_INDEX_TOP = Scene2D.Layer.DRAGGED;
     private static final int Z_INDEX_NORMAL = Scene2D.Layer.DEFAULT;
     private static final int SNAP_MARGIN = 15;
-    private static final double ZOOM_OFFSET = 20.0;
+    private static final double ZOOM_OFFSET = 1.15;
     protected Image cardImage = null;
     protected String imagePath = "";
     protected int coin;
+    private int baseWidth;
+    private int baseHeight;
+    private int baseX;
+    private int baseY;
     public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
         // Swing Component Setup
-        this.setBackground(Color.CYAN);
-        this.setOpaque(true); // ให้พื้นหลังใส เพื่อให้เห็น Scene หรือ Card ที่ซ้อนกัน
+        this.setBackground(new Color(0,0,0,0));
+        this.setOpaque(true);
         //set size forever
         this.setPreferredSize(new Dimension(width, height));
 //        System.out.println("--------------------");
 //        System.out.println(name + " : enable : " + getEnable());
 //        System.out.println("--------------------");
+        this.baseWidth = width;
+        this.baseHeight = height;
+        this.baseX = x;
+        this.baseY = y;
 
         // @Munin 11/3/2026 20:33 - move mouse listener to this class
         // Mouse Interactions on THIS Component
@@ -65,13 +73,24 @@ public abstract class Card extends GameObject {
             @Override
             public void mouseEntered(MouseEvent e) {
                 setHovered(true);
-                repaint(); // Swing needs repaint trigger
+                if (!isGrabbed && getEnable() && !(getParent() instanceof CardHolderUI)) {
+                    setZIndex(Z_INDEX_TOP);
+                    if (getParent() != null) getParent().setComponentZOrder(Card.this, 0);
+
+                    setBounds(baseX, baseY, baseWidth, baseHeight);
+                }
+//                repaint(); // Swing needs repaint trigger
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 setHovered(false);
-                repaint();
+                if (!isGrabbed && getEnable() && !(getParent() instanceof CardHolderUI)) {
+                    setZIndex(Z_INDEX_NORMAL);
+
+                    setBounds(baseX, baseY, baseWidth, baseHeight);
+                }
+//                repaint();
             }
         });
 
@@ -167,16 +186,25 @@ public abstract class Card extends GameObject {
         if (getEnable() && isGrabbed) {
             isGrabbed = false;
             CURRENT_GRABBED_CARD = null;
-            setZIndex(Z_INDEX_NORMAL); // Optional: Reorder logic if needed
 
+            this.isHovered = false;
+            // เพื่อให้เมธอด setBounds ที่เรา Override ไว้ทำงานในโหมดปกติ
+            this.setBounds(baseX, baseY, baseWidth, baseHeight);
+            setZIndex(Z_INDEX_NORMAL);
             if (getParent() != null && !(getParent().getLayout() instanceof FlowLayout)) {
                 setZIndex(Z_INDEX_NORMAL);
             }
+
             CardHolderUI handUI = getHandUIOnBottom();
             if (handUI != null) {
-                handUI.addCard(this); // สั่งยัดการ์ดเข้ามือ
-                return; // จบการทำงาน ไม่ต้องไปเช็ค Slot ต่อ
+                // ล้างพิกัดก่อนเข้ามือ เพื่อให้ FlowLayout จัดเรียงใหม่ได้ถูกต้อง
+                this.setLocation(0, 0);
+                handUI.addCard(this);
+                handUI.revalidate();
+                handUI.repaint();
+                return;
             }
+
             // handle when drop card on slot
             var slot = getCardSlotOnBottom();
             if (slot != null) {
@@ -259,19 +287,6 @@ public abstract class Card extends GameObject {
 
         try {
             // --------- Hover Effect --------- //
-            if (isHovered && !isGrabbed) {
-                // คำนวณจุดศูนย์กลางของ Cards (Local Coordinates)
-                int cx = getWidth() / 2;
-                int cy = getHeight() / 2;
-
-                float scaleX = (float) (getWidth() + ZOOM_OFFSET) / getWidth();
-                float scaleY = (float) (getHeight() + ZOOM_OFFSET) / getHeight();
-
-                // Step การขยายจากจุดศูนย์กลาง:
-                g2d.translate(cx, cy);           // 1. เลื่อนจุดศูนย์กลาง Cards ไปที่ 0,0
-                g2d.scale(scaleX, scaleY);       // 2. ขยาย
-                g2d.translate(-cx, -cy);         // 3. เลื่อนกลับมาตำแหน่งเดิม
-            }
 
             // --------- Drawing Logic --------- //
             if (cardImage != null) {
@@ -327,4 +342,21 @@ public abstract class Card extends GameObject {
         return this.isGrabbed;
     }
 
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        this.baseX = x;
+        this.baseY = y;
+        // ถ้าระบบ Engine พยายามจะรีเซ็ตขนาดการ์ดขณะที่เราเอาเมาส์ชี้อยู่ (และไม่ได้อยู่ในมือ)
+        if (isHovered && !isGrabbed && !(getParent() instanceof CardSlot)) {
+            int zoomedWidth = (int) (baseWidth * ZOOM_OFFSET);
+            int zoomedHeight = (int) (baseHeight * ZOOM_OFFSET);
+            int shiftX = (zoomedWidth - baseWidth) / 2;
+            int shiftY = (zoomedHeight - baseHeight) / 2;
+
+            super.setBounds(x - shiftX, y - shiftY, zoomedWidth, zoomedHeight);
+        } else {
+            // ถ้าอยู่ใน CardSlot หรือไม่ได้ Hover ให้ใช้ขนาดปกติ
+            super.setBounds(x, y, width, height);
+        }
+    }
 }
