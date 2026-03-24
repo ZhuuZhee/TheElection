@@ -29,7 +29,6 @@ public abstract class Card extends GameObject {
     protected Image cardImage = null;
     protected String imagePath = "";
     protected int coin;
-
     public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;

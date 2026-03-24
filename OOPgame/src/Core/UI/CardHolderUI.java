@@ -60,7 +60,6 @@ public class CardHolderUI extends Canvas {
 
     public void addCard(Card card){
         if(cards.contains(card)) return;
-
         scene.remove(card);
 
         cardContainer.add(card);

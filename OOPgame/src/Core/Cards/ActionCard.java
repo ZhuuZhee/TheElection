@@ -2,6 +2,8 @@
  * @Xynezter 10/3/2026 19:30
  */
 package Core.Cards;
+
+import Core.Cards.Stream.CardBufferObject;
 import Dummy.*;
 import Dummy.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
@@ -12,10 +14,9 @@ public class ActionCard extends Card {
     private static final int CARD_HEIGHT = 150;
     private PoliticsStats stats;
     // setup Constructor while card builded add stat in stat
-    public ActionCard(String name, int x, int y, PoliticsStats stats,int coin) {
-        super(name, x, y, CARD_WIDTH, CARD_HEIGHT);
-        this.stats = stats;
-        this.coin = coin;
+
+    public ActionCard(CardBufferObject bufferObject, int x, int y) {
+        this(bufferObject.getName(), x, y, bufferObject.getStats(), bufferObject.getImgPath(), bufferObject.getCoin());
     }
 
     public ActionCard(String name, int x, int y, PoliticsStats stats, String imagePath, int coin) {
@@ -40,6 +41,7 @@ public class ActionCard extends Card {
         city.applyStats(this.stats);
 
     }
+
     // ถ้า card ถูกวางใน slot จะดึงข้อมูล เมื่องที่ slot อยู่ และเรียกใช้ ActionOn โยนค่าเข้าเมือง
     @Override
     protected void onDroppedInSlot(CardSlot slot) {

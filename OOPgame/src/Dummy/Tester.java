@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.AllArcanaCards.TheFoolCard;
 import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
+import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
 import Core.GameScreens.MainMenu;
@@ -65,9 +66,9 @@ public class Tester {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String filePath = "OOPgame/Assets/cards_test_data.json";
-                    ArrayList<ActionCard> cards = (ArrayList<ActionCard>) CardReader.readActionCards(filePath);
+                    ArrayList<CardBufferObject> cards = (ArrayList<CardBufferObject>) CardReader.readActionCards(filePath);
                     int index = new Random().nextInt(cards.size());
-                    hand.addCard(cards.get(index));
+                    hand.addCard(new ActionCard(cards.get(index),0,0));
                 }
             });
 
@@ -160,6 +161,8 @@ public class Tester {
         // PoliticsStats(Facility, Environment, Economy)
         ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png", 10);
         ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png", 2);
+        ZhuzheeGame.MAIN_SCENE.remove(card1);
+        ZhuzheeGame.MAIN_SCENE.remove(card2);
         originalCards.add(card1);
         originalCards.add(card2);
 
@@ -169,11 +172,11 @@ public class Tester {
 
         // 3. Read
         System.out.println("Reading back from " + filePath);
-        List<ActionCard> readCards = CardReader.readActionCards(filePath);
+        List<CardBufferObject> readCards = CardReader.readActionCards(filePath);
 
         // 4. Verify
         System.out.println("Read " + readCards.size() + " cards:");
-        for (ActionCard card : readCards) {
+        for (CardBufferObject card : readCards) {
             PoliticsStats s = card.getStats();
             System.out.println("- " + card.getName() + " Stats[Fac:" + s.getStats(PoliticsStats.Facility) +
                     ", Env:" + s.getStats(PoliticsStats.Environment) +

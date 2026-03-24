@@ -41,7 +41,6 @@ public class CardWriter {
                 statsObj.put("environment", stats.getStats(PoliticsStats.Environment));
             }
             obj.put("stats", statsObj);
-
             obj.put("img", card.getImagePath());
             obj.put("type", "ActionCard");
             obj.put("name", card.getName());

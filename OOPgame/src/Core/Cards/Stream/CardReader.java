@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CardReader {
-    public static List<ActionCard> readActionCards(String filePath) {
-        List<ActionCard> cards = new ArrayList<>();
+    public static List<CardBufferObject> readActionCards(String filePath) {
+        List<CardBufferObject> cards = new ArrayList<>();
         try {
             // Read file content
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
@@ -24,7 +24,8 @@ public class CardReader {
                 JSONObject obj = jsonArray.getJSONObject(i);
 
                 String name = obj.getString("name");
-                int coin = obj.getString("coin");
+                int coin = obj.optInt("coin");
+
                 JSONObject statsObj = obj.getJSONObject("stats");
                 int economy = statsObj.optInt("economy", 0);
                 int facility = statsObj.optInt("facility", 0);
@@ -35,11 +36,7 @@ public class CardReader {
 
                 String imagePath = obj.optString("img", "");
 
-                if (!imagePath.isEmpty()) {
-                    cards.add(new ActionCard(name, 0, 0, stats, imagePath,coin));
-                } else {
-                    cards.add(new ActionCard(name, 0, 0, stats, coin));
-                }
+                cards.add(new CardBufferObject(name, coin,stats,imagePath));
             }
         } catch (IOException e) {
             System.err.println("Error reading cards: " + e.getMessage());
