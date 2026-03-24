@@ -24,7 +24,7 @@ public class Map extends GameObject {
     private Point startSize;
     private float scaleRatio = 1;
     public Map() {
-        super(-1280/2, -720/2, 1280, 720, ZhuzheeGame.MAIN_SCENE);
+        super(-1000, -1000, 2000, 2000, ZhuzheeGame.MAIN_SCENE);
         startSize = new Point(getWidth(), getHeight());
         gridMap = GenerateMap();
 //        setBackground(Color.CYAN);

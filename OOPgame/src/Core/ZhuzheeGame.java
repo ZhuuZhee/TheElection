@@ -42,8 +42,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
 //        OPTION_MENU = new OptionMenu();
         //set current screen
-        Screen.ChangeScreen(MAIN_MENU);
-//        Screen.ChangeScreen(MAIN_SCENE);
+//        Screen.ChangeScreen(MAIN_MENU);
+        Screen.ChangeScreen(MAIN_SCENE);
 
         //test
 //        Tester.MainMenu(screenManager);
