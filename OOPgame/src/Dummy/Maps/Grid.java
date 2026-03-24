@@ -4,20 +4,17 @@ import java.awt.*;
 import java.awt.geom.Path2D;
 
 public class Grid{
-    private Map map;
-    private District district;
+    private final Map map;
     private City city;
     private float x,y;
-    private int gridX,gridY;
-    private float radius, xOffset;
-    public Grid(Map map, City city, District district, int gridX, int gridY, float radius, float xOffset) {
+    private int gridX, gridY;
+    private final float radius, xOffset;
+    public Grid(Map map, City city, int gridX, int gridY, float radius, float xOffset) {
         setCity(city);
-        setDistrict(district);
         this.map = map;
         this.xOffset = xOffset;
         this.radius = radius;
         setGridPosition(gridX,gridY);
-
     }
 
     public float getX() {
@@ -27,6 +24,7 @@ public class Grid{
     public float getY() {
         return y;
     }
+
     public void setGridPosition(int x, int y){
         this.gridX = x;
         this.gridY = y;
@@ -58,13 +56,6 @@ public class Grid{
         path.closePath(); // ลากเส้นปิดกลับมาจุดเริ่มต้น
         return path;
     }
-    public District getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(District district) {
-        this.district = district;
-    }
 
     public City getCity() {
         return city;
@@ -73,13 +64,14 @@ public class Grid{
     public void setCity(City city) {
         this.city = city;
     }
+
     public void render(Graphics2D g2d){
-        setGridPosition(gridX,gridY);
+        setGridPosition(gridX, gridY);
         g2d.setColor(city.getColor());
-        Path2D.Double hexagon = createHexagon(x,y,radius * map.getScaleRatio());
+        Path2D.Double hexagon = createHexagon(x, y,radius * map.getScaleRatio());
 
         g2d.fill(hexagon);
-        g2d.setColor(district.getColor());
+        g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(3));
         g2d.draw(hexagon);
     }

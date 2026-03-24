@@ -10,47 +10,28 @@ import ZhuzheeEngine.Scene.GameObject;
 import java.awt.*;
 import java.util.Random;
 import java.util.ArrayList;
+//import java.util.;
 
 public class Map extends GameObject {
     /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
     private final int rows = 10; // ความกว้าง
     private final int cols = 10; // ความสูง
-    private final int citiesCount = 9;
-    private final int districtCount = 4;
-    private final int maxGridPerCties = 12;
-    private City[] cities;
+    private final int citiesCount = 60;
+//    private City[] cities;
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
-    private final float radius = 25;
-    private Point startSize;
+    private final float radius = 30;
+    private final Point startSize;
     private float scaleRatio = 1;
     public Map() {
         super(-1000, -1000, 2000, 2000, ZhuzheeGame.MAIN_SCENE);
         startSize = new Point(getWidth(), getHeight());
         gridMap = GenerateMap();
-//        setBackground(Color.CYAN);
-//        setOpaque(true);
     }
 
     private Grid[][] GenerateMap() {
         Grid[][] grid = new Grid[rows][cols];
-
         Random random = new Random();
-        ArrayList<District> districts = new ArrayList<>(districtCount);
 
-        while (districts.size() < districtCount) {
-
-            //random color of district
-            int r = random.nextInt(1, 5) * 255 / 5;
-            int g = random.nextInt(1, 5) * 255 / 5;
-            int b = random.nextInt(1, 5) * 255 / 5;
-
-            District district = new District("District Test : " + districts.size());
-            district.setColor(new Color(r, g, b));
-            districts.add(district);
-        }
-        int maxCitiesPerDistrict = citiesCount / districtCount + citiesCount % districtCount;
-        int currCitiesPerDistrict = 0;
-        District district = null;
         //generate the city on grid
         for (int i = 0; i < citiesCount; i++) {
             City city = new City("City Test : " + i, random.nextInt(1, 5),
@@ -64,33 +45,37 @@ public class Map extends GameObject {
             city.setColor(new Color(r, g, b));
 
             //randomly set city inside district
-            if(currCitiesPerDistrict <= 0 && districts.size() > 1){
-                districts.remove(district);
-                currCitiesPerDistrict = random.nextInt(1,maxCitiesPerDistrict);
-                district = districts.getFirst();
-            }
-            if(district == null){
-                System.err.println("District is null");
-                throw new NullPointerException();
-            }
-            district.addCity(city);
-            currCitiesPerDistrict--;
+
             //random start position inside map
             Point startPosition = new Point(random.nextInt(grid.length), random.nextInt(grid[0].length));
-            setCityOnGridMapByRandomWalk(grid, city, district, random.nextInt(1, maxGridPerCties), startPosition);
+            setCityOnGridMapByRandomWalk(grid, city, startPosition);
+        }
+
+        for (Grid[] col : grid) {
+            System.out.println(col.length);
         }
 
         // check District and Cities in District
-        for (District dt : districts) {
-            System.out.println(dt.getDistrictName());
-            for (City city : districts.get(districts.indexOf(dt)).getCities()) {
-                System.out.println(city.getCityName());
-                city.printStats();
-            }
-            System.out.println();
-        }
+//        for (District dt : districts) {
+//            System.out.println(dt.getDistrictName());
+//            for (City city : districts.get(districts.indexOf(dt)).getCities()) {
+//                System.out.println(city.getCityName());
+//                city.printStats();
+//            }
+//            System.out.println();
+//        }
+//        for (int i = 0; i < grid.length; i++ ) {
+//            for (int j = 0; j < grid[0].length; j++) {
+//                if(grid[i][j] == null) {
+//                    grid[i][j] = new Grid(this,null, i, j, radius, 0);
+//                } else {
+//                    System.out.println(grid[i][j]);
+//                }
+//            }
+//        }
         return grid;
     }
+
     public float getScaleRatio(){
         return scaleRatio;
     }
@@ -99,17 +84,16 @@ public class Map extends GameObject {
      *
      * @param city          the city want to set on gridMap.
      * @param grid          grid Map.
-     * @param gridCount     amount of grid on map that want to set city in.
      * @param startPosition start position of walker in grid map
      */
-    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, District district, int gridCount, Point startPosition) {
+    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, Point startPosition) {
 
         int x = startPosition.x;
         int y = startPosition.y;
 
         Random random = new Random();
-        int tilesCreated = 1;
-        while (tilesCreated < gridCount) {
+        int tilesCreated = 0;
+        while (tilesCreated < 1) {
 
             // random direction
             int rX = random.nextInt(-1, 2), rY = random.nextInt(-1, 2);
@@ -123,31 +107,35 @@ public class Map extends GameObject {
             //if this grid doesn't have a city -> set the city to this grid
             if (grid[x][y] == null) {
                 float xOffset = y % 2 == 0? getGridWidth() : getGridWidth()/2;
-                grid[x][y] = new Grid(this,city, district, x,y, radius, xOffset);
+                grid[x][y] = new Grid(this,city, x, y, radius, xOffset);
 
                 //notify that this grid is have set city on.
                 tilesCreated++;
             }
+            System.out.println(grid[x][y].getCity().getCityName());
         }
     }
+
     public float getGridWidth(){
         // คำนวณระยะห่างทางคณิตศาสตร์สำหรับหกเหลี่ยมแบบรังผึ้ง
         return (float) Math.sqrt(3) * radius * scaleRatio; // ระยะห่างแนวนอนระหว่างชิ้น
     }
+
     public float getGridHeight(){
         return (float) 1.5 * radius * scaleRatio;
     }
+
     public float getGridMapWidth(){
         return cols * getGridWidth();
     }
+
     public float getGridMapHeight(){
         return rows * getGridHeight();
     }
 
-
     @Override
     public void paintComponent(Graphics g) {
-        scaleRatio = (float) getWidth()/(float)startSize.x;
+        scaleRatio = (float) getWidth() / (float) startSize.x;
         super.paintComponent(g);
         // Guard against null board - prevent NPE
         if (gridMap == null) {
