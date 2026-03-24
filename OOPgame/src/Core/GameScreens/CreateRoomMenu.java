@@ -94,15 +94,25 @@ public class CreateRoomMenu extends Screen implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startClientBtn) {
-            String pName = nameInput.getText();
-            if(pName.isEmpty()) pName = "Host_Player";
+            String meName = nameInput.getText();
+            if(meName.isEmpty()) meName = "Host_Player";
+
+            final String finalName = meName;
             
-            System.out.println("Host connecting to own server as " + pName);
+            executeServerStart();
             
-            ZhuzheeGame.CLIENT = new Core.Network.Client.GameClientManager();
-            ZhuzheeGame.CLIENT.connect("127.0.0.1", 9999, pName);
-            
-            Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
+            new Thread(() -> {
+                try { Thread.sleep(500); } catch (InterruptedException ex) { ex.printStackTrace(); }
+
+                System.out.println("Host connecting to own server as " + finalName);
+                ZhuzheeGame.CLIENT = new Core.Network.Client.GameClientManager();
+                ZhuzheeGame.CLIENT.connect("127.0.0.1", 9999, finalName);
+
+                // 3) เปลี่ยน screen บน EDT
+                javax.swing.SwingUtilities.invokeLater(() ->
+                    Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU)
+                );
+            }).start();
         }
         else if (e.getSource() == backBtn) {
             Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);

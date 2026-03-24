@@ -9,12 +9,6 @@ import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter {
     public static Scene2D MAIN_SCENE;
@@ -29,6 +23,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
 
+    /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
+    public static final boolean DEV_MODE = true;
+
     @Override
     public void create() {
         //set Application title
@@ -41,18 +38,21 @@ public class ZhuzheeGame implements ApplicationAdapter {
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
 //        OPTION_MENU = new OptionMenu();
-        //set current screen
-//        Screen.ChangeScreen(MAIN_MENU);
+
+        if (DEV_MODE) {
+            startMainScene(); // Run test ทันที
+        } else {
+            Screen.ChangeScreen(MAIN_MENU); // Run Main จริง
+        }
+    }
+
+    /// MAIN_SCENE
+    public static void startMainScene() {
         Screen.ChangeScreen(MAIN_SCENE);
 
-        //test
-//        Tester.MainMenu(screenManager);
         Tester.CardsTestingOnScene(MAIN_SCENE);
-//        Tester.TestCardStream();
         Tester.MapTest();
-//        Tester.ShopTest();
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
-//        Tester.AudioManagerTesterInitialize();
         new Tester().TestingCamera(MAIN_SCENE);
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
     }
