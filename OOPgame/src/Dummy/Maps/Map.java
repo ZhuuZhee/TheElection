@@ -8,6 +8,7 @@ import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.util.Random;
 import java.util.ArrayList;
 //import java.util.;
@@ -16,21 +17,54 @@ public class Map extends GameObject {
     /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
     private final int rows = 10; // ความกว้าง
     private final int cols = 10; // ความสูง
-    private final int citiesCount = 60;
+    private final int citiesCount = 4;
+    private final int maxGridPerCties = 20;
 //    private City[] cities;
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private final float radius = 30;
     private final Point startSize;
     private float scaleRatio = 1;
+    private final int gap = 4;
     public Map() {
         super(-1000, -1000, 2000, 2000, ZhuzheeGame.MAIN_SCENE);
         startSize = new Point(getWidth(), getHeight());
         gridMap = GenerateMap();
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Grid clicked = getGridAtPoint(e.getPoint());
+                if (clicked != null) {
+                    System.out.println(clicked.getCity().getCityName());
+                }
+            }
+        });
+//        this.addMouseMotionListener(new MouseMotionAdapter() {
+//            @Override
+//            public void mouseMoved(MouseEvent e) {
+//                Grid clicked = getGridAtPoint(e.getPoint());
+//                if (clicked != null) {
+//                    System.out.println("I Luv this project");
+//                }
+//            }
+//        });
+    }
+
+    public Grid getGridAtPoint(Point p) {
+        for (Grid[] col : gridMap) {
+            for (Grid grid : col) {
+                if (grid != null && grid.contains(p)) {
+                    return grid;
+                }
+            }
+        }
+        return null;
     }
 
     private Grid[][] GenerateMap() {
         Grid[][] grid = new Grid[rows][cols];
         Random random = new Random();
+
+        Point startPosition = new Point(rows / 2, cols / 2);
 
         //generate the city on grid
         for (int i = 0; i < citiesCount; i++) {
@@ -47,36 +81,26 @@ public class Map extends GameObject {
             //randomly set city inside district
 
             //random start position inside map
-            Point startPosition = new Point(random.nextInt(grid.length), random.nextInt(grid[0].length));
-            setCityOnGridMapByRandomWalk(grid, city, startPosition);
+            setCityOnGridMapByRandomWalk(grid, city, random.nextInt(15, maxGridPerCties), startPosition);
+            startPosition = getRandomFilledTile(grid, random);
         }
-
-        for (Grid[] col : grid) {
-            System.out.println(col.length);
-        }
-
-        // check District and Cities in District
-//        for (District dt : districts) {
-//            System.out.println(dt.getDistrictName());
-//            for (City city : districts.get(districts.indexOf(dt)).getCities()) {
-//                System.out.println(city.getCityName());
-//                city.printStats();
-//            }
-//            System.out.println();
-//        }
-//        for (int i = 0; i < grid.length; i++ ) {
-//            for (int j = 0; j < grid[0].length; j++) {
-//                if(grid[i][j] == null) {
-//                    grid[i][j] = new Grid(this,null, i, j, radius, 0);
-//                } else {
-//                    System.out.println(grid[i][j]);
-//                }
-//            }
-//        }
         return grid;
     }
 
-    public float getScaleRatio(){
+    private Point getRandomFilledTile(Grid[][] grid, Random random) {
+        ArrayList<Point> filledTiles = new ArrayList<>();
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[0].length; y++) {
+                if (grid[x][y] != null) filledTiles.add(new Point(x, y));
+            }
+        }
+        if (filledTiles.isEmpty()) {
+            return new Point(rows / 2, cols / 2);
+        }
+        return filledTiles.get(random.nextInt(filledTiles.size()));
+    }
+
+    public float getScaleRatio() {
         return scaleRatio;
     }
     /**
@@ -86,14 +110,14 @@ public class Map extends GameObject {
      * @param grid          grid Map.
      * @param startPosition start position of walker in grid map
      */
-    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, Point startPosition) {
+    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition) {
 
         int x = startPosition.x;
         int y = startPosition.y;
 
         Random random = new Random();
-        int tilesCreated = 0;
-        while (tilesCreated < 1) {
+        int tilesCreated = 1;
+        while (tilesCreated < gridCount) {
 
             // random direction
             int rX = random.nextInt(-1, 2), rY = random.nextInt(-1, 2);
@@ -112,24 +136,22 @@ public class Map extends GameObject {
                 //notify that this grid is have set city on.
                 tilesCreated++;
             }
-            System.out.println(grid[x][y].getCity().getCityName());
         }
     }
 
-    public float getGridWidth(){
-        // คำนวณระยะห่างทางคณิตศาสตร์สำหรับหกเหลี่ยมแบบรังผึ้ง
-        return (float) Math.sqrt(3) * radius * scaleRatio; // ระยะห่างแนวนอนระหว่างชิ้น
+    public float getGridWidth() {
+        return (float) Math.sqrt(3) * radius * scaleRatio + gap; // ระยะห่างแนวนอนระหว่างชิ้น
     }
 
-    public float getGridHeight(){
-        return (float) 1.5 * radius * scaleRatio;
+    public float getGridHeight() {
+        return (float) 1.5 * radius * scaleRatio + gap;
     }
 
-    public float getGridMapWidth(){
+    public float getGridMapWidth() {
         return cols * getGridWidth();
     }
 
-    public float getGridMapHeight(){
+    public float getGridMapHeight() {
         return rows * getGridHeight();
     }
 

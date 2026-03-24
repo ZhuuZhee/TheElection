@@ -25,6 +25,15 @@ public class Grid{
         return y;
     }
 
+    public int getGridX() { return gridX; }
+
+    public int getGridY() { return gridY; }
+
+    public boolean contains(Point p) {
+        Path2D.Double hexagon = createHexagon(x, y, radius * map.getScaleRatio());
+        return hexagon.contains(p);
+    }
+
     public void setGridPosition(int x, int y){
         this.gridX = x;
         this.gridY = y;
