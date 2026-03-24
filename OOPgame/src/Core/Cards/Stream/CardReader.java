@@ -32,7 +32,13 @@ public class CardReader {
                 // Construct PoliticsStats (Order based on Citybanna usage: Facility, Environment, Economy)
                 PoliticsStats stats = new PoliticsStats(facility, environment, economy);
 
-                cards.add(new ActionCard(name, 0, 0, stats));
+                String imagePath = obj.optString("img", "");
+
+                if (!imagePath.isEmpty()) {
+                    cards.add(new ActionCard(name, 0, 0, stats, imagePath));
+                } else {
+                    cards.add(new ActionCard(name, 0, 0, stats));
+                }
             }
         } catch (IOException e) {
             System.err.println("Error reading cards: " + e.getMessage());

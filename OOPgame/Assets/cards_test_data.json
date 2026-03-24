@@ -1,20 +1,22 @@
 [
     {
+        "img": "OOPgame/Assets/ImageForCards/red_dragon.png",
         "stats": {
             "environment": 20,
             "economy": 30,
             "facility": 10
         },
-        "name": "Test Card A",
+        "name": "Red Dragon",
         "type": "ActionCard"
     },
     {
+        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
         "stats": {
-            "environment": 0,
-            "economy": -10,
-            "facility": 50
+            "environment": 10,
+            "economy": 0,
+            "facility": 0
         },
-        "name": "Test Card B",
+        "name": "Blue Eyes",
         "type": "ActionCard"
     }
 ]

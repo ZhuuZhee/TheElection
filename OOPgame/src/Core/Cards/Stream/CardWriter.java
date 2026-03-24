@@ -41,9 +41,9 @@ public class CardWriter {
             }
             obj.put("stats", statsObj);
 
+            obj.put("img", card.getImagePath());
             obj.put("type", "ActionCard");
             obj.put("name", card.getName());
-
             jsonArray.put(obj);
         }
 

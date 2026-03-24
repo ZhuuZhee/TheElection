@@ -154,12 +154,14 @@ public class Tester {
     public static void TestCardStream() {
         System.out.println("--- Testing Card Stream ---");
         String filePath = "OOPgame/Assets/cards_test_data.json";
-
+        String imageFolder = "OOPgame/Assets/ImageForCards/";
         // 1. Create Mock Data
         List<ActionCard> originalCards = new ArrayList<>();
         // PoliticsStats(Facility, Environment, Economy)
-        originalCards.add(new ActionCard("Test Card A", 0, 0, new PoliticsStats(10, 20, 30)));
-        originalCards.add(new ActionCard("Test Card B", 0, 0, new PoliticsStats(50, 0, -10)));
+        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png");
+        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png");
+        originalCards.add(card1);
+        originalCards.add(card2);
 
         // 2. Write
         System.out.println("Writing " + originalCards.size() + " cards to " + filePath);

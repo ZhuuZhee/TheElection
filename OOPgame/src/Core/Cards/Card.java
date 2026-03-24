@@ -27,6 +27,7 @@ public abstract class Card extends GameObject {
     private static final int SNAP_MARGIN = 15;
     private static final double ZOOM_OFFSET = 20.0;
     protected Image cardImage = null;
+    protected String imagePath = "";
 
     public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
@@ -97,11 +98,15 @@ public abstract class Card extends GameObject {
     public void setImage(String imagePath) {
         try {
             this.cardImage = ImageIO.read(new File(imagePath));
+            this.imagePath = imagePath;
             repaint(); // สั่งให้วาดใหม่เมื่อโหลดรูปเสร็จ
         } catch (Exception e) {
             System.err.println("ไม่สามารถโหลดรูปภาพได้จาก path: " + imagePath);
             e.printStackTrace();
         }
+    }
+    public String getImagePath(){
+        return imagePath;
     }
     // ----------------------------------------
     // ------------  Mouse Events  ------------
