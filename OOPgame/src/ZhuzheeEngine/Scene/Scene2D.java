@@ -22,6 +22,7 @@ public class Scene2D extends Screen {
     public Scene2D() {
         super();
         gameObjects = new ArrayList<>();
+        camera = new Camera2D(); // Initialize camera here
         zOrderedObjects = new ArrayList<>();
         setLayout(null); // เปลี่ยนเป็น Absolute Layout เพื่อให้กำหนดพิกัด GameObject ได้เอง
     }
@@ -104,19 +105,22 @@ public class Scene2D extends Screen {
     @Override
     public void create() {
         super.create();
+        camera.setPosition(new Point(0,0));
         sortZOrderObjects();
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    public void doLayout() {
+        updateGameObjectPositions();
+    }
 
-        super.paintComponent(g);
-        // Update positions of all GameObjects based on Camera and WorldPosition
+    private void updateGameObjectPositions() {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
         Point camPos = camera.getPosition();
-        double zoom = camera.getZoom();
-        for (GameObject obj : gameObjects) {
+        float zoom = camera.getZoom();
+
+        for (GameObject obj : new ArrayList<GameObject>(gameObjects)) {
             Point wp = obj.getPosition(); // This is WorldPosition
 
             // Calculate Screen X, Y based on World Position
@@ -134,5 +138,11 @@ public class Scene2D extends Screen {
             // Update Swing Component Size
             obj.setSize(scaledWidth, scaledHeight);
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        updateGameObjectPositions();
+        super.paintComponent(g);
     }
 }

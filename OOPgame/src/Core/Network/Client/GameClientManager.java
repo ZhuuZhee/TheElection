@@ -109,4 +109,8 @@ public class GameClientManager {
             e.printStackTrace();
         }
     }
+
+    public Player getLocalPlayer(){
+        return localPlayer;
+    }
 }

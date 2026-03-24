@@ -59,6 +59,7 @@ public abstract class Card extends GameObject {
             public void mouseClicked(MouseEvent e) {
                 onMouseClick();
                 scene.getCamera().LerpCameraTo(getPosition(),1);
+                scene.getCamera().LerpZoom(2,1);
             }
 
             @Override

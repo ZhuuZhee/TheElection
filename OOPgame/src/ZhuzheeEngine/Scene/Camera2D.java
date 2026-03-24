@@ -8,11 +8,11 @@ import java.awt.Point;
 
 public class Camera2D {
     private Point position;
-    private double zoom;
+    private float zoom;
 
     public Camera2D() {
         this.position = new Point(0, 0);
-        this.zoom = 1.0;
+        this.zoom = 1.0f;
     }
 
     // Getters and Setters
@@ -24,11 +24,11 @@ public class Camera2D {
         this.position = position;
     }
 
-    public double getZoom() {
+    public float getZoom() {
         return zoom;
     }
 
-    public void setZoom(double zoom) {
+    public void setZoom(float zoom) {
         this.zoom = zoom;
     }
 
@@ -84,37 +84,81 @@ public class Camera2D {
             setPosition(new Point(targetPos.x, targetPos.y));
         }
     }
-    private  Thread lerpThread = null;
+
+    private Thread lerpThread = null;
+
+    /// smoothly move camera to target point in duration(time)
     public void LerpCameraTo(Point worldPosition, float duration) {
-        lerpThread =  new Thread(() -> {
+        // 1. ถ้ามี Thread เดิมทำงานอยู่ ให้สั่งหยุดก่อน
+        if (lerpThread != null && lerpThread.isAlive()) {
+            lerpThread.interrupt();
+        }
+        // เก็บตำแหน่งเริ่มต้นไว้
+        final float startX = position.x;
+        final float startY = position.y;
+        final float targetX = worldPosition.x;
+        final float targetY = worldPosition.y;
+        final long durationMs = (long) (duration * 1000);
+
+        lerpThread = new Thread(() -> {
             try {
-                float dx = worldPosition.x - position.x, dy = worldPosition.y - position.y;
-                float distance = MathZ.Length(dx, dy);
-                float speed = distance / (duration * 1000);//1000 millisec
-                speed *= Application.getDeltaTime();
-                while (distance > 2) {
-                    dx = worldPosition.x - position.x;
-                    dy = worldPosition.y - position.y;
-                    distance = MathZ.Length(dx, dy);
-                    int x = (int)((dx > 0? 1 : -1) * Math.ceil(Math.abs(dx) * speed)),
-                            y = (int)((dy > 0? 1 : -1) * Math.ceil(Math.abs(dy) * speed));
-                    TranslateCamera(x, y);
-                    //1000 -> 1 seconds
-                    //0.1 seconds -> 100
-                    long sleepTime = (long)Math.round(Application.getDeltaTime()*1000);
-                    System.out.println("distance " + distance);
-                    System.out.println("speed " + speed);
-                    System.out.println("speed x y " + x + "," + y);
-                    System.out.println("dx x y " + dx + "," + dy);
-                    System.out.println("sleep " + sleepTime);
-                    Thread.sleep(sleepTime);
+                long startTime = System.currentTimeMillis();
+                long elapsed = 0;
+
+                while (elapsed < durationMs) {
+                    elapsed = System.currentTimeMillis() - startTime;
+
+                    // หาค่า t (0.0 ถึง 1.0) ว่าเวลาผ่านไปกี่เปอร์เซ็นต์แล้ว
+                    float t = (float) elapsed / durationMs;
+                    if (t > 1f) t = 1f; // กันเกิน
+
+                    // สูตร Linear Interpolation: start + (target - start) * t
+                    float nextX = startX + (targetX - startX) * t;
+                    float nextY = startY + (targetY - startY) * t;
+
+                    position.setLocation(nextX,nextY);
+
+                    Thread.sleep(Application.DELTA_TIME_MS);
                 }
+
+                // ตบท้ายให้เป๊ะที่จุดหมาย
+                TranslateCamera((int)(targetX - position.x), (int)(targetY - position.y));
+                lerpThread = null;
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         });
-
         lerpThread.start();
+    }
+    private Thread lerpZoom = null;
+    /// smoothly zoom camera to target zoom value in duration(time)
+    public void LerpZoom(float targetZoom, float duration) {
+        if (lerpZoom != null && lerpZoom.isAlive()) {
+            lerpZoom.interrupt();
+        }
+        final long startTime = System.currentTimeMillis();
+        final long durationMs = (long) duration * 1000;
+        final float startZoom = zoom;
+        new Thread(() -> {
+            long elapsed = 0;
+            try {
+                while (elapsed < durationMs) {
+                    elapsed = System.currentTimeMillis() - startTime;
+
+                    // หาค่า t (0.0 ถึง 1.0) ว่าเวลาผ่านไปกี่เปอร์เซ็นต์แล้ว
+                    float t = (float) elapsed / durationMs;
+                    if (t > 1f) t = 1f; // กันเกิน
+                    float nextZoom = startZoom + (targetZoom - startZoom) * t;
+                    zoom = nextZoom;
+                    Thread.sleep(Application.DELTA_TIME_MS);
+                }
+                zoom = targetZoom;
+                lerpZoom = null;
+                } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }).start();
     }
 }
