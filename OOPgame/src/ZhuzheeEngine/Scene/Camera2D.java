@@ -1,5 +1,9 @@
 package ZhuzheeEngine.Scene;
 
+import Core.ZhuzheeGame;
+import ZhuzheeEngine.Application;
+import ZhuzheeEngine.MathZ;
+
 import java.awt.Point;
 
 public class Camera2D {
@@ -12,10 +16,21 @@ public class Camera2D {
     }
 
     // Getters and Setters
-    public Point getPosition() { return position; }
-    public void setPosition(Point position) { this.position = position; }
-    public double getZoom() { return zoom; }
-    public void setZoom(double zoom) { this.zoom = zoom; }
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+    public double getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(double zoom) {
+        this.zoom = zoom;
+    }
 
     /**
      * Moves the camera by a specific offset
@@ -53,6 +68,7 @@ public class Camera2D {
 
     /**
      * Shifts the camera by a specific amount from its current position.
+     *
      * @param dx The amount to move on the X axis
      * @param dy The amount to move on the Y axis
      */
@@ -67,5 +83,38 @@ public class Camera2D {
             Point targetPos = target.getPosition();
             setPosition(new Point(targetPos.x, targetPos.y));
         }
+    }
+    private  Thread lerpThread = null;
+    public void LerpCameraTo(Point worldPosition, float duration) {
+        lerpThread =  new Thread(() -> {
+            try {
+                float dx = worldPosition.x - position.x, dy = worldPosition.y - position.y;
+                float distance = MathZ.Length(dx, dy);
+                float speed = distance / (duration * 1000);//1000 millisec
+                speed *= Application.getDeltaTime();
+                while (distance > 2) {
+                    dx = worldPosition.x - position.x;
+                    dy = worldPosition.y - position.y;
+                    distance = MathZ.Length(dx, dy);
+                    int x = (int)((dx > 0? 1 : -1) * Math.ceil(Math.abs(dx) * speed)),
+                            y = (int)((dy > 0? 1 : -1) * Math.ceil(Math.abs(dy) * speed));
+                    TranslateCamera(x, y);
+                    //1000 -> 1 seconds
+                    //0.1 seconds -> 100
+                    long sleepTime = (long)Math.round(Application.getDeltaTime()*1000);
+                    System.out.println("distance " + distance);
+                    System.out.println("speed " + speed);
+                    System.out.println("speed x y " + x + "," + y);
+                    System.out.println("dx x y " + dx + "," + dy);
+                    System.out.println("sleep " + sleepTime);
+                    Thread.sleep(sleepTime);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        });
+
+        lerpThread.start();
     }
 }

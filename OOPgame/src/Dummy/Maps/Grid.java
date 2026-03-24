@@ -1,8 +1,5 @@
 package Dummy.Maps;
 
-import Core.ZhuzheeGame;
-import ZhuzheeEngine.Scene.GameObject;
-
 import java.awt.*;
 import java.awt.geom.Path2D;
 
