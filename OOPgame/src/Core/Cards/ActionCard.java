@@ -20,6 +20,11 @@ public class ActionCard extends Card {
     public PoliticsStats getStats() {
         return this.stats;
     }
+
+    public String getName() {
+        return this.name;
+    }
+
     // โยนให้ city จัดการ stat
     public void ActionOn(City city) {
         if (!getEnable()) return;

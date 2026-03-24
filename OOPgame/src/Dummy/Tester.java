@@ -4,6 +4,8 @@ import Core.Cards.ActionCard;
 import Core.Cards.AllArcanaCards.TheFoolCard;
 import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
+import Core.Cards.Stream.CardReader;
+import Core.Cards.Stream.CardWriter;
 import Core.GameScreens.MainMenu;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
@@ -109,4 +111,31 @@ public class Tester {
         });
     }
 
+    public static void TestCardStream() {
+        System.out.println("--- Testing Card Stream ---");
+        String filePath = "OOPgame/Assets/cards_test_data.json";
+
+        // 1. Create Mock Data
+        List<ActionCard> originalCards = new ArrayList<>();
+        // PoliticsStats(Facility, Environment, Economy)
+        originalCards.add(new ActionCard("Test Card A", 0, 0, new PoliticsStats(10, 20, 30)));
+        originalCards.add(new ActionCard("Test Card B", 0, 0, new PoliticsStats(50, 0, -10)));
+
+        // 2. Write
+        System.out.println("Writing " + originalCards.size() + " cards to " + filePath);
+        CardWriter.writeActionCards(originalCards, filePath);
+
+        // 3. Read
+        System.out.println("Reading back from " + filePath);
+        List<ActionCard> readCards = CardReader.readActionCards(filePath);
+
+        // 4. Verify
+        System.out.println("Read " + readCards.size() + " cards:");
+        for (ActionCard card : readCards) {
+            PoliticsStats s = card.getStats();
+            System.out.println("- " + card.getName() + " Stats[Fac:" + s.getStats(PoliticsStats.Facility) +
+                    ", Env:" + s.getStats(PoliticsStats.Environment) +
+                    ", Eco:" + s.getStats(PoliticsStats.Economy) + "]");
+        }
+    }
 }

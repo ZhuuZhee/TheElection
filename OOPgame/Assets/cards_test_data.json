@@ -1,0 +1,20 @@
+[
+    {
+        "stats": {
+            "environment": 20,
+            "economy": 30,
+            "facility": 10
+        },
+        "name": "Test Card A",
+        "type": "ActionCard"
+    },
+    {
+        "stats": {
+            "environment": 0,
+            "economy": -10,
+            "facility": 50
+        },
+        "name": "Test Card B",
+        "type": "ActionCard"
+    }
+]
