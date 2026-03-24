@@ -10,8 +10,8 @@ import ZhuzheeEngine.Scene.GameObject;
 
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
-    private static final int CARD_WIDTH = 100;
-    private static final int CARD_HEIGHT = 150;
+    private static final int CARD_WIDTH = 64;
+    private static final int CARD_HEIGHT = 84;
     private PoliticsStats stats;
     // setup Constructor while card builded add stat in stat
 
