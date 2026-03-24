@@ -16,6 +16,12 @@ public class ActionCard extends Card {
         super(name, x, y, CARD_WIDTH, CARD_HEIGHT);
         this.stats = stats;
     }
+
+    public ActionCard(String name, int x, int y, PoliticsStats stats, String imagePath) {
+        super(name, x, y, CARD_WIDTH, CARD_HEIGHT, imagePath); // โยน imagePath ให้ Card จัดการ
+        this.stats = stats;
+    }
+
     // getter stat
     public PoliticsStats getStats() {
         return this.stats;

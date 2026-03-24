@@ -14,6 +14,10 @@ public class PolicyCardA extends PolicyCard {
         super(name, x, y); // โยนค่าไปให้ PassiveCard จัดการ
     }
 
+    public PolicyCardA(String name, int x, int y, String imagePath) {
+        super(name, x, y, imagePath);
+    }
+
     @Override
     public boolean IsActivate() {
         return true;

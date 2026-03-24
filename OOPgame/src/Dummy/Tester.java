@@ -28,16 +28,18 @@ import Dummy.Maps.PoliticsStats;
 
 public class Tester {
     public static void CardsTestingOnScene(Scene2D scene2D){
-//        Citybanna Bkk = new Citybanna("Bangkok", 50, 50, 50);
+//      Citybanna Bkk = new Citybanna("Bangkok", 50, 50, 50);
+        String imageFolder = "OOPgame/Assets/ImageForCards/";
+
         City KuyJang = new City("Kuy_Jeng", 50, 50, 50, 100);
 
         CardSlot cardSlot = new CardSlot(0, 0, 100, 150, KuyJang);
         CardSlot policySlot = new CardSlot(150, 0, 100, 150, KuyJang);
         CardSlot arcanaSlot = new CardSlot(300, 0, 100, 150, KuyJang);
 
-        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30));
-        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0));
-        PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200);
+        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png");
+        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png");
+        PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200,imageFolder + "gay.png");
 
         TheFoolCard theFool = new TheFoolCard(arcanaSlot);
 //        Citybanna myCity = new Citybanna("Bangkok", 50, 50, 50);

@@ -11,6 +11,10 @@ import ZhuzheeEngine.Scene.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import java.awt.Image;
+import java.io.File;
+import javax.imageio.ImageIO;
+
 public abstract class Card extends GameObject {
     protected String name;
     protected boolean isGrabbed = false;
@@ -22,6 +26,7 @@ public abstract class Card extends GameObject {
     private static final int Z_INDEX_NORMAL = Scene2D.Layer.DEFAULT;
     private static final int SNAP_MARGIN = 15;
     private static final double ZOOM_OFFSET = 20.0;
+    protected Image cardImage = null;
 
     public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
@@ -75,6 +80,11 @@ public abstract class Card extends GameObject {
         });
     }
 
+    public Card(String name, int x, int y, int width, int height, String imagePath) {
+        this(name, x, y, width, height);
+        this.setImage(imagePath);
+    }
+
     //------------ setter getter -------------
     public void setHovered(boolean hovered) {
         this.isHovered = hovered;
@@ -84,6 +94,15 @@ public abstract class Card extends GameObject {
         this.isDraggable = draggable;
     }
 
+    public void setImage(String imagePath) {
+        try {
+            this.cardImage = ImageIO.read(new File(imagePath));
+            repaint(); // สั่งให้วาดใหม่เมื่อโหลดรูปเสร็จ
+        } catch (Exception e) {
+            System.err.println("ไม่สามารถโหลดรูปภาพได้จาก path: " + imagePath);
+            e.printStackTrace();
+        }
+    }
     // ----------------------------------------
     // ------------  Mouse Events  ------------
     // ----------------------------------------
@@ -240,20 +259,41 @@ public abstract class Card extends GameObject {
             }
 
             // --------- Drawing Logic --------- //
-            if (!getEnable()) g2d.setColor(Color.LIGHT_GRAY);
-            else if (isGrabbed) g2d.setColor(new Color(255, 165, 0));
-            else g2d.setColor(new Color(176, 255, 183));
+            if (cardImage != null) {
+                // ถ้ามีรูปภาพ ให้วาดรูปลงไปให้เต็มขนาดการ์ด
+                g2d.drawImage(cardImage, 0, 0, getWidth(), getHeight(), null);
 
-            g2d.fillRect(0, 0, getWidth(), getHeight()); // Draw at 0,0
+                // สร้าง Overlay สีใสๆ เพื่อบอกสถานะของการ์ด (ทับบนรูปอีกที)
+                if (!getEnable()) {
+                    g2d.setColor(new Color(128, 128, 128, 150)); // สีเทาโปร่งแสง
+                    g2d.fillRect(0, 0, getWidth(), getHeight());
+                } else if (isGrabbed) {
+                    g2d.setColor(new Color(255, 165, 0, 100)); // สีส้มโปร่งแสง
+                    g2d.fillRect(0, 0, getWidth(), getHeight());
+                }
+            } else {
+                // ถ้าไม่มีรูปภาพ ให้ใช้สีพื้นฐานแบบเดิม
+                if (!getEnable()) g2d.setColor(Color.LIGHT_GRAY);
+                else if (isGrabbed) g2d.setColor(new Color(255, 165, 0));
+                else g2d.setColor(new Color(176, 255, 183));
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
 
+            // วาดกรอบสีดำ
             g2d.setColor(Color.BLACK);
-            g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1); // -1 to see borders
+            g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
+            // วาดชื่อการ์ด
             FontMetrics fm = g2d.getFontMetrics();
             int textX = (getWidth() - fm.stringWidth(name)) / 2;
             int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-            g2d.drawString(name, textX, textY);
 
+            // พื้นหลังตัวหนังสือแบบโปร่งแสง
+            g2d.setColor(new Color(255, 255, 255, 180));
+            g2d.fillRect(textX - 2, textY - fm.getAscent() - 2, fm.stringWidth(name) + 4, fm.getHeight() + 4);
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawString(name, textX, textY);
         } finally {
             // 2. ทำลายก๊อปปี้ทิ้ง เพื่อคืนค่าเดิมให้ Graphics หลักสำหรับ Cards ใบถัดไป
             g2d.dispose();
