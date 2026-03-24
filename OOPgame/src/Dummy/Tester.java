@@ -12,38 +12,78 @@ import Core.ZhuzheeGame;
 import Dummy.Maps.City;
 import Core.UI.Shop;
 import ZhuzheeEngine.Application;
+import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 import Core.Cards.PolicyCardA;
 import Dummy.Maps.Map;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import Dummy.Maps.PoliticsStats;
+
+import javax.swing.*;
 
 public class Tester {
     public static void CardsTestingOnScene(Scene2D scene2D){
-//        Citybanna Bkk = new Citybanna("Bangkok", 50, 50, 50);
+//      Citybanna Bkk = new Citybanna("Bangkok", 50, 50, 50);
+        String imageFolder = "OOPgame/Assets/ImageForCards/";
+
         City KuyJang = new City("Kuy_Jeng", 50, 50, 50, 100);
 
         CardSlot cardSlot = new CardSlot(0, 0, 100, 150, KuyJang);
         CardSlot policySlot = new CardSlot(150, 0, 100, 150, KuyJang);
         CardSlot arcanaSlot = new CardSlot(300, 0, 100, 150, KuyJang);
 
-        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30));
-        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0));
-        PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200);
+        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png");
+        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png");
+        PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200,imageFolder + "gay.png");
 
         TheFoolCard theFool = new TheFoolCard(arcanaSlot);
 //        Citybanna myCity = new Citybanna("Bangkok", 50, 50, 50);
         card2.setDraggable(false); // <--- setDraggable # default true
 //        KuyJang.printStats();
 //        System.out.println("Put 'kuy sega' in to right slot");
+    }
+    public static void DrawCardTest(Scene2D scene, CardHolderUI handUI){
+        DrawCardUI ui = new DrawCardUI(scene, handUI);
+    }
+    public static class DrawCardUI extends Canvas{
+        CardHolderUI hand;
+        public DrawCardUI(Scene2D scene, CardHolderUI handUi){
+            super(scene);
+            hand = handUi;
+
+            setLayout(new BorderLayout());
+
+            JButton button = new JButton("Draw Card");
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String filePath = "OOPgame/Assets/cards_test_data.json";
+                    ArrayList<ActionCard> cards = (ArrayList<ActionCard>) CardReader.readActionCards(filePath);
+                    int index = new Random().nextInt(cards.size());
+                    hand.addCard(cards.get(index));
+                }
+            });
+
+            add(button);
+            scene.add(this);
+
+            onResize(scene.getWidth(),scene.getHeight());
+            setVisible(true);
+            scene.revalidate();
+        }
+        @Override
+        protected void onResize(int width, int height) {
+            // ยึดตำแหน่งไว้ที่ด้านล่างของหน้าจอเสมอ
+            setBounds(24, 24, 164, 24);
+            revalidate();
+        }
     }
 
     public static AudioManagerTester audioManagerTester;
@@ -54,8 +94,8 @@ public class Tester {
     public static void MainMenuTest() {
         Screen.ChangeScreen(new MainMenu());
     }
-    public static void CardHolderUITest(Scene2D scene2D){
-        new CardHolderUI(scene2D);
+    public static CardHolderUI CardHolderUITest(Scene2D scene2D){
+        return new CardHolderUI(scene2D);
     }
     public static void MapTest() {
         new Map();

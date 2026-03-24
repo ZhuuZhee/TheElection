@@ -2,6 +2,7 @@ package Core;
 
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
+import Core.UI.CardHolderUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -50,9 +51,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.TestCardStream();
         Tester.MapTest();
 //        Tester.ShopTest();
-        Tester.CardHolderUITest(MAIN_SCENE);
+        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
 //        Tester.AudioManagerTesterInitialize();
         new Tester().TestingCamera(MAIN_SCENE);
+        Tester.DrawCardTest(MAIN_SCENE, holderUI);
     }
 
     @Override
