@@ -9,12 +9,14 @@ import Dummy.Maps.PoliticsStats;
 public abstract class PolicyCard extends Card {
     protected boolean isInSlot = false;
 
-    public PolicyCard(String name, int x, int y) {
+    public PolicyCard(String name, int x, int y, int coin) {
         super(name, x, y, 100, 150);
+        this.coin = coin;
     }
 
-    public PolicyCard(String name, int x, int y, String imagePath) {
+    public PolicyCard(String name, int x, int y, String imagePath, int coin) {
         super(name, x, y, 100, 150, imagePath);
+        this.coin = coin;
     }
 
     public abstract boolean IsActivate();

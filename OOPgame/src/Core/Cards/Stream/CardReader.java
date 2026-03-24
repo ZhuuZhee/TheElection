@@ -1,6 +1,7 @@
 package Core.Cards.Stream;
 
 import Core.Cards.ActionCard;
+import Core.Cards.Card;
 import Dummy.Maps.PoliticsStats;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +24,7 @@ public class CardReader {
                 JSONObject obj = jsonArray.getJSONObject(i);
 
                 String name = obj.getString("name");
-
+                int coin = obj.getString("coin");
                 JSONObject statsObj = obj.getJSONObject("stats");
                 int economy = statsObj.optInt("economy", 0);
                 int facility = statsObj.optInt("facility", 0);
@@ -35,9 +36,9 @@ public class CardReader {
                 String imagePath = obj.optString("img", "");
 
                 if (!imagePath.isEmpty()) {
-                    cards.add(new ActionCard(name, 0, 0, stats, imagePath));
+                    cards.add(new ActionCard(name, 0, 0, stats, imagePath,coin));
                 } else {
-                    cards.add(new ActionCard(name, 0, 0, stats));
+                    cards.add(new ActionCard(name, 0, 0, stats, coin));
                 }
             }
         } catch (IOException e) {

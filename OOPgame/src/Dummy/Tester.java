@@ -39,9 +39,9 @@ public class Tester {
         CardSlot policySlot = new CardSlot(150, 0, 100, 150, KuyJang);
         CardSlot arcanaSlot = new CardSlot(300, 0, 100, 150, KuyJang);
 
-        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png");
-        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png");
-        PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200,imageFolder + "gay.png");
+        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png",10);
+        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png",2);
+        PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200,imageFolder + "gay.png", 3);
 
         TheFoolCard theFool = new TheFoolCard(arcanaSlot);
 //        Citybanna myCity = new Citybanna("Bangkok", 50, 50, 50);
@@ -158,8 +158,8 @@ public class Tester {
         // 1. Create Mock Data
         List<ActionCard> originalCards = new ArrayList<>();
         // PoliticsStats(Facility, Environment, Economy)
-        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png");
-        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png");
+        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png", 10);
+        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png", 2);
         originalCards.add(card1);
         originalCards.add(card2);
 

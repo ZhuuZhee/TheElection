@@ -28,6 +28,7 @@ public abstract class Card extends GameObject {
     private static final double ZOOM_OFFSET = 20.0;
     protected Image cardImage = null;
     protected String imagePath = "";
+    protected int coin;
 
     public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
@@ -93,6 +94,14 @@ public abstract class Card extends GameObject {
 
     public void setDraggable(boolean draggable) {
         this.isDraggable = draggable;
+    }
+
+    public int getCoin() {
+        return this.coin;
+    }
+
+    public void setCoin(int cost) {
+        this.coin = cost;
     }
 
     public void setImage(String imagePath) {

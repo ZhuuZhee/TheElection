@@ -12,14 +12,16 @@ public class ActionCard extends Card {
     private static final int CARD_HEIGHT = 150;
     private PoliticsStats stats;
     // setup Constructor while card builded add stat in stat
-    public ActionCard(String name, int x, int y, PoliticsStats stats) {
+    public ActionCard(String name, int x, int y, PoliticsStats stats,int coin) {
         super(name, x, y, CARD_WIDTH, CARD_HEIGHT);
         this.stats = stats;
+        this.coin = coin;
     }
 
-    public ActionCard(String name, int x, int y, PoliticsStats stats, String imagePath) {
+    public ActionCard(String name, int x, int y, PoliticsStats stats, String imagePath, int coin) {
         super(name, x, y, CARD_WIDTH, CARD_HEIGHT, imagePath); // โยน imagePath ให้ Card จัดการ
         this.stats = stats;
+        this.coin = coin;
     }
 
     // getter stat
