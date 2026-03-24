@@ -78,7 +78,7 @@ public class GameClientManager {
             else if (type.equals(NetworkProtocol.START_GAME.name())) {
                 System.out.println("Host start game");
                 // เริ่มเกม
-                ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.MAIN_SCENE);
+                javax.swing.SwingUtilities.invokeLater(Core.ZhuzheeGame::startMainScene);
             }
             else if (type.equals(NetworkProtocol.HOST_LEFT.name())) {
                 System.out.println("Host left the room");

@@ -147,7 +147,7 @@ public class Tester {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 var cam = MAIN_SCENE.getCamera();
                 System.out.println(cam.getZoom());
-                cam.setZoom(cam.getZoom() + e.getWheelRotation() * Application.getDeltaTime());
+                cam.setZoom(cam.getZoom() - e.getWheelRotation() * Application.getDeltaTime());
             }
         });
     }
