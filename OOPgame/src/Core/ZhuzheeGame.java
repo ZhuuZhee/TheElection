@@ -35,26 +35,26 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Application.setMainFrameTitle("Zhuzhee The Game");
 
         MAIN_SCENE = new Scene2D();
-//        MAIN_MENU = new MainMenu();
-//        LOBBY_MENU = new Core.GameScreens.LobbyMenu();
-//        CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
-//        JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
-//        WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
+        MAIN_MENU = new MainMenu();
+        LOBBY_MENU = new Core.GameScreens.LobbyMenu();
+        CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
+        JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
+        WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
 //        OPTION_MENU = new OptionMenu();
         //set current screen
-//        Screen.ChangeScreen(MAIN_MENU);
-        Screen.ChangeScreen(MAIN_SCENE);
+        Screen.ChangeScreen(MAIN_MENU);
+//        Screen.ChangeScreen(MAIN_SCENE);
 
         //test
 //        Tester.MainMenu(screenManager);
         Tester.CardsTestingOnScene(MAIN_SCENE);
 //        Tester.TestCardStream();
-//        Tester.MapTest();
+        Tester.MapTest();
 //        Tester.ShopTest();
-//        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
+        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
 //        Tester.AudioManagerTesterInitialize();
         new Tester().TestingCamera(MAIN_SCENE);
-//        Tester.DrawCardTest(MAIN_SCENE, holderUI);
+        Tester.DrawCardTest(MAIN_SCENE, holderUI);
     }
 
     @Override

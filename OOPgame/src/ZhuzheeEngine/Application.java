@@ -10,7 +10,8 @@ public final class Application {
     /// frame time delay in milliseconds
     private static int FRAME_DELAY_MS = 1000 / TARGET_FPS;
     /// time between each rendered frame in seconds
-    private static float DELTA_TIME = FRAME_DELAY_MS / 1000f;
+    public static final float DELTA_TIME = FRAME_DELAY_MS / 1000f;
+    public static final long DELTA_TIME_MS = 16;
 
     private JFrame mainFrame;
     private Timer renderTimer;
@@ -111,17 +112,6 @@ public final class Application {
         );
         app.renderTimer.setRepeats(true);
         app.renderTimer.start();
-    }
-
-
-    public static void SetTargetFrameRate(int targetFPS) {
-        if (targetFPS > 0) {
-            TARGET_FPS = targetFPS;
-            FRAME_DELAY_MS = 1000 / TARGET_FPS;
-            DELTA_TIME = FRAME_DELAY_MS / 1000f;
-        } else {
-            throw new NumberFormatException("Application: Target FPS must be greater than zero.");
-        }
     }
 
     public static float getDeltaTime() {
