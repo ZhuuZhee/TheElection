@@ -67,7 +67,7 @@ public class CardHolderUI extends Canvas {
 
         int height = panelHeight - 60;
         float ratio = (float) height /card.getHeight();
-        card.setPreferredSize(new Dimension((int)(card.getWidth() * ratio), height));
+        card.setBounds(0,0,(int)(card.getWidth() * ratio), height);
 
         System.out.println("Card added to hand: " + card.getName());
         cardContainer.revalidate();

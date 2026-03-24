@@ -63,12 +63,12 @@ public abstract class Card extends GameObject {
                 onMouseReleased();
             }
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                onMouseClick();
-                scene.getCamera().LerpCameraTo(getPosition(),1);
-                scene.getCamera().LerpZoom(2,1);
-            }
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                onMouseClick();
+//                scene.getCamera().LerpCameraTo(getPosition(),1);
+//                scene.getCamera().LerpZoom(2,1);
+//            }
 
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -358,5 +358,13 @@ public abstract class Card extends GameObject {
             // ถ้าอยู่ใน CardSlot หรือไม่ได้ Hover ให้ใช้ขนาดปกติ
             super.setBounds(x, y, width, height);
         }
+    }
+
+    public void setBaseWidth(int width)
+    {
+        baseWidth = width;
+    }
+    public void setBaseHeight(int height){
+        baseHeight = height;
     }
 }
