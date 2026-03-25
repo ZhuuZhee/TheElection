@@ -161,11 +161,12 @@ public class Shop extends JPanel {
     }
 
     // แถบเงินด้านล่างขวา
+    JLabel moneyLabel;
     private JPanel buildMoneyBar() {
         JPanel bar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         bar.setBackground(new Color(80, 80, 80));
 
-        JLabel moneyLabel = new JLabel("total money : " + this.localPlayer.getCoin());
+        moneyLabel = new JLabel("total money : " + this.localPlayer.getCoin());
         moneyLabel.setFont(new Font("Arial", Font.BOLD, 13));
         moneyLabel.setForeground(Color.DARK_GRAY);
         moneyLabel.setOpaque(true);
@@ -183,24 +184,15 @@ public class Shop extends JPanel {
 
     // จัดการการซื้อการ์ด → snap card เข้า slot แล้วปิด shop
     private void handleBuy(PolicyCard card) {
-        if (purchased) return;
         if (this.localPlayer.getCoin() < getPrice(card)) return;
 
-        purchased    = true;
         this.localPlayer.setCoin(this.localPlayer.getCoin() - getPrice(card));
         System.out.println("ซื้อการ์ด " + card.getName() + " สำเร็จ! หักเงิน " +  getPrice(card) + " เหลือ: " + localPlayer.getCoin());
 
-//        ซ่อนการ์ดที่ไม่ได้ซื้อออกจาก scene
-        for (PolicyCard c : shopCards) {
-            if (c != card) {
-                PolicyCard other = (PolicyCard) c;
-                ZhuzheeGame.MAIN_SCENE.remove(other);
-            }
-        }
+        shopCards.remove(card);
+        Dummy.Tester.policyUI.addCard(card);
 
-//      show bought card
-        ZhuzheeGame.PLAYER_HAND_DEV_CARDS.addCard(card);
-        card.setDraggable(true);
+        moneyLabel.setText("Total Money : " + this.localPlayer.getCoin());
 
         closeShop();
     }

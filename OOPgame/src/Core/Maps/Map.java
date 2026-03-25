@@ -35,16 +35,20 @@ public class Map extends GameObject {
     private Grid currentClickedGrid = null;
 
     public Map() {
-        this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT);
+        this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, new Random().nextLong());
     }
 
-    public Map(int rows, int cols, int citiesCount) {
+    public Map(long seed) {
+        this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, seed);
+    }
+
+    public Map(int rows, int cols, int citiesCount, long seed) {
         super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
         this.rows = rows;
         this.cols = cols;
         this.citiesCount = citiesCount;
         startSize = new Point(getWidth(), getHeight());
-        gridMap = GenerateMap();
+        gridMap = GenerateMap(seed);
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
@@ -109,29 +113,29 @@ public class Map extends GameObject {
         return null;
     }
 
-    private Grid[][] GenerateMap() {
+    private Grid[][] GenerateMap(long seed) {
         Grid[][] grid = new Grid[rows][cols];
-        Random random = new Random();
+        Random random = new Random(seed);
 
         Point startPosition = new Point(rows / 2, cols / 2);
 
-        //generate the city on grid
+        // generate the city on grid
         for (int i = 0; i < citiesCount; i++) {
             City city = new City("City Test : " + i,
                     random.nextInt(minStats, maxStats),
                     random.nextInt(minStats, maxStats),
                     random.nextInt(minStats, maxStats),
                     random.nextInt(minPopulation, maxPopulation));
-            //random color
+            // random color
             int r = random.nextInt(1, 5) * 255 / 5;
             int g = random.nextInt(1, 5) * 255 / 5;
             int b = random.nextInt(1, 5) * 255 / 5;
             city.setColor(new Color(r, g, b));
 
-            //randomly set city inside district
+            // randomly set city inside district
 
-            //random start position inside map
-            setCityOnGridMapByRandomWalk(grid, city, random.nextInt(6, maxGridPerCties), startPosition);
+            // random start position inside map
+            setCityOnGridMapByRandomWalk(grid, city, random.nextInt(6, maxGridPerCties), startPosition, random);
             startPosition = getRandomFilledTile(grid, random);
         }
         return grid;
@@ -141,7 +145,8 @@ public class Map extends GameObject {
         ArrayList<Point> filledTiles = new ArrayList<>();
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[0].length; y++) {
-                if (grid[x][y] != null) filledTiles.add(new Point(x, y));
+                if (grid[x][y] != null)
+                    filledTiles.add(new Point(x, y));
             }
         }
         if (filledTiles.isEmpty()) {
@@ -155,7 +160,8 @@ public class Map extends GameObject {
     }
 
     /**
-     * set the `City` on grid map(2D Array) by a cluster growth algorithm (instead of random walk)
+     * set the `City` on grid map(2D Array) by a cluster growth algorithm (instead
+     * of random walk)
      * This makes the city more compact and connected.
      *
      * @param city          the city to set on gridMap.
@@ -163,8 +169,8 @@ public class Map extends GameObject {
      * @param gridCount     number of tiles to create for this city.
      * @param startPosition start position in grid map.
      */
-    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition) {
-        Random random = new Random();
+    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition,
+            Random random) {
         ArrayList<Point> cityTiles = new ArrayList<>();
         ArrayList<Point> candidates = new ArrayList<>();
 
@@ -172,7 +178,8 @@ public class Map extends GameObject {
         int startX = Math.abs(startPosition.x) % grid.length;
         int startY = Math.abs(startPosition.y) % grid[0].length;
 
-        // If start position is occupied, find the nearest empty one (simple approach: random until empty)
+        // If start position is occupied, find the nearest empty one (simple approach:
+        // random until empty)
         while (grid[startX][startY] != null) {
             startX = random.nextInt(grid.length);
             startY = random.nextInt(grid[0].length);
@@ -187,7 +194,8 @@ public class Map extends GameObject {
             int index = random.nextInt(candidates.size());
             Point next = candidates.get(index);
 
-            // Double check if it's still null (might have been filled by another city or same city)
+            // Double check if it's still null (might have been filled by another city or
+            // same city)
             if (grid[next.x][next.y] == null) {
                 addTileToCity(grid, city, next.x, next.y, cityTiles, candidates);
                 tilesCreated++;
@@ -198,7 +206,8 @@ public class Map extends GameObject {
         }
     }
 
-    private void addTileToCity(Grid[][] grid, City city, int x, int y, ArrayList<Point> cityTiles, ArrayList<Point> candidates) {
+    private void addTileToCity(Grid[][] grid, City city, int x, int y, ArrayList<Point> cityTiles,
+            ArrayList<Point> candidates) {
         float xOffset = y % 2 == 0 ? getGridWidth() : getGridWidth() / 2;
         grid[x][y] = new Grid(this, city, x, y, radius, xOffset);
         Point current = new Point(x, y);
@@ -233,7 +242,7 @@ public class Map extends GameObject {
                 }
             }
         }
-        
+
     }
 
     public float getGridWidth() {
@@ -286,7 +295,8 @@ public class Map extends GameObject {
     }
 
     private void drawCityStatsUI(Graphics2D g2d, City city) {
-        if (city == null || currentClickedGrid == null) return;
+        if (city == null || currentClickedGrid == null)
+            return;
 
         // Configuration for the UI box
         int padding = 15;
@@ -329,7 +339,8 @@ public class Map extends GameObject {
 
         drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.Economy), x + padding, startY);
         drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.Facility), x + padding, startY + lineSpacing);
-        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.Environment), x + padding, startY + lineSpacing * 2);
+        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.Environment), x + padding,
+                startY + lineSpacing * 2);
 
         // Draw Player Votes Percentage Bar
         int barX = x + padding;
@@ -370,7 +381,8 @@ public class Map extends GameObject {
 
         g2d.setColor(Color.GRAY);
         g2d.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        g2d.drawString("Population: " + String.format("%,d", city.population), x + padding, startY + lineSpacing * 4 + 10);
+        g2d.drawString("Population: " + String.format("%,d", city.population), x + padding,
+                startY + lineSpacing * 4 + 10);
     }
 
     private void drawStatLine(Graphics2D g2d, String label, int value, int x, int y) {

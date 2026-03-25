@@ -1,6 +1,3 @@
-/**
- * @Xynezter 23/3/2026 16:54
- */
 package Core.UI;
 
 import Core.Cards.Card;
@@ -12,13 +9,15 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class CardHolderUI extends Canvas {
+public class PolicyCardHolderUI extends Canvas {
     private ArrayList<Card> cards = new ArrayList<>();
+    // ขนาดของช่องใส่ Policy Card
+    private int panelWidth = 400;
     private int panelHeight = 220;
     private JPanel cardContainer;
     private Scene2D scene;
 
-    public CardHolderUI(Scene2D scene){
+    public PolicyCardHolderUI(Scene2D scene){
         super(scene);
         this.scene = scene;
         setLayout(new BorderLayout());
@@ -26,10 +25,10 @@ public class CardHolderUI extends Canvas {
         // กำหนดดีไซน์พื้นหลังและขอบ
         setBackground(new Color(50, 50, 50, 220)); // สีเทาเข้มโปร่งแสง
         setBorder(new LineBorder(new Color(150, 150, 150), 2));
-        setOpaque(true); // สำคัญมาก: ป้องกัน Swing วาดพื้นหลังทึบทับกันซ้ำซ้อนจนกระพริบ
+        setOpaque(true); // ป้องกัน Swing วาดพื้นหลังทึบทับกันซ้ำซ้อนจนกระพริบ
 
         // ส่วนหัวข้อ
-        JLabel titleLabel = new JLabel("Your Hand");
+        JLabel titleLabel = new JLabel("Active Policies");
         titleLabel.setForeground(Color.LIGHT_GRAY);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -37,7 +36,7 @@ public class CardHolderUI extends Canvas {
         add(titleLabel, BorderLayout.NORTH);
 
         // Container สำหรับใส่การ์ด
-        cardContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        cardContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
         cardContainer.setOpaque(false); // โปร่งใสเพื่อให้เห็นพื้นหลังของ UI หลัก
         add(cardContainer, BorderLayout.CENTER);
 
@@ -49,24 +48,18 @@ public class CardHolderUI extends Canvas {
 
     @Override
     protected void onResize(int width, int height) {
-        // จำกัดความกว้างไม่ให้ยาวเกินไป (เช่น 70% ของจอ) และจัดให้อยู่ตรงกลาง
-        int uiWidth = Math.min(width - 100, (int)(width * 0.7)); 
-        int x = (width - uiWidth) / 2;
-        
-        // ยึดตำแหน่งไว้ที่ด้านล่างของหน้าจอเสมอ
-        setBounds(x, height - panelHeight - 10, uiWidth, panelHeight); // ขยับขึ้นจากขอบล่าง 10px เพื่อความสวยงาม
+        // ยึดตำแหน่งไว้ที่มุมซ้ายบนของหน้าจอ
+        int margin = 20; // ห่างจากขอบหน้าจอ 20px
+        setBounds(margin, margin, panelWidth, panelHeight);
         revalidate();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        // วาดสีพื้นหลังแบบโปร่งแสงเอง (เพื่อไม่ให้บั๊กกระพริบตอนแอนิเมชันรันรัวๆ)
+        // วาดสีพื้นหลังแบบโปร่งแสงเอง
         g.setColor(getBackground());
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
-        for(Card card : cards){
-            card.update();
-        }
     }
 
     public void addCard(Card card){
@@ -77,13 +70,14 @@ public class CardHolderUI extends Canvas {
         cards.add(card);
 
         int height = panelHeight - 60;
-        float ratio = (float) height /card.getHeight();
+        float ratio = (float) height / card.getHeight();
         card.setBounds(0,0,(int)(card.getWidth() * ratio), height);
 
-        System.out.println("Card added to hand: " + card.getName());
+        System.out.println("Policy Card added: " + card.getName());
         cardContainer.revalidate();
         cardContainer.repaint();
     }
+    
     public void removeCard(Card card){
         if(!cards.contains(card)) return;
 
@@ -95,12 +89,8 @@ public class CardHolderUI extends Canvas {
 
         card.setPosition(scene.Screen2WorldPoint(location));
 
-        System.out.println("Card removed to hand: " + card.getName());
+        System.out.println("Policy Card removed: " + card.getName());
         cardContainer.revalidate();
         cardContainer.repaint();
-    }
-
-    public ArrayList<Card> getCards(){
-        return cards;
     }
 }
