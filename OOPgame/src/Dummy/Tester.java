@@ -1,7 +1,6 @@
 package Dummy;
 
 import Core.Cards.ActionCard;
-import Core.Cards.PolicyCard;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
@@ -17,7 +16,6 @@ import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
-import Core.Cards.PolicyCardA;
 import Core.Maps.Map;
 
 import java.awt.*;
@@ -99,14 +97,7 @@ public class Tester {
     }
 
     public static void ShopTest() {
-        List<PolicyCard> cards = new ArrayList<>();
-        String imageFolder = "OOPgame/Assets/ImageForCards/";
-        // ตั้งค่า PolicyCard เป็นค่าติดลบ
-        // ถ้าอยากจะปิดการโชว์ค่า coin ตั้ง parameter coin ให้เป็น 0
-        cards.add(new PolicyCardA("Kuy Sega", 0, 0,imageFolder + "gay.png",-10));
-        cards.add(new PolicyCardA("Red Policy", 100, 0,imageFolder + "gay.png", -5));
-        cards.add(new PolicyCardA("Blue Policy", 200, 0,imageFolder + "gay.png",-1));
-        new Shop(ZhuzheeGame.MAIN_SCENE,cards);
+        new Shop(ZhuzheeGame.MAIN_SCENE);
     }
 
     public static void TestCardStream() {
