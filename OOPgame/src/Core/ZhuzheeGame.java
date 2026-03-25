@@ -44,7 +44,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PlayerListUI PLAYER_LIST_UI;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
-    public static final boolean DEV_MODE = true;
+    public static final boolean DEV_MODE = false;
 
     public static MouseAdapter MOUSE_HOVER_SFX = new MouseAdapter() {
         @Override

@@ -24,9 +24,18 @@ public class CharacterSelectUI extends Screen implements ActionListener {
             "OOPgame/Assets/ImageForProfile/black.png"
     };
 
-    // Dynamic card data
-    private static final String[] CARD_NAMES = {
-            "Card 1", "Card 2", "Card 3", "Card 4", "Card 5", "Card 6"
+    private static final String[] ARCANA_NAMES = {
+            "The Fool", "Death", "Wheel of Fortune",
+            "The Judgement", "The Tower", "The Sun"
+    };
+
+    private static final String[] ARCANA_IMAGE_PATHS = {
+            "OOPgame/Assets/ImageForCards/gay.png",
+            "OOPgame/Assets/ImageForCards/red_dragon.png",
+            "OOPgame/Assets/ImageForCards/blue_dragon.png",
+            "OOPgame/Assets/ImageForCards/gay.png",
+            "OOPgame/Assets/ImageForCards/red_dragon.png",
+            "OOPgame/Assets/ImageForCards/blue_dragon.png"
     };
 
     // Team colors
@@ -244,23 +253,34 @@ public class CharacterSelectUI extends Screen implements ActionListener {
 
         // Card Grid
         int cardCols = 3;
-        int cardRows = (int) Math.ceil((double) CARD_NAMES.length / cardCols);
+        int cardRows = (int) Math.ceil((double) ARCANA_NAMES.length / cardCols);
         JPanel cardGrid = new JPanel(new GridLayout(cardRows, cardCols, 10, 10));
         cardGrid.setOpaque(false);
         cardGrid.setMaximumSize(new Dimension(Integer.MAX_VALUE, cardRows * 130));
 
-        for (int i = 0; i < CARD_NAMES.length; i++) {
+        for (int i = 0; i < ARCANA_NAMES.length; i++) {
             final int idx = i;
             JPanel card = new JPanel(new BorderLayout());
             card.setBackground(PANEL_BG);
             card.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            JLabel clbl = new JLabel(CARD_NAMES[i], SwingConstants.CENTER);
-            clbl.setFont(new Font("SansSerif", Font.BOLD, 13));
+            // พยายามโหลดรูปภาพการ์ด ถ้าหาไฟล์ไม่เจอ ให้แสดงชื่อการ์ดแทน
+            JLabel clbl = new JLabel("", SwingConstants.CENTER);
+            try {
+                BufferedImage img = javax.imageio.ImageIO.read(new java.io.File(ARCANA_IMAGE_PATHS[i]));
+                // ย่อขนาดการ์ด (สมมติสัดส่วนเป็น 50x75 คล้ายๆ ไพ่)
+                Image scaledImg = img.getScaledInstance(50, 75, Image.SCALE_SMOOTH);
+                clbl.setIcon(new ImageIcon(scaledImg));
+                clbl.setToolTipText(ARCANA_NAMES[i]); // เอาเมาส์ชี้เพื่อดูชื่อการ์ดได้
+            } catch (Exception ex) {
+                clbl.setText(ARCANA_NAMES[i]);
+                clbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+            }
+
             card.add(clbl, BorderLayout.CENTER);
 
-            // Hover Effect
-            card.addMouseListener(new MouseAdapter() {
+            // Hover Effect และ Click Event
+            MouseAdapter cardAction = new MouseAdapter() {
                 public void mouseEntered(MouseEvent e) {
                     if (selCard != idx) card.setBackground(HOVER_BG);
                 }
@@ -271,7 +291,12 @@ public class CharacterSelectUI extends Screen implements ActionListener {
                     selCard = idx;
                     refreshCards();
                 }
-            });
+            };
+
+            // แปะ Listener ทั้งที่ตัว Card (Panel) และตัวรูปภาพ (Label) เผื่อรูปภาพบังคลิก
+            card.addMouseListener(cardAction);
+            clbl.addMouseListener(cardAction);
+
             cardCells.add(card);
             cardGrid.add(card);
         }
@@ -320,6 +345,10 @@ public class CharacterSelectUI extends Screen implements ActionListener {
             boolean isSel = (i == selCard);
             cardCells.get(i).setBorder(isSel ? getSelectedBorder() : getNormalBorder());
             cardCells.get(i).setBackground(isSel ? new Color(235, 245, 255) : PANEL_BG);
+
+            // บังคับให้อัปเดตและวาด UI ใหม่ทันที
+            cardCells.get(i).revalidate();
+            cardCells.get(i).repaint();
         }
     }
     //ถ้าเลือกสีนี้อยู่: เส้นขอบจะเป็นสีดำ / ถ้าไม่ได้เลือก: เส้นขอบจะเป็นสีปกติ
