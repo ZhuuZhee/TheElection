@@ -6,10 +6,11 @@ import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
 import Core.GameScreens.MainMenu;
+import Core.Player.Player;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
-import ZhuzheeEngine.Audios.AudioManager;
+import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
@@ -27,6 +28,11 @@ import Core.Maps.PoliticsStats;
 import javax.swing.*;
 
 public class Tester {
+    public static Player dummyPlayer = new Player("dummy_01", "Test Player", true);
+    public static void CardsTestingOnScene(Scene2D scene2D){
+        // Removed hardcoded dummy CardSlots and ActionCards
+        // The player should use DrawCardUI to get cards and play them on the Map.
+    }
     public static void DrawCardTest(Scene2D scene, CardHolderUI handUI){
         DrawCardUI ui = new DrawCardUI(scene, handUI);
     }
@@ -39,7 +45,6 @@ public class Tester {
             setLayout(new BorderLayout());
 
             JButton button = new JButton("Draw Card");
-            AudioManager.getInstance().loadSound("draw","draw.WAV");
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -47,7 +52,6 @@ public class Tester {
                     ArrayList<CardBufferObject> cards = (ArrayList<CardBufferObject>) CardReader.readActionCards(filePath);
                     int index = new Random().nextInt(cards.size());
                     hand.addCard(new ActionCard(cards.get(index),0,0));
-                    AudioManager.getInstance().playSound("draw");
                 }
             });
 
@@ -83,10 +87,11 @@ public class Tester {
 
     public static void ShopTest() {
         List<PolicyCard> cards = new ArrayList<>();
-        cards.add(new PolicyCardA("Kuy Sega", 0, 0));
-        cards.add(new PolicyCardA("Red Policy", 0, 0));
-        cards.add(new PolicyCardA("Blue Policy", 0, 0));
-        new Shop(ZhuzheeGame.MAIN_SCENE,cards,100);
+        String imageFolder = "OOPgame/Assets/ImageForCards/";
+        cards.add(new PolicyCardA("Kuy Sega", 0, 0,imageFolder + "gay.png",10));
+        cards.add(new PolicyCardA("Red Policy", 100, 0,imageFolder + "gay.png", 5));
+        cards.add(new PolicyCardA("Blue Policy", 200, 0,imageFolder + "gay.png",1));
+        new Shop(ZhuzheeGame.MAIN_SCENE,cards);
     }
 
     private Point mousePoint = new Point();
