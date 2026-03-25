@@ -1,5 +1,6 @@
 package Core;
 
+import Core.GameScreens.CharacterSelectUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.UI.CardHolderUI;
@@ -26,6 +27,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.GameScreens.JoinRoomMenu JOIN_ROOM_MENU;
     public static Core.GameScreens.WaitingRoomMenu WAITING_ROOM_MENU;
     public static OptionMenu OPTION_MENU;
+    public static Core.GameScreens.CharacterSelectUI CHARACTER_SELECT_MENU;
 
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
@@ -59,6 +61,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
         OPTION_MENU = new OptionMenu();
+        CHARACTER_SELECT_MENU = new CharacterSelectUI();
 
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที

@@ -1,18 +1,28 @@
 package Core.GameScreens;
 
+import Core.ZhuzheeGame;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
+import ZhuzheeEngine.Scene.NineSliceCanvas;
+import ZhuzheeEngine.Scene.NineSliceButton;
+import Core.UI.UIButtonFactory;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CharacterSelectUI extends Screen {
+public class CharacterSelectUI extends Screen implements ActionListener {
 
-    // Dynamic character data
-    private static final String[] CHAR_NAMES = {"Char1", "Char2", "Char3", "Char4"};
+    // เปลี่ยนจากชื่อเป็นพาธของรูปภาพตัวละคร (แก้ไขพาธและไฟล์ให้ตรงกับที่คุณมีในโฟลเดอร์ Assets นะครับ)
+    private static final String[] CHAR_IMAGE_PATHS = {
+            "OOPgame/Assets/ImageForProfile/best.jpg", "OOPgame/Assets/ImageForProfile/jeng.jpg", "OOPgame/Assets/ImageForProfile/sega.jpg", "OOPgame/Assets/ImageForProfile/pong.jpg",
+            "OOPgame/Assets/ImageForProfile/lee.jpg", "OOPgame/Assets/ImageForProfile/monkey.jpg", "OOPgame/Assets/ImageForProfile/Maloch.png", "OOPgame/Assets/ImageForProfile/ShockWave.png",
+            "OOPgame/Assets/ImageForProfile/black.png"
+    };
 
     // Dynamic card data
     private static final String[] CARD_NAMES = {
@@ -51,17 +61,33 @@ public class CharacterSelectUI extends Screen {
     private JLabel     previewLbl;
     private JTextField nameField;
 
+    private NineSliceButton confirmBtn;
+    private BufferedImage bgImage;
+    private BufferedImage btnNormalImg;
+    private BufferedImage btnHoverImg;
+    private NineSliceCanvas bgCanvas;
+
     public CharacterSelectUI() {
         setLayout(new BorderLayout());
-        setBackground(BG_MAIN);
-        setBorder(BorderFactory.createEmptyBorder(20, 30, 30, 30)); // ขอบนอกสุด
+
+        try {
+            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/test.png"));
+            btnNormalImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_normal.png"));
+            btnHoverImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_hover.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        bgCanvas = new NineSliceCanvas(bgImage, 25, 25, 25, 25) {};
+        bgCanvas.setLayout(new BorderLayout());
+        bgCanvas.setBorder(BorderFactory.createEmptyBorder(20, 30, 30, 30)); // ขอบนอกสุด
 
         // Title
         JLabel title = new JLabel("Choose Your Character", SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 32));
         title.setForeground(new Color(44, 62, 80));
         title.setBorder(BorderFactory.createEmptyBorder(0, 0, 25, 0));
-        add(title, BorderLayout.NORTH);
+        bgCanvas.add(title, BorderLayout.NORTH);
 
         // Body: left + right
         JPanel body = new JPanel(new GridLayout(1, 2, 30, 0)); // เพิ่มช่องว่างตรงกลางระหว่าง 2 ฝั่ง
@@ -69,25 +95,43 @@ public class CharacterSelectUI extends Screen {
         body.add(buildCharGrid());
         body.add(buildRightPanel());
 
-        add(body, BorderLayout.CENTER);
+        // นำ body มาใส่ใน wrapper แบบ GridBagLayout เพื่อให้กล่องอยู่ตรงกลางและไม่ถูกยืดจนเต็มหน้าจอ
+        JPanel wrapper = new JPanel(new GridBagLayout());
+        wrapper.setOpaque(false);
+        wrapper.add(body);
+
+        bgCanvas.add(wrapper, BorderLayout.CENTER);
+        add(bgCanvas, BorderLayout.CENTER);
     }
 
     // Left: dynamic character grid
     private JPanel buildCharGrid() {
-        int cols = 2;
-        int rows = (int) Math.ceil((double) CHAR_NAMES.length / cols);
+        int cols = 3; // 4 คอลัมน์ตามรูปอ้างอิง
+        int rows = (int) Math.ceil((double) CHAR_IMAGE_PATHS.length / cols);
         JPanel grid = new JPanel(new GridLayout(rows, cols, 15, 15));
         grid.setOpaque(false);
 
-        for (int i = 0; i < CHAR_NAMES.length; i++) {
+        for (int i = 0; i < CHAR_IMAGE_PATHS.length; i++) {
             final int idx = i;
             JPanel cell = new JPanel(new BorderLayout());
             cell.setBackground(PANEL_BG);
             cell.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            JLabel lbl = new JLabel(CHAR_NAMES[i], SwingConstants.CENTER);
-            lbl.setFont(new Font("SansSerif", Font.BOLD, 16));
-            lbl.setForeground(new Color(50, 50, 50));
+            // พยายามโหลดรูปภาพมาแสดงผล ถ้าหาไฟล์ไม่เจอ ให้แสดงชื่อตัวละครแทน
+            JLabel lbl = new JLabel("", SwingConstants.CENTER);
+            try {
+                // อ่านไฟล์รูป
+                BufferedImage img = javax.imageio.ImageIO.read(new java.io.File(CHAR_IMAGE_PATHS[i]));
+                // ย่อรูปภาพให้พอดีกับช่อง (ขนาด 80x80)
+                Image scaledImg = img.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+                lbl.setIcon(new ImageIcon(scaledImg));
+            } catch (Exception ex) {
+                // ถ้ายังไม่มีรูป ให้แสดงชื่อแทนเป็นการชั่วคราว
+                lbl.setText("None");
+                lbl.setFont(new Font("SansSerif", Font.BOLD, 14));
+                lbl.setForeground(new Color(50, 50, 50));
+            }
+
             cell.add(lbl, BorderLayout.CENTER);
 
             // Hover Effect
@@ -237,20 +281,9 @@ public class CharacterSelectUI extends Screen {
         panel.add(Box.createVerticalGlue()); // ดันปุ่ม Confirm ลงไปล่างสุด
 
         // Confirm Button
-        JButton confirmBtn = new JButton("Confirm Selection");
-        confirmBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
-        confirmBtn.setForeground(Color.WHITE);
-        confirmBtn.setBackground(new Color(46, 204, 113)); // Emerald Green
-        confirmBtn.setFocusPainted(false);
-        confirmBtn.setBorder(BorderFactory.createEmptyBorder(12, 40, 12, 40));
-        confirmBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        confirmBtn = UIButtonFactory.createMenuButton("Confirm Selection", btnNormalImg, btnHoverImg, this);
+        confirmBtn.addMouseListener(ZhuzheeGame.MOUSE_HOVER_SFX);
         confirmBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Button Hover Effect
-        confirmBtn.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) { confirmBtn.setBackground(new Color(39, 174, 96)); }
-            public void mouseExited(MouseEvent e) { confirmBtn.setBackground(new Color(46, 204, 113)); }
-        });
 
         panel.add(confirmBtn);
 
@@ -299,9 +332,29 @@ public class CharacterSelectUI extends Screen {
 
     private void updatePreview() {
         if (selChar >= 0) {
-            previewLbl.setText(CHAR_NAMES[selChar]);
-            previewLbl.setForeground(new Color(44, 62, 80));
+            // อัพเดตฝั่งขวาบน ให้แสดงเป็นรูปภาพเหมือนกัน
+            try {
+                BufferedImage img = javax.imageio.ImageIO.read(new java.io.File(CHAR_IMAGE_PATHS[selChar]));
+                Image scaledImg = img.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+                previewLbl.setText(""); // ลบข้อความออก
+                previewLbl.setIcon(new ImageIcon(scaledImg));
+            } catch (Exception ex) {
+                // ถ้าไม่มีรูป ให้กลับไปแสดงเป็นข้อความ
+                previewLbl.setIcon(null);
+                previewLbl.setText("None");
+                previewLbl.setForeground(new Color(44, 62, 80));
+            }
             previewBox.repaint();
         }
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == confirmBtn) {
+            // TODO: จัดการเมื่อกดปุ่ม Confirm เช่น การเปลี่ยนหน้าหรือบันทึกข้อมูล
+            // Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
+        }
+        AudioManager.getInstance().playSound("click");
+    }
+
 }
