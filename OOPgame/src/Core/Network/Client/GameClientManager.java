@@ -75,6 +75,9 @@ public class GameClientManager {
                 }
             } else if (type.equals(NetworkProtocol.START_GAME.name())) {
                 System.out.println("Host start game");
+                if (data.has("mapSeed")) {
+                    Core.ZhuzheeGame.MAP_SEED = data.getLong("mapSeed");
+                }
                 // เริ่มเกม
                 javax.swing.SwingUtilities.invokeLater(Core.ZhuzheeGame::startMainScene);
             } else if (type.equals(NetworkProtocol.HOST_LEFT.name())) {

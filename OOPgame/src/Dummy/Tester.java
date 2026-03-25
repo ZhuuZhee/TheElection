@@ -8,6 +8,7 @@ import Core.Cards.Stream.CardWriter;
 import Core.GameScreens.MainMenu;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
+import Core.UI.PolicyCardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
 import ZhuzheeEngine.Application;
@@ -30,6 +31,7 @@ import javax.swing.*;
 
 public class Tester {
     public static Player dummyPlayer = new Player("dummy_01", "Test Player", true);
+    public static PolicyCardHolderUI policyUI;
     public static void CardsTestingOnScene(Scene2D scene2D){
         // Removed hardcoded dummy CardSlots and ActionCards
         // The player should use DrawCardUI to get cards and play them on the Map.
@@ -68,7 +70,7 @@ public class Tester {
         @Override
         protected void onResize(int width, int height) {
             // ยึดตำแหน่งไว้ที่ด้านล่างของหน้าจอเสมอ
-            setBounds(24, 24, 164, 24);
+            setBounds(24, height - ZhuzheeGame.PLAYER_HAND_DEV_CARDS.getHeight(), 164, 24);
             revalidate();
         }
     }
@@ -83,6 +85,10 @@ public class Tester {
     }
     public static CardHolderUI CardHolderUITest(Scene2D scene2D){
         return new CardHolderUI(scene2D);
+    }
+    public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
+        policyUI = new PolicyCardHolderUI(scene2D);
+        return policyUI;
     }
     public static void MapTest() {
         new Map();
