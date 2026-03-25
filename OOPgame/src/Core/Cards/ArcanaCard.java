@@ -13,7 +13,7 @@ public abstract class ArcanaCard extends Card {
     }
 
     public ArcanaCard(String name, CardSlot targetSlot, int maxCooldown, String imagePath) {
-        super(name, targetSlot.getPosition().x, targetSlot.getPosition().y, 100, 150, imagePath);
+        super(name, targetSlot.getPosition().x, targetSlot.getPosition().y, 100, 150, imagePath, false);
         this.maxCooldown = maxCooldown;
         this.currentCooldown = 0;
     }
