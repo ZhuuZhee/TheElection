@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 
 public abstract class Card extends GameObject {
     protected String name;
+    private static final int CARD_WIDTH = 100;
+    private static final int CARD_HEIGHT = 150;
     protected boolean isGrabbed = false;
     protected boolean isDraggable = true;
     public boolean isHovered = false;
@@ -25,7 +27,7 @@ public abstract class Card extends GameObject {
     public static Card CURRENT_GRABBED_CARD;
     private static final int Z_INDEX_TOP = Scene2D.Layer.DRAGGED;
     private static final int Z_INDEX_NORMAL = Scene2D.Layer.DEFAULT;
-    private static final int SNAP_MARGIN = 15;
+    private static final int SNAP_MARGIN = 5;
     private static final double DEFAULT_OFFSET = 1.0; // ขนาดตอนปกติ
     private static final double ZOOM_OFFSET = 1.15;
     private static final double GRAB_OFFSET = 0.85; // อัตราส่วนตอนกำลังหยิบการ์ดลาก (ลดเหลือ 85%)
@@ -41,7 +43,14 @@ public abstract class Card extends GameObject {
     private int customTargetWidth = 0;
     private int customTargetHeight = 0;
 
+    public Card(String name, int x, int y, String imagePath){
+        this(name,x,y, CARD_WIDTH, CARD_HEIGHT, imagePath);
+    }
     public Card(String name, int x, int y, int width, int height) {
+        this(name, x, y, width, height, "");
+
+    }
+    public Card(String name, int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
         // Swing Component Setup
@@ -56,7 +65,7 @@ public abstract class Card extends GameObject {
         this.baseHeight = height;
         this.baseX = x;
         this.baseY = y;
-
+        this.setImage(imagePath);
         // @Munin 11/3/2026 20:33 - move mouse listener to this class
         // Mouse Interactions on THIS Component
         this.addMouseListener(new MouseAdapter() {
@@ -117,11 +126,6 @@ public abstract class Card extends GameObject {
                 onMouseDragged(e.getX(), e.getY());
             }
         });
-    }
-
-    public Card(String name, int x, int y, int width, int height, String imagePath) {
-        this(name, x, y, width, height);
-        this.setImage(imagePath);
     }
 
     //------------ setter getter -------------

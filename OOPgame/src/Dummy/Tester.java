@@ -97,38 +97,6 @@ public class Tester {
         new Shop(ZhuzheeGame.MAIN_SCENE,cards);
     }
 
-    private Point mousePoint = new Point();
-    public void TestingCamera(Scene2D MAIN_SCENE){
-        // ใช้ AWTEventListener เพื่อดักจับ Input ของเมาส์แบบ Global ไม่ว่าจะชี้อยู่บน Map หรือ UI ตัวไหนก็จะขยับกล้องได้
-        long eventMask = AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK;
-
-        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
-            // เช็ค MouseWheel ก่อน เพราะมันสืบทอดมาจาก MouseEvent
-            if (event instanceof MouseWheelEvent e) {
-                var cam = MAIN_SCENE.getCamera();
-                cam.setZoom(cam.getZoom() - e.getWheelRotation() * ZhuzheeEngine.Application.getDeltaTime());
-            }
-            // แล้วค่อยเช็ค MouseEvent ธรรมดา
-            else if (event instanceof MouseEvent e) {
-                // อัปเดตตำแหน่งตั้งต้นตอนเริ่มกดเมาส์กลาง
-                if (e.getID() == MouseEvent.MOUSE_PRESSED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
-                    mousePoint = e.getLocationOnScreen();
-                }
-                // คอยขยับกล้องเวลาลากเมาส์กลาง
-                else if (e.getID() == MouseEvent.MOUSE_DRAGGED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
-                    int dx = e.getLocationOnScreen().x - mousePoint.x;
-                    int dy = e.getLocationOnScreen().y - mousePoint.y;
-
-                    MAIN_SCENE.getCamera().translate(-dx, -dy);
-                    mousePoint = e.getLocationOnScreen(); // ใช้ LocationOnScreen เพื่อป้องกันหน้าจอกระตุกเมื่อเมาส์ลากข้ามระหว่าง Component
-                    MAIN_SCENE.repaint();
-                }
-            }
-        }, eventMask);
-    }
-
-
-
     public static void TestCardStream() {
         System.out.println("--- Testing Card Stream ---");
         String filePath = "OOPgame/Assets/cards_test_data.json";

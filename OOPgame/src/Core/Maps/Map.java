@@ -29,38 +29,39 @@ public class Map extends GameObject {
     private final Point startSize;
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
+
     public Map() {
         super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
         startSize = new Point(getWidth(), getHeight());
         gridMap = GenerateMap();
-        
-       this.addMouseMotionListener(new MouseMotionAdapter() {
-           @Override
-           public void mouseMoved(MouseEvent e) {
-               Grid clicked = getGridAtPoint(e.getPoint());
-               if (currentHoveredGrid != clicked) {
-                   if (currentHoveredGrid != null) {
-                       currentHoveredGrid.setHovered(false);
-                   }
-                   currentHoveredGrid = clicked;
-                   if (currentHoveredGrid != null) {
-                       currentHoveredGrid.setHovered(true);
-                   }
-               }
+
+        this.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Grid clicked = getGridAtPoint(e.getPoint());
+                if (currentHoveredGrid != clicked) {
+                    if (currentHoveredGrid != null) {
+                        currentHoveredGrid.setHovered(false);
+                    }
+                    currentHoveredGrid = clicked;
+                    if (currentHoveredGrid != null) {
+                        currentHoveredGrid.setHovered(true);
+                    }
+                }
 //               if (clicked != null) {
 //                   System.out.println(currentHoveredGrid);
 //               }
-           }
-       });
-       this.addMouseListener(new MouseAdapter() {
-           @Override
-           public void mouseClicked(MouseEvent e) {
-               Grid clicked = getGridAtPoint(e.getPoint());
-               if (clicked != null) {
-                   clicked.getCity().printStats();
-                   clicked.getCity().getVotingResults();
-               }
-           }
+            }
+        });
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Grid clicked = getGridAtPoint(e.getPoint());
+                if (clicked != null) {
+                    clicked.getCity().printStats();
+                    clicked.getCity().getVotingResults();
+                }
+            }
 //           @Override
 //           public void mouseExited(MouseEvent e) {
 //               if (currentHoveredGrid != null) {
@@ -68,7 +69,7 @@ public class Map extends GameObject {
 //                   currentHoveredGrid = null;
 //               }
 //           }
-       });
+        });
     }
 
     // เอาไว้ clear hover state ของ Grid ที่อยู่ใน Map
@@ -147,6 +148,7 @@ public class Map extends GameObject {
     public float getScaleRatio() {
         return scaleRatio;
     }
+
     /**
      * set the `City` on grid map(2D Array) by a cluster growth algorithm (instead of random walk)
      * This makes the city more compact and connected.
@@ -164,7 +166,7 @@ public class Map extends GameObject {
         // Ensure start position is within bounds and doesn't already have a city
         int startX = Math.abs(startPosition.x) % grid.length;
         int startY = Math.abs(startPosition.y) % grid[0].length;
-        
+
         // If start position is occupied, find the nearest empty one (simple approach: random until empty)
         while (grid[startX][startY] != null) {
             startX = random.nextInt(grid.length);
@@ -179,7 +181,7 @@ public class Map extends GameObject {
             // Pick a random candidate from the list of neighbors
             int index = random.nextInt(candidates.size());
             Point next = candidates.get(index);
-            
+
             // Double check if it's still null (might have been filled by another city or same city)
             if (grid[next.x][next.y] == null) {
                 addTileToCity(grid, city, next.x, next.y, cityTiles, candidates);
@@ -196,7 +198,7 @@ public class Map extends GameObject {
         grid[x][y] = new Grid(this, city, x, y, radius, xOffset);
         Point current = new Point(x, y);
         cityTiles.add(current);
-        
+
         // Remove from candidates if it was there
         candidates.removeIf(p -> p.x == x && p.y == y);
 
@@ -204,20 +206,19 @@ public class Map extends GameObject {
         int[][] neighbors;
         if (y % 2 == 0) {
             // Neighbors for even rows in offset-x hexagon grid
-            neighbors = new int[][]{{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 0}};
+            neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
         } else {
             // Neighbors for odd rows in offset-x hexagon grid
-            neighbors = new int[][]{{-1, -1}, {0, -1}, {1, 0}, {0, 1}, {-1, 1}, {-1, 0}};
+            neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
         }
 
         for (int[] offset : neighbors) {
             int nx = x + offset[0];
             int ny = y + offset[1];
 
-            // Wrap around or clamp? The original code used modulo (wrap around)
-            // Let's keep modulo to respect the original design of infinite-like map
-            nx = (nx + grid.length) % grid.length;
-            ny = (ny + grid[0].length) % grid[0].length;
+            // Wrap around or clamp
+            nx = Math.clamp(nx, 0, grid.length-1);
+            ny = Math.clamp(ny, 0, grid[0].length-1);
 
             if (grid[nx][ny] == null) {
                 Point p = new Point(nx, ny);
@@ -255,20 +256,20 @@ public class Map extends GameObject {
         }
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
+
         // Render all non-hovered grids first
-        for(Grid[] col : gridMap ){
-            for(Grid grid : col){
-                if(grid != null && !grid.isHovered())
+        for (Grid[] col : gridMap) {
+            for (Grid grid : col) {
+                if (grid != null && !grid.isHovered())
                     grid.render(g2d);
             }
         }
-        
+
         // Render the hovered grid last to ensure it is on top
         if (currentHoveredGrid != null) {
             currentHoveredGrid.render(g2d);
         }
-        
+
         g2d.dispose();
     }
 
