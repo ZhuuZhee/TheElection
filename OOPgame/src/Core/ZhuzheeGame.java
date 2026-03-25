@@ -28,8 +28,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
-
-    public static Core.UI.TurnManagerUI TURN_MANAGER_UI;
+    
     public static Core.Maps.Map MAP;
     public static long MAP_SEED = new java.util.Random().nextLong();
 

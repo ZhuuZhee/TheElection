@@ -32,6 +32,7 @@ public class Map extends GameObject {
     private final Point startSize;
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
+    private Grid currentClickedGrid = null;
 
     public Map() {
         this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, new Random().nextLong());
