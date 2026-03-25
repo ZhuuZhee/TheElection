@@ -2,7 +2,6 @@ package Core.UI;
 
 import Core.Cards.PolicyCard;
 import Core.ZhuzheeGame;
-import ZhuzheeEngine.Scene.IZIndex;
 import ZhuzheeEngine.Scene.Scene2D;
 
 import javax.swing.*;
@@ -200,10 +199,8 @@ public class Shop extends JPanel {
         }
 
 //      show bought card
-        ZhuzheeGame.MAIN_SCENE.add(card);
-        card.setPosition(new Point(0, 200));
-        card.setDraggable(true); // เปิดให้ลากได้อีกครั้ง
-        ZhuzheeGame.MAIN_SCENE.setComponentZOrder(card, 0);
+        ZhuzheeGame.PLAYER_HAND_DEV_CARDS.addCard(card);
+        card.setDraggable(true);
 
         closeShop();
     }

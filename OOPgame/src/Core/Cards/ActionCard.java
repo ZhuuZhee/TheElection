@@ -12,8 +12,6 @@ import ZhuzheeEngine.Scene.GameObject;
 
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
-    private static final int CARD_WIDTH = 100;
-    private static final int CARD_HEIGHT = 150;
     private PoliticsStats stats;
 
     private static Player dummyPlayer = null; // for test
@@ -24,7 +22,7 @@ public class ActionCard extends Card {
     }
 
     public ActionCard(String name, int x, int y, PoliticsStats stats, String imagePath, int coin) {
-        super(name, x, y, CARD_WIDTH, CARD_HEIGHT, imagePath); // โยน imagePath ให้ Card จัดการ
+        super(name, x, y, imagePath); // โยน imagePath ให้ Card จัดการ
         this.stats = stats;
         this.coin = coin;
     }

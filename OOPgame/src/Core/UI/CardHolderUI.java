@@ -97,4 +97,8 @@ public class CardHolderUI extends Canvas {
         cardContainer.revalidate();
         cardContainer.repaint();
     }
+
+    public ArrayList<Card> getCards(){
+        return cards;
+    }
 }
