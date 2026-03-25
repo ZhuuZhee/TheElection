@@ -13,7 +13,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
 
 public class OptionMenu extends Screen {
     JCheckBox fullscreen = null;

@@ -53,7 +53,7 @@ public class Tester {
             });
 
             add(button);
-            scene.add(this);
+            // scene.add(this);
 
             onResize(scene.getWidth(),scene.getHeight());
             setVisible(true);

@@ -1,8 +1,6 @@
 package ZhuzheeEngine.Scene;
 
-import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
-import ZhuzheeEngine.MathZ;
 
 import java.awt.Point;
 
