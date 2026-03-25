@@ -117,6 +117,7 @@ public class GameServerManager {
             System.out.println("START_GAME all clients");
             org.json.JSONObject startPacket = new org.json.JSONObject();
             startPacket.put("type", NetworkProtocol.START_GAME.name());
+            startPacket.put("mapSeed", gameState.getMapSeed());
             broadcast(startPacket);
         } else if (type.equals(NetworkProtocol.PONG.name())) {
             // อัพเดตเวลา PONG ของ client คนนี้

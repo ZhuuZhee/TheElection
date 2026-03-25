@@ -11,6 +11,11 @@ public class GameState {
     private int phaseCounter = 1;
     private String hostId;
     private String currentPlayerId;
+    private long mapSeed = new Random().nextLong();
+
+    public long getMapSeed() {
+        return mapSeed;
+    }
 
     public void incrementPhaseCounter() {
         this.phaseCounter++;

@@ -29,10 +29,14 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
 
+    public static Core.UI.TurnManagerUI TURN_MANAGER_UI;
+    public static Core.Maps.Map MAP;
+    public static long MAP_SEED = new java.util.Random().nextLong();
+
     public static CardHolderUI PLAYER_HAND_DEV_CARDS;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
-    public static final boolean DEV_MODE = true;
+    public static final boolean DEV_MODE = false;
 
     public static MouseAdapter MOUSE_HOVER_SFX = new MouseAdapter() {
         @Override
@@ -53,8 +57,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
-         OPTION_MENU = new OptionMenu();
-
+        OPTION_MENU = new OptionMenu();
 
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที
@@ -69,7 +72,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static void startMainScene() {
         Screen.ChangeScreen(MAIN_SCENE);
 
-        Tester.MapTest();
+        MAP = new Core.Maps.Map(MAP_SEED);
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         PLAYER_HAND_DEV_CARDS = holderUI;
         Tester.DrawCardTest(MAIN_SCENE, holderUI);

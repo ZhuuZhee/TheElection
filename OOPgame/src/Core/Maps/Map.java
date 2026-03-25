@@ -31,9 +31,13 @@ public class Map extends GameObject {
     private Grid currentHoveredGrid = null;
 
     public Map() {
+        this(new Random().nextLong());
+    }
+
+    public Map(long seed) {
         super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
         startSize = new Point(getWidth(), getHeight());
-        gridMap = GenerateMap();
+        gridMap = GenerateMap(seed);
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
@@ -104,9 +108,9 @@ public class Map extends GameObject {
         return null;
     }
 
-    private Grid[][] GenerateMap() {
+    private Grid[][] GenerateMap(long seed) {
         Grid[][] grid = new Grid[rows][cols];
-        Random random = new Random();
+        Random random = new Random(seed);
 
         Point startPosition = new Point(rows / 2, cols / 2);
 
@@ -126,7 +130,7 @@ public class Map extends GameObject {
             //randomly set city inside district
 
             //random start position inside map
-            setCityOnGridMapByRandomWalk(grid, city, random.nextInt(6, maxGridPerCties), startPosition);
+            setCityOnGridMapByRandomWalk(grid, city, random.nextInt(6, maxGridPerCties), startPosition, random);
             startPosition = getRandomFilledTile(grid, random);
         }
         return grid;
@@ -158,8 +162,7 @@ public class Map extends GameObject {
      * @param gridCount     number of tiles to create for this city.
      * @param startPosition start position in grid map.
      */
-    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition) {
-        Random random = new Random();
+    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition, Random random) {
         ArrayList<Point> cityTiles = new ArrayList<>();
         ArrayList<Point> candidates = new ArrayList<>();
 
