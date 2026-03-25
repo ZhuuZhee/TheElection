@@ -33,9 +33,11 @@ public class Map extends GameObject {
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
     private Grid currentClickedGrid = null;
-    public Map(){
-        this(DEFAULT_ROWS,DEFAULT_COLS,DEFAULT_CITIES_COUNT);
+
+    public Map() {
+        this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT);
     }
+
     public Map(int rows, int cols, int citiesCount) {
         super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
         this.rows = rows;
@@ -44,35 +46,35 @@ public class Map extends GameObject {
         startSize = new Point(getWidth(), getHeight());
         gridMap = GenerateMap();
 
-       this.addMouseMotionListener(new MouseMotionAdapter() {
-           @Override
-           public void mouseMoved(MouseEvent e) {
-               Grid clicked = getGridAtPoint(e.getPoint());
-               if (currentHoveredGrid != clicked) {
-                   if (currentHoveredGrid != null) {
-                       currentHoveredGrid.setHovered(false);
-                   }
-                   currentHoveredGrid = clicked;
-                   if (currentHoveredGrid != null) {
-                       currentHoveredGrid.setHovered(true);
-                   }
-               }
-           }
-       });
-       this.addMouseListener(new MouseAdapter() {
-           @Override
-           public void mouseClicked(MouseEvent e) {
-               Grid clicked = getGridAtPoint(e.getPoint());
+        this.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Grid clicked = getGridAtPoint(e.getPoint());
+                if (currentHoveredGrid != clicked) {
+                    if (currentHoveredGrid != null) {
+                        currentHoveredGrid.setHovered(false);
+                    }
+                    currentHoveredGrid = clicked;
+                    if (currentHoveredGrid != null) {
+                        currentHoveredGrid.setHovered(true);
+                    }
+                }
+            }
+        });
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Grid clicked = getGridAtPoint(e.getPoint());
 
-               if (clicked != null) {
-                   currentClickedGrid = clicked;
-                   clicked.getCity().printStats();
-                   clicked.getCity().getVotingResults();
-               } else {
-                   currentClickedGrid = null;
-               }
-           }
-       });
+                if (clicked != null) {
+                    currentClickedGrid = clicked;
+                    clicked.getCity().printStats();
+                    clicked.getCity().getVotingResults();
+                } else {
+                    currentClickedGrid = null;
+                }
+            }
+        });
     }
 
     // เอาไว้ clear hover state ของ Grid ที่อยู่ใน Map
@@ -151,6 +153,7 @@ public class Map extends GameObject {
     public float getScaleRatio() {
         return scaleRatio;
     }
+
     /**
      * set the `City` on grid map(2D Array) by a cluster growth algorithm (instead of random walk)
      * This makes the city more compact and connected.
@@ -219,18 +222,18 @@ public class Map extends GameObject {
             int ny = y + offset[1];
 
             // Wrap around or clamp
-            nx = Math.clamp(nx, 0, grid.length-1);
-            ny = Math.clamp(ny, 0, grid[0].length-1);
+            nx = Math.clamp(nx, 0, grid.length - 1);
+            ny = Math.clamp(ny, 0, grid[0].length - 1);
 
             if (grid[nx][ny] == null) {
                 Point p = new Point(nx, ny);
                 if (!candidates.contains(p)) {
                     candidates.add(p);
                 }
-                }
             }
         }
     }
+
 
     public float getGridWidth() {
         return (float) Math.sqrt(3) * radius * scaleRatio + gap; // ระยะห่างแนวนอนระหว่างชิ้น

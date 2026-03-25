@@ -93,16 +93,6 @@ public class City {
         applyStats(0, cardStats);
     }
 
-    public double getPlayerPercentage(int playerId) {
-        if (playerId < 0 || playerId >= player_scores.length) return 0;
-        double totalScore = 0;
-        for (double score : player_scores) {
-            totalScore += score;
-        }
-        if (totalScore == 0) return 0;
-        return (player_scores[playerId] / totalScore) * 100;
-    }
-
     public void getVotingResults() {
         double totalScore = 0;
         for (double score : player_scores) totalScore += score;
