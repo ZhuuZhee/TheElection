@@ -65,6 +65,9 @@ public class CardHolderUI extends Canvas {
         g.setColor(getBackground());
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
+        for(Card card : cards){
+            card.update();
+        }
     }
 
     public void addCard(Card card){

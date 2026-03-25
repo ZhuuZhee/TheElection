@@ -47,11 +47,11 @@ public class Tester {
 
             JButton button = new JButton("Draw Card");
             AudioManager.getInstance().loadSound("draw","draw.WAV");
+            String filePath = "OOPgame/Assets/cards_test_data.json";
+            ArrayList<CardBufferObject> cards = (ArrayList<CardBufferObject>) CardReader.readActionCards(filePath);
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String filePath = "OOPgame/Assets/cards_test_data.json";
-                    ArrayList<CardBufferObject> cards = (ArrayList<CardBufferObject>) CardReader.readActionCards(filePath);
                     int index = new Random().nextInt(cards.size());
                     hand.addCard(new ActionCard(cards.get(index),0,0));
                     AudioManager.getInstance().playSound("draw");
