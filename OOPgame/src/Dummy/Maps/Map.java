@@ -21,7 +21,7 @@ public class Map extends GameObject {
     private final int maxGridPerCties = 20;
 //    private City[] cities;
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
-    private final float radius = 30;
+    private final float radius = 100;
     private final Point startSize;
     private float scaleRatio = 1;
     private final int gap = 4;
