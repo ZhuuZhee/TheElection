@@ -97,6 +97,7 @@ public class Tester {
         List<PolicyCard> cards = new ArrayList<>();
         String imageFolder = "OOPgame/Assets/ImageForCards/";
         // ตั้งค่า PolicyCard เป็นค่าติดลบ
+        // ถ้าอยากจะปิดการโชว์ค่า coin ตั้ง parameter coin ให้เป็น 0
         cards.add(new PolicyCardA("Kuy Sega", 0, 0,imageFolder + "gay.png",-10));
         cards.add(new PolicyCardA("Red Policy", 100, 0,imageFolder + "gay.png", -5));
         cards.add(new PolicyCardA("Blue Policy", 200, 0,imageFolder + "gay.png",-1));
