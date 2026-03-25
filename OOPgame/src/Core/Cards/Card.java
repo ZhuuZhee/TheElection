@@ -182,6 +182,7 @@ public abstract class Card extends GameObject {
 
                 setZIndex(Z_INDEX_TOP);
 //                scene.setComponentZOrder(this,0);
+                repaint();
             }
         }
     }
@@ -276,6 +277,7 @@ public abstract class Card extends GameObject {
                 onDroppedOnGrid(grid);
                 return;
             }
+            repaint();
         }
     }
 
@@ -423,16 +425,18 @@ public abstract class Card extends GameObject {
             g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
             // วาดชื่อการ์ด
-            FontMetrics fm = g2d.getFontMetrics();
-            int textX = (getWidth() - fm.stringWidth(name)) / 2;
-            int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+            if (!isGrabbed) {
+                FontMetrics fm = g2d.getFontMetrics();
+                int textX = (getWidth() - fm.stringWidth(name)) / 2;
+                int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
 
-            // พื้นหลังตัวหนังสือแบบโปร่งแสง
-            g2d.setColor(new Color(255, 255, 255, 180));
-            g2d.fillRect(textX - 2, textY - fm.getAscent() - 2, fm.stringWidth(name) + 4, fm.getHeight() + 4);
+                // พื้นหลังตัวหนังสือแบบโปร่งแสง
+                g2d.setColor(new Color(255, 255, 255, 180));
+                g2d.fillRect(textX - 2, textY - fm.getAscent() - 2, fm.stringWidth(name) + 4, fm.getHeight() + 4);
 
-            g2d.setColor(Color.BLACK);
-            g2d.drawString(name, textX, textY);
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(name, textX, textY);
+            }
 
             // วาดค่า Stat เฉพาะของแต่ละประเภทการ์ด
             drawStats(g2d);
@@ -443,6 +447,8 @@ public abstract class Card extends GameObject {
     }
 
     protected void drawStats(Graphics2D g2d) {
+        if (isGrabbed) return;
+
         // วาดค่า Coin (Cost) ที่มุมบนขวาของการ์ด
         int iconSize = 20;
         int margin = 5;

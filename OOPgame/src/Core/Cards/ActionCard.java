@@ -103,6 +103,7 @@ public class ActionCard extends Card {
 
     @Override
     protected void drawStats(Graphics2D g2d) {
+        if (isGrabbed()) return;
         super.drawStats(g2d); // วาด Coin ก่อน
 
         if (stats == null) return;

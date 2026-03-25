@@ -136,7 +136,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
                     int dx = e.getLocationOnScreen().x - mousePoint.x;
                     int dy = e.getLocationOnScreen().y - mousePoint.y;
                     var cam = MAIN_SCENE.getCamera();
-                    MAIN_SCENE.getCamera().translate((int) (-dx / (float) cam.getZoom()),
+                    MAIN_SCENE.getCamera().translate((int) (-dx / cam.getZoom()),
                             (int) (-dy / (float) cam.getZoom()));
                     mousePoint = e.getLocationOnScreen(); // ใช้ LocationOnScreen
                                                           // เพื่อป้องกันหน้าจอกระตุกเมื่อเมาส์ลากข้ามระหว่าง Component
