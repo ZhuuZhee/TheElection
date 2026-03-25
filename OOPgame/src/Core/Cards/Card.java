@@ -20,6 +20,7 @@ public abstract class Card extends GameObject {
     protected boolean isGrabbed = false;
     protected boolean isDraggable = true;
     public boolean isHovered = false;
+    private static final int MARGIN = 2;
     protected Point offset = new Point(0, 0);
     public static Card CURRENT_GRABBED_CARD;
     private static final int Z_INDEX_TOP = Scene2D.Layer.DRAGGED;
@@ -457,9 +458,15 @@ public abstract class Card extends GameObject {
         if (Math.abs(currentScaleOffset - targetScaleOffset) > 0.001) {
             // Lerp แอนิเมชันความเร็ว 15 (ยิ่งเยอะยิ่งไว 15 คือประมาณ 0.2s ease)
             currentScaleOffset += (targetScaleOffset - currentScaleOffset) * 10.0f * ZhuzheeEngine.Application.getDeltaTime();
-            int maxMouseOffsetX = Math.clamp(offset.y, 0, getWidth());
-            int maxMouseOffsetY = Math.clamp(offset.x, 0, getHeight());
+            
+            // ใช้ Math.max/min แทน Math.clamp เพื่อรองรับ Java ต่ำกว่า 21
+            // และใช้ getWidth() ที่เป็นขนาดปัจจุบัน (Scaled Size) เพื่อกันเมาส์หลุดขอบ
+            int currentW = Math.max(1, getWidth() - MARGIN); // กัน 0
+            int currentH = Math.max(1, getHeight() - MARGIN);
+            int maxMouseOffsetX = Math.max(0, Math.min(offset.x + MARGIN, currentW));
+            int maxMouseOffsetY = Math.max(0, Math.min(offset.y + MARGIN, currentH));
             offset.setLocation(maxMouseOffsetX, maxMouseOffsetY);
+
             if (Math.abs(currentScaleOffset - targetScaleOffset) <= 0.001) {
                 currentScaleOffset = targetScaleOffset; // Snap ให้เป๊ะตอนจบ
             }
