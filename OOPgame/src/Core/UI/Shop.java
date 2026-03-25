@@ -135,7 +135,7 @@ public class Shop extends JPanel {
 
         wrapper.add(Box.createVerticalStrut(6));
 //        ราคาการ์ด
-        JLabel priceLabel = new JLabel("$ " + getPrice(card), SwingConstants.CENTER);
+        JLabel priceLabel = new JLabel("$ " + -1 * getPrice(card), SwingConstants.CENTER);
         priceLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         priceLabel.setForeground(Color.WHITE);
         priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

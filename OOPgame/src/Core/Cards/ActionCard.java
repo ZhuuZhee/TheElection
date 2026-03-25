@@ -10,6 +10,8 @@ import Dummy.*;
 import Core.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
 
+import java.awt.*;
+
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
     private PoliticsStats stats;
@@ -97,6 +99,55 @@ public class ActionCard extends Card {
         playercoin.setCoin(playercoin.getCoin() + this.coin);
         System.out.println("playerCoin: " + playercoin.getCoin());
 
+    }
+
+    @Override
+    protected void drawStats(Graphics2D g2d) {
+        super.drawStats(g2d); // วาด Coin ก่อน
+
+        if (stats == null) return;
+
+        int margin = 7;
+        int iconSize = 16;
+        int x = getWidth() - margin * 2 - iconSize;
+        int startY = getHeight() - margin * 2 - iconSize; // เริ่มวาดจากล่างขึ้นบน
+
+        // ดึงค่าสเตตัสต่างๆ
+        int facility = stats.getStats(PoliticsStats.Facility);
+        int environment = stats.getStats(PoliticsStats.Environment);
+        int economy = stats.getStats(PoliticsStats.Economy);
+
+        // วาดค่าสเตตัสจากล่างขึ้นบน (Economy อยู่ล่างสุดถ้ามี)
+        int currentY = startY;
+        if (economy != 0) {
+            drawSingleStat(g2d, economy, new Color(100, 100, 255), x, currentY, iconSize);
+            currentY -= (iconSize + 2);
+        }
+        if (environment != 0) {
+            drawSingleStat(g2d, environment, new Color(100, 255, 100), x, currentY, iconSize);
+            currentY -= (iconSize + 2);
+        }
+        if (facility != 0) {
+            drawSingleStat(g2d, facility, new Color(255, 100, 100), x, currentY, iconSize);
+        }
+    }
+
+    private void drawSingleStat(Graphics2D g2d, int value, Color color, int x, int y, int size) {
+        g2d.setFont(new Font("Arial", Font.BOLD, 10));
+        g2d.setColor(color);
+        g2d.fillOval(x, y, size, size);
+        g2d.setColor(Color.BLACK);
+        g2d.drawOval(x, y, size, size);
+
+        String text = String.valueOf(value);
+        FontMetrics fm = g2d.getFontMetrics();
+        // วาดตัวเลขไว้ทางซ้ายของไอคอนเพื่อให้เห็นชัดเจน (หรือจะวาดทับไอคอนก็ได้ถ้าตัวเลขสั้น)
+        // เพื่อความสวยงามในแนวตั้ง ให้วาดทับหรือวาดชิดซ้าย
+        int textX = x + fm.stringWidth(text) - size / 2 - 1;
+        int textY = y + (size - fm.getHeight()) / 2 + fm.getAscent();
+
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(text, textX, textY);
     }
 
     @Override

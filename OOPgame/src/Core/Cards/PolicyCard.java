@@ -8,6 +8,8 @@ import Core.ZhuzheeGame;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 
+import java.awt.*;
+
 public abstract class PolicyCard extends Card {
     protected boolean isInSlot = false;
 
@@ -45,7 +47,7 @@ public abstract class PolicyCard extends Card {
 
         // ทำการหักเงินตามมูลค่าของการ์ดใบนั้นๆ (this.coin)
         if (playercoin != null) {
-            playercoin.setCoin(playercoin.getCoin() - this.coin);
+            playercoin.setCoin(playercoin.getCoin() + this.coin);
             System.out.println("หักเงินค่า Policy: " + this.coin + " | กระเป๋าเงินเหลือ: " + playercoin.getCoin());
         }
     }

@@ -4,8 +4,11 @@
  */
 package Core.Cards;
 
+import Core.Maps.Grid;
+import Core.Maps.Map;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.*;
 
 import java.awt.*;
@@ -14,6 +17,7 @@ import java.awt.event.*;
 import java.awt.Image;
 import java.io.File;
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public abstract class Card extends GameObject {
     protected String name;
@@ -91,7 +95,7 @@ public abstract class Card extends GameObject {
             public void mouseEntered(MouseEvent e) {
                 setHovered(true);
                 if (!isGrabbed && getEnable()) {
-                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof Core.UI.CardHolderUI);
+                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
 
                     if (!isInHand) {
                         setZIndex(Z_INDEX_TOP);
@@ -108,7 +112,7 @@ public abstract class Card extends GameObject {
             public void mouseExited(MouseEvent e) {
                 setHovered(false);
                 if (!isGrabbed && getEnable()) {
-                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof Core.UI.CardHolderUI);
+                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
 
                     if (!isInHand) {
                         setZIndex(Z_INDEX_NORMAL);
@@ -211,9 +215,9 @@ public abstract class Card extends GameObject {
         Point cardCenter = new Point(cardRect.x + cardRect.width / 2, cardRect.y + cardRect.height / 2);
 
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Core.Maps.Map mapComponent) {
-                Point mapPos = javax.swing.SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
-                Core.Maps.Grid grid = mapComponent.getGridAtPoint(mapPos);
+            if (comp instanceof Map mapComponent) {
+                Point mapPos = SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
+                Grid grid = mapComponent.getGridAtPoint(mapPos);
                 mapComponent.setHoveredGrid(grid);
             }
         }
@@ -223,7 +227,7 @@ public abstract class Card extends GameObject {
     private void clearMapHover() {
         if (getParent() == null) return;
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Core.Maps.Map mapComponent) {
+            if (comp instanceof Map mapComponent) {
                 mapComponent.clearHoveredGrid();
             }
         }
@@ -330,15 +334,15 @@ public abstract class Card extends GameObject {
         // เรียก method when card ทับ กับ Magnetic Field ของ slot
     }
 
-    private Core.Maps.Grid getGridOnBottom() {
+    private Grid getGridOnBottom() {
         if (getParent() == null) return null;
         Rectangle cardRect = this.getBounds();
         Point cardCenter = new Point(cardRect.x + cardRect.width / 2, cardRect.y + cardRect.height / 2);
 
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Core.Maps.Map mapComponent) {
-                Point mapPos = javax.swing.SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
-                Core.Maps.Grid grid = mapComponent.getGridAtPoint(mapPos);
+            if (comp instanceof Map mapComponent) {
+                Point mapPos = SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
+                Grid grid = mapComponent.getGridAtPoint(mapPos);
                 if (grid != null) {
                     return grid;
                 }
@@ -347,14 +351,14 @@ public abstract class Card extends GameObject {
         return null;
     }
 
-    private void snapToGrid(Core.Maps.Grid grid) {
+    private void snapToGrid(Grid grid) {
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Core.Maps.Map mapComponent) {
+            if (comp instanceof Map mapComponent) {
                 // พิกัดจุดกึ่งกลางของ Grid เมื่อเทียบกับมุมซ้ายบนของตัว Map Component
                 Point gridCenterLocal = new Point((int) grid.getX(), (int) grid.getY());
 
                 // แปลงพิกัดจากใน Map ไปเป็นพิกัดหน้าจอ (หน้าของ Scene2D)
-                Point screenP = javax.swing.SwingUtilities.convertPoint(mapComponent, gridCenterLocal, getParent());
+                Point screenP = SwingUtilities.convertPoint(mapComponent, gridCenterLocal, getParent());
 
                 // แปลงหน้าจอกลับเป็นพิกัดโลก (World Position)
                 Point worldP = scene.Screen2WorldPoint(screenP);
@@ -380,7 +384,7 @@ public abstract class Card extends GameObject {
     protected void onDroppedInSlot(CardSlot slot) {
     }
 
-    protected void onDroppedOnGrid(Core.Maps.Grid grid) {
+    protected void onDroppedOnGrid(Grid grid) {
     }
 
 
@@ -430,10 +434,40 @@ public abstract class Card extends GameObject {
 
             g2d.setColor(Color.BLACK);
             g2d.drawString(name, textX, textY);
+
+            // วาดค่า Stat เฉพาะของแต่ละประเภทการ์ด
+            drawStats(g2d);
         } finally {
             // 2. ทำลายก๊อปปี้ทิ้ง เพื่อคืนค่าเดิมให้ Graphics หลักสำหรับ Cards ใบถัดไป
             g2d.dispose();
         }
+    }
+
+    protected void drawStats(Graphics2D g2d) {
+        // วาดค่า Coin (Cost) ที่มุมบนขวาของการ์ด
+        int iconSize = 20;
+        int margin = 5;
+        int x = getWidth() - margin * 2 - iconSize;
+        int y = margin * 2;
+        String coinStr;
+        // วาดวงกลมสีทองสำหรับเหรียญ
+        if (coin > 0) {
+            g2d.setColor(new Color(255, 215, 0));
+            coinStr = String.valueOf(coin);// Gold
+        } else {
+            g2d.setColor(new Color(255, 0, 0));
+            coinStr = String.valueOf(coin * -1);
+        }
+        g2d.fillOval(x, y, iconSize, iconSize);
+        g2d.setColor(Color.BLACK);
+        g2d.drawOval(x, y, iconSize, iconSize);
+
+        // วาดค่าตัวเลข coin
+        g2d.setFont(new Font("Arial", Font.BOLD, 12));
+        FontMetrics fm = g2d.getFontMetrics();
+        int textX = x + (iconSize - fm.stringWidth(coinStr)) / 2;
+        int textY = y + (iconSize - fm.getHeight()) / 2 + fm.getAscent();
+        g2d.drawString(coinStr, textX, textY);
     }
 
     public String getName() {
@@ -461,7 +495,7 @@ public abstract class Card extends GameObject {
 
         if (Math.abs(currentScaleOffset - targetScaleOffset) > 0.001) {
             // Lerp แอนิเมชันความเร็ว 15 (ยิ่งเยอะยิ่งไว 15 คือประมาณ 0.2s ease)
-            currentScaleOffset += (targetScaleOffset - currentScaleOffset) * 10.0f * ZhuzheeEngine.Application.getDeltaTime();
+            currentScaleOffset += (targetScaleOffset - currentScaleOffset) * 10.0f * Application.getDeltaTime();
             
             // ใช้ Math.max/min แทน Math.clamp เพื่อรองรับ Java ต่ำกว่า 21
             // และใช้ getWidth() ที่เป็นขนาดปัจจุบัน (Scaled Size) เพื่อกันเมาส์หลุดขอบ
