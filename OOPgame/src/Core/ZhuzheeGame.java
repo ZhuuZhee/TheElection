@@ -3,6 +3,7 @@ package Core;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.UI.CardHolderUI;
+import Core.UI.PolicyCardHolderUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -33,6 +34,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static long MAP_SEED = new java.util.Random().nextLong();
 
     public static CardHolderUI PLAYER_HAND_DEV_CARDS;
+    public static PolicyCardHolderUI POLICY_CARD_UI;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
     public static final boolean DEV_MODE = false;
@@ -75,6 +77,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.CardsTestingOnScene(MAIN_SCENE);
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         PLAYER_HAND_DEV_CARDS = holderUI;
+
+        Tester.PolicyCardHolderUITest(MAIN_SCENE);
+
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);
