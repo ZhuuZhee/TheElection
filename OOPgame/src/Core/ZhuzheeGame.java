@@ -34,6 +34,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static long MAP_SEED = new java.util.Random().nextLong();
 
     public static CardHolderUI PLAYER_HAND_DEV_CARDS;
+    public static PolicyCardHolderUI POLICY_CARD_UI;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
     public static final boolean DEV_MODE = false;
@@ -74,7 +75,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         MAP = new Core.Maps.Map(MAP_SEED);
         Tester.CardsTestingOnScene(MAIN_SCENE);
-        Tester.MapTest();
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         PLAYER_HAND_DEV_CARDS = holderUI;
 

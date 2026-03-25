@@ -31,7 +31,6 @@ import javax.swing.*;
 
 public class Tester {
     public static Player dummyPlayer = new Player("dummy_01", "Test Player", true);
-    public static PolicyCardHolderUI policyUI;
     public static void CardsTestingOnScene(Scene2D scene2D){
         // Removed hardcoded dummy CardSlots and ActionCards
         // The player should use DrawCardUI to get cards and play them on the Map.
@@ -87,8 +86,8 @@ public class Tester {
         return new CardHolderUI(scene2D);
     }
     public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
-        policyUI = new PolicyCardHolderUI(scene2D);
-        return policyUI;
+        ZhuzheeGame.POLICY_CARD_UI = new PolicyCardHolderUI(scene2D);
+        return ZhuzheeGame.POLICY_CARD_UI;
     }
     public static void MapTest() {
         new Map();

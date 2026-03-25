@@ -190,7 +190,11 @@ public class Shop extends JPanel {
         System.out.println("ซื้อการ์ด " + card.getName() + " สำเร็จ! หักเงิน " +  getPrice(card) + " เหลือ: " + localPlayer.getCoin());
 
         shopCards.remove(card);
-        Dummy.Tester.policyUI.addCard(card);
+        if (ZhuzheeGame.POLICY_CARD_UI != null) {
+            ZhuzheeGame.POLICY_CARD_UI.addCard(card);
+        } else {
+            System.err.println("Warning: PolicyCardHolderUI is null!");
+        }
 
         moneyLabel.setText("Total Money : " + this.localPlayer.getCoin());
 
