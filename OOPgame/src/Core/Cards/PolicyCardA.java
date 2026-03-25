@@ -4,8 +4,8 @@
 // create policycard for test
 package Core.Cards;
 
-import Dummy.Maps.City;
-import Dummy.Maps.PoliticsStats;
+import Core.Maps.City;
+import Core.Maps.PoliticsStats;
 
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
 public class PolicyCardA extends PolicyCard {

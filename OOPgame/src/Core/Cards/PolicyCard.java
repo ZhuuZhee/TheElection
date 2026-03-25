@@ -3,8 +3,7 @@
  */
 package Core.Cards;
 
-import Dummy.Maps.City;
-import Dummy.Maps.PoliticsStats;
+import Core.Maps.City;
 
 public abstract class PolicyCard extends Card {
     protected boolean isInSlot = false;
