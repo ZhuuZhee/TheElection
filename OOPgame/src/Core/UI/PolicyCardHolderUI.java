@@ -10,12 +10,12 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class PolicyCardHolderUI extends Canvas {
-    private ArrayList<Card> cards = new ArrayList<>();
+    private final ArrayList<Card> cards = new ArrayList<>();
     // ขนาดของช่องใส่ Policy Card
-    private int panelWidth = 400;
-    private int panelHeight = 220;
-    private JPanel cardContainer;
-    private Scene2D scene;
+    private final int panelWidth = 400;
+    private final int panelHeight = 220;
+    private final JPanel cardContainer;
+    private final Scene2D scene;
 
     public PolicyCardHolderUI(Scene2D scene){
         super(scene);

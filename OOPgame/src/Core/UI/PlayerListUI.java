@@ -9,8 +9,8 @@ import java.awt.*;
 import java.util.List;
 
 public class PlayerListUI extends Canvas {
-    private List<Player> players;
-    private JPanel listContainer;
+    private final List<Player> players;
+    private final JPanel listContainer;
 
     public PlayerListUI(Scene2D scene, List<Player> players) {
         super(scene);

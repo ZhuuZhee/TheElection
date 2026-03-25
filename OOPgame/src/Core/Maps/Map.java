@@ -102,6 +102,7 @@ public class Map extends GameObject {
         }
     }
 
+    /// หา Grid ตามตำแหน่งที่ใส่เข้าไป
     public Grid getGridAtPoint(Point p) {
         for (Grid[] col : gridMap) {
             for (Grid grid : col) {

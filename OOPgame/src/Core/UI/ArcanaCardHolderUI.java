@@ -11,8 +11,8 @@ import java.awt.*;
 public class ArcanaCardHolderUI extends Canvas {
     private Card currentCard = null;
     // ขนาดของช่องใส่ Arcana Card (เล็กลงหน่อยเพราะใส่ใบเดียว)
-    private final int panelWidth = 180;
-    private final int panelHeight = 250;
+    private final int panelWidth = 150;
+    private final int panelHeight = 220;
     private final JPanel cardContainer;
     private final Scene2D scene;
 
