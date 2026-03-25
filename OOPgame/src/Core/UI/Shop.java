@@ -186,8 +186,8 @@ public class Shop extends JPanel {
     private void handleBuy(PolicyCard card) {
         if (this.localPlayer.getCoin() < getPrice(card)) return;
 
-        this.localPlayer.setCoin(this.localPlayer.getCoin() - getPrice(card));
-        System.out.println("ซื้อการ์ด " + card.getName() + " สำเร็จ! หักเงิน " +  getPrice(card) + " เหลือ: " + localPlayer.getCoin());
+        this.localPlayer.setCoin(this.localPlayer.getCoin() + getPrice(card));
+        System.out.println("ซื้อการ์ด " + card.getName() + " สำเร็จ! หักเงิน " +  -(getPrice(card)) + " เหลือ: " + localPlayer.getCoin());
 
         shopCards.remove(card);
         if (ZhuzheeGame.POLICY_CARD_UI != null) {
