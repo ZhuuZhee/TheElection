@@ -97,6 +97,7 @@ public class ActionCard extends Card {
         }
 
         playercoin.setCoin(playercoin.getCoin() + this.coin);
+        System.out.println("playerCoin: " + playercoin.getCoin());
 
     }
 
