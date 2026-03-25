@@ -28,7 +28,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.Network.Client.GameClientManager CLIENT;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
-    public static final boolean DEV_MODE = false;
+    public static final boolean DEV_MODE = true;
 
     public static MouseAdapter MOUSE_HOVER_SFX = new MouseAdapter() {
         @Override
@@ -57,7 +57,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
             Screen.ChangeScreen(MAIN_MENU); // Run Main จริง
         }
         AudioManager.getInstance().loadSound("bgm","UaH.WAV");
-        AudioManager.getInstance().playLoop("bgm");
+//        AudioManager.getInstance().playLoop("bgm");
     }
 
     /// MAIN_SCENE

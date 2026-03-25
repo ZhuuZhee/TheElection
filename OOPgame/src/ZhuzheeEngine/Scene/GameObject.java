@@ -80,14 +80,6 @@ public class GameObject extends JPanel implements IZIndex {
 
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // ให้ Swing เตรียมการวาดพื้นฐาน
-        if (isEnable) {
-            update();// เรียกใช้ render เดิม (โดย g จะเป็นพิกัด Local 0,0)
-        }
-    }
-
     //is position inside bounds of this object
     public boolean isInsideBoundaries(int x, int y) {
         // ใช้ความสามารถของ Swing ตรวจสอบขอบเขต (x,y ต้องเป็นพิกัดเทียบกับ Parent/Scene)

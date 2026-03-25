@@ -26,7 +26,7 @@ public class CardHolderUI extends Canvas {
         // กำหนดดีไซน์พื้นหลังและขอบ
         setBackground(new Color(50, 50, 50, 220)); // สีเทาเข้มโปร่งแสง
         setBorder(new LineBorder(new Color(150, 150, 150), 2));
-        setOpaque(false); // สำคัญมาก: ป้องกัน Swing วาดพื้นหลังทึบทับกันซ้ำซ้อนจนกระพริบ
+        setOpaque(true); // สำคัญมาก: ป้องกัน Swing วาดพื้นหลังทึบทับกันซ้ำซ้อนจนกระพริบ
 
         // ส่วนหัวข้อ
         JLabel titleLabel = new JLabel("Your Hand");

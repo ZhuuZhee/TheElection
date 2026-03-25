@@ -30,7 +30,7 @@ public class Map extends GameObject {
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
     public Map() {
-        super(-1000, -1000, 2000, 2000, ZhuzheeGame.MAIN_SCENE);
+        super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
         startSize = new Point(getWidth(), getHeight());
         gridMap = GenerateMap();
         
