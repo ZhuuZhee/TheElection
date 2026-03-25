@@ -1,0 +1,8 @@
+[
+  { "class": "GreenPolicy",   "img": "OOPgame/Assets/ImageForCards/gay.png" },
+  { "class": "LocalCampaign", "img": "OOPgame/Assets/ImageForCards/gay.png" },
+  { "class": "Recount",       "img": "OOPgame/Assets/ImageForCards/gay.png" },
+  { "class": "EconomicBoom",  "img": "OOPgame/Assets/ImageForCards/gay.png" },
+  { "class": "IronWill",      "img": "OOPgame/Assets/ImageForCards/gay.png" },
+  { "class": "NaturePact",    "img": "OOPgame/Assets/ImageForCards/gay.png" }
+]

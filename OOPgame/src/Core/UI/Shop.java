@@ -37,9 +37,9 @@ public class Shop extends JPanel {
     private Player localPlayer;
     private boolean purchased = false;
 
-    /** สร้าง Shop โดยดึงการ์ดทั้งหมดจาก PolicyCardRegistry อัตโนมัติ */
+    /** สร้าง Shop โดยสุ่มการ์ด 3 ใบจาก policy_cards.json อัตโนมัติ */
     public Shop(Scene2D scene) {
-        this(scene, PolicyCardRegistry.getAllCards());
+        this(scene, PolicyCardRegistry.rollCards(3));
     }
 
     public Shop(Scene2D scene, List<PolicyCard> allCards) {
@@ -86,7 +86,7 @@ public class Shop extends JPanel {
 
     }
 
-    // สุ่มการ์ดจาก pool
+    // สุ่มการ์ดจาก pool (ใช้เมื่อส่ง list เข้ามาเอง)
     private ArrayList<PolicyCard> rollCards(List<PolicyCard> allCards) {
         List<PolicyCard> pool = new ArrayList<>(allCards);
         Collections.shuffle(pool);
