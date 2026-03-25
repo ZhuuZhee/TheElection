@@ -1,6 +1,7 @@
 package Core.UI;
 
 import Core.Cards.PolicyCard;
+import Core.Cards.PolicyCardRegistry;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.Scene2D;
 
@@ -35,6 +36,11 @@ public class Shop extends JPanel {
     private List<PolicyCard> shopCards = new ArrayList<>();
     private Player localPlayer;
     private boolean purchased = false;
+
+    /** สร้าง Shop โดยดึงการ์ดทั้งหมดจาก PolicyCardRegistry อัตโนมัติ */
+    public Shop(Scene2D scene) {
+        this(scene, PolicyCardRegistry.getAllCards());
+    }
 
     public Shop(Scene2D scene, List<PolicyCard> allCards) {
         this.scene = scene;
