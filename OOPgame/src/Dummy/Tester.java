@@ -9,6 +9,7 @@ import Core.GameScreens.MainMenu;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
@@ -38,6 +39,7 @@ public class Tester {
             setLayout(new BorderLayout());
 
             JButton button = new JButton("Draw Card");
+            AudioManager.getInstance().loadSound("draw","draw.WAV");
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -45,6 +47,7 @@ public class Tester {
                     ArrayList<CardBufferObject> cards = (ArrayList<CardBufferObject>) CardReader.readActionCards(filePath);
                     int index = new Random().nextInt(cards.size());
                     hand.addCard(new ActionCard(cards.get(index),0,0));
+                    AudioManager.getInstance().playSound("draw");
                 }
             });
 
