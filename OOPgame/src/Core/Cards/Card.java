@@ -42,19 +42,19 @@ public abstract class Card extends GameObject {
     private int baseHeight;
     private int baseX;
     private int baseY;
+    private final boolean isCoinStatOnCard;
 
     private double currentScaleOffset = DEFAULT_OFFSET;
     private int customTargetWidth = 0;
     private int customTargetHeight = 0;
 
     public Card(String name, int x, int y, String imagePath){
-        this(name,x,y, CARD_WIDTH, CARD_HEIGHT, imagePath);
+        this(name,x,y, CARD_WIDTH, CARD_HEIGHT, imagePath, true);
     }
     public Card(String name, int x, int y, int width, int height) {
-        this(name, x, y, width, height, "");
-
+        this(name, x, y, width, height, "", false);
     }
-    public Card(String name, int x, int y, int width, int height, String imagePath) {
+    public Card(String name, int x, int y, int width, int height, String imagePath, boolean isCoinStatOnCard) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
         // Swing Component Setup
@@ -69,6 +69,7 @@ public abstract class Card extends GameObject {
         this.baseHeight = height;
         this.baseX = x;
         this.baseY = y;
+        this.isCoinStatOnCard = isCoinStatOnCard;
         this.setImage(imagePath);
         // @Munin 11/3/2026 20:33 - move mouse listener to this class
         // Mouse Interactions on THIS Component
@@ -451,23 +452,26 @@ public abstract class Card extends GameObject {
         int y = margin * 2;
         String coinStr;
         // วาดวงกลมสีทองสำหรับเหรียญ
-        if (coin > 0) {
-            g2d.setColor(new Color(255, 215, 0));
-            coinStr = String.valueOf(coin);// Gold
-        } else {
-            g2d.setColor(new Color(255, 0, 0));
-            coinStr = String.valueOf(coin * -1);
-        }
-        g2d.fillOval(x, y, iconSize, iconSize);
-        g2d.setColor(Color.BLACK);
-        g2d.drawOval(x, y, iconSize, iconSize);
 
-        // วาดค่าตัวเลข coin
-        g2d.setFont(new Font("Arial", Font.BOLD, 12));
-        FontMetrics fm = g2d.getFontMetrics();
-        int textX = x + (iconSize - fm.stringWidth(coinStr)) / 2;
-        int textY = y + (iconSize - fm.getHeight()) / 2 + fm.getAscent();
-        g2d.drawString(coinStr, textX, textY);
+        if (isCoinStatOnCard) {
+            if (coin > 0) {
+                g2d.setColor(new Color(255, 215, 0));
+                coinStr = String.valueOf(coin);// Gold
+            } else {
+                g2d.setColor(new Color(255, 0, 0));
+                coinStr = String.valueOf(coin * -1);
+            }
+            g2d.fillOval(x, y, iconSize, iconSize);
+            g2d.setColor(Color.BLACK);
+            g2d.drawOval(x, y, iconSize, iconSize);
+
+            // วาดค่าตัวเลข coin
+            g2d.setFont(new Font("Arial", Font.BOLD, 12));
+            FontMetrics fm = g2d.getFontMetrics();
+            int textX = x + (iconSize - fm.stringWidth(coinStr)) / 2;
+            int textY = y + (iconSize - fm.getHeight()) / 2 + fm.getAscent();
+            g2d.drawString(coinStr, textX, textY);
+        }
     }
 
     public String getName() {

@@ -3,7 +3,9 @@ package Core;
 import Core.GameScreens.CharacterSelectUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
+import Core.Player.Player;
 import Core.UI.CardHolderUI;
+import Core.UI.PlayerListUI;
 import Core.UI.PolicyCardHolderUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
@@ -16,6 +18,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter {
@@ -37,9 +41,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     public static CardHolderUI PLAYER_HAND_DEV_CARDS;
     public static PolicyCardHolderUI POLICY_CARD_UI;
+    public static PlayerListUI PLAYER_LIST_UI;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
-    public static final boolean DEV_MODE = false;
+    public static final boolean DEV_MODE = true;
 
     public static MouseAdapter MOUSE_HOVER_SFX = new MouseAdapter() {
         @Override
@@ -82,6 +87,19 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PLAYER_HAND_DEV_CARDS = holderUI;
 
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
+
+        // Player List UI
+        List<Player> actualPlayers = new ArrayList<>();
+        if (CLIENT != null && !CLIENT.getConnectedPlayers().isEmpty()) {
+            actualPlayers = CLIENT.getConnectedPlayers();
+        } else if (DEV_MODE) {
+            actualPlayers.add(new Player("1", "P'Few", true));
+            actualPlayers.add(new Player("2", "Xynezter", false));
+            actualPlayers.add(new Player("3", "Thana", false));
+            actualPlayers.add(new Player("4", "KUY", false));
+        }
+
+        PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
 
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
         Tester.ShopTest();
