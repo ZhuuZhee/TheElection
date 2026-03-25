@@ -9,6 +9,7 @@ import Core.GameScreens.MainMenu;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
 import Core.UI.PolicyCardHolderUI;
+import Core.UI.ArcanaCardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
 import ZhuzheeEngine.Application;
@@ -88,6 +89,10 @@ public class Tester {
     public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
         ZhuzheeGame.POLICY_CARD_UI = new PolicyCardHolderUI(scene2D);
         return ZhuzheeGame.POLICY_CARD_UI;
+    }
+    public static ArcanaCardHolderUI ArcanaCardHolderUITest(Scene2D scene2D){
+        ZhuzheeGame.ARCANA_CARD_UI = new ArcanaCardHolderUI(scene2D);
+        return ZhuzheeGame.ARCANA_CARD_UI;
     }
     public static void MapTest() {
         new Map();
