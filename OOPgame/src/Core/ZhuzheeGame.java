@@ -7,6 +7,7 @@ import Core.Player.Player;
 import Core.UI.CardHolderUI;
 import Core.UI.PlayerListUI;
 import Core.UI.PolicyCardHolderUI;
+import Core.UI.ArcanaCardHolderUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -41,10 +42,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     public static CardHolderUI PLAYER_HAND_DEV_CARDS;
     public static PolicyCardHolderUI POLICY_CARD_UI;
+    public static ArcanaCardHolderUI ARCANA_CARD_UI;
     public static PlayerListUI PLAYER_LIST_UI;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
-    public static final boolean DEV_MODE = false;
+    public static final boolean DEV_MODE = true;
 
     public static MouseAdapter MOUSE_HOVER_SFX = new MouseAdapter() {
         @Override
@@ -87,6 +89,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PLAYER_HAND_DEV_CARDS = holderUI;
 
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
+        Tester.ArcanaCardHolderUITest(MAIN_SCENE);
 
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
