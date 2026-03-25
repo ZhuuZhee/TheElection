@@ -4,7 +4,7 @@
 package Core.Cards;
 
 import Core.ZhuzheeGame;
-import Dummy.Maps.City;
+import Core.Maps.City;
 import ZhuzheeEngine.Scene.GameObject;
 import java.awt.*;
 

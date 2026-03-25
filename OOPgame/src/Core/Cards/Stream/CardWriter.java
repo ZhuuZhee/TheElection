@@ -1,8 +1,7 @@
 package Core.Cards.Stream;
 
 import Core.Cards.ActionCard;
-import Core.Cards.Card;
-import Dummy.Maps.PoliticsStats;
+import Core.Maps.PoliticsStats;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

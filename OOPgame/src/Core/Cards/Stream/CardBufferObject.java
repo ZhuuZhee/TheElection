@@ -1,6 +1,6 @@
 package Core.Cards.Stream;
 
-import Dummy.Maps.PoliticsStats;
+import Core.Maps.PoliticsStats;
 
 public class CardBufferObject {
     private String name;

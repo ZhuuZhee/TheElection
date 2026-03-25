@@ -3,8 +3,8 @@ package Core.Cards.PolicyCardDox;
 import Core.Cards.ActionCard;
 import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
-import Dummy.Maps.City;
-import Dummy.Maps.PoliticsStats;
+import Core.Maps.City;
+import Core.Maps.PoliticsStats;
 
 public class Local_Campaign extends PolicyCard {
     public Local_Campaign(int x, int y, String imagePath) {super("Local Campaign", x, y, imagePath, 3);}

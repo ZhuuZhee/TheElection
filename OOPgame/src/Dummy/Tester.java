@@ -9,12 +9,11 @@ import Core.GameScreens.MainMenu;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
-import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 import Core.Cards.PolicyCardA;
-import Dummy.Maps.Map;
+import Core.Maps.Map;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import Dummy.Maps.PoliticsStats;
+import Core.Maps.PoliticsStats;
 
 import javax.swing.*;
 
