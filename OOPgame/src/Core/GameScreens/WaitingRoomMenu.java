@@ -3,6 +3,7 @@ package Core.GameScreens;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
 import Core.Network.NetworkProtocol;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
 import ZhuzheeEngine.Scene.NineSliceButton;
@@ -13,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -90,6 +92,11 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         leaveBtn = UIButtonFactory.createMenuButton("Leave Room", btnNormalImg, btnHoverImg, this);
         btnPanel.add(leaveBtn);
 
+        MouseAdapter mouseHover = ZhuzheeGame.MOUSE_HOVER_SFX;
+
+        startBtn.addMouseListener(mouseHover);
+        leaveBtn.addMouseListener(mouseHover);
+
         bgCanvas.add(btnPanel, BorderLayout.SOUTH);
 
         add(bgCanvas, BorderLayout.CENTER);
@@ -161,5 +168,6 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
             ZhuzheeGame.CLIENT = null;
             Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);
         }
+        AudioManager.getInstance().playSound("click");
     }
 }

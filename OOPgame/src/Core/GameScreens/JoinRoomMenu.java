@@ -1,6 +1,7 @@
 package Core.GameScreens;
 
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
 import ZhuzheeEngine.Scene.NineSliceButton;
@@ -10,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public class JoinRoomMenu extends Screen implements ActionListener {
@@ -78,6 +81,11 @@ public class JoinRoomMenu extends Screen implements ActionListener {
         
         connectBtn = UIButtonFactory.createMenuButton("Connect", btnNormalImg, btnHoverImg, this);
         backBtn = UIButtonFactory.createMenuButton("Back to Lobby", btnNormalImg, btnHoverImg, this);
+
+        MouseAdapter mouseHover = ZhuzheeGame.MOUSE_HOVER_SFX;
+
+        connectBtn.addMouseListener(mouseHover);
+        backBtn.addMouseListener(mouseHover);
         
         btnRow.add(connectBtn);
         btnRow.add(backBtn);
@@ -113,5 +121,6 @@ public class JoinRoomMenu extends Screen implements ActionListener {
         else if (e.getSource() == backBtn) {
             Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);
         }
+        AudioManager.getInstance().playSound("click");
     }
 }

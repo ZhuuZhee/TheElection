@@ -1,6 +1,7 @@
 package Core.GameScreens;
 
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
 import ZhuzheeEngine.Scene.NineSliceButton;
@@ -10,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public class LobbyMenu extends Screen implements ActionListener {
@@ -54,6 +57,12 @@ public class LobbyMenu extends Screen implements ActionListener {
         joinBtn = UIButtonFactory.createMenuButton("Join Game",   btnNormalImg, btnHoverImg, this);
         backBtn = UIButtonFactory.createMenuButton("Back to Menu",btnNormalImg, btnHoverImg, this);
 
+        MouseAdapter mouseHover = ZhuzheeGame.MOUSE_HOVER_SFX;
+
+        createBtn.addMouseListener(mouseHover);
+        joinBtn.addMouseListener(mouseHover);
+        backBtn.addMouseListener(mouseHover);
+
         btnPanel.add(createBtn);
         btnPanel.add(joinBtn);
         btnPanel.add(backBtn);
@@ -79,5 +88,6 @@ public class LobbyMenu extends Screen implements ActionListener {
         else if (e.getSource() == backBtn) {
             Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
         }
+        AudioManager.getInstance().playSound("click");
     }
 }

@@ -1,12 +1,15 @@
 package Core.GameScreens;
 
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
 import ZhuzheeEngine.Scene.NineSliceButton;
@@ -66,6 +69,13 @@ public class MainMenu extends Screen implements ActionListener {
         creditBtn = UIButtonFactory.createMenuButton("Credits", btnNormalImg, btnHoverImg, this);
         exitBtn = UIButtonFactory.createMenuButton("Exit", btnNormalImg, btnHoverImg, this);
 
+        MouseAdapter mouseHover = ZhuzheeGame.MOUSE_HOVER_SFX;
+
+        startBtn.addMouseListener(mouseHover);
+        optionBtn.addMouseListener(mouseHover);
+        creditBtn.addMouseListener(mouseHover);
+        exitBtn.addMouseListener(mouseHover);
+
         buttonPanel.add(startBtn);
         buttonPanel.add(optionBtn);
         buttonPanel.add(creditBtn);
@@ -81,8 +91,8 @@ public class MainMenu extends Screen implements ActionListener {
         add(bgCanvas, BorderLayout.CENTER);
 
         // audio test
-        // AudioManager.getInstance().loadSound("Kuy","guntrum.WAV");
-        // AudioManager.getInstance().playLoop("Kuy");
+        AudioManager.getInstance().loadSound("click","click.WAV");
+        AudioManager.getInstance().loadSound("hover","hover.WAV");
 
 //        System.out.println("Main Menu is Created");
     }
@@ -101,6 +111,7 @@ public class MainMenu extends Screen implements ActionListener {
         if (e.getSource() == exitBtn) {
             System.exit(0);
         }
+        AudioManager.getInstance().playSound("click");
     }
 
     private void enableFullscreen() {

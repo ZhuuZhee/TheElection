@@ -6,8 +6,12 @@ import Core.UI.CardHolderUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter {
@@ -24,7 +28,15 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.Network.Client.GameClientManager CLIENT;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
-    public static final boolean DEV_MODE = true;
+    public static final boolean DEV_MODE = false;
+
+    public static MouseAdapter MOUSE_HOVER_SFX = new MouseAdapter() {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            super.mouseEntered(e);
+            AudioManager.getInstance().playSound("hover");
+        }
+    };
 
     @Override
     public void create() {
@@ -44,6 +56,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
         } else {
             Screen.ChangeScreen(MAIN_MENU); // Run Main จริง
         }
+        AudioManager.getInstance().loadSound("bgm","UaH.WAV");
+        AudioManager.getInstance().playLoop("bgm");
     }
 
     /// MAIN_SCENE
