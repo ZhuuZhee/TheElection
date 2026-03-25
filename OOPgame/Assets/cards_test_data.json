@@ -7,7 +7,8 @@
             "facility": 10
         },
         "name": "Red Dragon",
-        "type": "ActionCard"
+        "type": "ActionCard",
+        "coin": 10
     },
     {
         "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
@@ -17,6 +18,7 @@
             "facility": 0
         },
         "name": "Blue Eyes",
-        "type": "ActionCard"
+        "type": "ActionCard",
+        "coin": 2
     }
 ]

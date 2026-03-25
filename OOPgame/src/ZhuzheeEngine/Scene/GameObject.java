@@ -76,16 +76,16 @@ public class GameObject extends JPanel implements IZIndex {
     public void start() {
     }
 
-    public void update() {
-
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // ให้ Swing เตรียมการวาดพื้นฐาน
-        if (isEnable) {
-            update();// เรียกใช้ render เดิม (โดย g จะเป็นพิกัด Local 0,0)
+        super.paintComponent(g);
+        if(getEnable()){
+            update();
         }
+    }
+
+    public void update() {
+
     }
 
     //is position inside bounds of this object

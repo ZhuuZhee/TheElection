@@ -4,12 +4,14 @@ import ZhuzheeEngine.Screen;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.swing.SwingUtilities;
 
 public class Scene2D extends Screen {
-    protected ArrayList<GameObject> gameObjects;
-    protected ArrayList<IZIndex> zOrderedObjects; // รายการวัตถุทั้งหมดที่จะนำมาเรียง Z-Index (รวม Canvas)
+    protected List<GameObject> gameObjects;
+    protected List<IZIndex> zOrderedObjects;
 
-    // กำหนด Layer มาตรฐานเพื่อป้องกันการทับกันมั่ว
     public static class Layer {
         public static final int BACKGROUND = -100;
         public static final int SLOT = -10;
@@ -21,10 +23,10 @@ public class Scene2D extends Screen {
     /// can access this object by using Scene.Instance (this is called Singleton)
     public Scene2D() {
         super();
-        gameObjects = new ArrayList<>();
+        gameObjects = Collections.synchronizedList(new ArrayList<>());
         camera = new Camera2D(); // Initialize camera here
-        zOrderedObjects = new ArrayList<>();
-        setLayout(null); // เปลี่ยนเป็น Absolute Layout เพื่อให้กำหนดพิกัด GameObject ได้เอง
+        zOrderedObjects = Collections.synchronizedList(new ArrayList<>());
+        setLayout(null);
     }
 
     @Override
@@ -63,26 +65,28 @@ public class Scene2D extends Screen {
     }
 
     /// Getter เพื่อให้ Core.Cards สามารถเข้าถึง List ไปเช็ค Slot ได้
-    public ArrayList<GameObject> getGameObjects() {
+    public List<GameObject> getGameObjects() {
         return gameObjects;
     }
 
     /// sorting rendering squences of gameObjects by z index
     public void sortZOrderObjects() {
-        new Thread(() ->{
-        // 1. เรียงลำดับใน List ตามค่า Z-Index (น้อย -> มาก)
-        zOrderedObjects.sort((o1, o2) -> Integer.compare(o1.getZIndex(), o2.getZIndex()));
+        SwingUtilities.invokeLater(() -> {
+            // ต้อง Synchronize block เมื่อทำการ sort หรือ iterate synchronizedList
+            synchronized (zOrderedObjects) {
+                // 1. เรียงลำดับใน List ตามค่า Z-Index (น้อย -> มาก)
+                zOrderedObjects.sort((o1, o2) -> Integer.compare(o1.getZIndex(), o2.getZIndex()));
 
-        // 2. ปรับลำดับใน Swing (Component Z-Order)
-        // เทคนิค: วนลูปจากตัวที่ Z-Index มากสุด (ท้าย List) แล้วสั่ง setComponentZOrder ให้ไปอยู่ "ล่างสุด" (Last Index)
-        // ผลลัพธ์: GameObjects จะเรียงซ้อนกันถูกต้องตาม Z-Index แต่ทั้งหมดจะอยู่ "ใต้" UI (ซึ่ง UI มักจะจอง Index 0 ไว้)
-        for (int i = zOrderedObjects.size() - 1; i >= 0; i--) {
-            try {
-                setComponentZOrder(zOrderedObjects.get(i).asComponent(), getComponentCount() - 1);
-            } catch (IllegalArgumentException ignored) {
+                // 2. ปรับลำดับใน Swing (Component Z-Order)
+                // เทคนิค: วนลูปจากตัวที่ Z-Index มากสุด (ท้าย List) แล้วสั่ง setComponentZOrder ให้ไปอยู่ "ล่างสุด" (Last Index)
+                for (int i = zOrderedObjects.size() - 1; i >= 0; i--) {
+                    try {
+                        setComponentZOrder(zOrderedObjects.get(i).asComponent(), getComponentCount() - 1);
+                    } catch (IllegalArgumentException ignored) {
+                    }
+                }
             }
-        }}
-        ).start();
+        });
 
     }
 
@@ -108,15 +112,17 @@ public class Scene2D extends Screen {
     @Override
     public void create() {
         super.create();
-        camera.setPosition(new Point(0,0));
+        camera.setPosition(new Point(0, 0));
         sortZOrderObjects();
     }
+
     @Override
     protected void paintComponent(Graphics g) {
-        updateGameObjectPositions();
+        updateGameObject();
         super.paintComponent(g);
     }
-    private void updateGameObjectPositions() {
+
+    private void updateGameObject() {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
         Point camPos = camera.getPosition();

@@ -6,9 +6,12 @@ import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
 import Core.GameScreens.MainMenu;
+import Core.Player.Player;
 import Core.UI.CardHolderUI;
+import Core.UI.PolicyCardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
+import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
@@ -27,6 +30,12 @@ import Core.Maps.PoliticsStats;
 import javax.swing.*;
 
 public class Tester {
+    public static Player dummyPlayer = new Player("dummy_01", "Test Player", true);
+    public static PolicyCardHolderUI policyUI;
+    public static void CardsTestingOnScene(Scene2D scene2D){
+        // Removed hardcoded dummy CardSlots and ActionCards
+        // The player should use DrawCardUI to get cards and play them on the Map.
+    }
     public static void DrawCardTest(Scene2D scene, CardHolderUI handUI){
         DrawCardUI ui = new DrawCardUI(scene, handUI);
     }
@@ -40,11 +49,11 @@ public class Tester {
 
             JButton button = new JButton("Draw Card");
             AudioManager.getInstance().loadSound("draw","draw.WAV");
+            String filePath = "OOPgame/Assets/cards_test_data.json";
+            ArrayList<CardBufferObject> cards = (ArrayList<CardBufferObject>) CardReader.readActionCards(filePath);
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String filePath = "OOPgame/Assets/cards_test_data.json";
-                    ArrayList<CardBufferObject> cards = (ArrayList<CardBufferObject>) CardReader.readActionCards(filePath);
                     int index = new Random().nextInt(cards.size());
                     hand.addCard(new ActionCard(cards.get(index),0,0));
                     AudioManager.getInstance().playSound("draw");
@@ -61,7 +70,7 @@ public class Tester {
         @Override
         protected void onResize(int width, int height) {
             // ยึดตำแหน่งไว้ที่ด้านล่างของหน้าจอเสมอ
-            setBounds(24, 24, 164, 24);
+            setBounds(24, height - ZhuzheeGame.PLAYER_HAND_DEV_CARDS.getHeight(), 164, 24);
             revalidate();
         }
     }
@@ -77,49 +86,23 @@ public class Tester {
     public static CardHolderUI CardHolderUITest(Scene2D scene2D){
         return new CardHolderUI(scene2D);
     }
+    public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
+        policyUI = new PolicyCardHolderUI(scene2D);
+        return policyUI;
+    }
     public static void MapTest() {
         new Map();
     }
 
     public static void ShopTest() {
         List<PolicyCard> cards = new ArrayList<>();
-        cards.add(new PolicyCardA("Kuy Sega", 0, 0));
-        cards.add(new PolicyCardA("Red Policy", 0, 0));
-        cards.add(new PolicyCardA("Blue Policy", 0, 0));
-        new Shop(ZhuzheeGame.MAIN_SCENE,cards,100);
+        String imageFolder = "OOPgame/Assets/ImageForCards/";
+        // ตั้งค่า PolicyCard เป็นค่าติดลบ
+        cards.add(new PolicyCardA("Kuy Sega", 0, 0,imageFolder + "gay.png",-10));
+        cards.add(new PolicyCardA("Red Policy", 100, 0,imageFolder + "gay.png", -5));
+        cards.add(new PolicyCardA("Blue Policy", 200, 0,imageFolder + "gay.png",-1));
+        new Shop(ZhuzheeGame.MAIN_SCENE,cards);
     }
-
-    private Point mousePoint = new Point();
-    public void TestingCamera(Scene2D MAIN_SCENE){
-        // ใช้ AWTEventListener เพื่อดักจับ Input ของเมาส์แบบ Global ไม่ว่าจะชี้อยู่บน Map หรือ UI ตัวไหนก็จะขยับกล้องได้
-        long eventMask = AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK;
-
-        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
-            // เช็ค MouseWheel ก่อน เพราะมันสืบทอดมาจาก MouseEvent
-            if (event instanceof MouseWheelEvent e) {
-                var cam = MAIN_SCENE.getCamera();
-                cam.setZoom(cam.getZoom() - e.getWheelRotation() * ZhuzheeEngine.Application.getDeltaTime());
-            }
-            // แล้วค่อยเช็ค MouseEvent ธรรมดา
-            else if (event instanceof MouseEvent e) {
-                // อัปเดตตำแหน่งตั้งต้นตอนเริ่มกดเมาส์กลาง
-                if (e.getID() == MouseEvent.MOUSE_PRESSED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
-                    mousePoint = e.getLocationOnScreen();
-                }
-                // คอยขยับกล้องเวลาลากเมาส์กลาง
-                else if (e.getID() == MouseEvent.MOUSE_DRAGGED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
-                    int dx = e.getLocationOnScreen().x - mousePoint.x;
-                    int dy = e.getLocationOnScreen().y - mousePoint.y;
-
-                    MAIN_SCENE.getCamera().translate(-dx, -dy);
-                    mousePoint = e.getLocationOnScreen(); // ใช้ LocationOnScreen เพื่อป้องกันหน้าจอกระตุกเมื่อเมาส์ลากข้ามระหว่าง Component
-                    MAIN_SCENE.repaint();
-                }
-            }
-        }, eventMask);
-    }
-
-
 
     public static void TestCardStream() {
         System.out.println("--- Testing Card Stream ---");

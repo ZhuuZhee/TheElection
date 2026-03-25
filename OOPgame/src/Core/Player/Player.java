@@ -33,6 +33,10 @@ public class Player {
         return playerName;
     }
 
+    public int getCoin() { return coin; }
+
+    public void setCoin(int coin) { this.coin = coin; }
+
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }

@@ -4,8 +4,11 @@
  */
 package Core.Cards;
 
+import Core.Maps.Grid;
+import Core.Maps.Map;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.*;
 
 import java.awt.*;
@@ -14,17 +17,21 @@ import java.awt.event.*;
 import java.awt.Image;
 import java.io.File;
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public abstract class Card extends GameObject {
     protected String name;
+    private static final int CARD_WIDTH = 100;
+    private static final int CARD_HEIGHT = 150;
     protected boolean isGrabbed = false;
     protected boolean isDraggable = true;
     public boolean isHovered = false;
+    private static final int MARGIN = 2;
     protected Point offset = new Point(0, 0);
     public static Card CURRENT_GRABBED_CARD;
     private static final int Z_INDEX_TOP = Scene2D.Layer.DRAGGED;
     private static final int Z_INDEX_NORMAL = Scene2D.Layer.DEFAULT;
-    private static final int SNAP_MARGIN = 15;
+    private static final int SNAP_MARGIN = 5;
     private static final double DEFAULT_OFFSET = 1.0; // ขนาดตอนปกติ
     private static final double ZOOM_OFFSET = 1.15;
     private static final double GRAB_OFFSET = 0.85; // อัตราส่วนตอนกำลังหยิบการ์ดลาก (ลดเหลือ 85%)
@@ -40,11 +47,18 @@ public abstract class Card extends GameObject {
     private int customTargetWidth = 0;
     private int customTargetHeight = 0;
 
+    public Card(String name, int x, int y, String imagePath){
+        this(name,x,y, CARD_WIDTH, CARD_HEIGHT, imagePath);
+    }
     public Card(String name, int x, int y, int width, int height) {
+        this(name, x, y, width, height, "");
+
+    }
+    public Card(String name, int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
         // Swing Component Setup
-        this.setBackground(new Color(0,0,0,0));
+        this.setBackground(new Color(0, 0, 0, 0));
         this.setOpaque(true);
         //set size forever
         this.setPreferredSize(new Dimension(width, height));
@@ -55,7 +69,7 @@ public abstract class Card extends GameObject {
         this.baseHeight = height;
         this.baseX = x;
         this.baseY = y;
-
+        this.setImage(imagePath);
         // @Munin 11/3/2026 20:33 - move mouse listener to this class
         // Mouse Interactions on THIS Component
         this.addMouseListener(new MouseAdapter() {
@@ -81,8 +95,8 @@ public abstract class Card extends GameObject {
             public void mouseEntered(MouseEvent e) {
                 setHovered(true);
                 if (!isGrabbed && getEnable()) {
-                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof Core.UI.CardHolderUI);
-                    
+                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
+
                     if (!isInHand) {
                         setZIndex(Z_INDEX_TOP);
                         if (getParent() != null) getParent().setComponentZOrder(Card.this, 0);
@@ -98,8 +112,8 @@ public abstract class Card extends GameObject {
             public void mouseExited(MouseEvent e) {
                 setHovered(false);
                 if (!isGrabbed && getEnable()) {
-                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof Core.UI.CardHolderUI);
-                    
+                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
+
                     if (!isInHand) {
                         setZIndex(Z_INDEX_NORMAL);
                     } else {
@@ -116,11 +130,6 @@ public abstract class Card extends GameObject {
                 onMouseDragged(e.getX(), e.getY());
             }
         });
-    }
-
-    public Card(String name, int x, int y, int width, int height, String imagePath) {
-        this(name, x, y, width, height);
-        this.setImage(imagePath);
     }
 
     //------------ setter getter -------------
@@ -150,7 +159,8 @@ public abstract class Card extends GameObject {
             e.printStackTrace();
         }
     }
-    public String getImagePath(){
+
+    public String getImagePath() {
         return imagePath;
     }
     // ----------------------------------------
@@ -160,7 +170,7 @@ public abstract class Card extends GameObject {
     public void onMousePressed(int mouseX, int mouseY) {
         if (getEnable()) {
             // No need to check boundaries, event is fired on component
-            if(getParent() != null && getParent().getParent() instanceof CardHolderUI holderUI){
+            if (getParent() != null && getParent().getParent() instanceof CardHolderUI holderUI) {
                 holderUI.removeCard(this);
             }
             System.out.println(name + ": Grabbed");
@@ -205,9 +215,9 @@ public abstract class Card extends GameObject {
         Point cardCenter = new Point(cardRect.x + cardRect.width / 2, cardRect.y + cardRect.height / 2);
 
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Core.Maps.Map mapComponent) {
-                Point mapPos = javax.swing.SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
-                Core.Maps.Grid grid = mapComponent.getGridAtPoint(mapPos);
+            if (comp instanceof Map mapComponent) {
+                Point mapPos = SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
+                Grid grid = mapComponent.getGridAtPoint(mapPos);
                 mapComponent.setHoveredGrid(grid);
             }
         }
@@ -217,7 +227,7 @@ public abstract class Card extends GameObject {
     private void clearMapHover() {
         if (getParent() == null) return;
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Core.Maps.Map mapComponent) {
+            if (comp instanceof Map mapComponent) {
                 mapComponent.clearHoveredGrid();
             }
         }
@@ -242,9 +252,9 @@ public abstract class Card extends GameObject {
             if (handUI != null) {
                 // ล้างพิกัดก่อนเข้ามือ เพื่อให้ FlowLayout จัดเรียงใหม่ได้ถูกต้อง
                 this.setLocation(0, 0);
-                
+
                 // บังคับให้ขนาดกลับมาเป็นขนาดฐาน เพื่อให้ CardHolderUI หาร ratio ได้สมบูรณ์ ไม่ติดบั๊กของขนาด 0.85
-                this.currentScaleOffset = DEFAULT_OFFSET; 
+                this.currentScaleOffset = DEFAULT_OFFSET;
                 this.setBounds(0, 0, baseWidth, baseHeight);
 
                 handUI.addCard(this);
@@ -269,6 +279,7 @@ public abstract class Card extends GameObject {
             }
         }
     }
+
     // check ว่า card ชนกับขอบของ yourhand มั้ย " ให้ card เป้นตัวเช็ค "
     private CardHolderUI getHandUIOnBottom() {
         if (getParent() == null) return null;
@@ -323,15 +334,15 @@ public abstract class Card extends GameObject {
         // เรียก method when card ทับ กับ Magnetic Field ของ slot
     }
 
-    private Core.Maps.Grid getGridOnBottom() {
+    private Grid getGridOnBottom() {
         if (getParent() == null) return null;
         Rectangle cardRect = this.getBounds();
         Point cardCenter = new Point(cardRect.x + cardRect.width / 2, cardRect.y + cardRect.height / 2);
 
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Core.Maps.Map mapComponent) {
-                Point mapPos = javax.swing.SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
-                Core.Maps.Grid grid = mapComponent.getGridAtPoint(mapPos);
+            if (comp instanceof Map mapComponent) {
+                Point mapPos = SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
+                Grid grid = mapComponent.getGridAtPoint(mapPos);
                 if (grid != null) {
                     return grid;
                 }
@@ -340,22 +351,22 @@ public abstract class Card extends GameObject {
         return null;
     }
 
-    private void snapToGrid(Core.Maps.Grid grid) {
+    private void snapToGrid(Grid grid) {
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Core.Maps.Map mapComponent) {
+            if (comp instanceof Map mapComponent) {
                 // พิกัดจุดกึ่งกลางของ Grid เมื่อเทียบกับมุมซ้ายบนของตัว Map Component
                 Point gridCenterLocal = new Point((int) grid.getX(), (int) grid.getY());
-                
+
                 // แปลงพิกัดจากใน Map ไปเป็นพิกัดหน้าจอ (หน้าของ Scene2D)
-                Point screenP = javax.swing.SwingUtilities.convertPoint(mapComponent, gridCenterLocal, getParent());
-                
+                Point screenP = SwingUtilities.convertPoint(mapComponent, gridCenterLocal, getParent());
+
                 // แปลงหน้าจอกลับเป็นพิกัดโลก (World Position)
                 Point worldP = scene.Screen2WorldPoint(screenP);
-                
+
                 // ชดเชยพิกัดให้เป็นจุดกึ่งกลางของการ์ดพอดี
                 int worldX = worldP.x - (this.baseWidth / 2);
                 int worldY = worldP.y - (this.baseHeight / 2);
-                
+
                 this.setPosition(new Point(worldX, worldY));
                 break;
             }
@@ -373,7 +384,7 @@ public abstract class Card extends GameObject {
     protected void onDroppedInSlot(CardSlot slot) {
     }
 
-    protected void onDroppedOnGrid(Core.Maps.Grid grid) {
+    protected void onDroppedOnGrid(Grid grid) {
     }
 
 
@@ -397,7 +408,7 @@ public abstract class Card extends GameObject {
                     g2d.fillRect(0, 0, getWidth(), getHeight());
                 } else if (isGrabbed) {
                     // ปรับสีตอนลากการ์ด แนะนำให้ใช้สีขาวโปร่งแสงเบาๆ ดูพรีเมียมกว่าส้ม/เหลือง
-                    g2d.setColor(new Color(255, 255, 255, 80)); 
+                    g2d.setColor(new Color(255, 255, 255, 80));
                     g2d.fillRect(0, 0, getWidth(), getHeight());
                 }
             } else {
@@ -423,10 +434,40 @@ public abstract class Card extends GameObject {
 
             g2d.setColor(Color.BLACK);
             g2d.drawString(name, textX, textY);
+
+            // วาดค่า Stat เฉพาะของแต่ละประเภทการ์ด
+            drawStats(g2d);
         } finally {
             // 2. ทำลายก๊อปปี้ทิ้ง เพื่อคืนค่าเดิมให้ Graphics หลักสำหรับ Cards ใบถัดไป
             g2d.dispose();
         }
+    }
+
+    protected void drawStats(Graphics2D g2d) {
+        // วาดค่า Coin (Cost) ที่มุมบนขวาของการ์ด
+        int iconSize = 20;
+        int margin = 5;
+        int x = getWidth() - margin * 2 - iconSize;
+        int y = margin * 2;
+        String coinStr;
+        // วาดวงกลมสีทองสำหรับเหรียญ
+        if (coin > 0) {
+            g2d.setColor(new Color(255, 215, 0));
+            coinStr = String.valueOf(coin);// Gold
+        } else {
+            g2d.setColor(new Color(255, 0, 0));
+            coinStr = String.valueOf(coin * -1);
+        }
+        g2d.fillOval(x, y, iconSize, iconSize);
+        g2d.setColor(Color.BLACK);
+        g2d.drawOval(x, y, iconSize, iconSize);
+
+        // วาดค่าตัวเลข coin
+        g2d.setFont(new Font("Arial", Font.BOLD, 12));
+        FontMetrics fm = g2d.getFontMetrics();
+        int textX = x + (iconSize - fm.stringWidth(coinStr)) / 2;
+        int textY = y + (iconSize - fm.getHeight()) / 2 + fm.getAscent();
+        g2d.drawString(coinStr, textX, textY);
     }
 
     public String getName() {
@@ -444,18 +485,26 @@ public abstract class Card extends GameObject {
     @Override
     public void update() {
         super.update();
-        
+
         double targetScaleOffset = DEFAULT_OFFSET;
         if (isHovered && !isGrabbed && !(getParent() instanceof CardSlot)) {
             targetScaleOffset = ZOOM_OFFSET;
         } else if (isGrabbed) {
-            targetScaleOffset = GRAB_OFFSET; 
+            targetScaleOffset = GRAB_OFFSET;
         }
 
         if (Math.abs(currentScaleOffset - targetScaleOffset) > 0.001) {
             // Lerp แอนิเมชันความเร็ว 15 (ยิ่งเยอะยิ่งไว 15 คือประมาณ 0.2s ease)
-            currentScaleOffset += (targetScaleOffset - currentScaleOffset) * 10.0f * ZhuzheeEngine.Application.getDeltaTime();
+            currentScaleOffset += (targetScaleOffset - currentScaleOffset) * 10.0f * Application.getDeltaTime();
             
+            // ใช้ Math.max/min แทน Math.clamp เพื่อรองรับ Java ต่ำกว่า 21
+            // และใช้ getWidth() ที่เป็นขนาดปัจจุบัน (Scaled Size) เพื่อกันเมาส์หลุดขอบ
+            int currentW = Math.max(1, getWidth() - MARGIN); // กัน 0
+            int currentH = Math.max(1, getHeight() - MARGIN);
+            int maxMouseOffsetX = Math.max(0, Math.min(offset.x + MARGIN, currentW));
+            int maxMouseOffsetY = Math.max(0, Math.min(offset.y + MARGIN, currentH));
+            offset.setLocation(maxMouseOffsetX, maxMouseOffsetY);
+
             if (Math.abs(currentScaleOffset - targetScaleOffset) <= 0.001) {
                 currentScaleOffset = targetScaleOffset; // Snap ให้เป๊ะตอนจบ
             }
@@ -485,11 +534,11 @@ public abstract class Card extends GameObject {
         super.setBounds(x - shiftX, y - shiftY, finalWidth, finalHeight);
     }
 
-    public void setBaseWidth(int width)
-    {
+    public void setBaseWidth(int width) {
         baseWidth = width;
     }
-    public void setBaseHeight(int height){
+
+    public void setBaseHeight(int height) {
         baseHeight = height;
     }
 }
