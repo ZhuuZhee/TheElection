@@ -469,8 +469,6 @@ public abstract class Card extends GameObject {
             int textX = x + (iconSize - fm.stringWidth(coinStr)) / 2;
             int textY = y + (iconSize - fm.getHeight()) / 2 + fm.getAscent();
             g2d.drawString(coinStr, textX, textY);
-        } else {
-            System.out.println("Doesn't show coin stat on card");
         }
     }
 
