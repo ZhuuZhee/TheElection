@@ -11,11 +11,14 @@ import Core.Maps.PoliticsStats;
 public class PolicyCardA extends PolicyCard {
 
     public PolicyCardA(String name, int x, int y){
+
         this(name,x,y,0);
     }
+
     public PolicyCardA(String name, int x, int y, int coin) {
         super(name, x, y,coin); // โยนค่าไปให้ PassiveCard จัดการ
     }
+
     public PolicyCardA(String name, int x, int y, String imagePath, int coin) {
         super(name, x, y, imagePath, coin);
     }

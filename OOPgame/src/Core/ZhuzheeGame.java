@@ -51,6 +51,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
          OPTION_MENU = new OptionMenu();
 
+
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที
         } else {
@@ -68,6 +69,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         new Tester().TestingCamera(MAIN_SCENE);
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
+        Tester.ShopTest();
     }
 
     @Override

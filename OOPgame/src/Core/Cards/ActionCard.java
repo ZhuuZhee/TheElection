@@ -4,6 +4,9 @@
 package Core.Cards;
 
 import Core.Cards.Stream.CardBufferObject;
+import Core.Player.Player;
+import Core.ZhuzheeGame;
+import Dummy.*;
 import Core.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
 
@@ -12,6 +15,8 @@ public class ActionCard extends Card {
     private static final int CARD_WIDTH = 100;
     private static final int CARD_HEIGHT = 150;
     private PoliticsStats stats;
+
+    private static Player dummyPlayer = null; // for test
     // setup Constructor while card builded add stat in stat
 
     public ActionCard(CardBufferObject bufferObject, int x, int y) {
@@ -83,6 +88,16 @@ public class ActionCard extends Card {
             this.ActionOn(targetCity);
             GameObject.Destroy(this);
         }
+        Player playercoin = null;
+        if (ZhuzheeGame.CLIENT != null) {
+            playercoin = ZhuzheeGame.CLIENT.getLocalPlayer();
+        } else {
+            // 👉 ใช้กระเป๋าเดียวกันกับ Shop
+            playercoin = Dummy.Tester.dummyPlayer;
+        }
+
+        playercoin.setCoin(playercoin.getCoin() + this.coin);
+
     }
 
     @Override
