@@ -208,7 +208,7 @@ public class Map extends GameObject {
         int[][] neighbors;
         if (y % 2 == 0) {
             // Neighbors for even rows in offset-x hexagon grid
-            neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0};
+            neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
         } else {
             // Neighbors for odd rows in offset-x hexagon grid
             neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
