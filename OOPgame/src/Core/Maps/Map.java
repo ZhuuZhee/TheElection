@@ -15,9 +15,12 @@ import java.util.ArrayList;
 
 public class Map extends GameObject {
     /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
-    private final int rows = 10; // ความกว้าง
-    private final int cols = 10; // ความสูง
-    private final int citiesCount = 9;
+    private final int rows; // ความกว้าง
+    private final int cols; // ความสูง
+    private static final int DEFAULT_ROWS = 12; // ความสูง
+    private static final int DEFAULT_COLS = 12; // ความสูง
+    private static final int DEFAULT_CITIES_COUNT = 8; // ความสูง
+    private final int citiesCount;
     private final int maxGridPerCties = 12;
     private final int minStats = 1;
     private final int maxStats = 5;
@@ -29,9 +32,14 @@ public class Map extends GameObject {
     private final Point startSize;
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
-
-    public Map() {
+    public Map(){
+        this(DEFAULT_ROWS,DEFAULT_COLS,DEFAULT_CITIES_COUNT);
+    }
+    public Map(int rows, int cols, int citiesCount) {
         super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
+        this.rows = rows;
+        this.cols = cols;
+        this.citiesCount = citiesCount;
         startSize = new Point(getWidth(), getHeight());
         gridMap = GenerateMap();
 

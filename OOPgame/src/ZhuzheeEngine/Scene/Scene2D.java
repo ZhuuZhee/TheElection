@@ -142,10 +142,6 @@ public class Scene2D extends Screen {
 
             // Update Swing Component Bounds at once (prevents partial state in setBounds overrides)
             obj.setBounds(screenX, screenY, scaledWidth, scaledHeight);
-
-            if(obj.getEnable()){
-                obj.update();
-            }
         }
     }
 

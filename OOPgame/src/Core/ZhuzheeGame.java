@@ -76,6 +76,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);
     }
+
     private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f;
     private static Point mousePoint;
     public static void CameraControlEvent(Scene2D scene){
@@ -93,11 +94,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
             // แล้วค่อยเช็ค MouseEvent ธรรมดา
             else if (event instanceof MouseEvent e) {
                 // อัปเดตตำแหน่งตั้งต้นตอนเริ่มกดเมาส์กลาง
-                if (e.getID() == MouseEvent.MOUSE_PRESSED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
+                if (e.getID() == MouseEvent.MOUSE_PRESSED && javax.swing.SwingUtilities.isRightMouseButton(e)) {
                     mousePoint = e.getLocationOnScreen();
                 }
                 // คอยขยับกล้องเวลาลากเมาส์กลาง
-                else if (e.getID() == MouseEvent.MOUSE_DRAGGED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
+                else if (e.getID() == MouseEvent.MOUSE_DRAGGED && javax.swing.SwingUtilities.isRightMouseButton(e)) {
                     int dx = e.getLocationOnScreen().x - mousePoint.x;
                     int dy = e.getLocationOnScreen().y - mousePoint.y;
                     var cam = MAIN_SCENE.getCamera();
