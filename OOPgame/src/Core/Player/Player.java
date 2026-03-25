@@ -89,4 +89,12 @@ public class Player {
             // ค่อยๆ
         }
     }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
 }
