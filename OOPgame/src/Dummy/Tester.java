@@ -1,8 +1,6 @@
 package Dummy;
 
 import Core.Cards.ActionCard;
-import Core.Cards.AllArcanaCards.TheFoolCard;
-import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
@@ -10,7 +8,6 @@ import Core.Cards.Stream.CardWriter;
 import Core.GameScreens.MainMenu;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
-import Dummy.Maps.City;
 import Core.UI.Shop;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.Canvas;
@@ -31,24 +28,8 @@ import javax.swing.*;
 
 public class Tester {
     public static void CardsTestingOnScene(Scene2D scene2D){
-//      Citybanna Bkk = new Citybanna("Bangkok", 50, 50, 50);
-        String imageFolder = "OOPgame/Assets/ImageForCards/";
-
-        City KuyJang = new City("Kuy_Jeng", 50, 50, 50, 100);
-
-        CardSlot cardSlot = new CardSlot(0, 0, 100, 150, KuyJang);
-        CardSlot policySlot = new CardSlot(150, 0, 100, 150, KuyJang);
-        CardSlot arcanaSlot = new CardSlot(300, 0, 100, 150, KuyJang);
-
-        ActionCard card1 = new ActionCard("Red Dragon", -100, 200, new PoliticsStats(10, 20, 30),imageFolder + "red_dragon.png",10);
-        ActionCard card2 = new ActionCard("Blue Eyes", 100, 200, new PoliticsStats(0, 10, 0),imageFolder + "blue_dragon.png",2);
-        PolicyCardA policyCard = new PolicyCardA("Kuy Sega", 250, 200,imageFolder + "gay.png", 3);
-
-        TheFoolCard theFool = new TheFoolCard(arcanaSlot);
-//        Citybanna myCity = new Citybanna("Bangkok", 50, 50, 50);
-        card2.setDraggable(false); // <--- setDraggable # default true
-//        KuyJang.printStats();
-//        System.out.println("Put 'kuy sega' in to right slot");
+        // Removed hardcoded dummy CardSlots and ActionCards
+        // The player should use DrawCardUI to get cards and play them on the Map.
     }
     public static void DrawCardTest(Scene2D scene, CardHolderUI handUI){
         DrawCardUI ui = new DrawCardUI(scene, handUI);
@@ -112,45 +93,35 @@ public class Tester {
 
     private Point mousePoint = new Point();
     public void TestingCamera(Scene2D MAIN_SCENE){
+        // ใช้ AWTEventListener เพื่อดักจับ Input ของเมาส์แบบ Global ไม่ว่าจะชี้อยู่บน Map หรือ UI ตัวไหนก็จะขยับกล้องได้
+        long eventMask = AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK;
 
-        //dragging camera
-        MAIN_SCENE.addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
-                    // Calculate delta x,y
-                    int dx = e.getX() - mousePoint.x;
-                    int dy = e.getY() - mousePoint.y;
+        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
+            // เช็ค MouseWheel ก่อน เพราะมันสืบทอดมาจาก MouseEvent
+            if (event instanceof MouseWheelEvent e) {
+                var cam = MAIN_SCENE.getCamera();
+                cam.setZoom(cam.getZoom() - e.getWheelRotation() * ZhuzheeEngine.Application.getDeltaTime());
+            }
+            // แล้วค่อยเช็ค MouseEvent ธรรมดา
+            else if (event instanceof MouseEvent e) {
+                // อัปเดตตำแหน่งตั้งต้นตอนเริ่มกดเมาส์กลาง
+                if (e.getID() == MouseEvent.MOUSE_PRESSED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
+                    mousePoint = e.getLocationOnScreen();
+                }
+                // คอยขยับกล้องเวลาลากเมาส์กลาง
+                else if (e.getID() == MouseEvent.MOUSE_DRAGGED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
+                    int dx = e.getLocationOnScreen().x - mousePoint.x;
+                    int dy = e.getLocationOnScreen().y - mousePoint.y;
 
-                    // Update camera based on pixel movement
                     MAIN_SCENE.getCamera().translate(-dx, -dy);
-
-                    // Update reference point
-                    mousePoint = e.getPoint();
+                    mousePoint = e.getLocationOnScreen(); // ใช้ LocationOnScreen เพื่อป้องกันหน้าจอกระตุกเมื่อเมาส์ลากข้ามระหว่าง Component
                     MAIN_SCENE.repaint();
                 }
             }
-        });
-        //update mouse position on new dragging
-        MAIN_SCENE.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
-                    mousePoint = e.getPoint();
-                }
-            }
-        });
-
-        //zooming
-        MAIN_SCENE.addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                var cam = MAIN_SCENE.getCamera();
-                System.out.println(cam.getZoom());
-                cam.setZoom(cam.getZoom() - e.getWheelRotation() * Application.getDeltaTime());
-            }
-        });
+        }, eventMask);
     }
+
+
 
     public static void TestCardStream() {
         System.out.println("--- Testing Card Stream ---");

@@ -83,5 +83,11 @@ public class Grid{
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(3));
         g2d.draw(hexagon);
+        
+        // --- Debug Hitbox Visualizer ---
+        g2d.setColor(new Color(255, 0, 0, 100));
+        g2d.setStroke(new BasicStroke(1));
+        g2d.draw(hexagon); // วาดเส้น hitbox กรอบแดงบางๆ
+        g2d.fillOval((int)x - 3, (int)y - 3, 6, 6); // จุดกึ่งกลาง
     }
 }

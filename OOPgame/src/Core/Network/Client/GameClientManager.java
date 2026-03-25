@@ -29,7 +29,7 @@ public class GameClientManager {
             joinPacket.put("actionType", NetworkProtocol.JOIN.name());
             joinPacket.put("playerName", playerName);
             sendAction(joinPacket);
-            
+
             new Thread(() -> {
                 try {
                     String message;
@@ -54,8 +54,7 @@ public class GameClientManager {
                 String assignedId = data.getString("assignedId");
                 this.localPlayer = new Player(assignedId, "Me", true);
                 System.out.println("Join success My ID: " + assignedId);
-            }
-            else if (type.equals(NetworkProtocol.SYNC_STATE.name())) {
+            } else if (type.equals(NetworkProtocol.SYNC_STATE.name())) {
                 int phase = data.optInt("phaseCounter", 1);
                 System.out.println("Client sync Phase: " + phase);
 
@@ -74,19 +73,16 @@ public class GameClientManager {
                         }
                     }
                 }
-            }
-            else if (type.equals(NetworkProtocol.START_GAME.name())) {
+            } else if (type.equals(NetworkProtocol.START_GAME.name())) {
                 System.out.println("Host start game");
                 // เริ่มเกม
                 javax.swing.SwingUtilities.invokeLater(Core.ZhuzheeGame::startMainScene);
-            }
-            else if (type.equals(NetworkProtocol.HOST_LEFT.name())) {
+            } else if (type.equals(NetworkProtocol.HOST_LEFT.name())) {
                 System.out.println("Host left the room");
                 Core.ZhuzheeGame.CLIENT = null;
                 // กลับ LOBBY_MENU
                 ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.LOBBY_MENU);
-            }
-            else if (type.equals(NetworkProtocol.PING.name())) {
+            } else if (type.equals(NetworkProtocol.PING.name())) {
                 JSONObject pong = new JSONObject();
                 pong.put("actionType", NetworkProtocol.PONG.name());
                 sendAction(pong);
@@ -110,7 +106,7 @@ public class GameClientManager {
         }
     }
 
-    public Player getLocalPlayer(){
+    public Player getLocalPlayer() {
         return localPlayer;
     }
 }

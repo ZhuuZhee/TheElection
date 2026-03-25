@@ -63,8 +63,26 @@ public class ActionCard extends Card {
                 }
             }
             this.ActionOn(targetCity);
-//            this.setEnable(false);
-            this.isDraggable = false;
+            GameObject.Destroy(this);
+        }
+    }
+
+    @Override
+    protected void onDroppedOnGrid(Grid grid) {
+        System.out.println(name + " was dropped onto Map Grid!");
+        City targetCity = grid.getCity();
+
+        if (targetCity != null) {
+            for (GameObject obj : scene.getGameObjects()) {
+                if (obj instanceof PolicyCard) {
+                    PolicyCard passive = (PolicyCard) obj;
+                    if (passive.isInSlot() && passive.IsActivate()) {
+                        passive.onActionCardPlayed(this, targetCity);
+                    }
+                }
+            }
+            this.ActionOn(targetCity);
+            GameObject.Destroy(this);
         }
     }
 

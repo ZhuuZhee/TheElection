@@ -17,7 +17,11 @@ public class GameServerManager {
         // Ping loop ลบคนที่ timeout
         new Thread(() -> {
             while (running) {
-                try { Thread.sleep(PING_INTERVAL_MS); } catch (InterruptedException ex) { break; }
+                try {
+                    Thread.sleep(PING_INTERVAL_MS);
+                } catch (InterruptedException ex) {
+                    break;
+                }
 
                 org.json.JSONObject ping = new org.json.JSONObject();
                 ping.put("type", NetworkProtocol.PING.name());
@@ -25,7 +29,8 @@ public class GameServerManager {
 
                 List<String> timedOut = new ArrayList<>();
                 for (ClientHandler c : new ArrayList<>(clients)) {
-                    if (c.isTimedOut()) timedOut.add(c.getPlayerId());
+                    if (c.isTimedOut())
+                        timedOut.add(c.getPlayerId());
                 }
                 for (String id : timedOut) {
                     System.out.println("Ping timeout: " + id);
@@ -88,17 +93,18 @@ public class GameServerManager {
     }
 
     public synchronized void processAction(String playerId, JSONObject action) {
-        if (!action.has("actionType")) return;
+        if (!action.has("actionType"))
+            return;
         String type = action.getString("actionType");
 
         if (type.equals(NetworkProtocol.JOIN.name())) {
             // กันชื่อแตก ถ้าเกิดหาชื่อไม่เจอ ใช้ Unknown- id 4 ตัว
             String pName = action.optString("playerName", "Unknown-" + playerId.substring(0, 4));
-            
+
             // สร้างตัวละครแล้วเพิ่มลงใน gameState
             Core.Player.Player newPlayer = new Core.Player.Player(playerId, pName, false);
             gameState.getPlayers().add(newPlayer);
-            System.out.println(pName + " ("+ playerId +") joined the game.");
+            System.out.println(pName + " (" + playerId + ") joined the game.");
 
             // ส่งข้อมูลยืนยันรับเข้าห้องให้คนที่เข้ามา
             JSONObject ack = new JSONObject();
@@ -137,7 +143,8 @@ public class GameServerManager {
                 break;
             }
         }
-        if (target != null) clients.remove(target);
+        if (target != null)
+            clients.remove(target);
 
         Core.Player.Player targetPlayer = null;
         for (Core.Player.Player p : gameState.getPlayers()) {
@@ -146,7 +153,8 @@ public class GameServerManager {
                 break;
             }
         }
-        if (targetPlayer != null) gameState.getPlayers().remove(targetPlayer);
+        if (targetPlayer != null)
+            gameState.getPlayers().remove(targetPlayer);
 
         System.out.println("Player removed: " + playerId);
         broadcast(gameState.generateSyncData());

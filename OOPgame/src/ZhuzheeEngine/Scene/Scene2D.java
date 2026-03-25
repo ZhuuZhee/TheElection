@@ -133,10 +133,8 @@ public class Scene2D extends Screen {
             int scaledWidth = (int) (baseSize.width * zoom);
             int scaledHeight = (int) (baseSize.height * zoom);
 
-            // Update Swing Component Location
-            obj.setLocation(screenX, screenY);
-            // Update Swing Component Size
-            obj.setSize(scaledWidth, scaledHeight);
+            // Update Swing Component Bounds at once (prevents partial state in setBounds overrides)
+            obj.setBounds(screenX, screenY, scaledWidth, scaledHeight);
         }
     }
 

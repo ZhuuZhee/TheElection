@@ -34,7 +34,8 @@ public class Map extends GameObject {
             public void mouseClicked(MouseEvent e) {
                 Grid clicked = getGridAtPoint(e.getPoint());
                 if (clicked != null) {
-                    System.out.println(clicked.getCity().getCityName());
+                    clicked.getCity().printStats();
+                    clicked.getCity().getVotingResults();
                 }
             }
         });
@@ -71,7 +72,7 @@ public class Map extends GameObject {
             City city = new City("City Test : " + i, random.nextInt(1, 5),
                     random.nextInt(1, 5),
                     random.nextInt(1, 5),
-                    random.nextInt(1, 5));
+                    random.nextInt(50000, 1000000));
             //random color
             int r = random.nextInt(1, 5) * 255 / 5;
             int g = random.nextInt(1, 5) * 255 / 5;

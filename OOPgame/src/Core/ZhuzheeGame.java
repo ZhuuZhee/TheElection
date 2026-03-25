@@ -28,7 +28,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     @Override
     public void create() {
-        //set Application title
+        // set Application title
         Application.setMainFrameTitle("Zhuzhee The Game");
 
         MAIN_SCENE = new Scene2D();
@@ -37,7 +37,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
-//        OPTION_MENU = new OptionMenu();
+        // OPTION_MENU = new OptionMenu();
 
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที

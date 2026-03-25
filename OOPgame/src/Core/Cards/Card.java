@@ -25,7 +25,9 @@ public abstract class Card extends GameObject {
     private static final int Z_INDEX_TOP = Scene2D.Layer.DRAGGED;
     private static final int Z_INDEX_NORMAL = Scene2D.Layer.DEFAULT;
     private static final int SNAP_MARGIN = 15;
+    private static final double DEFAULT_OFFSET = 1.0; // ขนาดตอนปกติ
     private static final double ZOOM_OFFSET = 1.15;
+    private static final double GRAB_OFFSET = 0.85; // อัตราส่วนตอนกำลังหยิบการ์ดลาก (ลดเหลือ 85%)
     protected Image cardImage = null;
     protected String imagePath = "";
     protected int coin;
@@ -33,6 +35,11 @@ public abstract class Card extends GameObject {
     private int baseHeight;
     private int baseX;
     private int baseY;
+
+    private double currentScaleOffset = DEFAULT_OFFSET;
+    private int customTargetWidth = 0;
+    private int customTargetHeight = 0;
+
     public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
@@ -73,24 +80,33 @@ public abstract class Card extends GameObject {
             @Override
             public void mouseEntered(MouseEvent e) {
                 setHovered(true);
-                if (!isGrabbed && getEnable() && !(getParent() instanceof CardHolderUI)) {
-                    setZIndex(Z_INDEX_TOP);
-                    if (getParent() != null) getParent().setComponentZOrder(Card.this, 0);
-
-                    setBounds(baseX, baseY, baseWidth, baseHeight);
+                if (!isGrabbed && getEnable()) {
+                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof Core.UI.CardHolderUI);
+                    
+                    if (!isInHand) {
+                        setZIndex(Z_INDEX_TOP);
+                        if (getParent() != null) getParent().setComponentZOrder(Card.this, 0);
+                    } else {
+                        // บังคับอัปเดตขนาดเวลาอยู่ในมือโดยไม่สลับลำดับ Layer ของ FlowLayout
+                        setBounds(baseX, baseY, baseWidth, baseHeight);
+                        if (getParent() != null) getParent().repaint();
+                    }
                 }
-//                repaint(); // Swing needs repaint trigger
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 setHovered(false);
-                if (!isGrabbed && getEnable() && !(getParent() instanceof CardHolderUI)) {
-                    setZIndex(Z_INDEX_NORMAL);
-
-                    setBounds(baseX, baseY, baseWidth, baseHeight);
+                if (!isGrabbed && getEnable()) {
+                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof Core.UI.CardHolderUI);
+                    
+                    if (!isInHand) {
+                        setZIndex(Z_INDEX_NORMAL);
+                    } else {
+                        setBounds(baseX, baseY, baseWidth, baseHeight);
+                        if (getParent() != null) getParent().repaint();
+                    }
                 }
-//                repaint();
             }
         });
 
@@ -199,6 +215,11 @@ public abstract class Card extends GameObject {
             if (handUI != null) {
                 // ล้างพิกัดก่อนเข้ามือ เพื่อให้ FlowLayout จัดเรียงใหม่ได้ถูกต้อง
                 this.setLocation(0, 0);
+                
+                // บังคับให้ขนาดกลับมาเป็นขนาดฐาน เพื่อให้ CardHolderUI หาร ratio ได้สมบูรณ์ ไม่ติดบั๊กของขนาด 0.85
+                this.currentScaleOffset = DEFAULT_OFFSET; 
+                this.setBounds(0, 0, baseWidth, baseHeight);
+
                 handUI.addCard(this);
                 handUI.revalidate();
                 handUI.repaint();
@@ -210,6 +231,14 @@ public abstract class Card extends GameObject {
             if (slot != null) {
                 snapToSlot(slot);
                 onDroppedInSlot(slot);
+                return;
+            }
+
+            var grid = getGridOnBottom();
+            if (grid != null) {
+                snapToGrid(grid);
+                onDroppedOnGrid(grid);
+                return;
             }
         }
     }
@@ -267,6 +296,45 @@ public abstract class Card extends GameObject {
         // เรียก method when card ทับ กับ Magnetic Field ของ slot
     }
 
+    private Dummy.Maps.Grid getGridOnBottom() {
+        if (getParent() == null) return null;
+        Rectangle cardRect = this.getBounds();
+        Point cardCenter = new Point(cardRect.x + cardRect.width / 2, cardRect.y + cardRect.height / 2);
+
+        for (Component comp : getParent().getComponents()) {
+            if (comp instanceof Dummy.Maps.Map mapComponent) {
+                Point mapPos = javax.swing.SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
+                Dummy.Maps.Grid grid = mapComponent.getGridAtPoint(mapPos);
+                if (grid != null) {
+                    return grid;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void snapToGrid(Dummy.Maps.Grid grid) {
+        for (Component comp : getParent().getComponents()) {
+            if (comp instanceof Dummy.Maps.Map mapComponent) {
+                // พิกัดจุดกึ่งกลางของ Grid เมื่อเทียบกับมุมซ้ายบนของตัว Map Component
+                Point gridCenterLocal = new Point((int) grid.getX(), (int) grid.getY());
+                
+                // แปลงพิกัดจากใน Map ไปเป็นพิกัดหน้าจอ (หน้าของ Scene2D)
+                Point screenP = javax.swing.SwingUtilities.convertPoint(mapComponent, gridCenterLocal, getParent());
+                
+                // แปลงหน้าจอกลับเป็นพิกัดโลก (World Position)
+                Point worldP = scene.Screen2WorldPoint(screenP);
+                
+                // ชดเชยพิกัดให้เป็นจุดกึ่งกลางของการ์ดพอดี
+                int worldX = worldP.x - (this.baseWidth / 2);
+                int worldY = worldP.y - (this.baseHeight / 2);
+                
+                this.setPosition(new Point(worldX, worldY));
+                break;
+            }
+        }
+    }
+
     /**
      * Xynezter 14/3/2569 14:12 : Update method is non abstract Arcanacards dont need to Override
      **/
@@ -276,6 +344,9 @@ public abstract class Card extends GameObject {
 
     // add method for business logic when card DroppedInSlot
     protected void onDroppedInSlot(CardSlot slot) {
+    }
+
+    protected void onDroppedOnGrid(Dummy.Maps.Grid grid) {
     }
 
 
@@ -298,13 +369,14 @@ public abstract class Card extends GameObject {
                     g2d.setColor(new Color(128, 128, 128, 150)); // สีเทาโปร่งแสง
                     g2d.fillRect(0, 0, getWidth(), getHeight());
                 } else if (isGrabbed) {
-                    g2d.setColor(new Color(255, 165, 0, 100)); // สีส้มโปร่งแสง
+                    // ปรับสีตอนลากการ์ด แนะนำให้ใช้สีขาวโปร่งแสงเบาๆ ดูพรีเมียมกว่าส้ม/เหลือง
+                    g2d.setColor(new Color(255, 255, 255, 80)); 
                     g2d.fillRect(0, 0, getWidth(), getHeight());
                 }
             } else {
                 // ถ้าไม่มีรูปภาพ ให้ใช้สีพื้นฐานแบบเดิม
                 if (!getEnable()) g2d.setColor(Color.LIGHT_GRAY);
-                else if (isGrabbed) g2d.setColor(new Color(255, 165, 0));
+                else if (isGrabbed) g2d.setColor(new Color(255, 255, 255)); // ถือใบเปล่าอยู่ ให้ไฮไลต์สว่างๆ
                 else g2d.setColor(new Color(176, 255, 183));
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
@@ -343,21 +415,47 @@ public abstract class Card extends GameObject {
     }
 
     @Override
+    public void update() {
+        super.update();
+        
+        double targetScaleOffset = DEFAULT_OFFSET;
+        if (isHovered && !isGrabbed && !(getParent() instanceof CardSlot)) {
+            targetScaleOffset = ZOOM_OFFSET;
+        } else if (isGrabbed) {
+            targetScaleOffset = GRAB_OFFSET; 
+        }
+
+        if (Math.abs(currentScaleOffset - targetScaleOffset) > 0.001) {
+            // Lerp แอนิเมชันความเร็ว 15 (ยิ่งเยอะยิ่งไว 15 คือประมาณ 0.2s ease)
+            currentScaleOffset += (targetScaleOffset - currentScaleOffset) * 10.0f * ZhuzheeEngine.Application.getDeltaTime();
+            
+            if (Math.abs(currentScaleOffset - targetScaleOffset) <= 0.001) {
+                currentScaleOffset = targetScaleOffset; // Snap ให้เป๊ะตอนจบ
+            }
+
+            if (customTargetWidth > 0 && customTargetHeight > 0) {
+                int finalWidth = (int) (customTargetWidth * currentScaleOffset);
+                int finalHeight = (int) (customTargetHeight * currentScaleOffset);
+                int shiftX = (finalWidth - customTargetWidth) / 2;
+                int shiftY = (finalHeight - customTargetHeight) / 2;
+                super.setBounds(baseX - shiftX, baseY - shiftY, finalWidth, finalHeight);
+            }
+        }
+    }
+
+    @Override
     public void setBounds(int x, int y, int width, int height) {
         this.baseX = x;
         this.baseY = y;
-        // ถ้าระบบ Engine พยายามจะรีเซ็ตขนาดการ์ดขณะที่เราเอาเมาส์ชี้อยู่ (และไม่ได้อยู่ในมือ)
-        if (isHovered && !isGrabbed && !(getParent() instanceof CardSlot)) {
-            int zoomedWidth = (int) (baseWidth * ZOOM_OFFSET);
-            int zoomedHeight = (int) (baseHeight * ZOOM_OFFSET);
-            int shiftX = (zoomedWidth - baseWidth) / 2;
-            int shiftY = (zoomedHeight - baseHeight) / 2;
+        this.customTargetWidth = width;
+        this.customTargetHeight = height;
 
-            super.setBounds(x - shiftX, y - shiftY, zoomedWidth, zoomedHeight);
-        } else {
-            // ถ้าอยู่ใน CardSlot หรือไม่ได้ Hover ให้ใช้ขนาดปกติ
-            super.setBounds(x, y, width, height);
-        }
+        int finalWidth = (int) (width * currentScaleOffset);
+        int finalHeight = (int) (height * currentScaleOffset);
+        int shiftX = (finalWidth - width) / 2;
+        int shiftY = (finalHeight - height) / 2;
+
+        super.setBounds(x - shiftX, y - shiftY, finalWidth, finalHeight);
     }
 
     public void setBaseWidth(int width)
