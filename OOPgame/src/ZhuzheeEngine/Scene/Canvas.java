@@ -10,7 +10,6 @@ public abstract class Canvas extends JPanel implements IZIndex {
     private Scene2D scene;
     public Canvas(Scene2D scene){
         this.scene = scene;
-        scene.register(this); // ลงทะเบียนกับ Scene เพื่อให้จัด Z-Index ได้
         scene.add(this);
         scene.addComponentListener(new ComponentAdapter() {
             @Override

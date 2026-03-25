@@ -177,9 +177,6 @@ public abstract class Card extends GameObject {
         }
     }
 
-    public void onMouseClick() {
-    }
-
     public void onMouseDragged(int mouseX, int mouseY) {
         if (getEnable() && isGrabbed) {
             // 1. Calculate target Screen Position
@@ -193,8 +190,36 @@ public abstract class Card extends GameObject {
             // 3. Update World Position (Scene will update Swing Location in next paint)
             this.setPosition(worldPos);
 
-            // 4. Force repaint to update layout instantly
+            // 4. Update Grid Hover state
+            updateGridHover();
+
+            // 5. Force repaint to update layout instantly
             scene.repaint();
+        }
+    }
+
+    // เอาไว้เช็คว่า Component นั้นมาจาก Map ของ folder Maps
+    private void updateGridHover() {
+        if (getParent() == null) return;
+        Rectangle cardRect = this.getBounds();
+        Point cardCenter = new Point(cardRect.x + cardRect.width / 2, cardRect.y + cardRect.height / 2);
+
+        for (Component comp : getParent().getComponents()) {
+            if (comp instanceof Core.Maps.Map mapComponent) {
+                Point mapPos = javax.swing.SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
+                Core.Maps.Grid grid = mapComponent.getGridAtPoint(mapPos);
+                mapComponent.setHoveredGrid(grid);
+            }
+        }
+    }
+
+    // เอาไว้ clear hover state ของ Grid ที่อยู่ใน Map
+    private void clearMapHover() {
+        if (getParent() == null) return;
+        for (Component comp : getParent().getComponents()) {
+            if (comp instanceof Core.Maps.Map mapComponent) {
+                mapComponent.clearHoveredGrid();
+            }
         }
     }
 
@@ -204,6 +229,8 @@ public abstract class Card extends GameObject {
             CURRENT_GRABBED_CARD = null;
 
             this.isHovered = false;
+            // Clear Map Hover
+            clearMapHover();
             // เพื่อให้เมธอด setBounds ที่เรา Override ไว้ทำงานในโหมดปกติ
             this.setBounds(baseX, baseY, baseWidth, baseHeight);
             setZIndex(Z_INDEX_NORMAL);
@@ -296,15 +323,15 @@ public abstract class Card extends GameObject {
         // เรียก method when card ทับ กับ Magnetic Field ของ slot
     }
 
-    private Dummy.Maps.Grid getGridOnBottom() {
+    private Core.Maps.Grid getGridOnBottom() {
         if (getParent() == null) return null;
         Rectangle cardRect = this.getBounds();
         Point cardCenter = new Point(cardRect.x + cardRect.width / 2, cardRect.y + cardRect.height / 2);
 
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Dummy.Maps.Map mapComponent) {
+            if (comp instanceof Core.Maps.Map mapComponent) {
                 Point mapPos = javax.swing.SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
-                Dummy.Maps.Grid grid = mapComponent.getGridAtPoint(mapPos);
+                Core.Maps.Grid grid = mapComponent.getGridAtPoint(mapPos);
                 if (grid != null) {
                     return grid;
                 }
@@ -313,9 +340,9 @@ public abstract class Card extends GameObject {
         return null;
     }
 
-    private void snapToGrid(Dummy.Maps.Grid grid) {
+    private void snapToGrid(Core.Maps.Grid grid) {
         for (Component comp : getParent().getComponents()) {
-            if (comp instanceof Dummy.Maps.Map mapComponent) {
+            if (comp instanceof Core.Maps.Map mapComponent) {
                 // พิกัดจุดกึ่งกลางของ Grid เมื่อเทียบกับมุมซ้ายบนของตัว Map Component
                 Point gridCenterLocal = new Point((int) grid.getX(), (int) grid.getY());
                 
@@ -346,7 +373,7 @@ public abstract class Card extends GameObject {
     protected void onDroppedInSlot(CardSlot slot) {
     }
 
-    protected void onDroppedOnGrid(Dummy.Maps.Grid grid) {
+    protected void onDroppedOnGrid(Core.Maps.Grid grid) {
     }
 
 

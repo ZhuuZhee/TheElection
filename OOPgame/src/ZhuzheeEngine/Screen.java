@@ -41,4 +41,9 @@ public abstract class Screen extends JPanel implements ApplicationAdapter {
     public void dispose() {
 
     }
+    public interface ScreenListener{
+        public void onScreenEnter(Screen currentScreen);
+        public void onScreenExit(Screen currentScreen,Screen nextScreen);
+
+    }
 }

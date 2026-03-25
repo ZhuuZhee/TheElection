@@ -3,8 +3,6 @@
  */
 package Core.Cards;
 
-import Dummy.Maps.City;
-
 public abstract class ArcanaCard extends Card {
     private final int maxCooldown;
     private int currentCooldown;
@@ -22,9 +20,8 @@ public abstract class ArcanaCard extends Card {
 
     protected abstract void activateSkill();
 
-    @Override
     public final void onMouseClick() {
-        // รอ นับเทริน
+//         รอ นับเทริน
 //        if (this.currentCooldown == 0) {
 //            System.out.println("Used skill : " + this.name);
 //            activateSkill();

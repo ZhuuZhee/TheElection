@@ -4,8 +4,7 @@
 package Core.Cards;
 
 import Core.Cards.Stream.CardBufferObject;
-import Dummy.*;
-import Dummy.Maps.*;
+import Core.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
 
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card

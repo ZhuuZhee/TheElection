@@ -1,4 +1,4 @@
-package Dummy.Maps;
+package Core.Maps;
 
 import java.awt.*;
 import java.util.ArrayList;

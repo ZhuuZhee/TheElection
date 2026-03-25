@@ -49,7 +49,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
-        // OPTION_MENU = new OptionMenu();
+         OPTION_MENU = new OptionMenu();
 
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที
@@ -64,10 +64,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static void startMainScene() {
         Screen.ChangeScreen(MAIN_SCENE);
 
-        Tester.CardsTestingOnScene(MAIN_SCENE);
         Tester.MapTest();
-        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         new Tester().TestingCamera(MAIN_SCENE);
+        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
     }
 
@@ -78,7 +77,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     @Override
     public void render() {
-        Screen.currentScreen.render();
+
     }
 
     @Override

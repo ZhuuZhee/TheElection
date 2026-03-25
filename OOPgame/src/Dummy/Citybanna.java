@@ -4,8 +4,7 @@
 
 // เพิ่ม Attributes set Constructor เพิ่ม method applyStats # for test can Change to map
 package Dummy;
-import java.util.List;
-import Dummy.Maps.PoliticsStats;
+import Core.Maps.PoliticsStats;
 public class Citybanna {
     private String cityName;
     private PoliticsStats cityStats;

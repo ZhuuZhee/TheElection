@@ -69,6 +69,7 @@ public class Scene2D extends Screen {
 
     /// sorting rendering squences of gameObjects by z index
     public void sortZOrderObjects() {
+        new Thread(() ->{
         // 1. เรียงลำดับใน List ตามค่า Z-Index (น้อย -> มาก)
         zOrderedObjects.sort((o1, o2) -> Integer.compare(o1.getZIndex(), o2.getZIndex()));
 
@@ -80,7 +81,9 @@ public class Scene2D extends Screen {
                 setComponentZOrder(zOrderedObjects.get(i).asComponent(), getComponentCount() - 1);
             } catch (IllegalArgumentException ignored) {
             }
-        }
+        }}
+        ).start();
+
     }
 
     private Camera2D camera = new Camera2D();
@@ -108,18 +111,16 @@ public class Scene2D extends Screen {
         camera.setPosition(new Point(0,0));
         sortZOrderObjects();
     }
-
     @Override
-    public void doLayout() {
+    protected void paintComponent(Graphics g) {
         updateGameObjectPositions();
+        super.paintComponent(g);
     }
-
     private void updateGameObjectPositions() {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
         Point camPos = camera.getPosition();
         float zoom = camera.getZoom();
-
         for (GameObject obj : new ArrayList<GameObject>(gameObjects)) {
             Point wp = obj.getPosition(); // This is WorldPosition
 
@@ -139,8 +140,10 @@ public class Scene2D extends Screen {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        updateGameObjectPositions();
-        super.paintComponent(g);
+    public void onScreenEnter() {
+        super.onScreenEnter();
+        sortZOrderObjects();
+        revalidate();
+        repaint();
     }
 }

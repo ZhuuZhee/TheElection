@@ -9,12 +9,11 @@ import Core.GameScreens.MainMenu;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
-import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 import Core.Cards.PolicyCardA;
-import Dummy.Maps.Map;
+import Core.Maps.Map;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -22,15 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import Dummy.Maps.PoliticsStats;
+import Core.Maps.PoliticsStats;
 
 import javax.swing.*;
 
 public class Tester {
-    public static void CardsTestingOnScene(Scene2D scene2D){
-        // Removed hardcoded dummy CardSlots and ActionCards
-        // The player should use DrawCardUI to get cards and play them on the Map.
-    }
     public static void DrawCardTest(Scene2D scene, CardHolderUI handUI){
         DrawCardUI ui = new DrawCardUI(scene, handUI);
     }
@@ -54,7 +49,7 @@ public class Tester {
             });
 
             add(button);
-            scene.add(this);
+            // scene.add(this);
 
             onResize(scene.getWidth(),scene.getHeight());
             setVisible(true);
