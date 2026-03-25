@@ -29,6 +29,7 @@ public class Map extends GameObject {
     private final Point startSize;
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
+    private Grid currentClickedGrid = null;
     public Map() {
         super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
         startSize = new Point(getWidth(), getHeight());
@@ -47,27 +48,21 @@ public class Map extends GameObject {
                        currentHoveredGrid.setHovered(true);
                    }
                }
-//               if (clicked != null) {
-//                   System.out.println(currentHoveredGrid);
-//               }
            }
        });
        this.addMouseListener(new MouseAdapter() {
            @Override
            public void mouseClicked(MouseEvent e) {
                Grid clicked = getGridAtPoint(e.getPoint());
+
                if (clicked != null) {
+                   currentClickedGrid = clicked;
                    clicked.getCity().printStats();
                    clicked.getCity().getVotingResults();
+               } else {
+                   currentClickedGrid = null;
                }
            }
-//           @Override
-//           public void mouseExited(MouseEvent e) {
-//               if (currentHoveredGrid != null) {
-//                   currentHoveredGrid.setHovered(false);
-//                   currentHoveredGrid = null;
-//               }
-//           }
        });
     }
 
@@ -268,8 +263,110 @@ public class Map extends GameObject {
         if (currentHoveredGrid != null) {
             currentHoveredGrid.render(g2d);
         }
-        
+
+        // Render the clicked city stats UI
+        if (currentClickedGrid != null) {
+            drawCityStatsUI(g2d, currentClickedGrid.getCity());
+        }
+
         g2d.dispose();
+    }
+
+    private void drawCityStatsUI(Graphics2D g2d, City city) {
+        if (city == null || currentClickedGrid == null) return;
+
+        // Configuration for the UI box
+        int padding = 15;
+        int boxWidth = 220;
+        int boxHeight = 165;
+
+        // Use the grid position to anchor the UI
+        int x = (int) currentClickedGrid.getX() + 30;
+        int y = (int) currentClickedGrid.getY() + 30;
+
+        // Keep the box within the map bounds
+        if (x + boxWidth > getWidth()) {
+            x = (int) currentClickedGrid.getX() - boxWidth - 30;
+        }
+        if (y + boxHeight > getHeight()) {
+            y = (int) currentClickedGrid.getY() - boxHeight - 30;
+        }
+
+        // Draw background shadow
+        g2d.setColor(new Color(0, 0, 0, 100));
+        g2d.fillRoundRect(x + 3, y + 3, boxWidth, boxHeight, 15, 15);
+
+        // Draw background box
+        g2d.setColor(new Color(245, 245, 245, 240));
+        g2d.fillRoundRect(x, y, boxWidth, boxHeight, 15, 15);
+        
+        // Draw border
+        g2d.setColor(city.getColor() != null ? city.getColor() : Color.DARK_GRAY);
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawRoundRect(x, y, boxWidth, boxHeight, 15, 15);
+
+        // Draw Text
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g2d.drawString(city.getCityName(), x + padding, y + padding + 15);
+
+        g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        int startY = y + padding + 40;
+        int lineSpacing = 20;
+
+        drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.Economy), x + padding, startY);
+        drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.Facility), x + padding, startY + lineSpacing);
+        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.Environment), x + padding, startY + lineSpacing * 2);
+
+        // Draw Player Votes Percentage Bar
+        int barX = x + padding;
+        int barY = startY + lineSpacing * 3 - 7;
+        int barWidth = boxWidth - (padding * 2);
+        int barHeight = 15;
+        double playerPercent = city.getPlayerPercentage(0);
+
+        // Bar background
+        g2d.setColor(new Color(220, 220, 220));
+        g2d.fillRoundRect(barX, barY, barWidth, barHeight, 8, 8);
+
+        // Bar fill (Player 0)
+        g2d.setColor(Color.BLUE);
+        int fillWidth = (int) (barWidth * (playerPercent / 100.0));
+        if (fillWidth > 0) {
+            g2d.fillRoundRect(barX, barY, fillWidth, barHeight, 8, 8);
+        }
+
+        // Bar border
+        g2d.setColor(new Color(150, 0, 0));
+        g2d.setStroke(new BasicStroke(1));
+        g2d.drawRoundRect(barX, barY, barWidth, barHeight, 8, 8);
+
+        // Bar text
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 11));
+        String percentText = String.format("Player: %.1f%%", playerPercent);
+        FontMetrics fm = g2d.getFontMetrics();
+        int textX = barX + (barWidth - fm.stringWidth(percentText)) / 2;
+        int textY = barY + ((barHeight - fm.getHeight()) / 2) + fm.getAscent();
+        
+        // Shadow for text readability
+        g2d.setColor(new Color(0, 0, 0, 150));
+        g2d.drawString(percentText, textX + 1, textY + 1);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString(percentText, textX, textY);
+
+        g2d.setColor(Color.GRAY);
+        g2d.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        g2d.drawString("Population: " + String.format("%,d", city.population), x + padding, startY + lineSpacing * 4 + 10);
+    }
+
+    private void drawStatLine(Graphics2D g2d, String label, int value, int x, int y) {
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.drawString(label, x, y);
+        g2d.setColor(new Color(0, 102, 204)); // Dark blue for stats
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
+        g2d.drawString(String.valueOf(value), x + 100, y);
+        g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
     }
 
     @Override

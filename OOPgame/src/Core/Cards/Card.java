@@ -40,7 +40,7 @@ public abstract class Card extends GameObject {
     private double currentScaleOffset = DEFAULT_OFFSET;
     private int customTargetWidth = 0;
     private int customTargetHeight = 0;
-
+    
     public Card(String name, int x, int y, int width, int height) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
