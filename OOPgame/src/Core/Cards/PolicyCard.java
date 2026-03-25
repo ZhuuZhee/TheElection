@@ -19,7 +19,7 @@ public abstract class PolicyCard extends Card {
     }
 
     public PolicyCard(String name, int x, int y, String imagePath, int coin) {
-        super(name, x, y, 100, 150, imagePath);
+        super(name, x, y, 100, 150, imagePath, true);
         this.coin = coin;
     }
 
