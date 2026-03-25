@@ -9,6 +9,7 @@ public class Grid{
     private float x,y;
     private int gridX, gridY;
     private final float radius, xOffset;
+    private Path2D.Double hexagon;
     public Grid(Map map, City city, int gridX, int gridY, float radius, float xOffset) {
         setCity(city);
         this.map = map;
@@ -30,7 +31,7 @@ public class Grid{
     public int getGridY() { return gridY; }
 
     public boolean contains(Point p) {
-        Path2D.Double hexagon = createHexagon(x, y, radius * map.getScaleRatio());
+        if(hexagon == null) return false;
         return hexagon.contains(p);
     }
 
@@ -77,7 +78,7 @@ public class Grid{
     public void render(Graphics2D g2d){
         setGridPosition(gridX, gridY);
         g2d.setColor(city.getColor());
-        Path2D.Double hexagon = createHexagon(x, y,radius * map.getScaleRatio());
+        hexagon = createHexagon(x, y,radius * map.getScaleRatio());
 
         g2d.fill(hexagon);
         g2d.setColor(Color.BLACK);

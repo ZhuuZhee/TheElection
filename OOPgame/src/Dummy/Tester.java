@@ -27,10 +27,6 @@ import Dummy.Maps.PoliticsStats;
 import javax.swing.*;
 
 public class Tester {
-    public static void CardsTestingOnScene(Scene2D scene2D){
-        // Removed hardcoded dummy CardSlots and ActionCards
-        // The player should use DrawCardUI to get cards and play them on the Map.
-    }
     public static void DrawCardTest(Scene2D scene, CardHolderUI handUI){
         DrawCardUI ui = new DrawCardUI(scene, handUI);
     }
