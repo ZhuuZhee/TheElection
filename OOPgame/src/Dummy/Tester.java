@@ -68,7 +68,7 @@ public class Tester {
         @Override
         protected void onResize(int width, int height) {
             // ยึดตำแหน่งไว้ที่ด้านล่างของหน้าจอเสมอ
-            setBounds(24, 24, 164, 24);
+            setBounds(24, height - ZhuzheeGame.PLAYER_HAND_DEV_CARDS.getHeight(), 164, 24);
             revalidate();
         }
     }

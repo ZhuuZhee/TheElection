@@ -33,9 +33,11 @@ public class Map extends GameObject {
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
     private Grid currentClickedGrid = null;
-    public Map(){
-        this(DEFAULT_ROWS,DEFAULT_COLS,DEFAULT_CITIES_COUNT);
+
+    public Map() {
+        this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT);
     }
+
     public Map(int rows, int cols, int citiesCount) {
         super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
         this.rows = rows;
@@ -151,6 +153,7 @@ public class Map extends GameObject {
     public float getScaleRatio() {
         return scaleRatio;
     }
+
     /**
      * set the `City` on grid map(2D Array) by a cluster growth algorithm (instead of random walk)
      * This makes the city more compact and connected.
@@ -204,24 +207,24 @@ public class Map extends GameObject {
         // Remove from candidates if it was there
         candidates.removeIf(p -> p.x == x && p.y == y);
 
+
         // Add neighbors to candidates
         int[][] neighbors;
         if (y % 2 == 0) {
             // Neighbors for even rows in offset-x hexagon grid
-            neighbors = new int[][]{{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 0}};
+            neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
         } else {
             // Neighbors for odd rows in offset-x hexagon grid
-            neighbors = new int[][]{{-1, -1}, {0, -1}, {1, 0}, {0, 1}, {-1, 1}, {-1, 0}};
+            neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
         }
 
         for (int[] offset : neighbors) {
             int nx = x + offset[0];
             int ny = y + offset[1];
 
-            // Wrap around or clamp? The original code used modulo (wrap around)
-            // Let's keep modulo to respect the original design of infinite-like map
-            nx = (nx + grid.length) % grid.length;
-            ny = (ny + grid[0].length) % grid[0].length;
+            // Wrap around or clamp
+            nx = Math.clamp(nx, 0, grid.length - 1);
+            ny = Math.clamp(ny, 0, grid[0].length - 1);
 
             if (grid[nx][ny] == null) {
                 Point p = new Point(nx, ny);
@@ -230,6 +233,7 @@ public class Map extends GameObject {
                 }
             }
         }
+        
     }
 
     public float getGridWidth() {
@@ -261,9 +265,9 @@ public class Map extends GameObject {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Render all non-hovered grids first
-        for(Grid[] col : gridMap ){
-            for(Grid grid : col){
-                if(grid != null && !grid.isHovered())
+        for (Grid[] col : gridMap) {
+            for (Grid grid : col) {
+                if (grid != null && !grid.isHovered())
                     grid.render(g2d);
             }
         }
