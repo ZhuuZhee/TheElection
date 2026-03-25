@@ -3,7 +3,6 @@ package Core;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.UI.CardHolderUI;
-import Core.UI.PolicyCardHolderUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -34,7 +33,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static long MAP_SEED = new java.util.Random().nextLong();
 
     public static CardHolderUI PLAYER_HAND_DEV_CARDS;
-    public static PolicyCardHolderUI POLICY_CARD_UI;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
     public static final boolean DEV_MODE = false;
@@ -65,8 +63,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
         } else {
             Screen.ChangeScreen(MAIN_MENU); // Run Main จริง
         }
-        AudioManager.getInstance().loadSound("bgm","UaH.WAV");
-//        AudioManager.getInstance().playLoop("bgm");
+        AudioManager.getInstance().loadSound("bgm", "UaH.WAV");
+        // AudioManager.getInstance().playLoop("bgm");
     }
 
     /// MAIN_SCENE
@@ -77,20 +75,17 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.CardsTestingOnScene(MAIN_SCENE);
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         PLAYER_HAND_DEV_CARDS = holderUI;
-
-        // 👉 1. สร้างตู้ Policy UI ตั้งไว้บนจอก่อน!
-        Tester.PolicyCardHolderUITest(MAIN_SCENE);
-
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
-
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);
     }
 
     private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f;
     private static Point mousePoint;
-    public static void CameraControlEvent(Scene2D scene){
-        // ใช้ AWTEventListener เพื่อดักจับ Input ของเมาส์แบบ Global ไม่ว่าจะชี้อยู่บน Map หรือ UI ตัวไหนก็จะขยับกล้องได้
+
+    public static void CameraControlEvent(Scene2D scene) {
+        // ใช้ AWTEventListener เพื่อดักจับ Input ของเมาส์แบบ Global ไม่ว่าจะชี้อยู่บน
+        // Map หรือ UI ตัวไหนก็จะขยับกล้องได้
         long eventMask = AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK;
 
         Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
@@ -98,7 +93,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
             if (event instanceof MouseWheelEvent e) {
                 var cam = MAIN_SCENE.getCamera();
                 float zoom = cam.getZoom() - e.getWheelRotation() * ZhuzheeEngine.Application.getDeltaTime();
-                zoom = Math.clamp(zoom,MIN_ZOOM,MAX_ZOOM);
+                zoom = Math.clamp(zoom, MIN_ZOOM, MAX_ZOOM);
                 cam.setZoom(zoom);
             }
             // แล้วค่อยเช็ค MouseEvent ธรรมดา
@@ -112,13 +107,16 @@ public class ZhuzheeGame implements ApplicationAdapter {
                     int dx = e.getLocationOnScreen().x - mousePoint.x;
                     int dy = e.getLocationOnScreen().y - mousePoint.y;
                     var cam = MAIN_SCENE.getCamera();
-                    MAIN_SCENE.getCamera().translate((int)(-dx / (float)cam.getZoom()), (int)(-dy /(float)cam.getZoom()));
-                    mousePoint = e.getLocationOnScreen(); // ใช้ LocationOnScreen เพื่อป้องกันหน้าจอกระตุกเมื่อเมาส์ลากข้ามระหว่าง Component
+                    MAIN_SCENE.getCamera().translate((int) (-dx / (float) cam.getZoom()),
+                            (int) (-dy / (float) cam.getZoom()));
+                    mousePoint = e.getLocationOnScreen(); // ใช้ LocationOnScreen
+                                                          // เพื่อป้องกันหน้าจอกระตุกเมื่อเมาส์ลากข้ามระหว่าง Component
                     MAIN_SCENE.repaint();
                 }
             }
         }, eventMask);
     }
+
     @Override
     public void resize(int width, int height) {
 

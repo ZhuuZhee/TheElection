@@ -5,6 +5,7 @@ import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.ZhuzheeGame;
 
 public class LocalCampaign extends PolicyCard {
     public LocalCampaign(int x, int y, String imagePath) {super("Local Campaign", x, y, imagePath, 3);}
@@ -29,7 +30,8 @@ public class LocalCampaign extends PolicyCard {
                     System.out.println(">>> คุณได้รับ 1 Coin จากธนาคาร! <<<");
                     System.out.println("----------------------------------");
 
-                    // TODO: รอใส่โค้ดสำหรับเพิ่มเงินให้ผู้เล่น 1 Coin ตรงนี้
+                    // ดึง coin มาบวก 1
+                    ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(ZhuzheeGame.CLIENT.getLocalPlayer().getCoin() + 1);
                 }
             }
         }
