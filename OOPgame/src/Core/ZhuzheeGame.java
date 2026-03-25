@@ -3,6 +3,7 @@ package Core;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.UI.CardHolderUI;
+import Core.UI.PolicyCardHolderUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -28,7 +29,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
-    
+
     public static Core.Maps.Map MAP;
     public static long MAP_SEED = new java.util.Random().nextLong();
 
@@ -72,9 +73,16 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Screen.ChangeScreen(MAIN_SCENE);
 
         MAP = new Core.Maps.Map(MAP_SEED);
+        Tester.CardsTestingOnScene(MAIN_SCENE);
+        Tester.MapTest();
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         PLAYER_HAND_DEV_CARDS = holderUI;
+
+        // 👉 1. สร้างตู้ Policy UI ตั้งไว้บนจอก่อน!
+        Tester.PolicyCardHolderUITest(MAIN_SCENE);
+
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
+
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);
     }
