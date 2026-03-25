@@ -99,11 +99,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
             // แล้วค่อยเช็ค MouseEvent ธรรมดา
             else if (event instanceof MouseEvent e) {
                 // อัปเดตตำแหน่งตั้งต้นตอนเริ่มกดเมาส์กลาง
-                if (e.getID() == MouseEvent.MOUSE_PRESSED && javax.swing.SwingUtilities.isRightMouseButton(e)) {
+                if (e.getID() == MouseEvent.MOUSE_PRESSED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
                     mousePoint = e.getLocationOnScreen();
                 }
                 // คอยขยับกล้องเวลาลากเมาส์กลาง
-                else if (e.getID() == MouseEvent.MOUSE_DRAGGED && javax.swing.SwingUtilities.isRightMouseButton(e)) {
+                else if (e.getID() == MouseEvent.MOUSE_DRAGGED && javax.swing.SwingUtilities.isMiddleMouseButton(e)) {
                     int dx = e.getLocationOnScreen().x - mousePoint.x;
                     int dy = e.getLocationOnScreen().y - mousePoint.y;
                     var cam = MAIN_SCENE.getCamera();
