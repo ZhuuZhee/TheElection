@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Player {
     private String playerId;
@@ -33,7 +34,6 @@ public class Player {
         this.actionCards = new ArrayList<>();
         this.policyCards = new ArrayList<>();
         this.cityOwn = new String[0];
-        this.color = Color.decode(color);
         this.profileImagePath = profileImagePath;
         this.arcanaCard = arcanaCard;
     }
