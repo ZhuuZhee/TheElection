@@ -14,8 +14,10 @@ public class Player {
     private ArrayList<PolicyCard> policyCards;
     private ArcanaCard arcanaCard;
     private String[] cityOwn;
+    private String color;
+    private String profileImagePath;
 
-    public Player(String playerId, String playerName, boolean isLocal) {
+    public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, ArcanaCard arcanaCard) {
         this.playerId = playerId;
         this.playerName = playerName;
         this.isLocal = isLocal;
@@ -23,6 +25,13 @@ public class Player {
         this.actionCards = new ArrayList<>();
         this.policyCards = new ArrayList<>();
         this.cityOwn = new String[0];
+        this.color = color;
+        this.profileImagePath = profileImagePath;
+        this.arcanaCard = arcanaCard;
+    }
+
+    public Player(String playerId, String playerName, boolean isLocal) {
+        this(playerId, playerName, isLocal, "Red", "default_profile.png", null);
     }
 
     public String getPlayerId() {
@@ -58,6 +67,11 @@ public class Player {
         json.put("playerId", playerId);
         json.put("playerName", playerName);
         json.put("coin", coin);
+        json.put("color", color);
+        json.put("profileImagePath", profileImagePath);
+        if (arcanaCard != null) {
+            json.put("arcanaCard", arcanaCard.getName());
+        }
 
         org.json.JSONArray cityArray = new org.json.JSONArray();
         for (String city : cityOwn) {
@@ -86,6 +100,12 @@ public class Player {
         }
         if (data.has("coin")) {
             this.coin = data.getInt("coin");
+        }
+        if (data.has("color")) {
+            this.color = data.getString("color");
+        }
+        if (data.has("profileImagePath")) {
+            this.profileImagePath = data.getString("profileImagePath");
         }
         if (data.has("cityOwn")) {
             org.json.JSONArray cityArray = data.getJSONArray("cityOwn");
