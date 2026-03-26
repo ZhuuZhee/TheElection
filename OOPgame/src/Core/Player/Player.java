@@ -67,10 +67,18 @@ public class Player {
     }
 
     public void OnStartTurn() {
-        DrawCard();
+        if (isLocal) {
+            DrawCard();
+        }
     }
 
     private void DrawCard() {
+        // เช็ค
+        if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null && ZhuzheeGame.DEVLOPMENT_CARD_HAND.isFull()) {
+            System.out.println("Hand is full, skipping draw.");
+            return;
+        }
+
         CardBufferObject[] cardBufferObjects = DrawActionCardBufferObjects(DEFAULT_DRAW_DEV_CARD_AMOUNT);
 
         new Thread(() -> {

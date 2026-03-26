@@ -54,8 +54,14 @@ public class GameClientManager {
                 System.out.println("Join success My ID: " + assignedId);
             } else if (type.equals(NetworkProtocol.SYNC_STATE.name())) {
                 int phase = data.optInt("phaseCounter", 1);
-                System.out.println("Client sync Phase: " + phase);
 
+                // cuurentPlayerId คือ ไอดีของผู้เล่นที่มีเทิร์นตอนนี้
+                String currentPlayerId = data.optString("currentPlayerId", "");
+                System.out.println("Client sync Phase: " + phase + ", CurrentPlayer: " + currentPlayerId);
+
+                // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
+                boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
+                
                 if (data.has("players")) {
                     org.json.JSONArray playersArray = data.getJSONArray("players");
                     connectedPlayers.clear();
@@ -70,6 +76,11 @@ public class GameClientManager {
                             localPlayer.updateFromJSON(pData);
                         }
                     }
+                }
+
+                // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
+                if (myTurnNow && localPlayer != null) {
+                    localPlayer.OnStartTurn();
                 }
             } else if (type.equals(NetworkProtocol.START_GAME.name())) {
                 System.out.println("Host start game");

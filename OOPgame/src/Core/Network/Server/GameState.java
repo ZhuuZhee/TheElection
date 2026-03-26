@@ -81,7 +81,7 @@ public class GameState {
     public synchronized void onStartGame() {
         Player startPlayer = players.getFirst();
         setCurrentPlayer(startPlayer);
-        startPlayer.OnStartTurn();
+        // ไม่ต้องเรียก OnStartTurn ที่นี่ เพราะ Client จะเริ่มเทิร์นเองเมื่อ SYNC_STATE มาถึง
     }
 
     public synchronized void nextTurn() {
@@ -90,8 +90,7 @@ public class GameState {
         Player prevPlayer = getCurrentPlayer();
         setCurrentPlayer(players.get((index + 1) % players.size()));
 
-        currentPlayer.OnStartTurn();
-
+        // OnStartTurn จะทำงานที่ Client เมื่อได้รับ SYNC_STATE ใหม่
     }
 
     public void playersLog(){
