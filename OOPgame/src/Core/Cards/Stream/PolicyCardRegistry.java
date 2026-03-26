@@ -62,7 +62,9 @@ public class PolicyCardRegistry {
     private static PolicyCard createCard(String className, String img) {
         return switch (className) {
             case "GreenPolicy"   -> new GreenPolicy(0, 0, img);
+            case "CoinBoom"      -> new CoinBoom(0,0, img);
             case "LocalCampaign" -> new LocalCampaign(0, 0, img);
+            case "Public_PrivatePartnership" -> new Public_PrivatePartnership(0, 0, img);
             case "Recount"       -> new Recount(0, 0, img);
             case "EconomicBoom"  -> new EconomicBoom(0, 0, img);
             case "IronWill"      -> new IronWill(0, 0, img);

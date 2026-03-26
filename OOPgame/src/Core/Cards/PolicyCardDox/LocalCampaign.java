@@ -27,7 +27,7 @@ public class LocalCampaign extends PolicyCard {
                     System.out.println("----------------------------------");
                     System.out.println("PolicyCard [Local Campaign] ทำงาน!");
                     System.out.println("เนื่องจากคุณเล่นการ์ด " + playedCard.getName() + " ที่มี +Environment");
-                    System.out.println(">>> คุณได้รับ 1 Coin จากธนาคาร! <<<");
+                    System.out.println(">>> คุณได้รับ 3 Coin จากธนาคาร! <<<");
                     System.out.println("----------------------------------");
 
                     // ดึง coin มาบวก 3
