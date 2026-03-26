@@ -9,6 +9,8 @@ import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
 //import java.util.;
@@ -33,6 +35,7 @@ public class Map extends GameObject {
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
     private Grid currentClickedGrid = null;
+    private ArrayList<City> cities = new ArrayList<>();
 
     public Map() {
         this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, new Random().nextLong());
@@ -114,6 +117,10 @@ public class Map extends GameObject {
         return null;
     }
 
+    public List<City> getCities(){
+        return cities;
+    }
+
     private Grid[][] GenerateMap(long seed) {
         Grid[][] grid = new Grid[rows][cols];
         Random random = new Random(seed);
@@ -132,6 +139,7 @@ public class Map extends GameObject {
             int g = random.nextInt(1, 5) * 255 / 5;
             int b = random.nextInt(1, 5) * 255 / 5;
             city.setColor(new Color(r, g, b));
+            cities.add(city);
 
             // randomly set city inside district
 

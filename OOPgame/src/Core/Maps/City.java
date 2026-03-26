@@ -124,9 +124,8 @@ public class City {
         this.color = color;
     }
 
-    // wait for business logic
-    public void updatePopulation(PoliticsStats cardStats) {
-        return;
+    public ArrayList<Grid> getGrids() {
+        return Grids;
     }
 
     public void printStats() {

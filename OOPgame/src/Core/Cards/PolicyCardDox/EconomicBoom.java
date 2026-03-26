@@ -15,7 +15,9 @@ public class EconomicBoom extends PolicyCard {
     }
 
     @Override
-    public boolean IsActivate() { return true; }
+    public boolean IsActivate() {
+        return true;
+    }
 
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {

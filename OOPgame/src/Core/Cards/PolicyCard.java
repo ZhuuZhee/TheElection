@@ -30,25 +30,4 @@ public abstract class PolicyCard extends Card {
     }
 
     public abstract void onActionCardPlayed(ActionCard playedCard, City city);
-
-    @Override
-    protected void onDroppedInSlot(CardSlot slot) {
-        System.out.println(name + " was dropped into a PASSIVE slot!");
-        this.isInSlot = true;
-        this.isDraggable = false;
-
-        Player playercoin = null;
-        if (ZhuzheeGame.CLIENT != null) {
-            playercoin = ZhuzheeGame.CLIENT.getLocalPlayer();
-        } else {
-            // ใช้กระเป๋า Dummy ตัวเดียวกับ Shop และ ActionCard
-            playercoin = Dummy.Tester.dummyPlayer;
-        }
-
-        // ทำการหักเงินตามมูลค่าของการ์ดใบนั้นๆ (this.coin)
-        if (playercoin != null) {
-            playercoin.setCoin(playercoin.getCoin() + this.coin);
-            System.out.println("หักเงินค่า Policy: " + this.coin + " | กระเป๋าเงินเหลือ: " + playercoin.getCoin());
-        }
-    }
 }
