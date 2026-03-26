@@ -112,6 +112,7 @@ public class MainMenu extends Screen implements ActionListener {
             Screen.ChangeScreen(ZhuzheeGame.CREDIT_UI);
         }
         if (e.getSource() == exitBtn) {
+            AudioManager.getInstance().playSound("click");
             System.exit(0);
         }
         AudioManager.getInstance().playSound("click");

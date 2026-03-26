@@ -24,7 +24,6 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
     private NineSliceButton confirmBtn;
     private NineSliceButton backBtn;
 
-    private JTextField nameInput;
     private String selectedColor = "Pink"; // เก็บสีที่เลือกไว้
 
     private JLabel selectedProfileImage;
@@ -35,6 +34,9 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
     private BufferedImage btnNormalImg;
     private BufferedImage btnHoverImg;
     private NineSliceCanvas bgCanvas;
+
+    String[] colorNames = {"Pink", "Red", "Blue", "Green", "Yellow", "Purple"};
+    Color[] colors = {Color.PINK, Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, new Color(128, 0, 128)};
 
     public CharacterSelectMenu() {
         setLayout(new BorderLayout());
@@ -155,22 +157,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
         tGbc.gridx = 0; tGbc.gridy = 0; tGbc.gridheight = 2;
         topSettingsPanel.add(selectedProfileImage, tGbc);
 
-        // 2. Name Field
-        tGbc.gridx = 1; tGbc.gridy = 0; tGbc.gridheight = 1; tGbc.weightx = 1.0;
-        JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        namePanel.setOpaque(false);
-        JLabel nameLabel = new JLabel("Name :");
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        namePanel.add(nameLabel);
-        
-        nameInput = new JTextField();
-        nameInput.setFont(new Font("Arial", Font.PLAIN, 18));
-        nameInput.setPreferredSize(new Dimension(200, 35)); // บังคับขนาดไม่ให้เล็กเกินไป
-        nameInput.setMinimumSize(new Dimension(150, 35));
-        namePanel.add(nameInput);
-        topSettingsPanel.add(namePanel, tGbc);
-
-        // 3. Color Selection (เรียงปุ่มสีให้เลือกเลย)
+        // 3. Color Selection
         tGbc.gridx = 1; tGbc.gridy = 1;
         JPanel colorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         colorPanel.setOpaque(false);
@@ -182,8 +169,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
         JPanel colorGrid = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         colorGrid.setOpaque(false);
 
-        String[] colorNames = {"Pink", "Red", "Blue", "Green", "Yellow", "Purple"};
-        Color[] colors = {Color.PINK, Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, new Color(128, 0, 128)};
+
         ArrayList<JPanel> colorBoxes = new ArrayList<>();
 
         for (int i = 0; i < colors.length; i++) {
@@ -315,53 +301,24 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
         }
     }
 
-    // ฟังก์ชันสร้าง Pop-up สำหรับเลือกสี
-    private void showColorPopup(Component invoker) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.setLayout(new GridLayout(2, 3, 5, 5)); // Grid สำหรับสี
-        popupMenu.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        // ข้อมูลของสีต่างๆ
-        String[] colorNames = {"Pink", "Red", "Blue", "Green", "Yellow", "Purple"};
-        Color[] colors = {Color.PINK, Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, new Color(128, 0, 128)};
-
-        for (int i = 0; i < colors.length; i++) {
-            final int index = i;
-            JPanel colorBox = new JPanel();
-            colorBox.setPreferredSize(new Dimension(40, 40));
-            colorBox.setBackground(colors[i]);
-            colorBox.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-            colorBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            
-            // เมื่อกดเลือกสี
-            colorBox.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    selectedColor = colorNames[index];
-                    popupMenu.setVisible(false); // ซ่อน Pop-up ทันทีหลังจากเลือกสีเสร็จ
-                    AudioManager.getInstance().playSound("click");
-                }
-            });
-            popupMenu.add(colorBox);
-        }
-
-        // แสดงผลใต้กล่องที่กด
-        popupMenu.show(invoker, 0, invoker.getHeight());
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == confirmBtn) {
-            String playerName = nameInput.getText();
-            if (playerName.isEmpty()) playerName = "Player1";
-            
             System.out.println("Selected Profile Image: " + selectedProfileFileName);
             System.out.println("Selected Arcana Image: " + selectedArcanaFileName);
-            System.out.println("Name: " + playerName);
             System.out.println("Color: " + selectedColor);
 
-            //set name to player
-            ZhuzheeGame.CLIENT.getLocalPlayer().setPlayerName(playerName);
+            // เซตเฉพาะสีให้กับผู้เล่น (ชื่อตั้งมาตั้งแต่ Create/Join Room แล้ว)
+            if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
+                int colorIndex = java.util.Arrays.asList(colorNames).indexOf(selectedColor);
+                if (colorIndex >= 0 && colorIndex < colors.length) {
+                    Color color = colors[colorIndex];
+                    ZhuzheeGame.CLIENT.getLocalPlayer().setColor(color);
+                } else {
+                    System.err.println("Warning: Selected color not found or out of bounds.");
+                    // Optional: Set a default color here
+                }
+            }
 
             Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
             // To-Do: เก็บค่าลงใน Constructor หรือระบบที่คุณเตรียมไว้ก่อนเริ่มเกม

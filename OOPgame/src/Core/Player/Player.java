@@ -3,6 +3,7 @@ package Core.Player;
 import Core.Cards.*;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.util.*;
 
 public class Player {
@@ -14,7 +15,7 @@ public class Player {
     private ArrayList<PolicyCard> policyCards;
     private ArcanaCard arcanaCard;
     private String[] cityOwn;
-    private String color;
+    private Color color;
     private String profileImagePath;
 
     public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, ArcanaCard arcanaCard) {
@@ -25,7 +26,7 @@ public class Player {
         this.actionCards = new ArrayList<>();
         this.policyCards = new ArrayList<>();
         this.cityOwn = new String[0];
-        this.color = color;
+        this.color = Color.decode(color);
         this.profileImagePath = profileImagePath;
         this.arcanaCard = arcanaCard;
     }
@@ -45,6 +46,10 @@ public class Player {
     public int getCoin() { return coin; }
 
     public void setCoin(int coin) { this.coin = coin; }
+
+    public Color getColor() { return color; }
+
+    public void setColor(Color color) { this.color = color; }
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
@@ -102,7 +107,7 @@ public class Player {
             this.coin = data.getInt("coin");
         }
         if (data.has("color")) {
-            this.color = data.getString("color");
+            this.color = Color.decode(data.getString("color"));
         }
         if (data.has("profileImagePath")) {
             this.profileImagePath = data.getString("profileImagePath");
