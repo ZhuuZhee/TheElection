@@ -13,19 +13,19 @@ public class Recount extends PolicyCard {
     }
 
     @Override
-    public boolean IsActivate() {
+    public boolean isActive() {
         return true;
     }
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (IsActivate()) {
+        if (isActive()) {
             PoliticsStats stats = playedCard.getStats();
 
             if (stats != null) {
                 // ดึงค่า Environment,Facility,Economy ของการ์ดที่เพิ่งเล่นออกมาเช็ค
-                int envValue = stats.getStats(PoliticsStats.Environment);
-                int facValue = stats.getStats(PoliticsStats.Facility);
-                int ecoValue = stats.getStats(PoliticsStats.Economy);
+                int envValue = stats.getStats(PoliticsStats.ENVIRONMENT);
+                int facValue = stats.getStats(PoliticsStats.FACILITY);
+                int ecoValue = stats.getStats(PoliticsStats.ECONOMY);
                 // ถ้าการ์ดใบนั้นมีค่า Environment เป็นบวก
                 if (envValue > 0) {
                     System.out.println("----------------------------------");
@@ -34,9 +34,9 @@ public class Recount extends PolicyCard {
                     System.out.println("----------------------------------");
 
                     // ดึง Environment,Facility,Economy มาบวก 3
-                    stats.addStats(PoliticsStats.Environment, 3);
-                    stats.addStats(PoliticsStats.Facility, 3);
-                    stats.addStats(PoliticsStats.Economy, 3);
+                    stats.addStats(PoliticsStats.ENVIRONMENT, 3);
+                    stats.addStats(PoliticsStats.FACILITY, 3);
+                    stats.addStats(PoliticsStats.ECONOMY, 3);
                 }
             }
         }

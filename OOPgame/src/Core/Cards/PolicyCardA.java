@@ -16,7 +16,7 @@ public class PolicyCardA extends PolicyCard {
     }
 
     @Override
-    public boolean IsActivate() {
+    public boolean isActive() {
         if (ZhuzheeGame.POLICY_CARD_UI != null) {
             return ZhuzheeGame.POLICY_CARD_UI.containsCard(this);
         }
@@ -26,14 +26,14 @@ public class PolicyCardA extends PolicyCard {
     // Business Logic
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (IsActivate()) {
+        if (isActive()) {
             PoliticsStats cardStats = playedCard.getStats();
             if (cardStats != null) {
-                int cardFacility = cardStats.getStats(PoliticsStats.Facility);
+                int cardFacility = cardStats.getStats(PoliticsStats.FACILITY);
 
                 if (cardFacility > 0) {
                     int bonusFacility = cardFacility * 10;
-                    cardStats.setStats(PoliticsStats.Facility, bonusFacility);
+                    cardStats.setStats(PoliticsStats.FACILITY, bonusFacility);
                 }
             }
         }

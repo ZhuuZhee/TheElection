@@ -11,7 +11,7 @@ public class GreenPolicy extends PolicyCard {
         super("Green Policy", x, y, imagePath, -5);
     }
     @Override
-    public boolean IsActivate() {
+    public boolean isActive() {
         return true;
     }
     @Override
@@ -20,7 +20,7 @@ public class GreenPolicy extends PolicyCard {
         if (playedCard instanceof ActionCard) {
             PoliticsStats stats = playedCard.getStats();
             if (stats != null) {
-                int env = stats.getStats(PoliticsStats.Environment);
+                int env = stats.getStats(PoliticsStats.ENVIRONMENT);
                 if (env < 0) {
                     System.out.println("----------------------------------");
                     System.out.println("PolicyCard [Green Policy] ทำงาน!");
@@ -28,7 +28,7 @@ public class GreenPolicy extends PolicyCard {
                     System.out.println(">>> Environment ถูกเปลี่ยนเป็น 0 <<<");
                     System.out.println("----------------------------------");
 
-                    stats.setStats(PoliticsStats.Environment, -env);
+                    stats.setStats(PoliticsStats.ENVIRONMENT, 0);
                 }
             }
         }

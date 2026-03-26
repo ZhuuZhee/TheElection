@@ -7,18 +7,18 @@ public class City {
     private final String cityName;
     public PoliticsStats stats;
     public int population;
-    public ArrayList<Grid> Grids = new ArrayList<Grid>();
+    public ArrayList<Grid> grids = new ArrayList<Grid>();
     private Color color;
 
     // --- Config ค่าคงที่ต่างๆ (ปรับ Balance ที่นี่) ---
-    public final double K_LOG_MULTIPLIER = 100.0;
-    public final int POP_PER_SEAT = 10000;
-    public final double SCORE_PER_SEAT_BASE = 50.0;
+    public static final double K_LOG_MULTIPLIER = 100.0;
+    public static final int POP_PER_SEAT = 10000;
+    public static final double SCORE_PER_SEAT_BASE = 50.0;
 
-    public int num_players = 4;
-    public int council_seats;
-    public double base_score;
-    public double[] player_scores;
+    public int numPlayers = 4;
+    public int councilSeats;
+    public double baseScore;
+    public double[] playerScores;
 
     public City(String cityName, int facility, int environment, int economy, int population) {
         // เริ่มต้นสถานะของเมือง
@@ -27,15 +27,15 @@ public class City {
         this.cityName = cityName;
 
         // 1. คำนวณจำนวนที่นั่งสภา (Council Seats)
-        this.council_seats = Math.max(1, this.population / this.POP_PER_SEAT);
+        this.councilSeats = Math.max(1, this.population / POP_PER_SEAT);
 
         // 2. คำนวณ Dynamic Base Score (คะแนนตั้งต้น)
-        this.base_score = this.council_seats * this.SCORE_PER_SEAT_BASE;
+        this.baseScore = this.councilSeats * SCORE_PER_SEAT_BASE;
 
         // 3. สร้างคะแนนดิบเริ่มต้นให้ผู้เล่นทุกคนเท่ากัน
-        this.player_scores = new double[num_players];
-        for (int i = 0; i < num_players; i++) {
-            this.player_scores[i] = this.base_score;
+        this.playerScores = new double[numPlayers];
+        for (int i = 0; i < numPlayers; i++) {
+            this.playerScores[i] = this.baseScore;
         }
     }
 
@@ -59,13 +59,13 @@ public class City {
         double scoreGained = calculateLogScore(currentStat, cardVal);
 
         // อัปเดตคะแนนผู้เล่น (Score Weight)
-        player_scores[playerId] += scoreGained;
+        playerScores[playerId] += scoreGained;
 
         // อัปเดต Stat เมือง
         stats.addStats(statType, (int)cardVal);
 
-        String statName = statType == PoliticsStats.Facility ? "Facility" :
-                statType == PoliticsStats.Environment ? "Environment" : "Economy";
+        String statName = statType == PoliticsStats.FACILITY ? "Facility" :
+                statType == PoliticsStats.ENVIRONMENT ? "Environment" : "Economy";
 
         System.out.printf("[%s] Player %d ลงการ์ด %s (+%.1f)%n", cityName, playerId, statName, cardVal);
         System.out.printf("   -> Stat เมืองเปลี่ยนจาก %.1f เป็น %d%n", currentStat, stats.getStats(statType));
@@ -75,14 +75,14 @@ public class City {
     /** Xynezter 11/3/2026 17:42 : fix method stat**/
     public void applyStats(int playerId, PoliticsStats cardStats) {
         if (cardStats != null) {
-            int newEconOffset = cardStats.getStats(PoliticsStats.Economy);
-            if (newEconOffset != 0) applyCard(playerId, PoliticsStats.Economy, newEconOffset);
+            int newEconOffset = cardStats.getStats(PoliticsStats.ECONOMY);
+            if (newEconOffset != 0) applyCard(playerId, PoliticsStats.ECONOMY, newEconOffset);
 
-            int newFacOffset = cardStats.getStats(PoliticsStats.Facility);
-            if (newFacOffset != 0) applyCard(playerId, PoliticsStats.Facility, newFacOffset);
+            int newFacOffset = cardStats.getStats(PoliticsStats.FACILITY);
+            if (newFacOffset != 0) applyCard(playerId, PoliticsStats.FACILITY, newFacOffset);
 
-            int newEnvOffset = cardStats.getStats(PoliticsStats.Environment);
-            if (newEnvOffset != 0) applyCard(playerId, PoliticsStats.Environment, newEnvOffset);
+            int newEnvOffset = cardStats.getStats(PoliticsStats.ENVIRONMENT);
+            if (newEnvOffset != 0) applyCard(playerId, PoliticsStats.ENVIRONMENT, newEnvOffset);
 
             getVotingResults();
         }
@@ -94,24 +94,24 @@ public class City {
     }
 
     public double getPlayerPercentage(int playerId) {
-        if (playerId < 0 || playerId >= player_scores.length) return 0;
+        if (playerId < 0 || playerId >= playerScores.length) return 0;
         double totalScore = 0;
-        for (double score : player_scores) {
+        for (double score : playerScores) {
             totalScore += score;
         }
         if (totalScore == 0) return 0;
-        return (player_scores[playerId] / totalScore) * 100;
+        return (playerScores[playerId] / totalScore) * 100;
     }
 
     public void getVotingResults() {
         double totalScore = 0;
-        for (double score : player_scores) totalScore += score;
+        for (double score : playerScores) totalScore += score;
 
-        System.out.printf("%n--- ผลการเลือกตั้งเมือง: %s (ประชากร: %,d, ที่นั่ง: %d) ---%n", cityName, population, council_seats);
+        System.out.printf("%n--- ผลการเลือกตั้งเมือง: %s (ประชากร: %,d, ที่นั่ง: %d) ---%n", cityName, population, councilSeats);
 
-        for (int i = 0; i < player_scores.length; i++) {
-            double percent = (player_scores[i] / totalScore) * 100;
-            int votes = (int)((player_scores[i] / totalScore) * this.population);
+        for (int i = 0; i < playerScores.length; i++) {
+            double percent = (playerScores[i] / totalScore) * 100;
+            int votes = (int)((playerScores[i] / totalScore) * this.population);
             System.out.printf("Player %d: %.2f%% (%,d เสียง)%n", i, percent, votes);
         }
     }
@@ -125,15 +125,15 @@ public class City {
     }
 
     public ArrayList<Grid> getGrids() {
-        return Grids;
+        return grids;
     }
 
     public void printStats() {
         System.out.println("----------------------------------");
         System.out.println("City: " + this.getCityName());
-        System.out.println("Economic: " + stats.getStats(PoliticsStats.Economy));
-        System.out.println("Facility: " + stats.getStats(PoliticsStats.Facility));
-        System.out.println("Environment: " + stats.getStats(PoliticsStats.Environment));
+        System.out.println("Economic: " + stats.getStats(PoliticsStats.ECONOMY));
+        System.out.println("Facility: " + stats.getStats(PoliticsStats.FACILITY));
+        System.out.println("Environment: " + stats.getStats(PoliticsStats.ENVIRONMENT));
         System.out.println("Population: " + population);
         System.out.println("----------------------------------");
     }

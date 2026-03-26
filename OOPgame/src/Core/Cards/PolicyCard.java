@@ -23,7 +23,7 @@ public abstract class PolicyCard extends Card {
         this.coin = coin;
     }
 
-    public abstract boolean IsActivate();
+    public abstract boolean isActive();
 
     public boolean isInSlot() {
         return isInSlot;

@@ -15,22 +15,22 @@ public class EconomicBoom extends PolicyCard {
     }
 
     @Override
-    public boolean IsActivate() {
+    public boolean isActive() {
         return true;
     }
 
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (!IsActivate()) return;
+        if (!isActive()) return;
         PoliticsStats stats = playedCard.getStats();
         if (stats == null) return;
 
-        int eco = stats.getStats(PoliticsStats.Economy);
+        int eco = stats.getStats(PoliticsStats.ECONOMY);
         if (eco > 0) {
             System.out.println("----------------------------------");
             System.out.println("💰 [ECONOMIC BOOM] Economy x2!");
             System.out.println("----------------------------------");
-            stats.setStats(PoliticsStats.Economy, eco * 2);
+            stats.setStats(PoliticsStats.ECONOMY, eco * 2);
         }
     }
 

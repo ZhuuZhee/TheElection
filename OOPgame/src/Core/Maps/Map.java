@@ -9,8 +9,6 @@ import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
 //import java.util.;
@@ -35,7 +33,6 @@ public class Map extends GameObject {
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
     private Grid currentClickedGrid = null;
-    private ArrayList<City> cities = new ArrayList<>();
 
     public Map() {
         this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, new Random().nextLong());
@@ -51,7 +48,7 @@ public class Map extends GameObject {
         this.cols = cols;
         this.citiesCount = citiesCount;
         startSize = new Point(getWidth(), getHeight());
-        gridMap = GenerateMap(seed);
+        gridMap = generateMap(seed);
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
@@ -105,7 +102,6 @@ public class Map extends GameObject {
         }
     }
 
-    /// หา Grid ตามตำแหน่งที่ใส่เข้าไป
     public Grid getGridAtPoint(Point p) {
         for (Grid[] col : gridMap) {
             for (Grid grid : col) {
@@ -117,11 +113,7 @@ public class Map extends GameObject {
         return null;
     }
 
-    public List<City> getCities(){
-        return cities;
-    }
-
-    private Grid[][] GenerateMap(long seed) {
+    private Grid[][] generateMap(long seed) {
         Grid[][] grid = new Grid[rows][cols];
         Random random = new Random(seed);
 
@@ -139,7 +131,6 @@ public class Map extends GameObject {
             int g = random.nextInt(1, 5) * 255 / 5;
             int b = random.nextInt(1, 5) * 255 / 5;
             city.setColor(new Color(r, g, b));
-            cities.add(city);
 
             // randomly set city inside district
 
@@ -230,10 +221,10 @@ public class Map extends GameObject {
         int[][] neighbors;
         if (y % 2 == 0) {
             // Neighbors for even rows in offset-x hexagon grid
-            neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+            neighbors = new int[][] { { 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 0 } };
         } else {
             // Neighbors for odd rows in offset-x hexagon grid
-            neighbors = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+            neighbors = new int[][] { { -1, -1 }, { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 1 }, { -1, 0 } };
         }
 
         for (int[] offset : neighbors) {
@@ -251,7 +242,7 @@ public class Map extends GameObject {
                 }
             }
         }
-
+        
     }
 
     public float getGridWidth() {
@@ -346,9 +337,9 @@ public class Map extends GameObject {
         int startY = y + padding + 40;
         int lineSpacing = 20;
 
-        drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.Economy), x + padding, startY);
-        drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.Facility), x + padding, startY + lineSpacing);
-        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.Environment), x + padding,
+        drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.ECONOMY), x + padding, startY);
+        drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.FACILITY), x + padding, startY + lineSpacing);
+        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.ENVIRONMENT), x + padding,
                 startY + lineSpacing * 2);
 
         // Draw Player Votes Percentage Bar

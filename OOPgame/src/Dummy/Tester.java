@@ -127,9 +127,9 @@ public class Tester {
         System.out.println("Read " + readCards.size() + " cards:");
         for (CardBufferObject card : readCards) {
             PoliticsStats s = card.getStats();
-            System.out.println("- " + card.getName() + " Stats[Fac:" + s.getStats(PoliticsStats.Facility) +
-                    ", Env:" + s.getStats(PoliticsStats.Environment) +
-                    ", Eco:" + s.getStats(PoliticsStats.Economy) + "]");
+            System.out.println("- " + card.getName() + " Stats[Fac:" + s.getStats(PoliticsStats.FACILITY) +
+                    ", Env:" + s.getStats(PoliticsStats.ENVIRONMENT) +
+                    ", Eco:" + s.getStats(PoliticsStats.ECONOMY) + "]");
         }
     }
 }
