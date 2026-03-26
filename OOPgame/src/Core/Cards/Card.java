@@ -23,8 +23,8 @@ public abstract class Card extends GameObject {
     protected int economy, facility, environment;
     private Popup tooltipPopup;
     protected String name;
-    private static final int CARD_WIDTH = 100;
-    private static final int CARD_HEIGHT = 150;
+    public static final int DEFAULT_CARD_WIDTH = 100;
+    private static final int DEFAULT_CARD_HEIGHT = 150;
     protected boolean isGrabbed = false;
     protected boolean isDraggable = true;
     public boolean isHovered = false;
@@ -50,13 +50,13 @@ public abstract class Card extends GameObject {
     private int customTargetHeight = 0;
 
     public Card(String name, int x, int y, String imagePath){
-        this(name,x,y, CARD_WIDTH, CARD_HEIGHT, imagePath);
+        this(name,x,y, DEFAULT_CARD_WIDTH, DEFAULT_CARD_HEIGHT, imagePath);
     }
     public Card(String name, int x, int y, int width, int height) {
         this(name, x, y, width, height, "");
     }
     public Card(String name, int x, int y, String imagePath, int eco, int fac, int env) {
-        this(name, x, y, CARD_WIDTH, CARD_HEIGHT, imagePath);
+        this(name, x, y, DEFAULT_CARD_WIDTH, DEFAULT_CARD_HEIGHT, imagePath);
         this.economy = eco;
         this.facility = fac;
         this.environment = env;
@@ -183,7 +183,7 @@ public abstract class Card extends GameObject {
     // ----------------------------------------
 
     public void onMousePressed(int mouseX, int mouseY) {
-        if (getEnable()) {
+        if (getEnable () && isDraggable) {
             // ปิด Tooltip ทันทีที่คลิกเพื่อลาก
             if (tooltipPopup != null) {
                 tooltipPopup.hide();
@@ -194,17 +194,15 @@ public abstract class Card extends GameObject {
                 holderUI.removeCard(this);
             }
             System.out.println(name + ": Grabbed");
-            if (isDraggable) {
-                isGrabbed = true;
-                CURRENT_GRABBED_CARD = this;
-                // Store the click point relative to the card's top-left
-                offset.x = mouseX;
-                offset.y = mouseY;
+            isGrabbed = true;
+            CURRENT_GRABBED_CARD = this;
+            // Store the click point relative to the card's top-left
+            offset.x = mouseX;
+            offset.y = mouseY;
 
-                setZIndex(Z_INDEX_TOP);
+            setZIndex(Z_INDEX_TOP);
 //                scene.setComponentZOrder(this,0);
-                repaint();
-            }
+            repaint();
         }
     }
 
@@ -356,6 +354,9 @@ public abstract class Card extends GameObject {
      **/
     protected boolean isDroppable(Object bottom) {
         return false;
+    }
+    public boolean isDraggable(){
+        return isDraggable;
     }
     protected void onDroppedOnGrid(Grid grid) {
     }

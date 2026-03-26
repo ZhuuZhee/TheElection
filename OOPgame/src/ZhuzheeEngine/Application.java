@@ -4,6 +4,11 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * The core Engine class responsible for the application lifecycle.
+ * It manages the main window (JFrame), the render loop (Timer), 
+ * and coordinates ApplicationAdapters for game logic and rendering.
+ */
 public final class Application {
     private static int TARGET_FPS = 60;
 
@@ -24,11 +29,13 @@ public final class Application {
     /// for other adapters usually for in case of add new Engine-Class
     private ArrayList<ApplicationAdapter> adapters = new ArrayList<ApplicationAdapter>();
 
-    /// Singletons
+    /** Singleton instance of the Application. */
     private static Application instance;
+    
     public static Application getInstance(){
         return instance;
     }
+
     private Application(ApplicationAdapter rootAdapter) {
         instance = this;
         this.rootAdapter = rootAdapter;
@@ -38,6 +45,10 @@ public final class Application {
     private String getTitle() {
         return "Zhuzhee Application";
     }
+
+    /**
+     * Updates the title of the main application window.
+     */
     public static void setMainFrameTitle(String s){
         if(instance == null){
             throw new IllegalStateException("Main frame not set. Make sure your Application subclass calls super.create().");
@@ -45,7 +56,11 @@ public final class Application {
         instance.mainFrame.setTitle(s);
     }
     //----------------- screen configuration --------------------
-    /// default is 1280 x 720
+    /**
+     * Configures the window size. Default is 1280x720.
+     * @param screenWidth Width in pixels.
+     * @param screenHeight Height in pixels.
+     */
     public void setScreenSize(int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
@@ -62,6 +77,10 @@ public final class Application {
     public static JFrame getMainFrame() {
         return instance.mainFrame;
     }
+
+    /**
+     * Adds a new adapter to the application lifecycle (create, render, dispose).
+     */
     public static void addAdapter(ApplicationAdapter adapter){
         if(instance == null){
             throw  new IllegalStateException("Make sure your Application subclass calls super.create().");
@@ -72,10 +91,15 @@ public final class Application {
         }
         instance.adapters.add(adapter);
     }
+
     public static void removeAdapter(ApplicationAdapter adapter){
         instance.adapters.remove(adapter);
     }
 
+    /**
+     * Internal method to initialize and start the application.
+     * @param app The application instance to launch.
+     */
     private static void LaunchApp(Application app) {
         app.create();
         if (app.mainFrame == null) {
@@ -83,12 +107,17 @@ public final class Application {
         }
         startRenderLoop(app);
     }
+
+    /**
+     * Public entry point to start the engine with a specific root adapter.
+     * @param appAdapter The main game/logic adapter.
+     */
     public static void LaunchApp(ApplicationAdapter appAdapter) {
         LaunchApp(new Application(appAdapter));
     }
 
     /**
-     * Stops the render loop and calls Depose(). Call when exiting the application.
+     * Stops the render loop and disposes of resources. Call when exiting.
      */
     public static void KillApp(Application app) {
         if (app.renderTimer != null) {
@@ -99,7 +128,7 @@ public final class Application {
         app.mainFrame = null;
     }
 
-    /// render looping
+    /** Starts the Swing Timer that drives the render() calls. */
     private static void startRenderLoop(Application app) {
         app.renderTimer = new Timer(
                 FRAME_DELAY_MS,
@@ -114,10 +143,12 @@ public final class Application {
         app.renderTimer.start();
     }
 
+    /** @return The time elapsed between frames in seconds. */
     public static float getDeltaTime() {
         return DELTA_TIME;
     }
 
+    /** Updates the primary adapter responsible for the application logic. */
     public static void setRootApplicationAdapter(ApplicationAdapter adapter){
         if(instance == null){
             throw new IllegalStateException("Application: Have to Instance Yet! Can't Set Root Adapter.");

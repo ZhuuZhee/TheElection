@@ -6,15 +6,25 @@ import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 
+/**
+ * A specific Policy Card that protects the Environment stat.
+ * If an Action Card would decrease the Environment stat, this policy negates the penalty.
+ */
 public class GreenPolicy extends PolicyCard {
     public GreenPolicy(int x, int y, String imagePath) {
         super("Green Policy", x, y, imagePath, -5);
     }
+
     @Override
     public boolean isActive() {
         return true;
     }
+
     @Override
+    /**
+     * Intercepts Action Card stats. If Environment is negative, it sets it to 0
+     * to prevent ecological damage.
+     */
     public void onActionCardPlayed(ActionCard playedCard, City city) {
         // เช็คว่าการ์ดที่เล่นเป็น DevelopCard หรือไม่
         if (playedCard instanceof ActionCard) {

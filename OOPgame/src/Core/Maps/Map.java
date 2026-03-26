@@ -13,6 +13,11 @@ import java.util.Random;
 import java.util.ArrayList;
 //import java.util.;
 
+/**
+ * Manages the hexagonal grid system and city placement.
+ * Handles map generation using a cluster growth algorithm, mouse interaction,
+ * and rendering of the game world and city UI.
+ */
 public class Map extends GameObject {
     /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
     private final int rows; // ความกว้าง
@@ -42,6 +47,13 @@ public class Map extends GameObject {
         this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, seed);
     }
 
+    /**
+     * Creates a new Map with procedural generation.
+     * @param rows Number of horizontal hexagonal rows.
+     * @param cols Number of vertical hexagonal columns.
+     * @param citiesCount Total number of cities to generate.
+     * @param seed Random seed for reproducible generation.
+     */
     public Map(int rows, int cols, int citiesCount, long seed) {
         super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
         this.rows = rows;
@@ -81,7 +93,7 @@ public class Map extends GameObject {
         });
     }
 
-    // เอาไว้ clear hover state ของ Grid ที่อยู่ใน Map
+    /** Resets the hover state for the currently hovered grid. */
     public void clearHoveredGrid() {
         if (currentHoveredGrid != null) {
             currentHoveredGrid.setHovered(false);
@@ -89,7 +101,7 @@ public class Map extends GameObject {
         }
     }
 
-    // เอาไว้ set hover state ของ Grid ที่อยู่ใน Map
+    /** Sets a specific grid as hovered, updating states accordingly. */
     public void setHoveredGrid(Grid grid) {
         if (currentHoveredGrid != grid) {
             if (currentHoveredGrid != null) {
@@ -102,6 +114,11 @@ public class Map extends GameObject {
         }
     }
 
+    /**
+     * Finds the Grid object at a specific pixel coordinate.
+     * @param p The point to check.
+     * @return The Grid at that point, or null if empty.
+     */
     public Grid getGridAtPoint(Point p) {
         for (Grid[] col : gridMap) {
             for (Grid grid : col) {
@@ -113,6 +130,11 @@ public class Map extends GameObject {
         return null;
     }
 
+    /**
+     * Procedurally generates the map grid and populates it with cities.
+     * @param seed Random seed.
+     * @return A 2D array representing the generated hex grid.
+     */
     private Grid[][] generateMap(long seed) {
         Grid[][] grid = new Grid[rows][cols];
         Random random = new Random(seed);
@@ -206,6 +228,9 @@ public class Map extends GameObject {
         }
     }
 
+    /**
+     * Helper to add a tile to a city and update candidate list for expansion.
+     */
     private void addTileToCity(Grid[][] grid, City city, int x, int y, ArrayList<Point> cityTiles,
             ArrayList<Point> candidates) {
         float xOffset = y % 2 == 0 ? getGridWidth() : getGridWidth() / 2;
@@ -294,6 +319,9 @@ public class Map extends GameObject {
         g2d.dispose();
     }
 
+    /**
+     * Renders the informational UI box for a city when it is clicked.
+     */
     private void drawCityStatsUI(Graphics2D g2d, City city) {
         if (city == null || currentClickedGrid == null)
             return;
@@ -385,6 +413,9 @@ public class Map extends GameObject {
                 startY + lineSpacing * 4 + 10);
     }
 
+    /**
+     * Renders a single line of stat text (Label: Value).
+     */
     private void drawStatLine(Graphics2D g2d, String label, int value, int x, int y) {
         g2d.setColor(Color.DARK_GRAY);
         g2d.drawString(label, x, y);

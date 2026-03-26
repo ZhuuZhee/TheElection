@@ -1,5 +1,7 @@
-package Core.Cards;
+package Core.Cards.Stream;
 
+import Core.Cards.PolicyCard;
+import Core.Cards.PolicyCardA;
 import Core.Cards.PolicyCardDox.*;
 import org.json.JSONArray;
 import org.json.JSONObject;

@@ -5,6 +5,7 @@ import Core.Cards.Card;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
+import Core.Cards.Stream.PolicyCardRegistry;
 import Core.GameScreens.MainMenu;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
@@ -35,43 +36,8 @@ public class Tester {
         // Removed hardcoded dummy CardSlots and ActionCards
         // The player should use DrawCardUI to get cards and play them on the Map.
     }
-    public static void DrawCardTest(Scene2D scene, CardHolderUI handUI){
-        DrawCardUI ui = new DrawCardUI(scene, handUI);
-    }
-    public static class DrawCardUI extends Canvas{
-        CardHolderUI hand;
-        public DrawCardUI(Scene2D scene, CardHolderUI handUi){
-            super(scene);
-            hand = handUi;
-
-            setLayout(new BorderLayout());
-            JButton button = new JButton("Draw Card");
-            AudioManager.getInstance().loadSound("draw","draw.WAV");
-            String filePath = "OOPgame/Assets/cards_test_data.json";
-            ArrayList<CardBufferObject> cards = (ArrayList<CardBufferObject>) CardReader.readActionCards(filePath);
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int index = new Random().nextInt(cards.size());
-                    Card card = new ActionCard(cards.getFirst(),0,0);
-                    if(!hand.addCard(card))
-                        GameObject.Destroy(card);
-                    AudioManager.getInstance().playSound("draw");
-                }
-            });
-            add(button);
-            // scene.add(this);
-
-            onResize(scene.getWidth(),scene.getHeight());
-            setVisible(true);
-            scene.revalidate();
-        }
-        @Override
-        protected void onResize(int width, int height) {
-            // ยึดตำแหน่งไว้ที่ด้านล่างของหน้าจอเสมอ
-            setBounds(24, height - ZhuzheeGame.PLAYER_HAND_DEV_CARDS.getHeight(), 164, 24);
-            revalidate();
-        }
+    public static CardTesterUI CardTesterUI(Scene2D scene){
+        return new CardTesterUI(scene);
     }
 
     public static AudioManagerTester audioManagerTester;
@@ -83,18 +49,24 @@ public class Tester {
         Screen.ChangeScreen(new MainMenu());
     }
     public static CardHolderUI CardHolderUITest(Scene2D scene2D){
-        return new CardHolderUI(scene2D);
+        CardHolderUI ui = new CardHolderUI(scene2D);
+        ui.setStrechToFit(true);
+        ui.setPanelSize(164,224);
+        ui.setMargins(224,16,16,16);
+        ui.setAnchorTop(false);
+        return ui;
     }
     public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
-        ZhuzheeGame.POLICY_CARD_UI = new PolicyCardHolderUI(scene2D);
-        return ZhuzheeGame.POLICY_CARD_UI;
+        ZhuzheeGame.POLICY_CARD_HAND = new PolicyCardHolderUI(scene2D);
+        return ZhuzheeGame.POLICY_CARD_HAND;
     }
     public static ArcanaCardHolderUI ArcanaCardHolderUITest(Scene2D scene2D){
         ZhuzheeGame.ARCANA_CARD_UI = new ArcanaCardHolderUI(scene2D);
         return ZhuzheeGame.ARCANA_CARD_UI;
     }
-    public static void MapTest() {
-        new Map();
+
+    public static Map MapTest() {
+        return new Map();
     }
 
     public static void ShopTest() {
@@ -130,6 +102,65 @@ public class Tester {
             System.out.println("- " + card.getName() + " Stats[Fac:" + s.getStats(PoliticsStats.FACILITY) +
                     ", Env:" + s.getStats(PoliticsStats.ENVIRONMENT) +
                     ", Eco:" + s.getStats(PoliticsStats.ECONOMY) + "]");
+        }
+    }
+
+    public static class CardTesterUI extends Canvas{
+        CardHolderUI hand;
+        CardHolderUI policyhand;
+        CardBufferObject[] actionCards;
+        private JButton drawActionCardBtn;
+        private JButton drawPolicyCardBtn;
+        public CardTesterUI(Scene2D scene){
+            super(scene);
+            actionCards = loadsActionCard();
+            AudioManager.getInstance().loadSound("draw","draw.WAV");
+
+            hand = ZhuzheeGame.DEVLOPMENT_CARD_HAND;
+            policyhand = ZhuzheeGame.POLICY_CARD_HAND;
+
+            setLayout(new FlowLayout(FlowLayout.TRAILING));
+            drawActionCardBtn = new JButton("Draw Card");
+            drawPolicyCardBtn = new JButton("Draw Policy");
+
+            drawActionCardBtn.addActionListener(drawCardAction);
+            add(drawActionCardBtn);
+
+            drawPolicyCardBtn.addActionListener(drawCardAction);
+            add(drawPolicyCardBtn);
+            // scene.add(this);
+
+            onResize(scene.getWidth(),scene.getHeight());
+            setAnchors(1,1);
+            setOpaque(false);
+            setVisible(true);
+            scene.revalidate();
+        }
+        private CardBufferObject[] loadsActionCard(){
+            String filePath = "OOPgame/Assets/cards_test_data.json";
+            return CardReader.readActionCards(filePath).toArray(new CardBufferObject[0]);
+        }
+        ActionListener drawCardAction = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AudioManager.getInstance().playSound("draw");
+                if(e.getSource() == drawActionCardBtn){
+                    drawDevCard();
+                }
+                else{
+                    drawPolicyCard();
+                }
+            }
+        };
+
+        private void drawPolicyCard(){
+            policyhand.addCard(PolicyCardRegistry.rollCards(1).getFirst());
+        }
+        private void drawDevCard(){
+            int index = new Random().nextInt(actionCards.length);
+            Card card = new ActionCard(actionCards[index],0,0);
+            if(!hand.addCard(card))
+                GameObject.Destroy(card);
         }
     }
 }

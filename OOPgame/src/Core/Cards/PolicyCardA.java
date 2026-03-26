@@ -17,8 +17,8 @@ public class PolicyCardA extends PolicyCard {
 
     @Override
     public boolean isActive() {
-        if (ZhuzheeGame.POLICY_CARD_UI != null) {
-            return ZhuzheeGame.POLICY_CARD_UI.containsCard(this);
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            return ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
         }
         return false;
     }
