@@ -564,9 +564,9 @@ public abstract class Card extends GameObject {
 
                 g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
                 g2d.setColor(new Color(0, 102, 204));
-                g2d.drawString(String.valueOf(eco), 150, 55);
-                g2d.drawString(String.valueOf(fac), 150, 80);
-                g2d.drawString(String.valueOf(env), 150, 105);
+                g2d.drawString(String.valueOf(fac), 150, 55);
+                g2d.drawString(String.valueOf(env), 150, 80);
+                g2d.drawString(String.valueOf(eco), 150, 105);
 
             } else {
                 // --- โหมด Policy/Arcana: วาดคำอธิบาย ---

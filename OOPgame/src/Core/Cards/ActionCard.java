@@ -13,7 +13,7 @@ import java.awt.*;
 
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
-    private final PoliticsStats stats;
+//    private final PoliticsStats stats;
 
     private final static Player dummyPlayer = null; // for test
     // setup Constructor while card builded add stat in stat
