@@ -4,6 +4,7 @@ import Core.GameScreens.CharacterSelectMenu;
 import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
+import Core.Maps.Grid;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
 import Core.UI.PlayerListUI;
@@ -88,9 +89,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         MAP = new Core.Maps.Map(MAP_SEED);
         Tester.CardsTestingOnScene(MAIN_SCENE);
-        Tester.MapTest();
-        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
-        DEVLOPMENT_CARD_HAND = holderUI;
+        // Tester.MapTest(); // ลบออกเพราะมันสร้าง Map ซ้ำซ้อนกัน 2 รอบ ทำให้มี Map สองตัวทับกันแล้ว Seed ไม่ตรงกัน
+        DEVLOPMENT_CARD_HAND = Tester.CardHolderUITest(MAIN_SCENE);
 
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
         Tester.ArcanaCardHolderUITest(MAIN_SCENE);
@@ -132,6 +132,19 @@ public class ZhuzheeGame implements ApplicationAdapter {
             }
             // แล้วค่อยเช็ค MouseEvent ธรรมดา
             else if (event instanceof MouseEvent e) {
+                if (e.getID() == MouseEvent.MOUSE_CLICKED && javax.swing.SwingUtilities.isLeftMouseButton(e)) {
+                    // แปลงพิกัดจาก Screen เป็น Map Point
+                    Point scenePoint = javax.swing.SwingUtilities.convertPoint((Component)e.getSource(), e.getPoint(), MAIN_SCENE);
+                    Point mapPoint = javax.swing.SwingUtilities.convertPoint(MAIN_SCENE, scenePoint, MAP);
+
+                    Grid clickedGrid = MAP.getGridAtPoint(mapPoint);
+                    if (clickedGrid != null) {
+                        // ใส่ sout ตรงนี้เพื่อดูว่า Global Click ทำงานที่ช่องไหน
+                        System.out.println("[Global Click] Detected at City: " + clickedGrid.getCity().getCityName());
+                    } else {
+                        System.out.println("[Global Click] No Grid at: " + mapPoint);
+                    }
+                }
                 // อัปเดตตำแหน่งตั้งต้นตอนเริ่มกดเมาส์กลาง
                 if (e.getID() == MouseEvent.MOUSE_PRESSED && javax.swing.SwingUtilities.isRightMouseButton(e)) {
                     mousePoint = e.getLocationOnScreen();

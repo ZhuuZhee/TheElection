@@ -20,7 +20,7 @@ public class CardHolderUI extends Canvas {
     
     private final JPanel cardContainer;
     private final Scene2D scene;
-    private JLabel titleLabel;
+    private final JLabel titleLabel;
     private int maxCard = 5;
     //100 = fit
     public CardHolderUI(Scene2D scene) {
