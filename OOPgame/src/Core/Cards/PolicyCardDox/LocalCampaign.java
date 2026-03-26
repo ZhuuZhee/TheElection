@@ -30,8 +30,8 @@ public class LocalCampaign extends PolicyCard {
                     System.out.println(">>> คุณได้รับ 1 Coin จากธนาคาร! <<<");
                     System.out.println("----------------------------------");
 
-                    // ดึง coin มาบวก 1
-                    ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(ZhuzheeGame.CLIENT.getLocalPlayer().getCoin() + 1);
+                    // ดึง coin มาบวก 3
+                    ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(ZhuzheeGame.CLIENT.getLocalPlayer().getCoin() + 3);
                 }
             }
         }

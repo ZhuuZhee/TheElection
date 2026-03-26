@@ -1,5 +1,6 @@
 package Core;
 
+import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.UI.CardHolderUI;
@@ -25,6 +26,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.GameScreens.CreateRoomMenu CREATE_ROOM_MENU;
     public static Core.GameScreens.JoinRoomMenu JOIN_ROOM_MENU;
     public static Core.GameScreens.WaitingRoomMenu WAITING_ROOM_MENU;
+    public static CreditUI CREDIT_UI;
     public static OptionMenu OPTION_MENU;
 
     public static Core.Network.Server.GameServerManager SERVER;
@@ -57,6 +59,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
+        CREDIT_UI = new CreditUI();
         OPTION_MENU = new OptionMenu();
 
         if (DEV_MODE) {
