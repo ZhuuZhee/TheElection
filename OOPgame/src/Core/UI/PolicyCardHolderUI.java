@@ -46,6 +46,14 @@ public class PolicyCardHolderUI extends Canvas {
         setVisible(true);
     }
 
+    public boolean containsCard(Card card) {
+        return cards.contains(card);
+    }
+
+    public ArrayList<Card> getActiveCards() {
+        return cards;
+    }
+
     @Override
     protected void onResize(int width, int height) {
         // ยึดตำแหน่งไว้ที่มุมซ้ายบนของหน้าจอ

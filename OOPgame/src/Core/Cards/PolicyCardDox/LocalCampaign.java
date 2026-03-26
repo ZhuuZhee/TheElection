@@ -8,7 +8,7 @@ import Core.Maps.PoliticsStats;
 import Core.ZhuzheeGame;
 
 public class LocalCampaign extends PolicyCard {
-    public LocalCampaign(int x, int y, String imagePath) {super("Local Campaign", x, y, imagePath, 3);}
+    public LocalCampaign(int x, int y, String imagePath) {super("Local Campaign", x, y, imagePath, -3);}
     @Override
     public boolean IsActivate() {
         return true; // ให้การ์ดทำงานเสมอเมื่อถูกวางลงใน Slot
