@@ -14,14 +14,32 @@ import java.util.ArrayList;
 
 public class CardHolderUI extends Canvas {
     private final ArrayList<Card> cards = new ArrayList<>();
-    private final int panelHeight = 220;
+    private static final int DEFAULT_HEIGHT = 220;
+    private static final int DEFAULT_WIDTH = 400;
+
+    
     private final JPanel cardContainer;
     private final Scene2D scene;
+    private JLabel titleLabel;
+    private int maxCard = 5;
+    //100 = fit
+    public CardHolderUI(Scene2D scene) {
+        this(scene, 50, 50);
+    }
 
-    public CardHolderUI(Scene2D scene){
+    public CardHolderUI(Scene2D scene, int x, int y) {
+        this(scene, DEFAULT_WIDTH, DEFAULT_HEIGHT, x, y);
+    }
+
+    public CardHolderUI(Scene2D scene, int width, int height, int x, int y) {
         super(scene);
         this.scene = scene;
         setLayout(new BorderLayout());
+        
+        setPanelSize(width, height);
+        setScreenPos(x, y);
+        setMargins(20, 20, 20, 20);
+        setAnchors(-1, 1); // Default: Left-Top
 
         // กำหนดดีไซน์พื้นหลังและขอบ
         setBackground(new Color(50, 50, 50, 220)); // สีเทาเข้มโปร่งแสง
@@ -29,7 +47,7 @@ public class CardHolderUI extends Canvas {
         setOpaque(true); // สำคัญมาก: ป้องกัน Swing วาดพื้นหลังทึบทับกันซ้ำซ้อนจนกระพริบ
 
         // ส่วนหัวข้อ
-        JLabel titleLabel = new JLabel("Your Hand");
+        titleLabel = new JLabel("Card Holder UI");
         titleLabel.setForeground(Color.LIGHT_GRAY);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -41,7 +59,7 @@ public class CardHolderUI extends Canvas {
         cardContainer.setOpaque(false); // โปร่งใสเพื่อให้เห็นพื้นหลังของ UI หลัก
         add(cardContainer, BorderLayout.CENTER);
 
-        onResize(scene.getWidth(),scene.getHeight());
+        onResize(scene.getWidth(), scene.getHeight());
 
         scene.revalidate();
         setVisible(true);
@@ -49,13 +67,39 @@ public class CardHolderUI extends Canvas {
 
     @Override
     protected void onResize(int width, int height) {
-        // จำกัดความกว้างไม่ให้ยาวเกินไป (เช่น 70% ของจอ) และจัดให้อยู่ตรงกลาง
-        int uiWidth = Math.min(width - 100, (int)(width * 0.7)); 
-        int x = (width - uiWidth) / 2;
-        
-        // ยึดตำแหน่งไว้ที่ด้านล่างของหน้าจอเสมอ
-        setBounds(x, height - panelHeight - 10, uiWidth, panelHeight); // ขยับขึ้นจากขอบล่าง 10px เพื่อความสวยงาม
-        revalidate();
+        super.onResize(width, height);
+    }
+
+    /**
+     * กำหนดจุดยึดของ UI เมื่อใช้โหมด Stretch
+     *
+     * @param anchorTop true ยึดขอบบน (ใช้ marginTop), false ยึดขอบล่าง (ใช้ marginBottom)
+     */
+    public void setAnchorTop(boolean anchorTop) {
+        setAnchors(this.anchorHorizontal, anchorTop ? 1 : -1);
+    }
+    public void setAnchorLeft(boolean anchorLeft){
+        setAnchors(anchorLeft ? -1 : 1, this.anchorVertical);
+    }
+
+    public void setSetLabel(String label){
+        titleLabel.setText(label);
+    }
+
+    public int getMaxCard() {
+        return maxCard;
+    }
+
+    public void setMaxCard(int maxCard) {
+        this.maxCard = maxCard;
+    }
+
+    public boolean isFull(){
+        return cards.size() >= maxCard;
+    }
+
+    public boolean isEmpty(){
+        return cards.isEmpty();
     }
 
     @Override
@@ -64,28 +108,30 @@ public class CardHolderUI extends Canvas {
         g.setColor(getBackground());
         g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
-        for(Card card : cards){
+        for (Card card : cards) {
             card.update();
         }
     }
 
-    public void addCard(Card card){
-        if(cards.contains(card)) return;
+    public boolean addCard(Card card) {
+        if (cards.contains(card) || cards.size() >= maxCard) return false;
         scene.remove(card);
 
         cardContainer.add(card);
         cards.add(card);
 
         int height = panelHeight - 60;
-        float ratio = (float) height /card.getHeight();
-        card.setBounds(0,0,(int)(card.getWidth() * ratio), height);
+        float ratio = (float) height / card.getHeight();
+        card.setBounds(0, 0, (int) (card.getWidth() * ratio), height);
 
         System.out.println("Card added to hand: " + card.getName());
         cardContainer.revalidate();
         cardContainer.repaint();
+        return true;
     }
-    public void removeCard(Card card){
-        if(!cards.contains(card)) return;
+
+    public void removeCard(Card card) {
+        if (!cards.contains(card)) return;
 
         Point location = card.getLocationOnScreen();
         cardContainer.remove(card);
@@ -100,7 +146,7 @@ public class CardHolderUI extends Canvas {
         cardContainer.repaint();
     }
 
-    public ArrayList<Card> getCards(){
+    public ArrayList<Card> getCards() {
         return cards;
     }
 }

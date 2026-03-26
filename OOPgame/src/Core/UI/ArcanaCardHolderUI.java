@@ -10,9 +10,6 @@ import java.awt.*;
 
 public class ArcanaCardHolderUI extends Canvas {
     private Card currentCard = null;
-    // ขนาดของช่องใส่ Arcana Card (เล็กลงหน่อยเพราะใส่ใบเดียว)
-    private final int panelWidth = 150;
-    private final int panelHeight = 220;
     private final JPanel cardContainer;
     private final Scene2D scene;
 
@@ -20,6 +17,11 @@ public class ArcanaCardHolderUI extends Canvas {
         super(scene);
         this.scene = scene;
         setLayout(new BorderLayout());
+
+        // ใช้ระบบ Layout ของ Canvas
+        setPanelSize(150, 220);
+        setMargins(10, 0, 0, 10);
+        setAnchors(-1, -1); // Left-Bottom
 
         // กำหนดดีไซน์พื้นหลังและขอบ (เลียนแบบ PolicyCardHolderUI)
         setBackground(new Color(50, 50, 50, 220)); // สีเทาเข้มโปร่งแสง
@@ -47,11 +49,7 @@ public class ArcanaCardHolderUI extends Canvas {
 
     @Override
     protected void onResize(int width, int height) {
-        // ย้ายไปไว้ที่มุมซ้ายล่าง ถัดจากขอบหน้าจอเล็กน้อย
-        // ปรับความห่างได้จากการเปลี่ยนค่า margin
-        int margin = 10;
-        setBounds(margin, height - panelHeight - margin, panelWidth, panelHeight);
-        revalidate();
+        super.onResize(width, height);
     }
 
     @Override

@@ -34,6 +34,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static OptionMenu OPTION_MENU;
     public static Core.GameScreens.CharacterSelectUI CHARACTER_SELECT_MENU;
 
+    private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f;
+    private static Point mousePoint;
+
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
 
@@ -85,8 +88,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         MAP = new Core.Maps.Map(MAP_SEED);
         Tester.CardsTestingOnScene(MAIN_SCENE);
-        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
-        PLAYER_HAND_DEV_CARDS = holderUI;
+        CardHolderUI holderUI =
+        PLAYER_HAND_DEV_CARDS = BuidDevlopmentCardHolderUI();
 
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
         Tester.ArcanaCardHolderUITest(MAIN_SCENE);
@@ -109,8 +112,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CameraControlEvent(MAIN_SCENE);
     }
 
-    private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f;
-    private static Point mousePoint;
 
     public static void CameraControlEvent(Scene2D scene) {
         // ใช้ AWTEventListener เพื่อดักจับ Input ของเมาส์แบบ Global ไม่ว่าจะชี้อยู่บน
@@ -145,7 +146,15 @@ public class ZhuzheeGame implements ApplicationAdapter {
             }
         }, eventMask);
     }
-
+    public static CardHolderUI BuidDevlopmentCardHolderUI(){
+        CardHolderUI ui = new CardHolderUI(MAIN_SCENE);
+        ui.setPanelSize(600,224);
+        ui.setSetLabel("Your Hand");
+        ui.setStrechToFit(true);
+        ui.setAnchorTop(false);
+        ui.setMargins(256,24, 24,16);
+        return ui;
+    }
     @Override
     public void resize(int width, int height) {
 

@@ -3,6 +3,7 @@ package Core.UI;
 import Core.Cards.PolicyCard;
 import Core.Cards.PolicyCardRegistry;
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Scene.GameObject;
 import ZhuzheeEngine.Scene.Scene2D;
 
 import javax.swing.*;
@@ -197,7 +198,9 @@ public class Shop extends JPanel {
 
         shopCards.remove(card);
         if (ZhuzheeGame.POLICY_CARD_UI != null) {
-            ZhuzheeGame.POLICY_CARD_UI.addCard(card);
+            if(!ZhuzheeGame.POLICY_CARD_UI.addCard(card)){
+                GameObject.Destroy(card);
+            }
         } else {
             System.err.println("Warning: PolicyCardHolderUI is null!");
         }

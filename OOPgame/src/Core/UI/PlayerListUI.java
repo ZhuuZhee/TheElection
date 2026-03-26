@@ -19,6 +19,11 @@ public class PlayerListUI extends Canvas {
         setLayout(new BorderLayout());
         setOpaque(false);
 
+        // ใช้ระบบ Layout ของ Canvas
+        setPanelSize(350, scene.getHeight() - 100);
+        setMargins(0, 0, 150, 0); // Margin Top 150
+        setAnchors(1, 0); // Right side, use ratio/fixed Y
+
         listContainer = new JPanel();
         listContainer.setLayout(new BoxLayout(listContainer, BoxLayout.Y_AXIS));
         listContainer.setOpaque(false);
@@ -49,9 +54,8 @@ public class PlayerListUI extends Canvas {
 
     @Override
     protected void onResize(int width, int height) {
-        int uiWidth = 350;
-        int uiHeight = height - 100;
-        setBounds(width - uiWidth, 150, uiWidth, uiHeight);
+        this.panelHeight = height - 100;
+        super.onResize(width, height);
     }
 
     private static class PlayerItemUI extends JPanel {

@@ -96,12 +96,33 @@ public class GameObject extends JPanel implements IZIndex {
 
     //destroying game object
     public static void Destroy(GameObject gameObject) {
+        if (gameObject == null) return;
+        
+        Scene2D scene = gameObject.getScene();
+        
+        // 1. เรียก Lifecycle hook ให้ Object เคลียร์ตัวเองก่อน (หยุด Thread, เคลียร์ Listeners)
         gameObject.onDestroy();
-        // ลบออกจาก Swing Container
-        gameObject.getScene().remove((Component)gameObject);
-        gameObject.getScene().repaint();
+        
+        if (scene != null) {
+            // 2. ลบออกจาก Swing Tree และ Engine Lists (เรียก Scene2D.remove)
+            scene.remove(gameObject);
+            
+            // 3. บังคับให้หน้าจอวาดใหม่ทันทีเพื่อลบภาพค้าง
+            scene.revalidate();
+            scene.repaint();
+        }
+        
+        // 4. ตั้งค่าเป็นกากบาทเพื่อให้ระบุได้ว่าถูกทำลายแล้ว (Optional)
+        gameObject.setVisible(false);
+        gameObject.setEnable(false);
     }
 
     public void onDestroy() {
+        // แนะนำ: ลบ Listeners เพื่อป้องกัน Memory Leak
+        for (java.awt.event.MouseListener l : getMouseListeners()) removeMouseListener(l);
+        for (java.awt.event.MouseMotionListener l : getMouseMotionListeners()) removeMouseMotionListener(l);
+        
+        // บันทึก: หลังจากเรียก Destroy(obj) แล้ว 
+        // อย่าลืมตั้งค่าตัวแปรที่ถือ obj นั้นให้เป็น null ด้วย (เช่น player = null;)
     }
 }
