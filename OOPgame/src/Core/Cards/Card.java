@@ -575,14 +575,32 @@ public abstract class Card extends GameObject {
 
                 int startY = 55;
                 if (targetCard.description != null) {
+                    FontMetrics fm = g2d.getFontMetrics();
+                    int maxWidth = getWidth() - 30;
                     // ตัดบรรทัดด้วย \n
                     for (String line : targetCard.description.split("\n")) {
-                        g2d.drawString(line, 15, startY);
-                        startY += 20;
+                        String[] words = line.split(" ");
+                        String currentLine = "";
+
+                        for (String word : words) {
+                            // เช็คว่าถ้าวาดคำนี้เพิ่มไป ความยาวจะล้นกรอบไหม?
+                            if (fm.stringWidth(currentLine + word) < maxWidth) {
+                                currentLine += word + " "; // ถ้าไม่ล้น ให้ต่อท้ายบรรทัดเดิม
+                            } else {
+                                // ถ้าล้น ให้วาดบรรทัดนั้นลงไปก่อน
+                                g2d.drawString(currentLine, 15, startY);
+                                startY += 20; // ปัดบรรทัดใหม่
+                                currentLine = word + " "; // เอาคำที่ล้นมาตั้งต้นบรรทัดใหม่
+                            }
+                        }
+
+                        if (!currentLine.isEmpty()) {
+                            g2d.drawString(currentLine, 15, startY);
+                            startY += 20;
+                        }
                     }
                 }
             }
-            g2d.dispose();
         }
     }
 }
