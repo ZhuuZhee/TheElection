@@ -5,5 +5,6 @@
   { "class": "EconomicBoom",  "img": "OOPgame/Assets/ImageForCards/gay.png" },
   { "class": "IronWill",      "img": "OOPgame/Assets/ImageForCards/gay.png" },
   { "class": "NaturePact",    "img": "OOPgame/Assets/ImageForCards/gay.png" },
-  { "class": "PolicyCardA",    "img": "OOPgame/Assets/ImageForCards/gay.png" }
+  { "class": "PolicyCardA",    "img": "OOPgame/Assets/ImageForCards/gay.png" },
+  { "class": "InfrastructureBudget",    "img": "OOPgame/Assets/ImageForCards/Policy Card/7 Policy.png" }
 ]
