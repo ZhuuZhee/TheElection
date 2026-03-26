@@ -16,17 +16,20 @@ public class PolicyCardHolderUI extends CardHolderUI {
         setSetLabel("Your Policies");
         setMaxCard(5);
     }
-
+    private void updateSize(){
+        setPanelSize((Card.DEFAULT_CARD_WIDTH * Math.max(1,cards.size())) + SPACING,224);
+    }
     @Override
     public boolean addCard(Card card) {
         boolean success = super.addCard(card);
-        setPanelSize((Card.DEFAULT_CARD_WIDTH * Math.max(1,cards.size())) + SPACING,224);
+        card.setDraggable(false);
+        updateSize();
         return success;
     }
 
     @Override
     public void removeCard(Card card) {
         super.removeCard(card);
-        setPanelSize((164 + SPACING) * Math.max(1,cards.size()),224);
+        updateSize();
     }
 }

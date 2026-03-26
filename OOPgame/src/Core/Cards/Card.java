@@ -97,7 +97,6 @@ public abstract class Card extends GameObject {
                     }
                 }
             }
-
             @Override
             public void mouseExited(MouseEvent e) {
                 setHovered(false);
@@ -158,23 +157,21 @@ public abstract class Card extends GameObject {
     // ----------------------------------------
 
     public void onMousePressed(int mouseX, int mouseY) {
-        if (getEnable()) {
+        if (getEnable() && isDraggable) {
             // No need to check boundaries, event is fired on component
             if (getParent() != null && getParent().getParent() instanceof CardHolderUI holderUI) {
                 holderUI.removeCard(this);
             }
             System.out.println(name + ": Grabbed");
-            if (isDraggable) {
-                isGrabbed = true;
-                CURRENT_GRABBED_CARD = this;
-                // Store the click point relative to the card's top-left
-                offset.x = mouseX;
-                offset.y = mouseY;
+            isGrabbed = true;
+            CURRENT_GRABBED_CARD = this;
+            // Store the click point relative to the card's top-left
+            offset.x = mouseX;
+            offset.y = mouseY;
 
-                setZIndex(Z_INDEX_TOP);
+            setZIndex(Z_INDEX_TOP);
 //                scene.setComponentZOrder(this,0);
-                repaint();
-            }
+            repaint();
         }
     }
 
@@ -326,6 +323,9 @@ public abstract class Card extends GameObject {
      **/
     protected boolean isDroppable(Object bottom) {
         return false;
+    }
+    public boolean isDraggable(){
+        return isDraggable;
     }
     protected void onDroppedOnGrid(Grid grid) {
     }
