@@ -20,6 +20,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public abstract class Card extends GameObject {
+    protected int economy, facility, environment;
+    private Popup tooltipPopup;
     protected String name;
     private static final int CARD_WIDTH = 100;
     private static final int CARD_HEIGHT = 150;
@@ -53,6 +55,12 @@ public abstract class Card extends GameObject {
     public Card(String name, int x, int y, int width, int height) {
         this(name, x, y, width, height, "");
     }
+    public Card(String name, int x, int y, String imagePath, int eco, int fac, int env) {
+        this(name, x, y, CARD_WIDTH, CARD_HEIGHT, imagePath);
+        this.economy = eco;
+        this.facility = fac;
+        this.environment = env;
+    }
     public Card(String name, int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
@@ -84,6 +92,17 @@ public abstract class Card extends GameObject {
             @Override
             public void mouseEntered(MouseEvent e) {
                 setHovered(true);
+                // --- โค้ดส่วน Tooltip ที่เพิ่มเข้าไป ---
+                if (!isGrabbed && getEnable()) {
+                    CardStatTooltip tipUI = new CardStatTooltip(name, economy, facility, environment);
+                    Point location = e.getLocationOnScreen();
+
+                    // แสดง Popup ห่างจากเมาส์เล็กน้อย
+                    tooltipPopup = PopupFactory.getSharedInstance().getPopup(
+                            Card.this, tipUI, location.x + 20, location.y + 20);
+                    tooltipPopup.show();
+                }
+                // ----------------------------------
                 if (!isGrabbed && getEnable()) {
                     boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
 
@@ -101,6 +120,12 @@ public abstract class Card extends GameObject {
             @Override
             public void mouseExited(MouseEvent e) {
                 setHovered(false);
+                // --- ปิด Tooltip เมื่อเมาส์ออก ---
+                if (tooltipPopup != null) {
+                    tooltipPopup.hide();
+                    tooltipPopup = null;
+                }
+                // ----------------------------
                 if (!isGrabbed && getEnable()) {
                     boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
 
@@ -159,6 +184,11 @@ public abstract class Card extends GameObject {
 
     public void onMousePressed(int mouseX, int mouseY) {
         if (getEnable()) {
+            // ปิด Tooltip ทันทีที่คลิกเพื่อลาก
+            if (tooltipPopup != null) {
+                tooltipPopup.hide();
+                tooltipPopup = null;
+            }
             // No need to check boundaries, event is fired on component
             if (getParent() != null && getParent().getParent() instanceof CardHolderUI holderUI) {
                 holderUI.removeCard(this);
