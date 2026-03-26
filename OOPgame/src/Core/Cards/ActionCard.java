@@ -139,8 +139,4 @@ public class ActionCard extends Card {
         g2d.drawString(text, textX, textY);
     }
 
-    @Override
-    protected boolean isDroppable(Object bottom) {
-        return bottom instanceof City;
-    }
 }

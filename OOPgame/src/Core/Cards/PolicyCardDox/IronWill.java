@@ -38,8 +38,4 @@ public class IronWill extends PolicyCard {
         }
     }
 
-    @Override
-    protected boolean isDroppable(Object bottom) {
-        return bottom instanceof CardSlot;
-    }
 }
