@@ -1,6 +1,7 @@
 package Core;
 
 import Core.GameScreens.CharacterSelectMenu;
+import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.Player.Player;
