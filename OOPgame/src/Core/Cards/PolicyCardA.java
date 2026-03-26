@@ -11,11 +11,6 @@ import Core.ZhuzheeGame;
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
 public class PolicyCardA extends PolicyCard {
 
-//    public PolicyCardA(String name, int x, int y){
-//
-//        this(name,x,y,0);
-//    }
-
     public PolicyCardA(String name, int x, int y, String imagePath, int coin) {
         super("A", 0, 100, imagePath, -10);
     }
@@ -44,9 +39,4 @@ public class PolicyCardA extends PolicyCard {
         }
     }
 
-    @Override
-    protected boolean isDroppable(Object bottom) {
-        // ให้วางทับ CardSlot ได้
-        return bottom instanceof CardSlot;
-    }
 }
