@@ -7,8 +7,10 @@ package Core.Maps;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Random;
 import java.util.ArrayList;
 //import java.util.;
@@ -38,6 +40,8 @@ public class Map extends GameObject {
     private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
     private Grid currentHoveredGrid = null;
     private Grid currentClickedGrid = null;
+    private Image background = null;
+    private String imagePath = null;
 
     public Map() {
         this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, new Random().nextLong());
@@ -59,6 +63,7 @@ public class Map extends GameObject {
         this.rows = rows;
         this.cols = cols;
         this.citiesCount = citiesCount;
+        setBackground("OOPgame/Assets/ImageForMapBackground/image.png/");
         startSize = new Point(getWidth(), getHeight());
         gridMap = generateMap(seed);
 
@@ -93,6 +98,17 @@ public class Map extends GameObject {
                 }
             }
         });
+    }
+
+    public void setBackground(String imagePath) {
+        try {
+            this.background = ImageIO.read(new File(imagePath));
+            this.imagePath = imagePath;
+            repaint(); // สั่งให้วาดใหม่เมื่อโหลดรูปเสร็จ
+        } catch (Exception e) {
+            System.err.println("ไม่สามารถโหลดรูปภาพได้จาก path: " + imagePath);
+            e.printStackTrace();
+        }
     }
 
     /** Resets the hover state for the currently hovered grid. */
@@ -299,6 +315,11 @@ public class Map extends GameObject {
         }
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        if (background != null) {
+            // ถ้ามีรูปภาพ ให้วาดรูปลงไปให้เต็มขนาดการ์ด
+            g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        }
 
         // Render all non-hovered grids first
         for (Grid[] col : gridMap) {

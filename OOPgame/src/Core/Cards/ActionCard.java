@@ -15,9 +15,6 @@ import java.awt.*;
 public class ActionCard extends Card {
 //    private final PoliticsStats stats;
 
-    private final static Player dummyPlayer = null; // for test
-    // setup Constructor while card builded add stat in stat
-
     public ActionCard(CardBufferObject bufferObject, int x, int y) {
         this(bufferObject.getName(), x, y, bufferObject.getStats(), bufferObject.getImgPath(), bufferObject.getCoin());
     }
