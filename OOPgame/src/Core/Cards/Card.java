@@ -6,6 +6,7 @@ package Core.Cards;
 
 import Core.Maps.Grid;
 import Core.Maps.Map;
+import Core.Maps.PoliticsStats;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
@@ -20,7 +21,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public abstract class Card extends GameObject {
-    protected int economy, facility, environment;
+    protected PoliticsStats stats;
+    protected String description = "";
     private Popup tooltipPopup;
     protected String name;
     public static final int DEFAULT_CARD_WIDTH = 100;
@@ -40,8 +42,8 @@ public abstract class Card extends GameObject {
     protected Image cardImage = null;
     protected String imagePath = "";
     protected int coin;
-    private int baseWidth;
-    private int baseHeight;
+    private final int baseWidth;
+    private final int baseHeight;
     private int baseX;
     private int baseY;
 
@@ -55,11 +57,17 @@ public abstract class Card extends GameObject {
     public Card(String name, int x, int y, int width, int height) {
         this(name, x, y, width, height, "");
     }
-    public Card(String name, int x, int y, String imagePath, int eco, int fac, int env) {
+    public Card(String name, int x, int y, String imagePath, PoliticsStats stats) {
         this(name, x, y, DEFAULT_CARD_WIDTH, DEFAULT_CARD_HEIGHT, imagePath);
-        this.economy = eco;
-        this.facility = fac;
-        this.environment = env;
+        if (stats != null) {
+            this.stats = new PoliticsStats(
+                    stats.getStats(PoliticsStats.FACILITY),
+                    stats.getStats(PoliticsStats.ENVIRONMENT),
+                    stats.getStats(PoliticsStats.ECONOMY)
+            );
+        } else {
+            this.stats = null;
+        }
     }
     public Card(String name, int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
@@ -94,23 +102,20 @@ public abstract class Card extends GameObject {
                 setHovered(true);
                 // --- โค้ดส่วน Tooltip ที่เพิ่มเข้าไป ---
                 if (!isGrabbed && getEnable()) {
-                    CardStatTooltip tipUI = new CardStatTooltip(name, economy, facility, environment);
-                    Point location = e.getLocationOnScreen();
 
-                    // แสดง Popup ห่างจากเมาส์เล็กน้อย
+                    // เรียกใช้ Tooltip อัจฉริยะ (ส่ง this เข้าไปให้มันเช็คเอง)
+                    SmartTooltipUI tipUI = new SmartTooltipUI(Card.this);
+
+                    Point location = e.getLocationOnScreen();
                     tooltipPopup = PopupFactory.getSharedInstance().getPopup(
                             Card.this, tipUI, location.x + 20, location.y + 20);
                     tooltipPopup.show();
-                }
-                // ----------------------------------
-                if (!isGrabbed && getEnable()) {
-                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
 
+                    boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
                     if (!isInHand) {
                         setZIndex(Z_INDEX_TOP);
                         if (getParent() != null) getParent().setComponentZOrder(Card.this, 0);
                     } else {
-                        // บังคับอัปเดตขนาดเวลาอยู่ในมือโดยไม่สลับลำดับ Layer ของ FlowLayout
                         setBounds(baseX, baseY, baseWidth, baseHeight);
                         if (getParent() != null) getParent().repaint();
                     }
@@ -352,12 +357,6 @@ public abstract class Card extends GameObject {
     /**
      * Xynezter 14/3/2569 14:12 : Update method is non abstract Arcanacards dont need to Override
      **/
-    protected boolean isDroppable(Object bottom) {
-        return false;
-    }
-    public boolean isDraggable(){
-        return isDraggable;
-    }
     protected void onDroppedOnGrid(Grid grid) {
     }
     @Override
@@ -513,4 +512,95 @@ public abstract class Card extends GameObject {
         super.setBounds(x - shiftX, y - shiftY, finalWidth, finalHeight);
     }
 
+    // ==========================================
+    // Inner Class: หน้าต่าง Tooltip อัจฉริยะ
+    // ==========================================
+    private class SmartTooltipUI extends JPanel {
+        private Card targetCard;
+
+        public SmartTooltipUI(Card card) {
+            this.targetCard = card;
+            setOpaque(false);
+
+            // ปรับขนาดหน้าต่างตามประเภทของการ์ด
+            if (card instanceof ActionCard) {
+                setPreferredSize(new Dimension(200, 120)); // ขนาดของ Action Card
+            } else {
+                setPreferredSize(new Dimension(240, 140)); // ขนาดของ Policy/Arcana Card
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // วาดพื้นหลังและขอบ
+            g2d.setColor(new Color(255, 255, 255, 240));
+            g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+            g2d.setColor(new Color(200, 200, 200));
+            g2d.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 10, 10);
+
+            // วาดชื่อการ์ด
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("SansSerif", Font.BOLD, 16));
+            g2d.drawString(targetCard.getName(), 15, 25);
+
+            // เช็คว่าเป็นการ์ดประเภทไหนเพื่อวาดข้อมูล
+            if (targetCard instanceof ActionCard) {
+                // --- โหมด Action Card: วาดตัวเลข Stat ---
+                int eco = 0, fac = 0, env = 0;
+                if (targetCard.stats != null) {
+                    eco = targetCard.stats.getStats(PoliticsStats.ECONOMY);
+                    fac = targetCard.stats.getStats(PoliticsStats.FACILITY);
+                    env = targetCard.stats.getStats(PoliticsStats.ENVIRONMENT);
+                }
+
+                g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
+                g2d.setColor(new Color(80, 80, 80));
+                g2d.drawString("Economic:", 15, 55);
+                g2d.drawString("Facility:", 15, 80);
+                g2d.drawString("Environment:", 15, 105);
+
+                g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
+                g2d.setColor(new Color(0, 102, 204));
+                g2d.drawString(String.valueOf(fac), 150, 55);
+                g2d.drawString(String.valueOf(env), 150, 80);
+                g2d.drawString(String.valueOf(eco), 150, 105);
+
+            } else {
+                // --- โหมด Policy/Arcana: วาดคำอธิบาย ---
+                g2d.setFont(new Font("SansSerif", Font.PLAIN, 13));
+                g2d.setColor(new Color(60, 60, 60));
+
+                int startY = 55;
+                if (targetCard.description != null) {
+                    FontMetrics fm = g2d.getFontMetrics();
+                    int maxWidth = getWidth() - 30;
+                    // ตัดบรรทัดด้วย \n
+                    for (String line : targetCard.description.split("\n")) {
+                        String[] words = line.split(" ");
+                        String currentLine = "";
+
+                        for (String word : words) {
+                            // เช็คว่าถ้าวาดคำนี้เพิ่มไป ความยาวจะล้นกรอบไหม?
+                            if (fm.stringWidth(currentLine + word) < maxWidth) {
+                                currentLine += word + " "; // ถ้าไม่ล้น ให้ต่อท้ายบรรทัดเดิม
+                            } else {
+                                // ถ้าล้น ให้วาดบรรทัดนั้นลงไปก่อน
+                                g2d.drawString(currentLine, 15, startY);
+                                startY += 20; // ปัดบรรทัดใหม่
+                                currentLine = word + " "; // เอาคำที่ล้นมาตั้งต้นบรรทัดใหม่
+                            }
+                        }
+
+                        if (!currentLine.isEmpty()) {
+                            g2d.drawString(currentLine, 15, startY);
+                            startY += 20;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -43,9 +43,4 @@ public class GreenPolicy extends PolicyCard {
             }
         }
     }
-    @Override
-    protected boolean isDroppable(Object bottom) {
-        // กำหนดให้การ์ดใบนี้ลากไปวางใน CardSlot ได้เท่านั้น
-        return bottom instanceof CardSlot;
-    }
 }

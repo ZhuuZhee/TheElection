@@ -5,6 +5,7 @@ import Core.GameScreens.CharacterSelectMenu;
 import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
+import Core.Maps.Grid;
 import Core.Maps.Map;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
@@ -66,7 +67,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public void create() {
         // set Application title
         Application.setMainFrameTitle("Zhuzhee The Game");
-
+        MAIN_SCENE = new Scene2D();
         LOBBY_MENU = new Core.GameScreens.LobbyMenu();
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
@@ -86,7 +87,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     /// MAIN_SCENE
     public static void startMainScene() {
-        MAIN_SCENE = new Scene2D();
         Screen.ChangeScreen(MAIN_SCENE);
 
         MAP = new Map(MAP_SEED);
