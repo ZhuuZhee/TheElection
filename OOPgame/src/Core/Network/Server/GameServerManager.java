@@ -101,37 +101,18 @@ public class GameServerManager {
         String type = action.getString("actionType");
 
         if (type.equals(NetworkProtocol.JOIN.name())) {
-            // กันชื่อแตก ถ้าเกิดหาชื่อไม่เจอ ใช้ Unknown- id 4 ตัว
-            String pName = action.optString("playerName", "Unknown-" + playerId.substring(0, 4));
-
-            // สร้างตัวละครแล้วเพิ่มลงใน gameState
-            Player newPlayer = new Player(playerId, pName, false);
-            gameState.getPlayers().add(newPlayer);
-            System.out.println(pName + " (" + playerId + ") joined the game.");
-
-            // ส่งข้อมูลยืนยันรับเข้าห้องให้คนที่เข้ามา
-            JSONObject ack = new JSONObject();
-            ack.put("type", NetworkProtocol.JOIN_ACK.name());
-            ack.put("assignedId", playerId);
-            sendToClient(playerId, ack);
-
-            broadcast(gameState.generateSyncData());
+            onJoinGame(action, playerId);
         } else if (type.equals(NetworkProtocol.START_GAME.name())) {
             onStartGame();
         } else if (type.equals(NetworkProtocol.PONG.name())) {
-            // อัพเดตเวลา PONG ของ client คนนี้
-            for (ClientHandler c : clients) {
-                if (c.getPlayerId() != null && c.getPlayerId().equals(playerId)) {
-                    c.updatePongTime();
-                    break;
-                }
-            }
+            onPong(playerId);
         } else if (type.equals(NetworkProtocol.END_TURN.name())) {
-            nextTurn();
+            onNextTurn();
+
         } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
             // Logic อัพเดตเมือง ???
+            onUseCard();
 
-            broadcast(gameState.generateSyncData());
         }
     }
 
@@ -164,6 +145,23 @@ public class GameServerManager {
     //         server action method
     // -------------------------------------
 
+    private synchronized void onJoinGame(JSONObject action,String playerId){
+        // กันชื่อแตก ถ้าเกิดหาชื่อไม่เจอ ใช้ Unknown- id 4 ตัว
+        String pName = action.optString("playerName", "Unknown-" + playerId.substring(0, 4));
+
+        // สร้างตัวละครแล้วเพิ่มลงใน gameState
+        Player newPlayer = new Player(playerId, pName, false);
+        gameState.getPlayers().add(newPlayer);
+        System.out.println(pName + " (" + playerId + ") joined the game.");
+
+        // ส่งข้อมูลยืนยันรับเข้าห้องให้คนที่เข้ามา
+        JSONObject ack = new JSONObject();
+        ack.put("type", NetworkProtocol.JOIN_ACK.name());
+        ack.put("assignedId", playerId);
+        sendToClient(playerId, ack);
+
+        broadcast(gameState.generateSyncData());
+    }
     private synchronized void onStartGame() {
         System.out.println("START_GAME all clients");
         org.json.JSONObject startPacket = new org.json.JSONObject();
@@ -172,11 +170,24 @@ public class GameServerManager {
         gameState.onStartGame();
         broadcast(startPacket);
     }
-
-    public synchronized void nextTurn() {
+    private synchronized void onPong(String playerId){
+        // อัพเดตเวลา PONG ของ client คนนี้
+        for (ClientHandler c : clients) {
+            if (c.getPlayerId() != null && c.getPlayerId().equals(playerId)) {
+                c.updatePongTime();
+                break;
+            }
+        }
+    }
+    public synchronized void onNextTurn() {
         gameState.nextTurn();
         gameState.incrementPhaseCounter();
+        updateGameStateToClients();
+    }
+    private synchronized void onUseCard() {
+        updateGameStateToClients();
+    }
+    private synchronized void updateGameStateToClients(){
         broadcast(gameState.generateSyncData());
     }
-
 }

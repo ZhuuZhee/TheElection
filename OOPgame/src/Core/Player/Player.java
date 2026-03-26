@@ -171,4 +171,8 @@ public class Player {
             // ค่อยๆ
         }
     }
+
+    public boolean isLocal() {
+        return isLocal;
+    }
 }

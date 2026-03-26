@@ -49,7 +49,7 @@ public class GameState {
     public void reorderPlayers() {
         // players.sort ???
     }
-
+    ///game state data as json for socket
     public JSONObject generateSyncData() {
         JSONObject data = new JSONObject();
         data.put("type", NetworkProtocol.SYNC_STATE.name());
@@ -74,9 +74,11 @@ public class GameState {
         return hostId;
     }
 
-    //-----------------------------
-    //   game state events method
-    //-----------------------------
+
+
+    //----------------------------------------
+    ///--------   game state events method
+    //-----------------------------------------
 
     public synchronized void onStartGame() {
         Player startPlayer = players.getFirst();
@@ -89,14 +91,12 @@ public class GameState {
 
         Player prevPlayer = getCurrentPlayer();
         setCurrentPlayer(players.get((index + 1) % players.size()));
-
-        // OnStartTurn จะทำงานที่ Client เมื่อได้รับ SYNC_STATE ใหม่
     }
 
     public void playersLog(){
         System.out.println("------ All Players -------");
         for (Player p : players) {
-            System.out.println("Player : " + p.getPlayerName());
+            System.out.println("Player : " + p.getPlayerName() + (p.isLocal()? " this is Local" : ""));
         }
         System.out.println("Current Player is " + currentPlayer.getPlayerName());
         System.out.println("------ ----------- -------");
