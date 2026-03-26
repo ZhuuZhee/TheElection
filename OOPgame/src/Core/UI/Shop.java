@@ -3,16 +3,19 @@ package Core.UI;
 import Core.Cards.PolicyCard;
 import Core.Cards.Stream.PolicyCardRegistry;
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Scene.GameObject;
 import ZhuzheeEngine.Scene.Scene2D;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import Core.Player.Player;
+import ZhuzheeEngine.Screen;
 
 public class Shop extends JPanel {
 
@@ -149,6 +152,8 @@ public class Shop extends JPanel {
         wrapper.add(priceLabel);
         wrapper.add(Box.createVerticalStrut(4));
 
+        MouseAdapter mouseHover = ZhuzheeGame.MOUSE_HOVER_SFX;
+
 //        ปุ่มซื้อ เขียวถ้าเงินพอ แดงถ้าเงินไม่พอ
         boolean canAfford = this.localPlayer.getCoin() >= getPrice(card);
         JButton buyBtn = new JButton("Buy");
@@ -161,7 +166,11 @@ public class Shop extends JPanel {
         buyBtn.setBorderPainted(false);
         buyBtn.setFont(new Font("Arial", Font.BOLD, 12));
         buyBtn.setEnabled(canAfford && !purchased);
-        buyBtn.addActionListener(e -> handleBuy(card));
+        buyBtn.addActionListener(e -> {
+            handleBuy(card);
+            AudioManager.getInstance().playSound("click");
+        });
+        buyBtn.addMouseListener(mouseHover);
         wrapper.add(buyBtn);
 
         return wrapper;
@@ -218,5 +227,4 @@ public class Shop extends JPanel {
         ZhuzheeGame.MAIN_SCENE.revalidate();
         ZhuzheeGame.MAIN_SCENE.repaint();
     }
-
 }

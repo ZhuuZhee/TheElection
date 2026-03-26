@@ -105,7 +105,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
                     for (Component c : profileGrid.getComponents()) {
                         ((JButton) c).setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                     }
-                    profBtn.setBorder(BorderFactory.createLineBorder(Color.RED, 4));
+                    profBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
                 });
                 profileGrid.add(profBtn);
             }
@@ -192,7 +192,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
             
             // ตั้งค่าสีเริ่มต้น (Pink มีขอบสีแดง, สีอื่นขอบเทา)
             if (i == 0) {
-                colorBox.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+                colorBox.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
             } else {
                 colorBox.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
             }
@@ -209,7 +209,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
                         box.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
                     }
                     // ไฮไลต์กล่องที่ถูกเลือก
-                    colorBox.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+                    colorBox.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
                 }
             });
             
@@ -259,7 +259,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
                     for (Component c : arcanaGrid.getComponents()) {
                         ((JButton) c).setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                     }
-                    arcBtn.setBorder(BorderFactory.createLineBorder(Color.RED, 4));
+                    arcBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
                 });
                 arcanaGrid.add(arcBtn);
             }
