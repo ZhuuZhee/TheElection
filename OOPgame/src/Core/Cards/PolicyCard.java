@@ -10,8 +10,13 @@ import Core.Maps.PoliticsStats;
 
 import java.awt.*;
 
+/**
+ * Abstract base class for Policy Cards.
+ * Policy cards are persistent cards placed in slots that provide passive effects 
+ * or react when Action Cards are played.
+ */
 public abstract class PolicyCard extends Card {
-    protected boolean isInSlot = false;
+    protected boolean isInSlot = false; /** Tracks if the card is currently active in a slot. */
 
     public PolicyCard(String name, int x, int y, int coin) {
         super(name, x, y, 100, 150);
@@ -23,11 +28,21 @@ public abstract class PolicyCard extends Card {
         this.coin = coin;
     }
 
+    /**
+     * Determines if the policy's effects are currently active.
+     * @return true if active.
+     */
     public abstract boolean isActive();
 
+    /** @return true if the card is currently occupying a slot. */
     public boolean isInSlot() {
         return isInSlot;
     }
 
+    /**
+     * Triggered when an Action Card is played in a city where this policy is active.
+     * @param playedCard The action card being played.
+     * @param city The city where the action is taking place.
+     */
     public abstract void onActionCardPlayed(ActionCard playedCard, City city);
 }

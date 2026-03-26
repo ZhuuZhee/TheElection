@@ -61,8 +61,8 @@ public class ActionCard extends Card {
         if (targetCity != null) {
 
             // วิ่งไปหาการ์ดนโยบายจาก UI โดยตรงเลย (ไม่ต้องหาจาก scene แล้ว)
-            if (ZhuzheeGame.POLICY_CARD_UI != null) {
-                for (Card card : ZhuzheeGame.POLICY_CARD_UI.getCards()) {
+            if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+                for (Card card : ZhuzheeGame.POLICY_CARD_HAND.getCards()) {
                     if (card instanceof PolicyCard) {
                         PolicyCard passive = (PolicyCard) card;
 

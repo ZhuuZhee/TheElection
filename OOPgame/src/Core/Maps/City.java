@@ -3,23 +3,41 @@ package Core.Maps;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Represents a City in the game world.
+ * Cities contain population, political statistics, and manage the voting logic
+ * based on player contributions (cards played).
+ */
 public class City {
     private final String cityName;
+    /** The political and economic stats of the city. */
     public PoliticsStats stats;
+    /** The total number of citizens in the city. */
     public int population;
+    /** List of map grids that belong to this city. */
     public ArrayList<Grid> grids = new ArrayList<Grid>();
     private Color color;
 
     // --- Config ค่าคงที่ต่างๆ (ปรับ Balance ที่นี่) ---
+    /** Multiplier for the logarithmic scoring formula. */
     public static final double K_LOG_MULTIPLIER = 100.0;
+    /** Ratio of population required to earn one council seat. */
     public static final int POP_PER_SEAT = 10000;
+    /** Base score added per council seat. */
     public static final double SCORE_PER_SEAT_BASE = 50.0;
 
+    /** Total number of players in the game. */
     public int numPlayers = 4;
+    /** Number of seats available in this city's council. */
     public int councilSeats;
+    /** The initial base score for the city. */
     public double baseScore;
+    /** Current weighted scores for each player in this city. */
     public double[] playerScores;
 
+    /**
+     * Constructs a new City with specified parameters and initializes scoring.
+     */
     public City(String cityName, int facility, int environment, int economy, int population) {
         // เริ่มต้นสถานะของเมือง
         this.stats = new PoliticsStats(facility, environment, economy);
@@ -43,6 +61,12 @@ public class City {
         return this.cityName;
     }
 
+    /**
+     * Calculates a score based on logarithmic diminishing returns.
+     * @param currentStatVal The current value of the city's stat.
+     * @param cardVal The value being added by a card.
+     * @return The calculated score increase.
+     */
     public double calculateLogScore(double currentStatVal, double cardVal) {
         // ป้องกันค่าติดลบ
         double currentVal = Math.max(0, currentStatVal);
@@ -52,6 +76,12 @@ public class City {
         return K_LOG_MULTIPLIER * (Math.log(newVal + 1) - Math.log(currentVal + 1));
     }
 
+    /**
+     * Applies a single stat change from a player's card to the city.
+     * @param playerId Index of the player playing the card.
+     * @param statType The type of stat being modified.
+     * @param cardVal The amount of change.
+     */
     public void applyCard(int playerId, long statType, double cardVal) {
         double currentStat = stats.getStats(statType);
 
@@ -72,7 +102,11 @@ public class City {
         System.out.printf("   -> ได้คะแนนดิบเพิ่ม +%.2f คะแนน%n", scoreGained);
     }
 
-    /** Xynezter 11/3/2026 17:42 : fix method stat**/
+    /** 
+     * Applies all statistics from a card to the city for a specific player.
+     * @param playerId Index of the player.
+     * @param cardStats The PoliticsStats object containing card effects.
+     */
     public void applyStats(int playerId, PoliticsStats cardStats) {
         if (cardStats != null) {
             int newEconOffset = cardStats.getStats(PoliticsStats.ECONOMY);
@@ -88,11 +122,41 @@ public class City {
         }
     }
 
+    /**
+     * Convenience method to apply stats for the default player (Player 0).
+     * @param cardStats The stats to apply.
+     */
     public void applyStats(PoliticsStats cardStats) {
         // หากไม่ระบุ Player ให้ถือว่าเป็น Player 0
         applyStats(0, cardStats);
     }
 
+    /**
+     * Checks if the specified player has the highest score in the city.
+     * ตรวจสอบว่าผู้เล่นคนนี้มีคะแนนสูงสุดในเมืองหรือไม่ (รวมถึงกรณีที่คะแนนสูงสุดเท่ากับผู้อื่น)
+     * 
+     * @param playerId ดัชนีของผู้เล่นที่ต้องการตรวจสอบ
+     * @return true หากผู้เล่นมีคะแนนมากที่สุดหรือเท่ากับคะแนนสูงสุดในขณะนั้น
+     */
+    public boolean isPlayerDominateCity(int playerId){
+        if (playerId < 0 || playerId >= playerScores.length) return false;
+        
+        double targetScore = playerScores[playerId];
+        for (double score : playerScores) {
+            if (score > targetScore) return false;
+        }
+        return true;
+    }
+
+    public double[] getPlayerScores() {
+        return playerScores;
+    }
+
+    /**
+     * Calculates the current percentage of influence a player has in the city.
+     * @param playerId Index of the player.
+     * @return Percentage (0.0 to 100.0).
+     */
     public double getPlayerPercentage(int playerId) {
         if (playerId < 0 || playerId >= playerScores.length) return 0;
         double totalScore = 0;
@@ -103,6 +167,9 @@ public class City {
         return (playerScores[playerId] / totalScore) * 100;
     }
 
+    /**
+     * Prints the current voting simulation results to the console.
+     */
     public void getVotingResults() {
         double totalScore = 0;
         for (double score : playerScores) totalScore += score;
@@ -128,6 +195,9 @@ public class City {
         return grids;
     }
 
+    /**
+     * Prints city details and stats to the console for debugging.
+     */
     public void printStats() {
         System.out.println("----------------------------------");
         System.out.println("City: " + this.getCityName());

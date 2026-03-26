@@ -42,8 +42,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.Maps.Map MAP;
     public static long MAP_SEED = new java.util.Random().nextLong();
 
-    public static CardHolderUI PLAYER_HAND_DEV_CARDS;
-    public static PolicyCardHolderUI POLICY_CARD_UI;
+    public static CardHolderUI DEVLOPMENT_CARD_HAND;
+    public static PolicyCardHolderUI POLICY_CARD_HAND;
     public static ArcanaCardHolderUI ARCANA_CARD_UI;
     public static PlayerListUI PLAYER_LIST_UI;
 
@@ -90,9 +90,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.CardsTestingOnScene(MAIN_SCENE);
         Tester.MapTest();
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
-        PLAYER_HAND_DEV_CARDS = holderUI;
+        DEVLOPMENT_CARD_HAND = holderUI;
 
-        // 👉 1. สร้างตู้ Policy UI ตั้งไว้บนจอก่อน!
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
         Tester.ArcanaCardHolderUITest(MAIN_SCENE);
 
@@ -109,7 +108,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
 
-        Tester.DrawCardTest(MAIN_SCENE, holderUI);
+        Tester.CardTesterUI(MAIN_SCENE);
 
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);

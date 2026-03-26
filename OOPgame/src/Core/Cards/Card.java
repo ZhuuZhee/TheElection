@@ -21,8 +21,8 @@ import javax.swing.*;
 
 public abstract class Card extends GameObject {
     protected String name;
-    private static final int CARD_WIDTH = 100;
-    private static final int CARD_HEIGHT = 150;
+    public static final int DEFAULT_CARD_WIDTH = 100;
+    private static final int DEFAULT_CARD_HEIGHT = 150;
     protected boolean isGrabbed = false;
     protected boolean isDraggable = true;
     public boolean isHovered = false;
@@ -48,7 +48,7 @@ public abstract class Card extends GameObject {
     private int customTargetHeight = 0;
 
     public Card(String name, int x, int y, String imagePath){
-        this(name,x,y, CARD_WIDTH, CARD_HEIGHT, imagePath);
+        this(name,x,y, DEFAULT_CARD_WIDTH, DEFAULT_CARD_HEIGHT, imagePath);
     }
     public Card(String name, int x, int y, int width, int height) {
         this(name, x, y, width, height, "");
