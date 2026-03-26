@@ -1,6 +1,6 @@
 package Core;
 
-import Core.GameScreens.CharacterSelectUI;
+import Core.GameScreens.CharacterSelectMenu;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.Player.Player;
@@ -32,7 +32,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.GameScreens.JoinRoomMenu JOIN_ROOM_MENU;
     public static Core.GameScreens.WaitingRoomMenu WAITING_ROOM_MENU;
     public static OptionMenu OPTION_MENU;
-    public static Core.GameScreens.CharacterSelectUI CHARACTER_SELECT_MENU;
+    public static CharacterSelectMenu CHARACTER_SELECT_MENU;
 
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
@@ -46,7 +46,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PlayerListUI PLAYER_LIST_UI;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
-    public static final boolean DEV_MODE = true;
+    public static final boolean DEV_MODE = false;
 
     public static MouseAdapter MOUSE_HOVER_SFX = new MouseAdapter() {
         @Override
@@ -68,7 +68,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
         OPTION_MENU = new OptionMenu();
-        CHARACTER_SELECT_MENU = new CharacterSelectUI();
+        CHARACTER_SELECT_MENU = new CharacterSelectMenu();
 
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที
