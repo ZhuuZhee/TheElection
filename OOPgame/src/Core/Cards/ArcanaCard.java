@@ -3,17 +3,14 @@
  */
 package Core.Cards;
 
+import Core.UI.ArcanaCardHolderUI;
+
 public abstract class ArcanaCard extends Card {
     protected final int maxCooldown;
     protected int currentCooldown;
-    public ArcanaCard(String name, CardSlot targetSlot, int maxCooldown) {
-        super(name, targetSlot.getPosition().x, targetSlot.getPosition().y, 100, 150);
-        this.maxCooldown = maxCooldown;
-        this.currentCooldown = 0;
-    }
 
-    public ArcanaCard(String name, CardSlot targetSlot, int maxCooldown, String imagePath) {
-        super(name, targetSlot.getPosition().x, targetSlot.getPosition().y, 100, 150, imagePath);
+    public ArcanaCard(String name, int x, int y, int maxCooldown, String imagePath) {
+        super(name, x, y, 100, 150, imagePath);
         this.maxCooldown = maxCooldown;
         this.currentCooldown = 0;
     }
@@ -29,5 +26,4 @@ public abstract class ArcanaCard extends Card {
             this.currentCooldown--;
         }
     }
-
 }
