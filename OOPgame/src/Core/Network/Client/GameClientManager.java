@@ -1,8 +1,8 @@
 package Core.Network.Client;
 
 import Core.Network.NetworkProtocol;
+import Core.Network.PacketBuilder;
 import Core.Player.Player;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
@@ -26,10 +26,7 @@ public class GameClientManager {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            JSONObject joinPacket = new JSONObject();
-            joinPacket.put("actionType", NetworkProtocol.JOIN.name());
-            joinPacket.put("playerName", playerName);
-            sendAction(joinPacket);
+            sendAction(PacketBuilder.createJoinPacket(playerName));
 
             new Thread(() -> {
                 try {
@@ -109,8 +106,10 @@ public class GameClientManager {
             e.printStackTrace();
         }
     }
-
     public Player getLocalPlayer() {
         return localPlayer;
+    }
+    public void endTurn(){
+        sendAction(PacketBuilder.createEndTurnPacket());
     }
 }

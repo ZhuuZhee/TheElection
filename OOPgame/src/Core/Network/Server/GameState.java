@@ -3,14 +3,16 @@ package Core.Network.Server;
 import Core.Network.NetworkProtocol;
 import Core.Player.Player;
 import org.json.JSONObject;
+
 import java.util.*;
 
 public class GameState {
-//    private Map
+    //    private Map
     private List<Player> players = new ArrayList<>();
     private int phaseCounter = 1;
     private String hostId;
     private String currentPlayerId;
+    private Player currentPlayer;
     private long mapSeed = new Random().nextLong();
 
     public long getMapSeed() {
@@ -25,12 +27,23 @@ public class GameState {
         return players;
     }
 
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     public String getCurrentPlayerId() {
         return currentPlayerId;
     }
 
     public void setCurrentPlayerId(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
+    }
+
+    public void setCurrentPlayer(Player player) {
+        currentPlayer = player;
+        currentPlayerId = player.getPlayerId();
+        System.out.println("Server : Current Player is " + player.getPlayerName() + "\n id : " + player.getPlayerId());
+        playersLog();
     }
 
     public void reorderPlayers() {
@@ -47,17 +60,46 @@ public class GameState {
         if (currentPlayerId != null) {
             data.put("currentPlayerId", currentPlayerId);
         }
-        
+
         org.json.JSONArray playersArray = new org.json.JSONArray();
         for (Player p : players) {
             playersArray.put(p.toJSON());
         }
         data.put("players", playersArray);
-        
+
         return data;
     }
 
     public String getHostId() {
         return hostId;
+    }
+
+    //-----------------------------
+    //   game state events method
+    //-----------------------------
+
+    public synchronized void onStartGame() {
+        Player startPlayer = players.getFirst();
+        setCurrentPlayer(startPlayer);
+        startPlayer.OnStartTurn();
+    }
+
+    public synchronized void nextTurn() {
+        int index = players.indexOf(currentPlayer);
+
+        Player prevPlayer = getCurrentPlayer();
+        setCurrentPlayer(players.get((index + 1) % players.size()));
+
+        currentPlayer.OnStartTurn();
+
+    }
+
+    public void playersLog(){
+        System.out.println("------ All Players -------");
+        for (Player p : players) {
+            System.out.println("Player : " + p.getPlayerName());
+        }
+        System.out.println("Current Player is " + currentPlayer.getPlayerName());
+        System.out.println("------ ----------- -------");
     }
 }

@@ -1,9 +1,11 @@
 package Core;
 
+import Core.Cards.Card;
 import Core.GameScreens.CharacterSelectMenu;
 import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
+import Core.Maps.Map;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
 import Core.UI.PlayerListUI;
@@ -13,6 +15,7 @@ import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Audios.AudioManager;
+import ZhuzheeEngine.Scene.Camera2D;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 
@@ -25,6 +28,7 @@ import java.util.List;
 
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter {
+
     public static Scene2D MAIN_SCENE;
     public static MainMenu MAIN_MENU;
 
@@ -63,8 +67,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
         // set Application title
         Application.setMainFrameTitle("Zhuzhee The Game");
 
-        MAIN_SCENE = new Scene2D();
-        MAIN_MENU = new MainMenu();
         LOBBY_MENU = new Core.GameScreens.LobbyMenu();
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
@@ -72,7 +74,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CREDIT_UI = new CreditUI();
         OPTION_MENU = new OptionMenu();
         CHARACTER_SELECT_MENU = new CharacterSelectMenu();
-
+        MAIN_MENU = new MainMenu();
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที
         } else {
@@ -84,11 +86,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     /// MAIN_SCENE
     public static void startMainScene() {
+        MAIN_SCENE = new Scene2D();
         Screen.ChangeScreen(MAIN_SCENE);
 
-        MAP = new Core.Maps.Map(MAP_SEED);
+        MAP = new Map(MAP_SEED);
         Tester.CardsTestingOnScene(MAIN_SCENE);
-        Tester.MapTest();
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         DEVLOPMENT_CARD_HAND = holderUI;
 
@@ -114,7 +116,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CameraControlEvent(MAIN_SCENE);
     }
 
-    private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f;
+    private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f, NORMAL_ZOOM = 1;
     private static Point mousePoint;
 
     public static void CameraControlEvent(Scene2D scene) {
@@ -158,7 +160,14 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     @Override
     public void render() {
+        if(MAIN_SCENE != null) sceneUpdate();
+    }
 
+    public void sceneUpdate(){
+        Camera2D cam = MAIN_SCENE.getCamera();
+        if(Card.CURRENT_GRABBED_CARD != null && cam.getZoom() != NORMAL_ZOOM){
+            cam.smoothZoom(NORMAL_ZOOM, 10);
+        }
     }
 
     @Override

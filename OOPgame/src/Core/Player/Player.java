@@ -1,6 +1,11 @@
 package Core.Player;
 
 import Core.Cards.*;
+import Core.Cards.Stream.CardBufferObject;
+import Core.Cards.Stream.CardReader;
+import Core.UI.CardHolderUI;
+import Core.ZhuzheeGame;
+import ZhuzheeEngine.Application;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -16,6 +21,8 @@ public class Player {
     private String[] cityOwn;
     private String color;
     private String profileImagePath;
+
+    public static final int DEFAULT_DRAW_DEV_CARD_AMOUNT = 4;
 
     public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, ArcanaCard arcanaCard) {
         this.playerId = playerId;
@@ -42,15 +49,53 @@ public class Player {
         return playerName;
     }
 
-    public int getCoin() { return coin; }
+    public int getCoin() {
+        return coin;
+    }
 
-    public void setCoin(int coin) { this.coin = coin; }
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
 
-    public void DrawCard() {
+    public void OnStartTurn() {
+        DrawCard();
+    }
+
+    private void DrawCard() {
+        CardBufferObject[] cardBufferObjects = DrawActionCardBufferObjects(DEFAULT_DRAW_DEV_CARD_AMOUNT);
+
+        new Thread(() -> {
+            while (true) {
+                if (ZhuzheeGame.MAIN_SCENE != null && ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
+                    CardHolderUI cardHolderUI = ZhuzheeGame.DEVLOPMENT_CARD_HAND;
+                    for (CardBufferObject cardBuffer : cardBufferObjects) {
+                        cardHolderUI.addCard(new ActionCard(cardBuffer, 0, 0));
+                    }
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(Application.DELTA_TIME_MS);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private CardBufferObject[] DrawActionCardBufferObjects(int amount) {
+        ArrayList<CardBufferObject> cards = new ArrayList<>();
+        List<CardBufferObject> loadedCars = CardReader.getLoadedCards();
+        Random random = new Random();
+        for (int i = 0; i < amount; i++) {
+            CardBufferObject cardBuffer = loadedCars.get(random.nextInt(loadedCars.size()));
+            cards.add(cardBuffer);
+        }
+        return cards.toArray(new CardBufferObject[0]);
     }
 
     public void UseCard() {

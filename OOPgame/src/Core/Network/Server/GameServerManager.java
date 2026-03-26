@@ -5,6 +5,7 @@ import Core.Network.NetworkProtocol;
 import java.net.*;
 import java.util.*;
 
+import Core.Player.Player;
 import org.json.JSONObject;
 
 public class GameServerManager {
@@ -104,7 +105,7 @@ public class GameServerManager {
             String pName = action.optString("playerName", "Unknown-" + playerId.substring(0, 4));
 
             // สร้างตัวละครแล้วเพิ่มลงใน gameState
-            Core.Player.Player newPlayer = new Core.Player.Player(playerId, pName, false);
+            Player newPlayer = new Player(playerId, pName, false);
             gameState.getPlayers().add(newPlayer);
             System.out.println(pName + " (" + playerId + ") joined the game.");
 
@@ -134,14 +135,6 @@ public class GameServerManager {
         }
     }
 
-    private void onStartGame() {
-        System.out.println("START_GAME all clients");
-        org.json.JSONObject startPacket = new org.json.JSONObject();
-        startPacket.put("type", NetworkProtocol.START_GAME.name());
-        startPacket.put("mapSeed", gameState.getMapSeed());
-        broadcast(startPacket);
-    }
-
     public void removeClient(String playerId) {
         ClientHandler target = null;
         for (ClientHandler c : clients) {
@@ -167,9 +160,22 @@ public class GameServerManager {
         broadcast(gameState.generateSyncData());
     }
 
-    public synchronized void nextTurn() {
-        gameState.incrementPhaseCounter();
+    // -------------------------------------
+    //         server action method
+    // -------------------------------------
 
+    private synchronized void onStartGame() {
+        System.out.println("START_GAME all clients");
+        org.json.JSONObject startPacket = new org.json.JSONObject();
+        startPacket.put("type", NetworkProtocol.START_GAME.name());
+        startPacket.put("mapSeed", gameState.getMapSeed());
+        gameState.onStartGame();
+        broadcast(startPacket);
+    }
+
+    public synchronized void nextTurn() {
+        gameState.nextTurn();
+        gameState.incrementPhaseCounter();
         broadcast(gameState.generateSyncData());
     }
 

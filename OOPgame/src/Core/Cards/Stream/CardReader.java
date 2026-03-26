@@ -11,6 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CardReader {
+    static String FILE_PATH = "OOPgame/Assets/cards_test_data.json";
+    private static List<CardBufferObject> loadedCard = new ArrayList<>();
+
+    public static List<CardBufferObject> getLoadedCards() {
+        if (loadedCard.isEmpty())
+            readActionCards();
+        return loadedCard;
+    }
+
+    public static List<CardBufferObject> readActionCards() {
+        return readActionCards(FILE_PATH);
+    }
+
     public static List<CardBufferObject> readActionCards(String filePath) {
         List<CardBufferObject> cards = new ArrayList<>();
         try {
@@ -34,8 +47,9 @@ public class CardReader {
 
                 String imagePath = obj.optString("img", "");
 
-                cards.add(new CardBufferObject(name, coin,stats,imagePath));
+                cards.add(new CardBufferObject(name, coin, stats, imagePath));
             }
+            loadedCard.addAll(cards);
         } catch (IOException e) {
             System.err.println("Error reading cards: " + e.getMessage());
         }
