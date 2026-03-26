@@ -1,6 +1,7 @@
 package Core;
 
 import Core.GameScreens.CharacterSelectMenu;
+import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.Player.Player;
@@ -31,6 +32,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.GameScreens.CreateRoomMenu CREATE_ROOM_MENU;
     public static Core.GameScreens.JoinRoomMenu JOIN_ROOM_MENU;
     public static Core.GameScreens.WaitingRoomMenu WAITING_ROOM_MENU;
+    public static CreditUI CREDIT_UI;
     public static OptionMenu OPTION_MENU;
     public static CharacterSelectMenu CHARACTER_SELECT_MENU;
 
@@ -67,6 +69,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
+        CREDIT_UI = new CreditUI();
         OPTION_MENU = new OptionMenu();
         CHARACTER_SELECT_MENU = new CharacterSelectMenu();
 
@@ -85,9 +88,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         MAP = new Core.Maps.Map(MAP_SEED);
         Tester.CardsTestingOnScene(MAIN_SCENE);
+        Tester.MapTest();
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         PLAYER_HAND_DEV_CARDS = holderUI;
 
+        // 👉 1. สร้างตู้ Policy UI ตั้งไว้บนจอก่อน!
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
         Tester.ArcanaCardHolderUITest(MAIN_SCENE);
 
@@ -105,6 +110,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
 
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
+
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);
     }
