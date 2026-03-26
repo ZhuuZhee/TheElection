@@ -4,8 +4,8 @@
 package Core.Cards;
 
 public abstract class ArcanaCard extends Card {
-    private final int maxCooldown;
-    private int currentCooldown;
+    protected final int maxCooldown;
+    protected int currentCooldown;
     public ArcanaCard(String name, CardSlot targetSlot, int maxCooldown) {
         super(name, targetSlot.getPosition().x, targetSlot.getPosition().y, 100, 150);
         this.maxCooldown = maxCooldown;
@@ -20,20 +20,8 @@ public abstract class ArcanaCard extends Card {
 
     protected abstract void activateSkill();
 
-    public void onMouseClick() {
-        // รอ นับเทริน
-        if (this.currentCooldown == 0) {
-            System.out.println("Used skill : " + this.name);
-            activateSkill();
-
-            // Reset cooldown
-            this.currentCooldown = this.maxCooldown;
-        } else {
-            System.out.println(this.name + " Cant use! wait for " + this.currentCooldown + " tern");
-        }
-        activateSkill();
-        this.currentCooldown = this.maxCooldown;
-    }
+    @Override
+    public abstract void onMousePressed(int mouseX, int mouseY);
 
     // รอ นับเทริน เรียกใช้
     public void decreaseCooldown() {

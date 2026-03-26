@@ -6,7 +6,22 @@ import Core.Cards.CardSlot;
 public class TheFoolCard extends ArcanaCard {
 
     public TheFoolCard(CardSlot targetSlot) {
+        // สามารถกำหนด maxCooldown ได้จาก contractor ตรงนี้ได้เลย
         super("The Fool", targetSlot, 3, "OOPgame/Assets/ImageForProfile/lee.jpg");
+    }
+
+    @Override
+    public void onMousePressed(int mouseX, int mouseY) {
+        // รอ นับเทริน
+        if (this.currentCooldown == 0) {
+            System.out.println("Used skill : " + this.name);
+            activateSkill();
+
+            // Reset cooldown
+            this.currentCooldown = this.maxCooldown;
+        } else {
+            System.out.println(this.name + " Can't use! wait for " + this.currentCooldown + " turn");
+        }
     }
 
     @Override

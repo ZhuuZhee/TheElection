@@ -56,7 +56,6 @@ public class ActionCard extends Card {
         City targetCity = grid.getCity();
 
         if (targetCity != null) {
-
             // วิ่งไปหาการ์ดนโยบายจาก UI โดยตรงเลย (ไม่ต้องหาจาก scene แล้ว)
             // แก้ไขจาก POLICY_CARD_UI เป็น POLICY_CARD_HAND ตามที่มีใน ZhuzheeGame.java
             if (ZhuzheeGame.POLICY_CARD_HAND != null) {
