@@ -9,7 +9,7 @@ import Core.ZhuzheeGame;
 
 public class Recount extends PolicyCard {
     public Recount(int x, int y, String imagePath) {
-        super("Recount", x, y, imagePath, 5);
+        super("Recount", x, y, imagePath, -5);
     }
 
     @Override

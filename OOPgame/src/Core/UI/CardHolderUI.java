@@ -13,10 +13,10 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class CardHolderUI extends Canvas {
-    private ArrayList<Card> cards = new ArrayList<>();
-    private int panelHeight = 220;
-    private JPanel cardContainer;
-    private Scene2D scene;
+    private final ArrayList<Card> cards = new ArrayList<>();
+    private final int panelHeight = 220;
+    private final JPanel cardContainer;
+    private final Scene2D scene;
 
     public CardHolderUI(Scene2D scene){
         super(scene);

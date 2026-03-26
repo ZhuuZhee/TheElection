@@ -43,8 +43,9 @@ public class Grid{
 //
 //    public int getGridY() { return gridY; }
 
-    // เอาไว้ check ว่า Point นี้อยู่ใน Grid นี้หรือไม่
+    // เอาไว้เช็คว่า ตำแหน่งอยู่บนที่เดียวกับ hexagon รึเปล่า
     public boolean contains(Point p) {
+        // เอาไว้เช็คว่า hexagon มีอยู่รึเปล่า
         if(hexagon == null) return false;
         return hexagon.contains(p);
     }

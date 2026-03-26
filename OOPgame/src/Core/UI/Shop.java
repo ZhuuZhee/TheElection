@@ -1,6 +1,7 @@
 package Core.UI;
 
 import Core.Cards.PolicyCard;
+import Core.Cards.PolicyCardRegistry;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.Scene2D;
 
@@ -35,6 +36,11 @@ public class Shop extends JPanel {
     private List<PolicyCard> shopCards = new ArrayList<>();
     private Player localPlayer;
     private boolean purchased = false;
+
+    /** สร้าง Shop โดยสุ่มการ์ด 3 ใบจาก policy_cards.json อัตโนมัติ */
+    public Shop(Scene2D scene) {
+        this(scene, PolicyCardRegistry.rollCards(3));
+    }
 
     public Shop(Scene2D scene, List<PolicyCard> allCards) {
         this.scene = scene;
@@ -80,7 +86,7 @@ public class Shop extends JPanel {
 
     }
 
-    // สุ่มการ์ดจาก pool
+    // สุ่มการ์ดจาก pool (ใช้เมื่อส่ง list เข้ามาเอง)
     private ArrayList<PolicyCard> rollCards(List<PolicyCard> allCards) {
         List<PolicyCard> pool = new ArrayList<>(allCards);
         Collections.shuffle(pool);
@@ -135,7 +141,7 @@ public class Shop extends JPanel {
 
         wrapper.add(Box.createVerticalStrut(6));
 //        ราคาการ์ด
-        JLabel priceLabel = new JLabel("$ " + -1 * getPrice(card), SwingConstants.CENTER);
+        JLabel priceLabel = new JLabel("$ " + Math.abs(getPrice(card)), SwingConstants.CENTER);
         priceLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         priceLabel.setForeground(Color.WHITE);
         priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -186,11 +192,15 @@ public class Shop extends JPanel {
     private void handleBuy(PolicyCard card) {
         if (this.localPlayer.getCoin() < getPrice(card)) return;
 
-        this.localPlayer.setCoin(this.localPlayer.getCoin() - getPrice(card));
-        System.out.println("ซื้อการ์ด " + card.getName() + " สำเร็จ! หักเงิน " +  getPrice(card) + " เหลือ: " + localPlayer.getCoin());
+        this.localPlayer.setCoin(this.localPlayer.getCoin() + getPrice(card));
+        System.out.println("ซื้อการ์ด " + card.getName() + " สำเร็จ! หักเงิน " +  -(getPrice(card)) + " เหลือ: " + localPlayer.getCoin());
 
         shopCards.remove(card);
-        Dummy.Tester.policyUI.addCard(card);
+        if (ZhuzheeGame.POLICY_CARD_UI != null) {
+            ZhuzheeGame.POLICY_CARD_UI.addCard(card);
+        } else {
+            System.err.println("Warning: PolicyCardHolderUI is null!");
+        }
 
         moneyLabel.setText("Total Money : " + this.localPlayer.getCoin());
 

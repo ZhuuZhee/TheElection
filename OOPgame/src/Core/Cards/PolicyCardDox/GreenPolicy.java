@@ -8,7 +8,7 @@ import Core.Maps.PoliticsStats;
 
 public class GreenPolicy extends PolicyCard {
     public GreenPolicy(int x, int y, String imagePath) {
-        super("Green Policy", x, y, imagePath, 5);
+        super("Green Policy", x, y, imagePath, -5);
     }
     @Override
     public boolean IsActivate() {

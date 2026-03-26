@@ -52,7 +52,6 @@ public abstract class Card extends GameObject {
     }
     public Card(String name, int x, int y, int width, int height) {
         this(name, x, y, width, height, "");
-
     }
     public Card(String name, int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
@@ -78,19 +77,10 @@ public abstract class Card extends GameObject {
                 // e.getPoint() is local to the card (e.g., 0-100, 0-150)
                 onMousePressed(e.getX(), e.getY());
             }
-
             @Override
             public void mouseReleased(MouseEvent e) {
                 onMouseReleased();
             }
-
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                onMouseClick();
-//                scene.getCamera().LerpCameraTo(getPosition(),1);
-//                scene.getCamera().LerpZoom(2,1);
-//            }
-
             @Override
             public void mouseEntered(MouseEvent e) {
                 setHovered(true);
@@ -183,6 +173,7 @@ public abstract class Card extends GameObject {
 
                 setZIndex(Z_INDEX_TOP);
 //                scene.setComponentZOrder(this,0);
+                repaint();
             }
         }
     }
@@ -190,7 +181,7 @@ public abstract class Card extends GameObject {
     public void onMouseDragged(int mouseX, int mouseY) {
         if (getEnable() && isGrabbed) {
             // 1. Calculate target Screen Position
-            Point pos = getLocationOnScreen();
+            Point pos = getLocation();
             int targetScreenX = pos.x + mouseX - offset.x;
             int targetScreenY = pos.y + mouseY - offset.y;
 
@@ -263,24 +254,17 @@ public abstract class Card extends GameObject {
                 return;
             }
 
-            // handle when drop card on slot
-            var slot = getCardSlotOnBottom();
-            if (slot != null) {
-                snapToSlot(slot);
-                onDroppedInSlot(slot);
-                return;
-            }
-
             var grid = getGridOnBottom();
             if (grid != null) {
                 snapToGrid(grid);
                 onDroppedOnGrid(grid);
                 return;
             }
+            repaint();
         }
     }
 
-    // check ว่า card ชนกับขอบของ yourhand มั้ย " ให้ card เป้นตัวเช็ค "
+    // check ว่า card ชนกับขอบของ your hand มั้ย " ให้ card เป้นตัวเช็ค "
     private CardHolderUI getHandUIOnBottom() {
         if (getParent() == null) return null;
         Rectangle cardRect = this.getBounds();
@@ -296,42 +280,6 @@ public abstract class Card extends GameObject {
             }
         }
         return null;
-    }
-
-    // --------------------------------------------------
-    // ---------- logic about slot suction --------------
-    // --------------------------------------------------
-    private CardSlot getCardSlotOnBottom() {
-        if (getParent() == null) return null;
-        Rectangle cardRect = this.getBounds();
-
-        // Iterate through Swing Components in the parent Container (Scene)
-        for (Component comp : getParent().getComponents()) {
-            if (comp == this) continue;
-            if (!(comp instanceof GameObject)) continue; // Assume GameObject extends Component
-
-            GameObject obj = (GameObject) comp;
-
-            if (!(obj instanceof CardSlot)) continue;
-
-            Rectangle slotMagneticField = new Rectangle(
-                    obj.getX() - SNAP_MARGIN,
-                    obj.getY() - SNAP_MARGIN,
-                    obj.getWidth() + (SNAP_MARGIN * 2),
-                    obj.getHeight() + (SNAP_MARGIN * 2)
-            );
-
-            if (cardRect.intersects(slotMagneticField)) {
-                return (CardSlot) obj;
-            }
-        }
-        return null;
-    }
-
-    private void snapToSlot(CardSlot slot) {
-        // Set world position to match slot's world position
-        this.setPosition(new Point(slot.getPosition()));
-        // เรียก method when card ทับ กับ Magnetic Field ของ slot
     }
 
     private Grid getGridOnBottom() {
@@ -379,15 +327,8 @@ public abstract class Card extends GameObject {
     protected boolean isDroppable(Object bottom) {
         return false;
     }
-
-    // add method for business logic when card DroppedInSlot
-    protected void onDroppedInSlot(CardSlot slot) {
-    }
-
     protected void onDroppedOnGrid(Grid grid) {
     }
-
-
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // Call JPanel paint
@@ -424,16 +365,18 @@ public abstract class Card extends GameObject {
             g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
             // วาดชื่อการ์ด
-            FontMetrics fm = g2d.getFontMetrics();
-            int textX = (getWidth() - fm.stringWidth(name)) / 2;
-            int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+            if (!isGrabbed) {
+                FontMetrics fm = g2d.getFontMetrics();
+                int textX = (getWidth() - fm.stringWidth(name)) / 2;
+                int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
 
-            // พื้นหลังตัวหนังสือแบบโปร่งแสง
-            g2d.setColor(new Color(255, 255, 255, 180));
-            g2d.fillRect(textX - 2, textY - fm.getAscent() - 2, fm.stringWidth(name) + 4, fm.getHeight() + 4);
+                // พื้นหลังตัวหนังสือแบบโปร่งแสง
+                g2d.setColor(new Color(255, 255, 255, 180));
+                g2d.fillRect(textX - 2, textY - fm.getAscent() - 2, fm.stringWidth(name) + 4, fm.getHeight() + 4);
 
-            g2d.setColor(Color.BLACK);
-            g2d.drawString(name, textX, textY);
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(name, textX, textY);
+            }
 
             // วาดค่า Stat เฉพาะของแต่ละประเภทการ์ด
             drawStats(g2d);
@@ -444,6 +387,8 @@ public abstract class Card extends GameObject {
     }
 
     protected void drawStats(Graphics2D g2d) {
+        if (isGrabbed) return;
+
         // วาดค่า Coin (Cost) ที่มุมบนขวาของการ์ด
         int iconSize = 20;
         int margin = 5;
@@ -451,6 +396,7 @@ public abstract class Card extends GameObject {
         int y = margin * 2;
         String coinStr;
         // วาดวงกลมสีทองสำหรับเหรียญ
+
         if (coin > 0) {
             g2d.setColor(new Color(255, 215, 0));
             coinStr = String.valueOf(coin);// Gold
@@ -458,16 +404,18 @@ public abstract class Card extends GameObject {
             g2d.setColor(new Color(255, 0, 0));
             coinStr = String.valueOf(coin * -1);
         }
-        g2d.fillOval(x, y, iconSize, iconSize);
-        g2d.setColor(Color.BLACK);
-        g2d.drawOval(x, y, iconSize, iconSize);
+        if (coin != 0) {
+            g2d.fillOval(x, y, iconSize, iconSize);
+            g2d.setColor(Color.BLACK);
+            g2d.drawOval(x, y, iconSize, iconSize);
 
-        // วาดค่าตัวเลข coin
-        g2d.setFont(new Font("Arial", Font.BOLD, 12));
-        FontMetrics fm = g2d.getFontMetrics();
-        int textX = x + (iconSize - fm.stringWidth(coinStr)) / 2;
-        int textY = y + (iconSize - fm.getHeight()) / 2 + fm.getAscent();
-        g2d.drawString(coinStr, textX, textY);
+            // วาดค่าตัวเลข coin
+            g2d.setFont(new Font("Arial", Font.BOLD, 12));
+            FontMetrics fm = g2d.getFontMetrics();
+            int textX = x + (iconSize - fm.stringWidth(coinStr)) / 2;
+            int textY = y + (iconSize - fm.getHeight()) / 2 + fm.getAscent();
+            g2d.drawString(coinStr, textX, textY);
+        }
     }
 
     public String getName() {
@@ -534,11 +482,4 @@ public abstract class Card extends GameObject {
         super.setBounds(x - shiftX, y - shiftY, finalWidth, finalHeight);
     }
 
-    public void setBaseWidth(int width) {
-        baseWidth = width;
-    }
-
-    public void setBaseHeight(int height) {
-        baseHeight = height;
-    }
 }

@@ -1,7 +1,6 @@
 package Dummy;
 
 import Core.Cards.ActionCard;
-import Core.Cards.PolicyCard;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
@@ -9,6 +8,7 @@ import Core.GameScreens.MainMenu;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
 import Core.UI.PolicyCardHolderUI;
+import Core.UI.ArcanaCardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
 import ZhuzheeEngine.Application;
@@ -16,7 +16,6 @@ import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
-import Core.Cards.PolicyCardA;
 import Core.Maps.Map;
 
 import java.awt.*;
@@ -31,7 +30,6 @@ import javax.swing.*;
 
 public class Tester {
     public static Player dummyPlayer = new Player("dummy_01", "Test Player", true);
-    public static PolicyCardHolderUI policyUI;
     public static void CardsTestingOnScene(Scene2D scene2D){
         // Removed hardcoded dummy CardSlots and ActionCards
         // The player should use DrawCardUI to get cards and play them on the Map.
@@ -87,21 +85,19 @@ public class Tester {
         return new CardHolderUI(scene2D);
     }
     public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
-        policyUI = new PolicyCardHolderUI(scene2D);
-        return policyUI;
+        ZhuzheeGame.POLICY_CARD_UI = new PolicyCardHolderUI(scene2D);
+        return ZhuzheeGame.POLICY_CARD_UI;
+    }
+    public static ArcanaCardHolderUI ArcanaCardHolderUITest(Scene2D scene2D){
+        ZhuzheeGame.ARCANA_CARD_UI = new ArcanaCardHolderUI(scene2D);
+        return ZhuzheeGame.ARCANA_CARD_UI;
     }
     public static void MapTest() {
         new Map();
     }
 
     public static void ShopTest() {
-        List<PolicyCard> cards = new ArrayList<>();
-        String imageFolder = "OOPgame/Assets/ImageForCards/";
-        // ตั้งค่า PolicyCard เป็นค่าติดลบ
-        cards.add(new PolicyCardA("Kuy Sega", 0, 0,imageFolder + "gay.png",-10));
-        cards.add(new PolicyCardA("Red Policy", 100, 0,imageFolder + "gay.png", -5));
-        cards.add(new PolicyCardA("Blue Policy", 200, 0,imageFolder + "gay.png",-1));
-        new Shop(ZhuzheeGame.MAIN_SCENE,cards);
+        new Shop(ZhuzheeGame.MAIN_SCENE);
     }
 
     public static void TestCardStream() {
