@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class CardHolderUI extends Canvas {
-    private final ArrayList<Card> cards = new ArrayList<>();
+    protected final ArrayList<Card> cards = new ArrayList<>();
     private static final int DEFAULT_HEIGHT = 220;
     private static final int DEFAULT_WIDTH = 400;
 
@@ -100,6 +100,10 @@ public class CardHolderUI extends Canvas {
 
     public boolean isEmpty(){
         return cards.isEmpty();
+    }
+
+    public boolean containsCard(Card card) {
+        return cards.contains(card);
     }
 
     @Override

@@ -6,47 +6,37 @@ package Core.Cards;
 
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.ZhuzheeGame;
 
 // สืบทอด PassiveCard และใช้ Interface PolicyCard
 public class PolicyCardA extends PolicyCard {
 
-    public PolicyCardA(String name, int x, int y){
-
-        this(name,x,y,0);
-    }
-
-    public PolicyCardA(String name, int x, int y, int coin) {
-        super(name, x, y,coin); // โยนค่าไปให้ PassiveCard จัดการ
-    }
-
     public PolicyCardA(String name, int x, int y, String imagePath, int coin) {
-        super(name, x, y, imagePath, coin);
+        super("A", 0, 100, imagePath, -10);
     }
 
     @Override
     public boolean IsActivate() {
-        return true;
+        if (ZhuzheeGame.POLICY_CARD_UI != null) {
+            return ZhuzheeGame.POLICY_CARD_UI.containsCard(this);
+        }
+        return false;
     }
 
     // Business Logic
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
         if (IsActivate()) {
-            System.out.println("----------------------------------");
-            System.out.println("PolicyCardA: " + this.name + " Buff for " + playedCard.name);
-            System.out.println("----------------------------------");
-            PoliticsStats stats = playedCard.getStats();
-            if (stats != null) {
-                // business logic confix stat # ตัวอย่าง Business Logic: คูณค่า Facility เดิมด้วย 10
-                int currentFacility = stats.getStats(PoliticsStats.Facility);
-                stats.setStats(PoliticsStats.Facility, currentFacility * 10);
+            PoliticsStats cardStats = playedCard.getStats();
+            if (cardStats != null) {
+                int cardFacility = cardStats.getStats(PoliticsStats.Facility);
+
+                if (cardFacility > 0) {
+                    int bonusFacility = cardFacility * 10;
+                    cardStats.setStats(PoliticsStats.Facility, bonusFacility);
+                }
             }
         }
     }
 
-    @Override
-    protected boolean isDroppable(Object bottom) {
-        // ให้วางทับ CardSlot ได้
-        return bottom instanceof CardSlot;
-    }
 }

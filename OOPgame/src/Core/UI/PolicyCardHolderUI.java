@@ -2,11 +2,7 @@ package Core.UI;
 
 import Core.Cards.Card;
 import ZhuzheeEngine.Scene.*;
-import ZhuzheeEngine.Scene.Canvas;
 
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class PolicyCardHolderUI extends CardHolderUI {

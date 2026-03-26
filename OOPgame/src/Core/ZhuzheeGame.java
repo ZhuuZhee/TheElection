@@ -1,6 +1,7 @@
 package Core;
 
-import Core.GameScreens.CharacterSelectUI;
+import Core.GameScreens.CharacterSelectMenu;
+import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.Player.Player;
@@ -31,11 +32,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.GameScreens.CreateRoomMenu CREATE_ROOM_MENU;
     public static Core.GameScreens.JoinRoomMenu JOIN_ROOM_MENU;
     public static Core.GameScreens.WaitingRoomMenu WAITING_ROOM_MENU;
+    public static CreditUI CREDIT_UI;
     public static OptionMenu OPTION_MENU;
-    public static Core.GameScreens.CharacterSelectUI CHARACTER_SELECT_MENU;
-
-    private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f;
-    private static Point mousePoint;
+    public static CharacterSelectMenu CHARACTER_SELECT_MENU;
 
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
@@ -49,7 +48,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PlayerListUI PLAYER_LIST_UI;
 
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
-    public static final boolean DEV_MODE = true;
+    public static final boolean DEV_MODE = false;
 
     public static MouseAdapter MOUSE_HOVER_SFX = new MouseAdapter() {
         @Override
@@ -70,8 +69,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
+        CREDIT_UI = new CreditUI();
         OPTION_MENU = new OptionMenu();
-        CHARACTER_SELECT_MENU = new CharacterSelectUI();
+        CHARACTER_SELECT_MENU = new CharacterSelectMenu();
 
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที
@@ -88,9 +88,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         MAP = new Core.Maps.Map(MAP_SEED);
         Tester.CardsTestingOnScene(MAIN_SCENE);
-        CardHolderUI holderUI =
-        PLAYER_HAND_DEV_CARDS = BuidDevlopmentCardHolderUI();
+        Tester.MapTest();
+        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
+        PLAYER_HAND_DEV_CARDS = holderUI;
 
+        // 👉 1. สร้างตู้ Policy UI ตั้งไว้บนจอก่อน!
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
         Tester.ArcanaCardHolderUITest(MAIN_SCENE);
 
@@ -108,10 +110,13 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
 
         Tester.DrawCardTest(MAIN_SCENE, holderUI);
+
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);
     }
 
+    private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f;
+    private static Point mousePoint;
 
     public static void CameraControlEvent(Scene2D scene) {
         // ใช้ AWTEventListener เพื่อดักจับ Input ของเมาส์แบบ Global ไม่ว่าจะชี้อยู่บน
@@ -146,15 +151,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
             }
         }, eventMask);
     }
-    public static CardHolderUI BuidDevlopmentCardHolderUI(){
-        CardHolderUI ui = new CardHolderUI(MAIN_SCENE);
-        ui.setPanelSize(600,224);
-        ui.setSetLabel("Your Hand");
-        ui.setStrechToFit(true);
-        ui.setAnchorTop(false);
-        ui.setMargins(256,24, 24,16);
-        return ui;
-    }
+
     @Override
     public void resize(int width, int height) {
 

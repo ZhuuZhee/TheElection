@@ -6,7 +6,6 @@ package Core.Cards;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
-import Dummy.*;
 import Core.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
 
@@ -25,7 +24,15 @@ public class ActionCard extends Card {
 
     public ActionCard(String name, int x, int y, PoliticsStats stats, String imagePath, int coin) {
         super(name, x, y, imagePath); // โยน imagePath ให้ Card จัดการ
-        this.stats = stats;
+        if (stats != null) {
+            this.stats = new PoliticsStats(
+                    stats.getStats(PoliticsStats.Facility),
+                    stats.getStats(PoliticsStats.Environment),
+                    stats.getStats(PoliticsStats.Economy)
+            );
+        } else {
+            this.stats = null;
+        }
         this.coin = coin;
     }
 
@@ -52,11 +59,17 @@ public class ActionCard extends Card {
         City targetCity = grid.getCity();
 
         if (targetCity != null) {
-            for (GameObject obj : scene.getGameObjects()) {
-                if (obj instanceof PolicyCard) {
-                    PolicyCard passive = (PolicyCard) obj;
-                    if (passive.isInSlot() && passive.IsActivate()) {
-                        passive.onActionCardPlayed(this, targetCity);
+
+            // วิ่งไปหาการ์ดนโยบายจาก UI โดยตรงเลย (ไม่ต้องหาจาก scene แล้ว)
+            if (ZhuzheeGame.POLICY_CARD_UI != null) {
+                for (Card card : ZhuzheeGame.POLICY_CARD_UI.getCards()) {
+                    if (card instanceof PolicyCard) {
+                        PolicyCard passive = (PolicyCard) card;
+
+                        // เอา isInSlot() ออก เหลือแค่เช็ค IsActivate() อย่างเดียว
+                        if (passive.IsActivate()) {
+                            passive.onActionCardPlayed(this, targetCity);
+                        }
                     }
                 }
             }

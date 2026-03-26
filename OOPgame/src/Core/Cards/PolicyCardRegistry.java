@@ -65,6 +65,7 @@ public class PolicyCardRegistry {
             case "EconomicBoom"  -> new EconomicBoom(0, 0, img);
             case "IronWill"      -> new IronWill(0, 0, img);
             case "NaturePact"    -> new NaturePact(0, 0, img);
+            case "PolicyCardA"   -> new PolicyCardA("ko",0,0,img,-10);
             default -> {
                 System.err.println("[PolicyCardRegistry] ไม่รู้จัก class: " + className);
                 yield null;
