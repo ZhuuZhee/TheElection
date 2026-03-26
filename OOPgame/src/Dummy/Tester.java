@@ -1,6 +1,7 @@
 package Dummy;
 
 import Core.Cards.ActionCard;
+import Core.Cards.Card;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
@@ -11,9 +12,9 @@ import Core.UI.PolicyCardHolderUI;
 import Core.UI.ArcanaCardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
-import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Scene.Canvas;
+import ZhuzheeEngine.Scene.GameObject;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 import Core.Maps.Map;
@@ -44,7 +45,6 @@ public class Tester {
             hand = handUi;
 
             setLayout(new BorderLayout());
-
             JButton button = new JButton("Draw Card");
             AudioManager.getInstance().loadSound("draw","draw.WAV");
             String filePath = "OOPgame/Assets/cards_test_data.json";
@@ -53,11 +53,12 @@ public class Tester {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = new Random().nextInt(cards.size());
-                    hand.addCard(new ActionCard(cards.get(index),0,0));
+                    Card card = new ActionCard(cards.getFirst(),0,0);
+                    if(!hand.addCard(card))
+                        GameObject.Destroy(card);
                     AudioManager.getInstance().playSound("draw");
                 }
             });
-
             add(button);
             // scene.add(this);
 
@@ -126,9 +127,9 @@ public class Tester {
         System.out.println("Read " + readCards.size() + " cards:");
         for (CardBufferObject card : readCards) {
             PoliticsStats s = card.getStats();
-            System.out.println("- " + card.getName() + " Stats[Fac:" + s.getStats(PoliticsStats.Facility) +
-                    ", Env:" + s.getStats(PoliticsStats.Environment) +
-                    ", Eco:" + s.getStats(PoliticsStats.Economy) + "]");
+            System.out.println("- " + card.getName() + " Stats[Fac:" + s.getStats(PoliticsStats.FACILITY) +
+                    ", Env:" + s.getStats(PoliticsStats.ENVIRONMENT) +
+                    ", Eco:" + s.getStats(PoliticsStats.ECONOMY) + "]");
         }
     }
 }

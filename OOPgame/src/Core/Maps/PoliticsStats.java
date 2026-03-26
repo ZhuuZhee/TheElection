@@ -5,19 +5,19 @@ import java.util.Map;
 
 public class PoliticsStats {
     public Map<Long, Integer> stats;
-    public final static long Facility = 0L;
-    public final static long Environment = 1L;
-    public final static long Economy = 2L;
+    public final static long FACILITY = 0L;
+    public final static long ENVIRONMENT = 1L;
+    public final static long ECONOMY = 2L;
 
     public PoliticsStats(int facility, int environment, int economy) {
         stats = new HashMap<>();
-        stats.put(Facility, facility);
-        stats.put(Environment, environment);
-        stats.put(Economy, economy);
+        stats.put(FACILITY, facility);
+        stats.put(ENVIRONMENT, environment);
+        stats.put(ECONOMY, economy);
     }
 
     public int getStats(long statType) {
-        return stats.get(statType);
+        return stats.getOrDefault(statType, 0);
     }
 
     public void addStats(long statType, int value) {

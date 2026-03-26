@@ -35,9 +35,9 @@ public class CardWriter {
             PoliticsStats stats = card.getStats();
             JSONObject statsObj = new JSONObject();
             if (stats != null) {
-                statsObj.put("economy", stats.getStats(PoliticsStats.Economy));
-                statsObj.put("facility", stats.getStats(PoliticsStats.Facility));
-                statsObj.put("environment", stats.getStats(PoliticsStats.Environment));
+                statsObj.put("economy", stats.getStats(PoliticsStats.ECONOMY));
+                statsObj.put("facility", stats.getStats(PoliticsStats.FACILITY));
+                statsObj.put("environment", stats.getStats(PoliticsStats.ENVIRONMENT));
             }
             obj.put("stats", statsObj);
             obj.put("img", card.getImagePath());

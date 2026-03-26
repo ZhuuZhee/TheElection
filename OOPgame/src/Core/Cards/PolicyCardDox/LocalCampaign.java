@@ -10,18 +10,18 @@ import Core.ZhuzheeGame;
 public class LocalCampaign extends PolicyCard {
     public LocalCampaign(int x, int y, String imagePath) {super("Local Campaign", x, y, imagePath, -3);}
     @Override
-    public boolean IsActivate() {
+    public boolean isActive() {
         return true; // ให้การ์ดทำงานเสมอเมื่อถูกวางลงใน Slot
     }
 
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (IsActivate()) {
+        if (isActive()) {
             PoliticsStats stats = playedCard.getStats();
 
             if (stats != null) {
                 // ดึงค่า Environment ของการ์ดที่เพิ่งเล่นออกมาเช็ค
-                int envValue = stats.getStats(PoliticsStats.Environment);
+                int envValue = stats.getStats(PoliticsStats.ENVIRONMENT);
                 // ถ้าการ์ดใบนั้นมีค่า Environment เป็นบวก
                 if (envValue > 0) {
                     System.out.println("----------------------------------");

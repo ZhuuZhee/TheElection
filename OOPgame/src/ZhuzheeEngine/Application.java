@@ -25,12 +25,12 @@ public final class Application {
     private ArrayList<ApplicationAdapter> adapters = new ArrayList<ApplicationAdapter>();
 
     /// Singletons
-    private static Application Instance;
+    private static Application instance;
     public static Application getInstance(){
-        return Instance;
+        return instance;
     }
     private Application(ApplicationAdapter rootAdapter) {
-        Instance = this;
+        instance = this;
         this.rootAdapter = rootAdapter;
     }
 
@@ -38,11 +38,11 @@ public final class Application {
     private String getTitle() {
         return "Zhuzhee Application";
     }
-    public static  void setMainFrameTitle(String s){
-        if(Instance == null){
+    public static void setMainFrameTitle(String s){
+        if(instance == null){
             throw new IllegalStateException("Main frame not set. Make sure your Application subclass calls super.create().");
         }
-        Instance.mainFrame.setTitle(s);
+        instance.mainFrame.setTitle(s);
     }
     //----------------- screen configuration --------------------
     /// default is 1280 x 720
@@ -60,20 +60,20 @@ public final class Application {
     // -------------------------------------------------------
 
     public static JFrame getMainFrame() {
-        return Instance.mainFrame;
+        return instance.mainFrame;
     }
     public static void addAdapter(ApplicationAdapter adapter){
-        if(Instance == null){
+        if(instance == null){
             throw  new IllegalStateException("Make sure your Application subclass calls super.create().");
         }
-        if(Instance.adapters.contains(adapter)){
+        if(instance.adapters.contains(adapter)){
             System.err.println("Application already add this adapter.");
             throw new RuntimeException("Application already add this adapter.");
         }
-        Instance.adapters.add(adapter);
+        instance.adapters.add(adapter);
     }
     public static void removeAdapter(ApplicationAdapter adapter){
-        Instance.adapters.remove(adapter);
+        instance.adapters.remove(adapter);
     }
 
     private static void LaunchApp(Application app) {
@@ -118,11 +118,11 @@ public final class Application {
         return DELTA_TIME;
     }
 
-    public static void SetRootApplicationAdapter(ApplicationAdapter adapter){
-        if(Instance == null){
+    public static void setRootApplicationAdapter(ApplicationAdapter adapter){
+        if(instance == null){
             throw new IllegalStateException("Application: Have to Instance Yet! Can't Set Root Adapter.");
         }
-        Instance.rootAdapter = adapter;
+        instance.rootAdapter = adapter;
     }
     /// Called when LaunchApp() is invoked.
     /// Create JFrame
@@ -134,7 +134,7 @@ public final class Application {
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                KillApp(Instance);
+                KillApp(instance);
                 super.windowClosing(e);
             }
         });

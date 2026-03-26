@@ -6,7 +6,6 @@ package Core.Cards;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
-import Dummy.*;
 import Core.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
 
@@ -27,9 +26,9 @@ public class ActionCard extends Card {
         super(name, x, y, imagePath); // โยน imagePath ให้ Card จัดการ
         if (stats != null) {
             this.stats = new PoliticsStats(
-                    stats.getStats(PoliticsStats.Facility),
-                    stats.getStats(PoliticsStats.Environment),
-                    stats.getStats(PoliticsStats.Economy)
+                    stats.getStats(PoliticsStats.FACILITY),
+                    stats.getStats(PoliticsStats.ENVIRONMENT),
+                    stats.getStats(PoliticsStats.ECONOMY)
             );
         } else {
             this.stats = null;
@@ -63,12 +62,12 @@ public class ActionCard extends Card {
 
             // วิ่งไปหาการ์ดนโยบายจาก UI โดยตรงเลย (ไม่ต้องหาจาก scene แล้ว)
             if (ZhuzheeGame.POLICY_CARD_UI != null) {
-                for (Card card : ZhuzheeGame.POLICY_CARD_UI.getActiveCards()) {
+                for (Card card : ZhuzheeGame.POLICY_CARD_UI.getCards()) {
                     if (card instanceof PolicyCard) {
                         PolicyCard passive = (PolicyCard) card;
 
                         // เอา isInSlot() ออก เหลือแค่เช็ค IsActivate() อย่างเดียว
-                        if (passive.IsActivate()) {
+                        if (passive.isActive()) {
                             passive.onActionCardPlayed(this, targetCity);
                         }
                     }
@@ -103,9 +102,9 @@ public class ActionCard extends Card {
         int startY = getHeight() - margin * 2 - iconSize; // เริ่มวาดจากล่างขึ้นบน
 
         // ดึงค่าสเตตัสต่างๆ
-        int facility = stats.getStats(PoliticsStats.Facility);
-        int environment = stats.getStats(PoliticsStats.Environment);
-        int economy = stats.getStats(PoliticsStats.Economy);
+        int facility = stats.getStats(PoliticsStats.FACILITY);
+        int environment = stats.getStats(PoliticsStats.ENVIRONMENT);
+        int economy = stats.getStats(PoliticsStats.ECONOMY);
 
         // วาดค่าสเตตัสจากล่างขึ้นบน (Economy อยู่ล่างสุดถ้ามี)
         int currentY = startY;

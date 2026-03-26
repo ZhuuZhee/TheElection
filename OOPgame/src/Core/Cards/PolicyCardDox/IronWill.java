@@ -16,25 +16,25 @@ public class IronWill extends PolicyCard {
     }
 
     @Override
-    public boolean IsActivate() { return true; }
+    public boolean isActive() { return true; }
 
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (!IsActivate()) return;
+        if (!isActive()) return;
         PoliticsStats stats = playedCard.getStats();
         if (stats == null) return;
 
-        int fac = stats.getStats(PoliticsStats.Facility);
+        int fac = stats.getStats(PoliticsStats.FACILITY);
         if (fac < 0) {
             System.out.println("----------------------------------");
             System.out.println("🛡️ [IRON WILL] Facility damage blocked!");
             System.out.println("----------------------------------");
-            stats.setStats(PoliticsStats.Facility, 0);
+            stats.setStats(PoliticsStats.FACILITY, 0);
         } else if (fac > 0) {
             System.out.println("----------------------------------");
             System.out.println("🛡️ [IRON WILL] Facility +5 bonus!");
             System.out.println("----------------------------------");
-            stats.addStats(PoliticsStats.Facility, 5);
+            stats.addStats(PoliticsStats.FACILITY, 5);
         }
     }
 
