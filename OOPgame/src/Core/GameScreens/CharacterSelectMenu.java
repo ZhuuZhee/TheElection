@@ -1,5 +1,7 @@
 package Core.GameScreens;
 
+import Core.Network.Client.GameClientManager;
+import Core.Player.Player;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
@@ -357,9 +359,17 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
             System.out.println("Selected Arcana Image: " + selectedArcanaFileName);
             System.out.println("Name: " + playerName);
             System.out.println("Color: " + selectedColor);
-            
+
+            //set name to player
+            ZhuzheeGame.CLIENT.getLocalPlayer().setPlayerName(playerName);
+
+            Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
             // To-Do: เก็บค่าลงใน Constructor หรือระบบที่คุณเตรียมไว้ก่อนเริ่มเกม
             // Player localPlayer = new Player(..., playerName, true, selectedColor, selectedProfileFileName, null);
+        }
+        if(e.getSource() == backBtn){
+            Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);
+            ZhuzheeGame.CLIENT.disconnect();
         }
     }
 }

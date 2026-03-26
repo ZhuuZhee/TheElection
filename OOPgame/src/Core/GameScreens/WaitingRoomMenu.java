@@ -105,6 +105,12 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     }
 
     @Override
+    public void onScreenEnter() {
+        super.onScreenEnter();
+        refreshPlayerList();
+    }
+
+    @Override
     public void render() {
         super.render();
         if (!refreshTimer.isRunning()) {
