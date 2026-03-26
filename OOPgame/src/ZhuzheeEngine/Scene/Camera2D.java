@@ -131,7 +131,7 @@ public class Camera2D {
     }
     private Thread lerpZoom = null;
     /// smoothly zoom camera to target zoom value in duration(time)
-    public void LerpZoom(float targetZoom, float duration) {
+    public void lerpZoom(float targetZoom, float duration) {
         if (lerpZoom != null && lerpZoom.isAlive()) {
             lerpZoom.interrupt();
         }
@@ -158,5 +158,13 @@ public class Camera2D {
             }
 
         }).start();
+    }
+    public void smoothZoom(float targetZoom, float speed){
+        if(Math.abs(zoom - targetZoom) < 0.02f) {
+            zoom = targetZoom;
+            return;
+        }
+        float nextZoom = targetZoom - zoom;
+        zoom += nextZoom * speed * Application.getDeltaTime();
     }
 }

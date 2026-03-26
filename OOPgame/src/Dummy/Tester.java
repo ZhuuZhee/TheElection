@@ -36,8 +36,8 @@ public class Tester {
         // Removed hardcoded dummy CardSlots and ActionCards
         // The player should use DrawCardUI to get cards and play them on the Map.
     }
-    public static CardTesterUI CardTesterUI(Scene2D scene){
-        return new CardTesterUI(scene);
+    public static TesterUI CardTesterUI(Scene2D scene){
+        return new TesterUI(scene);
     }
 
     public static AudioManagerTester audioManagerTester;
@@ -105,13 +105,14 @@ public class Tester {
         }
     }
 
-    public static class CardTesterUI extends Canvas{
+    public static class TesterUI extends Canvas{
         CardHolderUI hand;
         CardHolderUI policyhand;
         CardBufferObject[] actionCards;
         private JButton drawActionCardBtn;
         private JButton drawPolicyCardBtn;
-        public CardTesterUI(Scene2D scene){
+        private JButton endTurn;
+        public TesterUI(Scene2D scene){
             super(scene);
             actionCards = loadsActionCard();
             AudioManager.getInstance().loadSound("draw","draw.WAV");
@@ -122,13 +123,17 @@ public class Tester {
             setLayout(new FlowLayout(FlowLayout.TRAILING));
             drawActionCardBtn = new JButton("Draw Card");
             drawPolicyCardBtn = new JButton("Draw Policy");
+            endTurn = new JButton("End Turn");
 
             drawActionCardBtn.addActionListener(drawCardAction);
             add(drawActionCardBtn);
 
             drawPolicyCardBtn.addActionListener(drawCardAction);
             add(drawPolicyCardBtn);
-            // scene.add(this);
+
+            endTurn.addMouseListener(ZhuzheeGame.MOUSE_HOVER_SFX);
+            endTurn.addActionListener(endTurnAction);
+            add(endTurn);
 
             onResize(scene.getWidth(),scene.getHeight());
             setAnchors(1,1);
@@ -137,9 +142,14 @@ public class Tester {
             scene.revalidate();
         }
         private CardBufferObject[] loadsActionCard(){
-            String filePath = "OOPgame/Assets/cards_test_data.json";
-            return CardReader.readActionCards(filePath).toArray(new CardBufferObject[0]);
+            return CardReader.getLoadedCards().toArray(new CardBufferObject[0]);
         }
+        ActionListener endTurnAction = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ZhuzheeGame.CLIENT.endTurn();
+            }
+        };
         ActionListener drawCardAction = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -154,7 +164,10 @@ public class Tester {
         };
 
         private void drawPolicyCard(){
-            policyhand.addCard(PolicyCardRegistry.rollCards(1).getFirst());
+            Card policyCard = PolicyCardRegistry.rollCards(1).getFirst();
+            if(!policyhand.addCard(policyCard)){
+                GameObject.Destroy(policyCard);
+            }
         }
         private void drawDevCard(){
             int index = new Random().nextInt(actionCards.length);

@@ -1,8 +1,14 @@
 package Core.Player;
 
 import Core.Cards.*;
+import Core.Cards.Stream.CardBufferObject;
+import Core.Cards.Stream.CardReader;
+import Core.UI.CardHolderUI;
+import Core.ZhuzheeGame;
+import ZhuzheeEngine.Application;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.util.*;
 
 public class Player {
@@ -14,8 +20,10 @@ public class Player {
     private ArrayList<PolicyCard> policyCards;
     private ArcanaCard arcanaCard;
     private String[] cityOwn;
-    private String color;
+    private Color color;
     private String profileImagePath;
+
+    public static final int DEFAULT_DRAW_DEV_CARD_AMOUNT = 4;
 
     public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, ArcanaCard arcanaCard) {
         this.playerId = playerId;
@@ -25,7 +33,7 @@ public class Player {
         this.actionCards = new ArrayList<>();
         this.policyCards = new ArrayList<>();
         this.cityOwn = new String[0];
-        this.color = color;
+        this.color = Color.decode(color);
         this.profileImagePath = profileImagePath;
         this.arcanaCard = arcanaCard;
     }
@@ -42,15 +50,57 @@ public class Player {
         return playerName;
     }
 
-    public int getCoin() { return coin; }
+    public int getCoin() {
+        return coin;
+    }
 
-    public void setCoin(int coin) { this.coin = coin; }
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
+
+    public Color getColor() { return color; }
+
+    public void setColor(Color color) { this.color = color; }
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
 
-    public void DrawCard() {
+    public void OnStartTurn() {
+        DrawCard();
+    }
+
+    private void DrawCard() {
+        CardBufferObject[] cardBufferObjects = DrawActionCardBufferObjects(DEFAULT_DRAW_DEV_CARD_AMOUNT);
+
+        new Thread(() -> {
+            while (true) {
+                if (ZhuzheeGame.MAIN_SCENE != null && ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
+                    CardHolderUI cardHolderUI = ZhuzheeGame.DEVLOPMENT_CARD_HAND;
+                    for (CardBufferObject cardBuffer : cardBufferObjects) {
+                        cardHolderUI.addCard(new ActionCard(cardBuffer, 0, 0));
+                    }
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(Application.DELTA_TIME_MS);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private CardBufferObject[] DrawActionCardBufferObjects(int amount) {
+        ArrayList<CardBufferObject> cards = new ArrayList<>();
+        List<CardBufferObject> loadedCars = CardReader.getLoadedCards();
+        Random random = new Random();
+        for (int i = 0; i < amount; i++) {
+            CardBufferObject cardBuffer = loadedCars.get(random.nextInt(loadedCars.size()));
+            cards.add(cardBuffer);
+        }
+        return cards.toArray(new CardBufferObject[0]);
     }
 
     public void UseCard() {
@@ -102,7 +152,7 @@ public class Player {
             this.coin = data.getInt("coin");
         }
         if (data.has("color")) {
-            this.color = data.getString("color");
+            this.color = Color.decode(data.getString("color"));
         }
         if (data.has("profileImagePath")) {
             this.profileImagePath = data.getString("profileImagePath");
