@@ -1,13 +1,12 @@
 package Core.Cards.AllArcanaCards;
 
 import Core.Cards.ArcanaCard;
-import Core.Cards.CardSlot;
 
 public class TheFoolCard extends ArcanaCard {
 
-    public TheFoolCard(CardSlot targetSlot) {
+    public TheFoolCard(int x, int y) {
         // สามารถกำหนด maxCooldown ได้จาก contractor ตรงนี้ได้เลย
-        super("The Fool", targetSlot, 3, "OOPgame/Assets/ImageForProfile/lee.jpg");
+        super("The Fool", x, y, 3, "OOPgame/Assets/ImageForProfile/lee.jpg");
     }
 
     @Override

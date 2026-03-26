@@ -81,7 +81,7 @@ public class Tester {
             // but since it will be in a Holder UI, we can use a dummy position.
             // We create a temporary CardSlot at (0,0) just to satisfy the constructor.
             CardSlot dummySlot = new CardSlot(0, 0, 100, 150, null);
-            TheFoolCard foolCard = new TheFoolCard(dummySlot);
+            TheFoolCard foolCard = new TheFoolCard(ZhuzheeGame.ARCANA_CARD_UI.getX(), ZhuzheeGame.ARCANA_CARD_UI.getY());
             ZhuzheeGame.ARCANA_CARD_UI.addCard(foolCard);
         }
     }
