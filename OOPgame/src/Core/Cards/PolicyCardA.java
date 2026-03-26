@@ -13,6 +13,7 @@ public class PolicyCardA extends PolicyCard {
 
     public PolicyCardA(String name, int x, int y, String imagePath, int coin) {
         super("A", 0, 100, imagePath, -10);
+        this.description = "When activated:\n Increases the Facility bonus by 10x for Action cards placed in the city.";
     }
 
     @Override

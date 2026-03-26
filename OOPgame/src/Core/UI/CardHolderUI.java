@@ -118,7 +118,11 @@ public class CardHolderUI extends Canvas {
     }
 
     public boolean addCard(Card card) {
-        if (cards.contains(card) || cards.size() >= maxCard) return false;
+        if (cards.contains(card) || cards.size() >= maxCard) {
+            System.err.println("Can not add card, this card holder is full!");
+            GameObject.Destroy(card);
+            return false;
+        }
         scene.remove(card);
 
         cardContainer.add(card);
