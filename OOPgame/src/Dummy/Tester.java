@@ -1,7 +1,9 @@
 package Dummy;
 
 import Core.Cards.ActionCard;
+import Core.Cards.AllArcanaCards.TheFoolCard;
 import Core.Cards.Card;
+import Core.Cards.CardSlot;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
@@ -71,6 +73,17 @@ public class Tester {
 
     public static void ShopTest() {
         new Shop(ZhuzheeGame.MAIN_SCENE);
+    }
+
+    public static void TestArcanaCard() {
+        if (ZhuzheeGame.ARCANA_CARD_UI != null) {
+            // ArcanaCard requires a CardSlot for positioning in constructor,
+            // but since it will be in a Holder UI, we can use a dummy position.
+            // We create a temporary CardSlot at (0,0) just to satisfy the constructor.
+            CardSlot dummySlot = new CardSlot(0, 0, 100, 150, null);
+            TheFoolCard foolCard = new TheFoolCard(dummySlot);
+            ZhuzheeGame.ARCANA_CARD_UI.addCard(foolCard);
+        }
     }
 
     public static void TestCardStream() {
@@ -169,6 +182,7 @@ public class Tester {
                 GameObject.Destroy(policyCard);
             }
         }
+
         private void drawDevCard(){
             int index = new Random().nextInt(actionCards.length);
             Card card = new ActionCard(actionCards[index],0,0);

@@ -38,7 +38,7 @@ public class Shop extends JPanel {
 
     // ตัวแปร state
     private List<PolicyCard> shopCards = new ArrayList<>();
-    private Player localPlayer;
+    private final Player localPlayer;
     private boolean purchased = false;
 
     /** สร้าง Shop โดยสุ่มการ์ด 3 ใบจาก policy_cards.json อัตโนมัติ */

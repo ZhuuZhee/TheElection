@@ -6,7 +6,7 @@ import Core.Cards.CardSlot;
 public class TheFoolCard extends ArcanaCard {
 
     public TheFoolCard(CardSlot targetSlot) {
-        super("The Fool", targetSlot, 3);
+        super("The Fool", targetSlot, 3, "OOPgame/Assets/ImageForProfile/lee.jpg");
     }
 
     @Override
@@ -14,5 +14,4 @@ public class TheFoolCard extends ArcanaCard {
         System.out.println("The Fool activate!");
         // Business Logic
     }
-
 }

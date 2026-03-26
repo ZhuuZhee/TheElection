@@ -2,49 +2,25 @@ package Core.UI;
 
 import Core.Cards.Card;
 import ZhuzheeEngine.Scene.*;
-import ZhuzheeEngine.Scene.Canvas;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class ArcanaCardHolderUI extends Canvas {
-    private Card currentCard = null;
-    private final JPanel cardContainer;
-    private final Scene2D scene;
+public class ArcanaCardHolderUI extends CardHolderUI {
+    public static final int SPACING = 64;
 
     public ArcanaCardHolderUI(Scene2D scene){
         super(scene);
-        this.scene = scene;
-        setLayout(new BorderLayout());
+        setAnchorTop(false);
+        setAnchorLeft(true);
+        setPanelSize(164,224);
+        setMargins(16, 0, 16, 16);
+        setSetLabel("Your Arcana Cards");
+        setMaxCard(1);
+    }
 
-        // ใช้ระบบ Layout ของ Canvas
-        setPanelSize(150, 220);
-        setMargins(10, 0, 0, 10);
-        setAnchors(-1, -1); // Left-Bottom
-
-        // กำหนดดีไซน์พื้นหลังและขอบ (เลียนแบบ PolicyCardHolderUI)
-        setBackground(new Color(50, 50, 50, 220)); // สีเทาเข้มโปร่งแสง
-        setBorder(new LineBorder(new Color(150, 150, 150), 2));
-        setOpaque(true);
-
-        // ส่วนหัวข้อ
-        JLabel titleLabel = new JLabel("Arcana Card");
-        titleLabel.setForeground(Color.LIGHT_GRAY);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-        add(titleLabel, BorderLayout.NORTH);
-
-        // Container สำหรับใส่การ์ด
-        cardContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
-        cardContainer.setOpaque(false);
-        add(cardContainer, BorderLayout.CENTER);
-
-        onResize(scene.getWidth(), scene.getHeight());
-
-        scene.revalidate();
-        setVisible(true);
+    private void updateSize(){
+        setPanelSize((Card.DEFAULT_CARD_WIDTH * Math.max(1,cards.size())) + SPACING,224);
     }
 
     @Override
@@ -60,45 +36,17 @@ public class ArcanaCardHolderUI extends Canvas {
         super.paintComponent(g);
     }
 
-    public void setCard(Card card){
-        // ถ้ามีการ์ดใบเดิมอยู่ ให้เอาออกก่อน
-        if (currentCard != null) {
-            removeCard();
-        }
-
-        if (card == null) return;
-
-        scene.remove(card);
-        cardContainer.add(card);
-        currentCard = card;
-
-        // ปรับขนาดการ์ดให้พอดีกับ Container
-        int height = panelHeight - 60;
-        float ratio = (float) height / card.getHeight();
-        card.setBounds(0, 0, (int)(card.getWidth() * ratio), height);
-
-        System.out.println("Arcana Card set: " + card.getName());
-        cardContainer.revalidate();
-        cardContainer.repaint();
+    @Override
+    public boolean addCard(Card arcanaCard) {
+        boolean success = super.addCard(arcanaCard);
+        arcanaCard.setDraggable(false);
+        updateSize();
+        return success;
     }
 
-    public void removeCard(){
-        if (currentCard == null) return;
-
-        Point location = currentCard.getLocationOnScreen();
-        cardContainer.remove(currentCard);
-        
-        scene.add(currentCard);
-        currentCard.setPosition(scene.Screen2WorldPoint(location));
-
-        System.out.println("Arcana Card removed: " + currentCard.getName());
-        currentCard = null;
-        
-        cardContainer.revalidate();
-        cardContainer.repaint();
-    }
-
-    public Card getCard() {
-        return currentCard;
+    @Override
+    public void removeCard(Card card) {
+        super.removeCard(card);
+        updateSize();
     }
 }

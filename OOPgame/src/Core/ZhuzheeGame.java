@@ -29,7 +29,6 @@ import java.util.List;
 
 /// Game Logic Handler
 public class ZhuzheeGame implements ApplicationAdapter {
-
     public static Scene2D MAIN_SCENE;
     public static MainMenu MAIN_MENU;
 
@@ -68,6 +67,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         // set Application title
         Application.setMainFrameTitle("Zhuzhee The Game");
         MAIN_SCENE = new Scene2D();
+        MAIN_MENU = new MainMenu();
         LOBBY_MENU = new Core.GameScreens.LobbyMenu();
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
         JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
@@ -75,7 +75,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         CREDIT_UI = new CreditUI();
         OPTION_MENU = new OptionMenu();
         CHARACTER_SELECT_MENU = new CharacterSelectMenu();
-        MAIN_MENU = new MainMenu();
+
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที
         } else {
@@ -96,6 +96,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
         Tester.ArcanaCardHolderUITest(MAIN_SCENE);
+        Tester.TestArcanaCard();
 
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();

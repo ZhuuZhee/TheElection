@@ -16,8 +16,6 @@ public class CardHolderUI extends Canvas {
     protected final ArrayList<Card> cards = new ArrayList<>();
     private static final int DEFAULT_HEIGHT = 220;
     private static final int DEFAULT_WIDTH = 400;
-
-    
     private final JPanel cardContainer;
     private final Scene2D scene;
     private final JLabel titleLabel;
@@ -35,7 +33,7 @@ public class CardHolderUI extends Canvas {
         super(scene);
         this.scene = scene;
         setLayout(new BorderLayout());
-        
+
         setPanelSize(width, height);
         setScreenPos(x, y);
         setMargins(20, 20, 20, 20);
