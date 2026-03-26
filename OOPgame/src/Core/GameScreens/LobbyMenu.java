@@ -83,7 +83,7 @@ public class LobbyMenu extends Screen implements ActionListener {
             Screen.ChangeScreen(ZhuzheeGame.CREATE_ROOM_MENU);
         }
         else if (e.getSource() == joinBtn) {
-            Screen.ChangeScreen(ZhuzheeGame.CHARACTER_SELECT_MENU);
+            Screen.ChangeScreen(ZhuzheeGame.JOIN_ROOM_MENU);
         }
         else if (e.getSource() == backBtn) {
             Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);

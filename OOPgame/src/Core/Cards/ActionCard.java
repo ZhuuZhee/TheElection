@@ -49,8 +49,8 @@ public class ActionCard extends Card {
     public void ActionOn(City city) {
         if (!getEnable()) return;
 
+        // ใน City.java มี applyStats(PoliticsStats cardStats) อยู่แล้ว
         city.applyStats(this.stats);
-
     }
 
     @Override
@@ -61,10 +61,10 @@ public class ActionCard extends Card {
         if (targetCity != null) {
 
             // วิ่งไปหาการ์ดนโยบายจาก UI โดยตรงเลย (ไม่ต้องหาจาก scene แล้ว)
+            // แก้ไขจาก POLICY_CARD_UI เป็น POLICY_CARD_HAND ตามที่มีใน ZhuzheeGame.java
             if (ZhuzheeGame.POLICY_CARD_HAND != null) {
                 for (Card card : ZhuzheeGame.POLICY_CARD_HAND.getCards()) {
-                    if (card instanceof PolicyCard) {
-                        PolicyCard passive = (PolicyCard) card;
+                    if (card instanceof PolicyCard passive) {
 
                         // เอา isInSlot() ออก เหลือแค่เช็ค IsActivate() อย่างเดียว
                         if (passive.isActive()) {
@@ -84,9 +84,10 @@ public class ActionCard extends Card {
             playercoin = Dummy.Tester.dummyPlayer;
         }
 
-        playercoin.setCoin(playercoin.getCoin() + this.coin);
-        System.out.println("playerCoin: " + playercoin.getCoin());
-
+        if (playercoin != null) {
+            playercoin.setCoin(playercoin.getCoin() + this.coin);
+            System.out.println("playerCoin: " + playercoin.getCoin());
+        }
     }
 
     @Override

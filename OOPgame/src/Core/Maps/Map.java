@@ -86,7 +86,9 @@ public class Map extends GameObject {
                     currentClickedGrid = clicked;
                     clicked.getCity().printStats();
                     clicked.getCity().getVotingResults();
+                    System.out.println( "Clicked on city: " + clicked.getCity().getCityName());
                 } else {
+                    System.out.println("Clicked on empty city.");
                     currentClickedGrid = null;
                 }
             }
@@ -246,10 +248,10 @@ public class Map extends GameObject {
         int[][] neighbors;
         if (y % 2 == 0) {
             // Neighbors for even rows in offset-x hexagon grid
-            neighbors = new int[][] { { 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 0 } };
+            neighbors = new int[][] { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
         } else {
             // Neighbors for odd rows in offset-x hexagon grid
-            neighbors = new int[][] { { -1, -1 }, { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 1 }, { -1, 0 } };
+            neighbors = new int[][] { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
         }
 
         for (int[] offset : neighbors) {
@@ -387,11 +389,6 @@ public class Map extends GameObject {
         if (fillWidth > 0) {
             g2d.fillRoundRect(barX, barY, fillWidth, barHeight, 8, 8);
         }
-
-        // Bar border
-        g2d.setColor(new Color(150, 0, 0));
-        g2d.setStroke(new BasicStroke(1));
-        g2d.drawRoundRect(barX, barY, barWidth, barHeight, 8, 8);
 
         // Bar text
         g2d.setColor(Color.WHITE);

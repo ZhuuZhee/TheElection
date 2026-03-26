@@ -1,8 +1,10 @@
 package Core.Network.Server;
 
 import Core.Network.NetworkProtocol;
+
 import java.net.*;
 import java.util.*;
+
 import org.json.JSONObject;
 
 public class GameServerManager {
@@ -114,11 +116,7 @@ public class GameServerManager {
 
             broadcast(gameState.generateSyncData());
         } else if (type.equals(NetworkProtocol.START_GAME.name())) {
-            System.out.println("START_GAME all clients");
-            org.json.JSONObject startPacket = new org.json.JSONObject();
-            startPacket.put("type", NetworkProtocol.START_GAME.name());
-            startPacket.put("mapSeed", gameState.getMapSeed());
-            broadcast(startPacket);
+            onStartGame();
         } else if (type.equals(NetworkProtocol.PONG.name())) {
             // อัพเดตเวลา PONG ของ client คนนี้
             for (ClientHandler c : clients) {
@@ -134,6 +132,14 @@ public class GameServerManager {
 
             broadcast(gameState.generateSyncData());
         }
+    }
+
+    private void onStartGame() {
+        System.out.println("START_GAME all clients");
+        org.json.JSONObject startPacket = new org.json.JSONObject();
+        startPacket.put("type", NetworkProtocol.START_GAME.name());
+        startPacket.put("mapSeed", gameState.getMapSeed());
+        broadcast(startPacket);
     }
 
     public void removeClient(String playerId) {

@@ -116,7 +116,7 @@ public class JoinRoomMenu extends Screen implements ActionListener {
             ZhuzheeGame.CLIENT = new Core.Network.Client.GameClientManager();
             ZhuzheeGame.CLIENT.connect(targetIp, 9999, pName);
 
-            Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
+            Screen.ChangeScreen(ZhuzheeGame.CHARACTER_SELECT_MENU);
         }
         else if (e.getSource() == backBtn) {
             Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);

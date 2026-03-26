@@ -45,9 +45,9 @@ public class Grid{
 
     // เอาไว้เช็คว่า ตำแหน่งอยู่บนที่เดียวกับ hexagon รึเปล่า
     public boolean contains(Point p) {
-        // เอาไว้เช็คว่า hexagon มีอยู่รึเปล่า
         if(hexagon == null) return false;
-        return hexagon.contains(p);
+        // ใช้ hexagon.contains(p) เพื่อความแม่นยำในการเช็คว่าเมาส์อยู่ในรูปทรงหกเหลี่ยมจริงๆ หรือไม่
+        return hexagon.contains(p.x, p.y);
     }
 
     public void setGridPosition(int x, int y){

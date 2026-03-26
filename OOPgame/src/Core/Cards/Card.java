@@ -42,8 +42,8 @@ public abstract class Card extends GameObject {
     protected Image cardImage = null;
     protected String imagePath = "";
     protected int coin;
-    private int baseWidth;
-    private int baseHeight;
+    private final int baseWidth;
+    private final int baseHeight;
     private int baseX;
     private int baseY;
 
