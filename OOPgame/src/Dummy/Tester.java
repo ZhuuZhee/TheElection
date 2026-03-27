@@ -11,8 +11,6 @@ import Core.Cards.Stream.PolicyCardRegistry;
 import Core.GameScreens.MainMenu;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
-import Core.UI.PolicyCardHolderUI;
-import Core.UI.ArcanaCardHolderUI;
 import Core.ZhuzheeGame;
 import Core.UI.Shop;
 import ZhuzheeEngine.Audios.AudioManager;
@@ -151,20 +149,31 @@ public class Tester {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AudioManager.getInstance().playSound("draw");
-                if(e.getSource() == drawActionCardBtn){
+                if (e.getSource() == drawActionCardBtn) {
                     drawDevCard();
-                }
-                else{
+                } else {
                     drawPolicyCard();
                 }
             }
         };
 
-        private void drawPolicyCard(){
+        private void drawPolicyCard() {
+            ArrayList<Card> deletedPolicyCards = new ArrayList<>();
+            boolean isPolicyCardDrawn = false;
             Card policyCard = PolicyCardRegistry.rollCards(1).getFirst();
-            if(!policyhand.addCard(policyCard)){
-                GameObject.Destroy(policyCard);
+
+            if (policyhand.isFull()) {
+                Card firstPolicyCard = policyhand.getCards().getFirst();
+
+                // 4. ลบออกจาก UI และทำลาย Object ทิ้งเพื่อไม่ให้ค้างในหน่วยความจำหรือบนแผนที่
+                deletedPolicyCards.add(firstPolicyCard);
+                policyhand.removeCard(firstPolicyCard);
+                GameObject.Destroy(firstPolicyCard);
+
+                System.out.println("Policy full! Removed: " + firstPolicyCard.getName());
             }
+
+            policyhand.addCard(policyCard);
         }
 
         private void drawDevCard(){
