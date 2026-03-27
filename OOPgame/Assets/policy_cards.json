@@ -10,5 +10,6 @@
   { "class": "InfrastructureBudget",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/7 Policy.png" },
   { "class": "DamageControl",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/8 Policy.png" },
   { "class": "PublicBriefing",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/15 Policy.png" },
-  { "class": "Fundraiser",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/6 Policy.png" }
+  { "class": "Fundraiser",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/6 Policy.png" },
+  { "class": "FakeNews",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/4 Policy.png" }
 ]
