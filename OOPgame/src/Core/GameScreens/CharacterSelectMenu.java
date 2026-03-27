@@ -1,7 +1,6 @@
 package Core.GameScreens;
 
-import Core.Network.Client.GameClientManager;
-import Core.Player.Player;
+import Core.UI.UITool;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
@@ -41,21 +40,12 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
     public CharacterSelectMenu() {
         setLayout(new BorderLayout());
 
-        try {
-            bgImage = javax.imageio.ImageIO.read(new File("OOPgame/Assets/UI/test.png"));
-            btnNormalImg = javax.imageio.ImageIO.read(new File("OOPgame/Assets/UI/btn_normal.png"));
-            btnHoverImg = javax.imageio.ImageIO.read(new File("OOPgame/Assets/UI/btn_hover.png"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        loadImages();
 
         bgCanvas = new NineSliceCanvas(bgImage, 25, 25, 25, 25) {};
         bgCanvas.setLayout(new BorderLayout());
 
-        JLabel title = new JLabel("Choose your Character");
-        title.setFont(new Font("Arial", Font.BOLD, 40));
-        title.setHorizontalAlignment(JLabel.CENTER);
-        title.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
+        JLabel title = UITool.createLabel("Custom Character",40f);
         bgCanvas.add(title, BorderLayout.NORTH);
 
         // ==========================================
@@ -327,6 +317,16 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
         if(e.getSource() == backBtn){
             Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);
             ZhuzheeGame.CLIENT.disconnect();
+        }
+    }
+
+    private void loadImages(){
+        try {
+            bgImage = javax.imageio.ImageIO.read(new File("OOPgame/Assets/UI/test.png"));
+            btnNormalImg = javax.imageio.ImageIO.read(new File("OOPgame/Assets/UI/btn_normal.png"));
+            btnHoverImg = javax.imageio.ImageIO.read(new File("OOPgame/Assets/UI/btn_hover.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
