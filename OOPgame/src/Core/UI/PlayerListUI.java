@@ -37,14 +37,31 @@ public class PlayerListUI extends Canvas {
         listContainer.removeAll();
 
         System.out.println("PlayerlistUI : \n ");
+        
+        // 1. Get city counts for each player
+        int[] cityCounts = new int[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            if (Core.ZhuzheeGame.MAP != null) {
+                cityCounts[i] = Core.ZhuzheeGame.MAP.getOwnedCitiesCount(i);
+            }
+        }
+
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
             boolean isActive = (i == 0);
 
+            int Rank = 1;
+            for (int k = 0; k < players.size(); k++) {
+                if (k == i) continue;
+                if (cityCounts[k] > cityCounts[i] || (cityCounts[k] == cityCounts[i] && k < i)) {
+                    Rank++;
+                }
+            }
+
             // แปลงและแสดงผลสีตามที่ผู้เล่นตั้งไว้
             System.out.println(p.toString());
             Color playerColor = p.getColor();
-            listContainer.add(new PlayerItemUI(p, playerColor, isActive));
+            listContainer.add(new PlayerItemUI(p, Rank, playerColor, isActive));
             listContainer.add(Box.createVerticalStrut(10));
         }
         System.out.println("-----------------------");
@@ -63,7 +80,8 @@ public class PlayerListUI extends Canvas {
         private static int margin = 12; // เพิ่ม margin พื้นฐาน
         private static int padding = 24; // เพิ่ม margin พื้นฐาน
 
-        public PlayerItemUI(Player player, Color teamColor, boolean isActive) {
+        public PlayerItemUI(Player player, int calculatedRank, Color teamColor, boolean isActive) {
+            this.rank = calculatedRank;
             setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // เพิ่มช่องว่างแนวตั้งเล็กน้อย
             setOpaque(false);
             setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));

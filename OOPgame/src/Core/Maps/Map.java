@@ -165,6 +165,32 @@ public class Map extends GameObject {
         return null;
     }
 
+    public ArrayList<City> getAllCities() {
+        ArrayList<City> uniqueCities = new ArrayList<>();
+        if (gridMap != null) {
+            for (Grid[] col : gridMap) {
+                for (Grid grid : col) {
+                    if (grid != null && grid.getCity() != null) {
+                        if (!uniqueCities.contains(grid.getCity())) {
+                            uniqueCities.add(grid.getCity());
+                        }
+                    }
+                }
+            }
+        }
+        return uniqueCities;
+    }
+
+    public int getOwnedCitiesCount(int playerId) {
+        int count = 0;
+        for (City city : getAllCities()) {
+            if (city.getOwnerId() == playerId) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
      * Procedurally generates the map grid and populates it with cities.
      * @param seed Random seed.
