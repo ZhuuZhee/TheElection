@@ -1,4 +1,5 @@
 [
+
   { "class": "GreenPolicy",   "img": "OOPgame/Assets/ImageForCards/Poilicy Card/12 Policy.png" },
   { "class": "LocalCampaign", "img": "OOPgame/Assets/ImageForCards/Poilicy Card/1 Policy.png" },
   { "class": "Recount",       "img": "OOPgame/Assets/ImageForCards/Poilicy Card/20 Policy.png" },
@@ -19,5 +20,7 @@
   { "class": "HipsterCafeBubble",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/11 Policy.png" },
   { "class": "ZoningLaw",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/17 Policy.png" },
   { "class": "TradeAgreement",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/16 Policy.png" },
-  { "class": "CabinetShuffle",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/13 Policy.png" }
+  { "class": "CabinetShuffle",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/13 Policy.png" },
+  { "class": "DiplomaticVisit",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/18 Policy.png" }
+
 ]
