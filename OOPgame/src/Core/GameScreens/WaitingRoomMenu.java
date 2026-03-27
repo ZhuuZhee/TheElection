@@ -284,7 +284,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
                 btn.addActionListener(e -> {
                     if (type.equals("PROFILE")) {
-                        selectedProfileFilepath = file.getAbsolutePath();
+                        selectedProfileFilepath = file.getName();
                     } else if (type.equals("ARCANA")) {
                         selectedArcanaFileName = file.getName();
                     }
