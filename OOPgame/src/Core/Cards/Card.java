@@ -24,7 +24,7 @@ import javax.swing.*;
 public abstract class Card extends GameObject {
     protected PoliticsStats stats;
     protected String description = "";
-    private Popup tooltipPopup;
+    private SmartTooltipUI activeTooltip;
     protected String name;
     public static final int DEFAULT_CARD_WIDTH = 100;
     private static final int DEFAULT_CARD_HEIGHT = 150;
@@ -109,13 +109,20 @@ public abstract class Card extends GameObject {
                 // --- โค้ดส่วน Tooltip ที่เพิ่มเข้าไป ---
                 if (!isGrabbed && getEnable()) {
 
-                    // เรียกใช้ Tooltip อัจฉริยะ (ส่ง this เข้าไปให้มันเช็คเอง)
-                    SmartTooltipUI tipUI = new SmartTooltipUI(Card.this);
+                    activeTooltip = new SmartTooltipUI(Card.this);
 
-                    Point location = e.getLocationOnScreen();
-                    tooltipPopup = PopupFactory.getSharedInstance().getPopup(
-                            Card.this, tipUI, location.x + 20, location.y + 20);
-                    tooltipPopup.show();
+                    // แปลงพิกัดเมาส์ให้เป็นพิกัดของจอเกมหลัก
+                    Point mousePos = SwingUtilities.convertPoint(Card.this, e.getPoint(), scene);
+
+                    // เซ็ตตำแหน่งให้ Tooltip อยู่ใกล้ๆ เมาส์
+                    activeTooltip.setBounds(mousePos.x + 20, mousePos.y + 20,
+                            activeTooltip.getPreferredSize().width,
+                            activeTooltip.getPreferredSize().height);
+
+                    // เอาไปแปะบนจอ แล้วดันขึ้นเลเยอร์บนสุด (0)
+                    scene.add(activeTooltip);
+                    scene.setComponentZOrder(activeTooltip, 0);
+                    scene.repaint();
 
                     boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
                     if (!isInHand) {
@@ -132,9 +139,10 @@ public abstract class Card extends GameObject {
             public void mouseExited(MouseEvent e) {
                 setHovered(false);
                 // --- ปิด Tooltip เมื่อเมาส์ออก ---
-                if (tooltipPopup != null) {
-                    tooltipPopup.hide();
-                    tooltipPopup = null;
+                if (activeTooltip != null) {
+                    scene.remove(activeTooltip); // ถอดออกจากหน้าจอ
+                    activeTooltip = null;
+                    scene.repaint();
                 }
                 // ----------------------------
                 if (!isGrabbed && getEnable()) {
@@ -201,9 +209,10 @@ public abstract class Card extends GameObject {
     public void onMousePressed(int mouseX, int mouseY) {
         if (getEnable() && isDraggable) {
             // ปิด Tooltip ทันทีที่คลิกเพื่อลาก
-            if (tooltipPopup != null) {
-                tooltipPopup.hide();
-                tooltipPopup = null;
+            if (activeTooltip != null) {
+                scene.remove(activeTooltip);
+                activeTooltip = null;
+                scene.repaint();
             }
             // No need to check boundaries, event is fired on component
             if (getParent() != null && getParent().getParent() instanceof CardHolderUI holderUI) {
