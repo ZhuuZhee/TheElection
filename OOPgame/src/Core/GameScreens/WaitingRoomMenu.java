@@ -391,20 +391,14 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 profileIconLabel.setPreferredSize(new Dimension(60, 60));
                 profileIconLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
-                String fileName = p.getProfileImagePath();
-                if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFilepath.isEmpty()) {
-                    fileName = selectedProfileFilepath;
-                }
 
-                if (fileName != null && !fileName.isEmpty()) {
-                    // ประกอบ Path ใหม่โดยใช้ Folder ของเครื่องตัวเอง
-                    File imgFile = new File(ZhuzheeGame.PROFILE_FILE_PATH, fileName);
+                    File imgFile = p.getProfileImageFile();
 //                    System.out.println("Waiting Room : Image File Path of {%s} is %s".formatted(p.getPlayerName(),imgFile.getAbsolutePath()));
                     if (imgFile.exists()) {
                         ImageIcon icon = new ImageIcon(imgFile.getAbsolutePath());
                         profileIconLabel.setIcon(new ImageIcon(icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
                     }
-                }
+
                 
                 playerRow.add(profileIconLabel, BorderLayout.WEST);
                 JLabel nameLabel = UITool.createLabel(p.getPlayerName(), 24f);

@@ -6,6 +6,7 @@ import ZhuzheeEngine.Scene.Scene2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.List;
 
 public class PlayerListUI extends Canvas {
@@ -78,11 +79,11 @@ public class PlayerListUI extends Canvas {
             nameTag.add(center);
 
             // เพิ่มรูปโปรไฟล์พร้อมระยะห่าง
-            String path = player.getProfileImagePath();
-            ImageIcon icon = loadImg(path, 50);
+            File imgFile = player.getProfileImageFile();
+            ImageIcon icon = createImageIcon(imgFile, 50);
             
             if (icon == null) {
-                System.err.println("[DEBUG] PlayerListUI: Failed to load image for '" + player.getPlayerName() + "' at: " + path);
+                System.err.println("[DEBUG] PlayerListUI: Failed to load image for '" + player.getPlayerName() + "' at: " + imgFile.getAbsolutePath());
             }
 
             JLabel imgLabel = new JLabel(icon);
@@ -96,10 +97,9 @@ public class PlayerListUI extends Canvas {
             add(nameTag);
         }
 
-        private static ImageIcon loadImg(String path, int size) {
-            if (path == null || path.isEmpty() || !(new java.io.File(path).exists())) return null;
-            ImageIcon icon = new ImageIcon(path);
-            System.out.println("image path is {%s}".formatted(path));
+        private static ImageIcon createImageIcon(File file, int size) {
+            ImageIcon icon = new ImageIcon(file.getAbsolutePath());
+            System.out.println("image path is {%s}".formatted(file.getAbsolutePath()));
             return new ImageIcon(icon.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH));
         }
 

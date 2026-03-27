@@ -9,6 +9,8 @@ import ZhuzheeEngine.Application;
 import org.json.JSONObject;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -66,6 +68,14 @@ public class Player {
     }
 
     public String getProfileImagePath() {return profileImagePath;}
+    public File getProfileImageFile(){
+        File file = new File(ZhuzheeGame.PROFILE_FILE_PATH,profileImagePath);
+        if(!file.exists()){
+            IOException io = new IOException("player profile filepath{%s} not found!".formatted(file.getAbsolutePath()));
+            System.err.print(io);
+        }
+        return file;
+    }
 
     public int getCoin() {
         return coin;
