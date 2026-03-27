@@ -13,7 +13,7 @@ import Core.ZhuzheeGame;
 public class EconomicBoom extends PolicyCard {
     public EconomicBoom(int x, int y, String imagePath) {
         super("Economic Boom", x, y, imagePath, -6);
-        this.description = "Condition:\n You have Development Card with Economy > 0.\nSkill:\n Gain x2 Economy";
+        this.description = "Skill: If you have Development Card with Economy > 0. Gain x2 Economy.";
     }
 
     @Override
