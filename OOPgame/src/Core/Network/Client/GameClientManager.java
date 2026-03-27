@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class GameClientManager {
@@ -18,10 +17,20 @@ public class GameClientManager {
     private PrintWriter out;
     private BufferedReader in;
     private Player localPlayer;
-    private HashSet<Player> connectedPlayers = new HashSet<>();
+    private final ArrayList<Player> connectedPlayers = new ArrayList<>();
+    private int turnCounter;
 
-    public HashSet<Player> getConnectedPlayers() {
+    public List<Player> getConnectedPlayers() {
         return connectedPlayers;
+    }
+
+    public int getLocalPlayerIndex() {
+        if (localPlayer == null) return 0;
+        String id = localPlayer.getPlayerId();
+        for (int i = 0; i < connectedPlayers.size(); i++) {
+            if (connectedPlayers.get(i).getPlayerId().equals(id)) return i;
+        }
+        return 0;
     }
 
     public void connect(String ip, int port, String playerName) {
@@ -95,6 +104,14 @@ public class GameClientManager {
         }
     }
 
+    public int getTurnCounter() {
+        return turnCounter;
+    }
+
+    public void setTurnCounter(int turnCounter) {
+        this.turnCounter = turnCounter;
+    }
+
     //----------------------------------------
     //---- player action on received data ----
     //----------------------------------------
@@ -106,12 +123,12 @@ public class GameClientManager {
     }
 
     private synchronized void onSyncGameState(JSONObject data) {
-        int phase = data.optInt("phaseCounter", 1);
+        int turn = data.optInt("turnCounter", 1);
 
         // cuurentPlayerId คือ ไอดีของผู้เล่นที่มีเทิร์นตอนนี้
         String currentPlayerId = data.optString("currentPlayerId", "");
-        System.out.println("Client sync Phase: " + phase + ", CurrentPlayer: " + currentPlayerId);
-        
+        System.out.println("Client sync Phase: " + turn + ", CurrentPlayer: " + currentPlayerId);
+        turnCounter = turn;
         // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
         boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
         
@@ -217,4 +234,5 @@ public class GameClientManager {
             }
         }
     }
+
 }
