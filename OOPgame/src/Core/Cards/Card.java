@@ -17,6 +17,7 @@ import java.awt.event.*;
 
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -51,12 +52,14 @@ public abstract class Card extends GameObject {
     private int customTargetWidth = 0;
     private int customTargetHeight = 0;
 
-    public Card(String name, int x, int y, String imagePath){
-        this(name,x,y, DEFAULT_CARD_WIDTH, DEFAULT_CARD_HEIGHT, imagePath);
+    public Card(String name, int x, int y, String imagePath) {
+        this(name, x, y, DEFAULT_CARD_WIDTH, DEFAULT_CARD_HEIGHT, imagePath);
     }
+
     public Card(String name, int x, int y, int width, int height) {
         this(name, x, y, width, height, "");
     }
+
     public Card(String name, int x, int y, String imagePath, PoliticsStats stats) {
         this(name, x, y, DEFAULT_CARD_WIDTH, DEFAULT_CARD_HEIGHT, imagePath);
         if (stats != null) {
@@ -69,6 +72,7 @@ public abstract class Card extends GameObject {
             this.stats = null;
         }
     }
+
     public Card(String name, int x, int y, int width, int height, String imagePath) {
         super(x, y, width, height, ZhuzheeGame.MAIN_SCENE);
         this.name = name;
@@ -93,10 +97,12 @@ public abstract class Card extends GameObject {
                 // e.getPoint() is local to the card (e.g., 0-100, 0-150)
                 onMousePressed(e.getX(), e.getY());
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 onMouseReleased();
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 setHovered(true);
@@ -170,13 +176,18 @@ public abstract class Card extends GameObject {
     }
 
     public void setImage(String imagePath) {
-        try {
-            this.cardImage = ImageIO.read(new File(imagePath));
-            this.imagePath = imagePath;
-            repaint(); // สั่งให้วาดใหม่เมื่อโหลดรูปเสร็จ
-        } catch (Exception e) {
+        File imgFile = new File(imagePath);
+        if (imgFile.exists()) {
+            try {
+                this.cardImage = ImageIO.read(imgFile);
+                this.imagePath = imagePath;
+                repaint(); // สั่งให้วาดใหม่เมื่อโหลดรูปเสร็จ
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
             System.err.println("ไม่สามารถโหลดรูปภาพได้จาก path: " + imagePath);
-            e.printStackTrace();
         }
     }
 
@@ -188,7 +199,7 @@ public abstract class Card extends GameObject {
     // ----------------------------------------
 
     public void onMousePressed(int mouseX, int mouseY) {
-        if (getEnable () && isDraggable) {
+        if (getEnable() && isDraggable) {
             // ปิด Tooltip ทันทีที่คลิกเพื่อลาก
             if (tooltipPopup != null) {
                 tooltipPopup.hide();
@@ -359,6 +370,7 @@ public abstract class Card extends GameObject {
      **/
     protected void onDroppedOnGrid(Grid grid) {
     }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // Call JPanel paint
@@ -474,7 +486,7 @@ public abstract class Card extends GameObject {
         if (Math.abs(currentScaleOffset - targetScaleOffset) > 0.001) {
             // Lerp แอนิเมชันความเร็ว 15 (ยิ่งเยอะยิ่งไว 15 คือประมาณ 0.2s ease)
             currentScaleOffset += (targetScaleOffset - currentScaleOffset) * 10.0f * Application.getDeltaTime();
-            
+
             // ใช้ Math.max/min แทน Math.clamp เพื่อรองรับ Java ต่ำกว่า 21
             // และใช้ getWidth() ที่เป็นขนาดปัจจุบัน (Scaled Size) เพื่อกันเมาส์หลุดขอบ
             int currentW = Math.max(1, getWidth() - MARGIN); // กัน 0

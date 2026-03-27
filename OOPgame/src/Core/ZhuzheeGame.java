@@ -147,8 +147,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
                     var cam = MAIN_SCENE.getCamera();
 
                     Point pos = cam.getPosition();
-                    pos.x -= dx;
-                    pos.y -= dy;
+                    pos.x -= (int) (dx/ cam.getZoom());
+                    pos.y -= (int) (dy/ cam.getZoom());
 
                     // camera bounding
                     int minX = -CAMERA_BOUND.width;
