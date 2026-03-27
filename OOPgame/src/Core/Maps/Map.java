@@ -57,6 +57,7 @@ public class Map extends GameObject {
     }
 
     public Map(int rows, int cols, int citiesCount, long seed) {
+        this(rows, cols, citiesCount, seed, 4);
     }
 
     public Map(int rows, int cols, int citiesCount, long seed, int numPlayers) {
@@ -149,7 +150,7 @@ public class Map extends GameObject {
         }
         return null;
     }
-    
+
     public City getCityByName(String name) {
         if (name == null || gridMap == null) return null;
         for (Grid[] col : gridMap) {
@@ -302,7 +303,7 @@ public class Map extends GameObject {
                 }
             }
         }
-        
+
     }
 
     public float getGridWidth() {
@@ -422,7 +423,6 @@ public class Map extends GameObject {
         int barHeight = 15;
         int rowGap = 6;
 
-        }
         g2d.setFont(new Font("SansSerif", Font.PLAIN, 12));
         g2d.setColor(Color.DARK_GRAY);
         g2d.drawString("Vote share:", barX, barY - 4);
