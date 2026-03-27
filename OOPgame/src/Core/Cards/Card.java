@@ -545,9 +545,39 @@ public abstract class Card extends GameObject {
 
             // ปรับขนาดหน้าต่างตามประเภทของการ์ด
             if (card instanceof ActionCard) {
-                setPreferredSize(new Dimension(200, 120)); // ขนาดของ Action Card
+                setPreferredSize(new Dimension(200, 120)); // Action Card สเตตัสคงที่ ฟิกซ์ไว้ได้
             } else {
-                setPreferredSize(new Dimension(240, 140)); // ขนาดของ Policy/Arcana Card
+                // --- ระบบคำนวณความสูง Dynamic สำหรับ Policy/Arcana ---
+                int fixedWidth = 240;
+                int calculatedHeight = 65; // ความสูงเริ่มต้น (เผื่อที่ให้ขอบบนและชื่อการ์ด)
+
+                if (card.description != null && !card.description.isEmpty()) {
+                    FontMetrics fm = getFontMetrics(getFont());
+                    // ขอตัววัดขนาดตัวอักษร
+                    int maxWidth = fixedWidth - 30;
+
+                    // จำลองการตัดบรรทัดเพื่อนับความสูง
+                    for (String line : card.description.split("\n")) {
+                        String[] words = line.split(" ");
+                        String currentLine = "";
+
+                        for (String word : words) {
+                            if (fm.stringWidth(currentLine + word) < maxWidth) {
+                                currentLine += word + " ";
+                            } else {
+                                calculatedHeight += 20; // ล้นปุ๊บ บวกความสูงเพิ่ม 20px
+                                currentLine = word + " ";
+                            }
+                        }
+                        if (!currentLine.isEmpty()) {
+                            calculatedHeight += 20; // บวกความสูงของบรรทัดสุดท้าย
+                        }
+                    }
+                    calculatedHeight += 10; // เผื่อระยะขอบล่างให้สวยงาม
+                }
+
+                // กำหนดขนาดตามที่คำนวณได้เป๊ะๆ!
+                setPreferredSize(new Dimension(fixedWidth, calculatedHeight));
             }
         }
 
@@ -564,7 +594,6 @@ public abstract class Card extends GameObject {
 
             // วาดชื่อการ์ด
             g2d.setColor(Color.BLACK);
-            g2d.setFont(new Font("SansSerif", Font.BOLD, 16));
             g2d.drawString(targetCard.getName(), 15, 25);
 
             // เช็คว่าเป็นการ์ดประเภทไหนเพื่อวาดข้อมูล
@@ -577,13 +606,11 @@ public abstract class Card extends GameObject {
                     env = targetCard.stats.getStats(PoliticsStats.ENVIRONMENT);
                 }
 
-                g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
                 g2d.setColor(new Color(80, 80, 80));
                 g2d.drawString("Economic:", 15, 55);
                 g2d.drawString("Facility:", 15, 80);
                 g2d.drawString("Environment:", 15, 105);
 
-                g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
                 g2d.setColor(new Color(0, 102, 204));
                 g2d.drawString(String.valueOf(fac), 150, 55);
                 g2d.drawString(String.valueOf(env), 150, 80);
@@ -591,7 +618,6 @@ public abstract class Card extends GameObject {
 
             } else {
                 // --- โหมด Policy/Arcana: วาดคำอธิบาย ---
-                g2d.setFont(new Font("SansSerif", Font.PLAIN, 13));
                 g2d.setColor(new Color(60, 60, 60));
 
                 int startY = 55;
