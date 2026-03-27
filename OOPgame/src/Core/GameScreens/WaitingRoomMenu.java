@@ -382,7 +382,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 // ถ้าเป็นคนอื่น เราอาจจะต้องใช้ getProfileImagePath() จากคลาส Player ถ้ามี (ในตัวอย่างจะดึงจาก local ไว้ชั่วคราว)
                 String imagePath = p.getProfileImagePath();
 
-                if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFileName.isEmpty()) {
+                if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFilepath.isEmpty()) {
                     imagePath = selectedProfileFilepath;
                 }
 
