@@ -1,5 +1,6 @@
 package Core.Network;
 
+import Core.Player.Player;
 import org.json.JSONObject;
 
 public class PacketBuilder{

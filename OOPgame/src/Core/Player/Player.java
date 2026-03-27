@@ -29,6 +29,7 @@ public class Player {
     private String colorName = "Red";
     private String profileImagePath;
 
+    public static final String DEFAULT_PROFILE_FILE = "1Pro.png";
     public static final int DEFAULT_DRAW_DEV_CARD_AMOUNT = 4;
     public static final Map<String, Color> COLOR_MAP = new HashMap<>();
     static {
@@ -56,7 +57,7 @@ public class Player {
     }
 
     public Player(String playerId, String playerName, boolean isLocal) {
-        this(playerId, playerName, isLocal, "Red", "default_profile.png", null);
+        this(playerId, playerName, isLocal, "Red", DEFAULT_PROFILE_FILE, null);
     }
 
     public String getPlayerId() {
@@ -72,7 +73,7 @@ public class Player {
         File file = new File(ZhuzheeGame.PROFILE_FILE_PATH,profileImagePath);
         if(!file.exists()){
             IOException io = new IOException("player profile filepath{%s} not found!".formatted(file.getAbsolutePath()));
-            System.err.print(io);
+            System.err.println(io);
         }
         return file;
     }

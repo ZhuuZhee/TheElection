@@ -116,7 +116,7 @@ public class ActionCard extends Card {
         // วาดค่าสเตตัสจากล่างขึ้นบน (Economy อยู่ล่างสุดถ้ามี)
         int currentY = startY;
         if (economy != 0) {
-            drawSingleStat(g2d, economy, new Color(100, 100, 255), x, currentY, iconSize);
+            drawSingleStat(g2d, economy, new Color(255, 100, 100), x, currentY, iconSize);
             currentY -= (iconSize + 2);
         }
         if (environment != 0) {
@@ -124,7 +124,7 @@ public class ActionCard extends Card {
             currentY -= (iconSize + 2);
         }
         if (facility != 0) {
-            drawSingleStat(g2d, facility, new Color(255, 100, 100), x, currentY, iconSize);
+            drawSingleStat(g2d, facility, new Color(100, 100, 255), x, currentY, iconSize);
         }
     }
 

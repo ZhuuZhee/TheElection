@@ -1,5 +1,6 @@
 package Core.GameScreens;
 
+import Core.Network.Client.ClientAdapter;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
 import Core.Network.NetworkProtocol;
@@ -318,7 +319,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         return folder.listFiles((dir, name) -> name.endsWith(".png") || name.endsWith(".jpg"));
     }
 
-    private boolean sendPlayerDataUpdate() {
+    private synchronized boolean sendPlayerDataUpdate() {
         if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
             Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
             org.json.JSONObject playerPacket = Core.Network.PacketBuilder.createPlayerDataPacket(
@@ -334,21 +335,6 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         }
         System.err.println("No Local Player in here");
         return false;
-    }
-
-    @Override
-    public void onScreenEnter() {
-        super.onScreenEnter();
-        refreshPlayerList();
-        new Thread(() -> {
-            while (!sendPlayerDataUpdate()) {
-                try {
-                    Thread.sleep(16);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     @Override
