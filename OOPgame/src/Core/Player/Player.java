@@ -61,6 +61,8 @@ public class Player {
         return playerName;
     }
 
+    public String getProfileImagePath() {return profileImagePath;}
+
     public int getCoin() {
         return coin;
     }

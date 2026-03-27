@@ -149,7 +149,7 @@ public class LobbyMenu extends Screen implements ActionListener {
             ZhuzheeGame.CLIENT = new Core.Network.Client.GameClientManager();
             ZhuzheeGame.CLIENT.connect(targetIp, 9999, pName);
 
-            Screen.ChangeScreen(ZhuzheeGame.CHARACTER_SELECT_MENU);
+            Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
         }
         else if (e.getSource() == backBtn) {
             Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
