@@ -50,26 +50,7 @@ public class Tester {
     public static void MainMenuTest() {
         Screen.ChangeScreen(new MainMenu());
     }
-    public static CardHolderUI CardHolderUITest(Scene2D scene2D){
-        CardHolderUI ui = new CardHolderUI(scene2D);
-        ui.setStrechToFit(true);
-        ui.setPanelSize(164,224);
-        ui.setMargins(224,16,16,16);
-        ui.setAnchorTop(false);
-        return ui;
-    }
-    public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
-        ZhuzheeGame.POLICY_CARD_HAND = new PolicyCardHolderUI(scene2D);
-        return ZhuzheeGame.POLICY_CARD_HAND;
-    }
-    public static ArcanaCardHolderUI ArcanaCardHolderUITest(Scene2D scene2D){
-        ZhuzheeGame.ARCANA_CARD_UI = new ArcanaCardHolderUI(scene2D);
-        return ZhuzheeGame.ARCANA_CARD_UI;
-    }
-    public static Core.UI.PlayerCoinUI PlayerCoinUITest(Scene2D scene2D) {
-        ZhuzheeGame.PLAYER_COIN_UI = new Core.UI.PlayerCoinUI(scene2D);
-        return ZhuzheeGame.PLAYER_COIN_UI;
-    }
+
 
     public static Map MapTest() {
         return new Map();
