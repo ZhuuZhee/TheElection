@@ -50,6 +50,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PolicyCardHolderUI POLICY_CARD_HAND;
     public static ArcanaCardHolderUI ARCANA_CARD_UI;
     public static PlayerListUI PLAYER_LIST_UI;
+    public static Core.UI.PlayerCoinUI PLAYER_COIN_UI;
 
     public static final String PROFILE_FILE_PATH = "OOPgame/Assets/ImageForProfile";
     public static final String CARD_IMAGES_FILE_PATH = "OOPgame/Assets/ImageForCards";
@@ -111,7 +112,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.CardsTestingOnScene(MAIN_SCENE);
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         DEVLOPMENT_CARD_HAND = holderUI;
-
+        Tester.PlayerCoinUITest(MAIN_SCENE);
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
         Tester.ArcanaCardHolderUITest(MAIN_SCENE);
         Tester.TestArcanaCard();
@@ -128,7 +129,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
 
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
-
+        Tester.PlayerCoinUITest(MAIN_SCENE);
         Tester.CardTesterUI(MAIN_SCENE);
 
         Tester.ShopTest();

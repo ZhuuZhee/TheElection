@@ -5,18 +5,23 @@ import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.ZhuzheeGame;
 
 /**
- * EconomicBoom: เมื่อลงการ์ดใดก็ตาม ถ้า Economy บนการ์ดนั้น > 0 → คูณ Economy x2
+ * EconomicBoom: เมื่อลงการ์ดใดก็ตาม ถ้า Economy บนdevelopment card > 0 → คูณ Economy x2
  */
 public class EconomicBoom extends PolicyCard {
     public EconomicBoom(int x, int y, String imagePath) {
-        super("Economic Boom", x, y, imagePath, -8);
+        super("Economic Boom", x, y, imagePath, -6);
+        this.description = "Condition:\n You have Development Card with Economy > 0.\nSkill:\n Gain x2 Economy";
     }
 
     @Override
     public boolean isActive() {
-        return true;
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            return ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
+        }
+        return false;
     }
 
     @Override

@@ -14,8 +14,10 @@ public class Public_PrivatePartnership extends PolicyCard {
 
     @Override
     public boolean isActive() {
-        return ZhuzheeGame.POLICY_CARD_HAND != null
-                && ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            return ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
+        }
+        return false;
     }
 
     @Override

@@ -96,19 +96,14 @@ public class MainMenu extends Screen implements ActionListener {
         // audio test
         AudioManager.getInstance().loadSound("click","click.WAV");
         AudioManager.getInstance().loadSound("hover","hover.WAV");
-
-//        System.out.println("Main Menu is Created");
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startBtn) {
-            // JOptionPane.showMessageDialog(this);
             Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);
         }
         if (e.getSource() == optionBtn) {
-            // JOptionPane.showMessageDialog(this);
-            // Tester.audioManagerTester.setVisible(true);
             Screen.ChangeScreen(ZhuzheeGame.OPTION_MENU);
         }
         if (e.getSource() == creditBtn) {

@@ -82,9 +82,9 @@ public class PlayerListUI extends Canvas {
                 }
             };
             nameTag.setPreferredSize(new Dimension(width, 50));
-            
-            JLabel nameLabel = new JLabel(player.getPlayerName());
-            nameLabel.setFont(new Font("Arial", Font.BOLD, 22));
+
+            JLabel nameLabel = UITool.createLabel(player.getPlayerName(), 22f);
+            nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
             nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
             nameTag.add(nameLabel, BorderLayout.CENTER);
 

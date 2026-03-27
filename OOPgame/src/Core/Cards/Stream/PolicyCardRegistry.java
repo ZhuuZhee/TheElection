@@ -1,7 +1,6 @@
 package Core.Cards.Stream;
 
 import Core.Cards.PolicyCard;
-import Core.Cards.PolicyCardA;
 import Core.Cards.PolicyCardDox.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,7 +68,6 @@ public class PolicyCardRegistry {
             case "EconomicBoom"  -> new EconomicBoom(0, 0, img);
             case "IronWill"      -> new IronWill(0, 0, img);
             case "NaturePact"    -> new NaturePact(0, 0, img);
-            case "PolicyCardA"   -> new PolicyCardA("ko",0,0,img,-10);
             case "InfrastructureBudget"   -> new InfrastructureBudget(0,0,img);
             default -> {
                 System.err.println("[PolicyCardRegistry] ไม่รู้จัก class: " + className);

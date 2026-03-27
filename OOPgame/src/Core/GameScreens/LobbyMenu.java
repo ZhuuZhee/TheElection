@@ -41,7 +41,7 @@ public class LobbyMenu extends Screen implements ActionListener {
         bgCanvas.setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Game Lobby");
-        title.setFont(new Font("Arial", Font.BOLD, 40));
+        title.setFont(title.getFont().deriveFont(40f));
         title.setHorizontalAlignment(JLabel.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
         bgCanvas.add(title, BorderLayout.NORTH);
