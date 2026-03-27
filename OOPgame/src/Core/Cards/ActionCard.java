@@ -139,7 +139,7 @@ public class ActionCard extends Card {
         FontMetrics fm = g2d.getFontMetrics();
         // วาดตัวเลขไว้ทางซ้ายของไอคอนเพื่อให้เห็นชัดเจน (หรือจะวาดทับไอคอนก็ได้ถ้าตัวเลขสั้น)
         // เพื่อความสวยงามในแนวตั้ง ให้วาดทับหรือวาดชิดซ้าย
-        int textX = x + fm.stringWidth(text) - size / 2 - 1;
+        int textX = x + (size - fm.stringWidth(text)) / 2;
         int textY = y + (size - fm.getHeight()) / 2 + fm.getAscent();
 
         g2d.setColor(Color.BLACK);

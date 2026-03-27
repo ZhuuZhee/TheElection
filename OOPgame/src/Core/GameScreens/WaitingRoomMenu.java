@@ -2,6 +2,7 @@ package Core.GameScreens;
 
 import Core.Player.Player;
 import Core.ZhuzheeGame;
+import Core.Network.NetworkProtocol;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
@@ -18,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashSet;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -128,9 +130,6 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         File[] profileFiles = loadImageFiles(ZhuzheeGame.PROFILE_FILE_PATH);
         if (profileFiles != null && profileFiles.length > 0) {
             selectedProfileFilepath = profileFiles[0].getAbsolutePath();
-            // ลบโค้ด 2 บรรทัดล่างนี้ออก เพราะเราไม่ได้ใช้ selectedProfileImagePreview แล้ว
-            // ImageIcon defaultIcon = new ImageIcon(selectedProfileFileName);
-            // selectedProfileImagePreview.setIcon(new ImageIcon(defaultIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
         }
         String[] names = getColorNames();
         if (names.length > 0) selectedColor = names[0];
@@ -176,7 +175,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         rGbc.weightx = 1.0;
         rGbc.gridx = 0;
 
-        // 1. Color Selection (ย้ายขึ้นมาบนสุดและไม่มีรูปพรีวิว)
+        // 1. Color Selection
         JPanel colorPanel = createColorSelectionPanel();
         rGbc.gridy = 0;
         rGbc.weighty = 0.1;
@@ -184,7 +183,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
         // 2. Profile Selection Grid
         File[] profileFiles = loadImageFiles(ZhuzheeGame.PROFILE_FILE_PATH);
-        JPanel profileGrid = createGridPanel(profileFiles, 3, new Dimension(80, 80), new Dimension(10, 10), "PROFILE");
+        JPanel profileGrid = createGridPanel(profileFiles, 3, new Dimension(100, 100), new Dimension(10, 10), "PROFILE");
 
         JScrollPane profileScroll = new JScrollPane(profileGrid);
         profileScroll.setOpaque(false);
@@ -198,7 +197,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
         // 3. Arcana Selection Grid
         File[] arcanaFiles = loadImageFiles(ZhuzheeGame.CARD_IMAGES_FILE_PATH);
-        JPanel arcanaGrid = createGridPanel(arcanaFiles, 4, new Dimension(80, 120), new Dimension(10, 10), "ARCANA");
+        JPanel arcanaGrid = createGridPanel(arcanaFiles, 3, new Dimension(80, 120), new Dimension(10, 10), "ARCANA");
 
         JScrollPane arcanaScroll = new JScrollPane(arcanaGrid);
         arcanaScroll.setOpaque(false);
@@ -362,7 +361,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
             playersPanel.removeAll();
 
             for (Player p : players) {
-                JPanel playerRow = new JPanel(new BorderLayout(15, 0)); // เพิ่มระยะห่างแนวนอน
+                JPanel playerRow = new JPanel(new BorderLayout(15, 0));
                 playerRow.setOpaque(true);
                 playerRow.setBackground(new Color(255, 255, 255, 150));
 
@@ -383,8 +382,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 // ถ้าเป็นคนอื่น เราอาจจะต้องใช้ getProfileImagePath() จากคลาส Player ถ้ามี (ในตัวอย่างจะดึงจาก local ไว้ชั่วคราว)
                 String imagePath = p.getProfileImagePath();
 
-                // ถ้าเป็นตัวเราและเพิ่งกดเปลี่ยนรูป (รอ Server อัปเดต) ให้ใช้รูปปัจจุบันที่หน้าจอเราถือไว้ชั่วคราว
-                if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFilepath.isEmpty()) {
+                if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFileName.isEmpty()) {
                     imagePath = selectedProfileFilepath;
                 }
 

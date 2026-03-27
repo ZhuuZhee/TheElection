@@ -21,8 +21,8 @@ public class Player {
     private ArrayList<PolicyCard> policyCards;
     private ArcanaCard arcanaCard;
     private String[] cityOwn;
-    private Color color = Color.pink;
-    private String colorName = "Pink";
+    private Color color = Color.RED;
+    private String colorName = "Red";
     private String profileImagePath;
 
     public static final int DEFAULT_DRAW_DEV_CARD_AMOUNT = 4;
@@ -33,6 +33,10 @@ public class Player {
         COLOR_MAP.put("Blue", Color.BLUE);
         COLOR_MAP.put("Green", Color.GREEN);
         COLOR_MAP.put("Yellow", Color.YELLOW);
+        COLOR_MAP.put("Orange", Color.ORANGE);
+        COLOR_MAP.put("Purple", Color.MAGENTA);
+        COLOR_MAP.put("Cyan", Color.CYAN);
+        COLOR_MAP.put("Black", Color.BLACK);
     }
 
 

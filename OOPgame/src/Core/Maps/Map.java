@@ -173,6 +173,9 @@ public class Map extends GameObject {
     private Grid[][] generateMap(long seed) {
         Grid[][] grid = new Grid[rows][cols];
         Random random = new Random(seed);
+        Color newColor;
+        boolean isDuplicate;
+        ArrayList<City> cities = new ArrayList<>();
 
         Point startPosition = new Point(rows / 2, cols / 2);
 
@@ -185,12 +188,26 @@ public class Map extends GameObject {
                     random.nextInt(minPopulation, maxPopulation),
                     this.numPlayers);
             // random color
-            int r = random.nextInt(1, 5) * 255 / 5;
-            int g = random.nextInt(1, 5) * 255 / 5;
-            int b = random.nextInt(1, 5) * 255 / 5;
-            city.setColor(new Color(r, g, b));
+            do {
+                isDuplicate = false;
+                // สุ่มค่า RGB (ตัวอย่างเดิมของคุณ)
+                int r = random.nextInt(1, 5) * 255 / 5;
+                int g = random.nextInt(1, 5) * 255 / 5;
+                int b = random.nextInt(1, 5) * 255 / 5;
+                newColor = new Color(r, g, b);
 
-            // randomly set city inside district
+                // วนลูปเช็คกับทุกเมืองที่ถูกสร้างไปแล้วใน List
+                for (City c : cities) {
+                    if (newColor.equals(c.getColor())) {
+                        isDuplicate = true;
+                        System.out.println("พบสีซ้ำ: " + newColor + " กำลังสุ่มใหม่...");
+                        break;
+                    }
+                }
+            } while (isDuplicate); // ถ้าซ้ำให้กลับไปเริ่มสุ่มใหม่
+
+            city.setColor(newColor);
+            cities.add(city);
 
             // random start position inside map
             setCityOnGridMapByRandomWalk(grid, city, random.nextInt(6, maxGridPerCties), startPosition, random);

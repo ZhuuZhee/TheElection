@@ -6,7 +6,7 @@ public class TheFoolCard extends ArcanaCard {
 
     public TheFoolCard(int x, int y) {
         // สามารถกำหนด maxCooldown ได้จาก contractor ตรงนี้ได้เลย
-        super("The Fool", x, y, 3, "OOPgame/Assets/ImageForProfile/lee.jpg");
+        super("The Fool", x, y, 3, "OOPgame/Assets/ImageForCards/Arcana Card/Fool.png");
     }
 
     @Override
