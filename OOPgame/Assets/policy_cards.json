@@ -1,11 +1,10 @@
 [
   { "class": "GreenPolicy",   "img": "OOPgame/Assets/ImageForCards/gay.png" },
-  { "class": "LocalCampaign", "img": "OOPgame/Assets/ImageForCards/gay.png" },
+  { "class": "LocalCampaign", "img": "OOPgame/Assets/ImageForCards/ImageForCards/1 Policy.png" },
   { "class": "Recount",       "img": "OOPgame/Assets/ImageForCards/gay.png" },
-  { "class": "EconomicBoom",  "img": "OOPgame/Assets/ImageForCards/gay.png" },
+  { "class": "EconomicBoom",  "img": "OOPgame/Assets/ImageForCards/Poilicy Card/2 Policy.png" },
   { "class": "IronWill",      "img": "OOPgame/Assets/ImageForCards/gay.png" },
   { "class": "NaturePact",    "img": "OOPgame/Assets/ImageForCards/gay.png" },
-  { "class": "PolicyCardA",    "img": "OOPgame/Assets/ImageForCards/gay.png" },
   { "class": "CoinBoom",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/3 Policy.png"},
   { "class": "Public_PrivatePartnership", "img": "OOPgame/Assets/ImageForCards/Poilicy Card/14 Policy.png"},
   { "class": "InfrastructureBudget",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/7 Policy.png" }
