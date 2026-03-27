@@ -1,6 +1,7 @@
 package Core.Player;
 
 import Core.Cards.*;
+import Core.Cards.Stream.ArcanaCardRegistry;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.UI.CardHolderUI;
@@ -9,6 +10,8 @@ import ZhuzheeEngine.Application;
 import org.json.JSONObject;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -20,6 +23,7 @@ public class Player {
     private ArrayList<ActionCard> actionCards;
     private ArrayList<PolicyCard> policyCards;
     private ArcanaCard arcanaCard;
+    private String arcanaCardName = "";
     private String[] cityOwn;
     private Color color = Color.RED;
     private String colorName = "Red";
@@ -38,8 +42,6 @@ public class Player {
         COLOR_MAP.put("Cyan", Color.CYAN);
         COLOR_MAP.put("Black", Color.BLACK);
     }
-
-
 
     public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, ArcanaCard arcanaCard) {
         this.playerId = playerId;
@@ -66,6 +68,22 @@ public class Player {
     }
 
     public String getProfileImagePath() {return profileImagePath;}
+    public File getProfileImageFile(){
+        File file = new File(ZhuzheeGame.PROFILE_FILE_PATH,profileImagePath);
+        if(!file.exists()){
+            IOException io = new IOException("player profile filepath{%s} not found!".formatted(file.getAbsolutePath()));
+            System.err.print(io);
+        }
+        return file;
+    }
+
+    public String getArcanaCard() {
+        return arcanaCardName;
+    }
+
+    public void setArcanaCard(ArcanaCard arcanaCard) {
+        this.arcanaCard = arcanaCard;
+    }
 
     public int getCoin() {
         return coin;
@@ -150,6 +168,8 @@ public class Player {
         json.put("profileImagePath", profileImagePath);
         if (arcanaCard != null) {
             json.put("arcanaCard", arcanaCard.getName());
+        } else if (arcanaCardName != null && !arcanaCardName.isEmpty()) {
+            json.put("arcanaCard", arcanaCardName);
         }
 
         org.json.JSONArray cityArray = new org.json.JSONArray();
@@ -192,11 +212,16 @@ public class Player {
             this.cityOwn = new String[cityArray.length()];
             // ค่อยๆ
         }
+        if (data.has("arcanaCard")) {
+            this.arcanaCardName = data.getString("arcanaCard");
+        }
+
+        System.out.println("Player{%s} : update data form json successfully!\n%s".formatted(playerName, toString()));
     }
 
     @Override
     public String toString() {
-        return "----------------- \n Player : {%s} (Color : %s) \n----------------".formatted(playerName,colorName);
+        return "Player{%s} : Color(%s), ProfileImagePath(%s)".formatted(playerName,colorName,profileImagePath);
     }
 
     public boolean isLocal() {

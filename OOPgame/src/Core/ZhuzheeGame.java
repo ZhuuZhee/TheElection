@@ -119,8 +119,17 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
         PlayerUI.PolicyCardHolderUITest(MAIN_SCENE);
         PlayerUI.ArcanaCardHolderUITest(MAIN_SCENE);
-        Tester.TestArcanaCard();
+        Player localPlayer = (CLIENT != null) ? CLIENT.getLocalPlayer() : null;
 
+        if (localPlayer != null) {
+            String cardName = localPlayer.getArcanaCard();
+
+            if (cardName != null && !cardName.isEmpty()) {
+                Core.Cards.ArcanaCard card = Core.Cards.Stream.ArcanaCardRegistry.createCard(cardName);
+                localPlayer.setArcanaCard(card); // เก็บไพ่จริงใส่ตัว Player
+                ARCANA_CARD_UI.addCard(card);    // ยัดไพ่ลงกระดาน UI
+            }
+        }
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
         if (CLIENT != null && !CLIENT.getConnectedPlayers().isEmpty()) {

@@ -85,6 +85,9 @@ public class GameClientManager {
         if (data.has("type")) {
             String type = data.getString("type");
 
+            if (!type.equals(NetworkProtocol.PING.name()))
+                System.out.println("Client : Received %s".formatted(data.toString()));
+
             if (type.equals(NetworkProtocol.JOIN_ACK.name())) {
                 onJoinAcknowledge(data);
             } else if (type.equals(NetworkProtocol.SYNC_STATE.name())) {
@@ -98,9 +101,6 @@ public class GameClientManager {
             } else if (type.equals(NetworkProtocol.UPDATE_PLAYER.name())) {
                 onUpdatePlayer(data);
             }
-
-            if (!type.equals(NetworkProtocol.PING.name()))
-                System.out.println("Client Received : %s".formatted(data.toString()));
         }
     }
 
@@ -211,16 +211,16 @@ public class GameClientManager {
     private synchronized void onUpdatePlayer(JSONObject data) {
         String pId = data.optString("playerId", ""); // แก้ไข: ใช้ "playerId" แทน "currentPlayerId"
         if (pId.isEmpty()) {
-            System.err.println("Client: Received UPDATE_PLAYER packet without playerId.");
+            System.err.println("Client : Received UPDATE_PLAYER packet without playerId.");
             return;
         }
 
-        System.out.println("Client {%s} : Updating Player Data for ID %s".formatted(localPlayer != null ? localPlayer.getPlayerName() : "Unknown", pId));
+        System.out.println("Client : Updating Player Data for ID %s".formatted(pId));
 
         // อัปเดต localPlayer ถ้า packet นี้เป็นของตัวเราเอง
         if (localPlayer != null && localPlayer.getPlayerId().equals(pId)) {
             localPlayer.updateFromJSON(data);
-            System.out.println("Updated local player: " + localPlayer.toString());
+            System.out.println("Client : Updated local player: " + localPlayer.toString());
         }
 
         // อัปเดตผู้เล่นคนอื่นๆ ใน connectedPlayers
@@ -229,7 +229,7 @@ public class GameClientManager {
         for (Player p : playersToUpdate) {
             if (p.getPlayerId().equals(pId)) {
                 p.updateFromJSON(data);
-                System.out.println("Updated connected player: " + p.toString());
+                System.out.println("Client : Updated connected player: " + p.toString());
                 break; // พบผู้เล่นแล้ว ไม่ต้องวนลูปต่อ
             }
         }

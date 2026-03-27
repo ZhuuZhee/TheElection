@@ -130,7 +130,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         // Initial setup for character selection
         File[] profileFiles = loadImageFiles(ZhuzheeGame.PROFILE_FILE_PATH);
         if (profileFiles != null && profileFiles.length > 0) {
-            selectedProfileFilepath = profileFiles[0].getAbsolutePath();
+            selectedProfileFilepath = profileFiles[0].getName();
         }
         String[] names = getColorNames();
         if (names.length > 0) selectedColor = names[0];
@@ -284,9 +284,9 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
                 btn.addActionListener(e -> {
                     if (type.equals("PROFILE")) {
-                        selectedProfileFilepath = file.getAbsolutePath();
+                        selectedProfileFilepath = file.getName();
                     } else if (type.equals("ARCANA")) {
-                        selectedArcanaFileName = file.getAbsolutePath();
+                        selectedArcanaFileName = file.getName().replace(".png", "").replace(".jpg", "");
                     }
 
                     AudioManager.getInstance().playSound("click");
@@ -318,7 +318,8 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     localPlayer.getPlayerName(),
                     localPlayer.getCoin(),
                     selectedColor,
-                    selectedProfileFilepath
+                    selectedProfileFilepath,
+                    selectedArcanaFileName
             );
             ZhuzheeGame.CLIENT.sendAction(playerPacket);
             return true;
@@ -370,7 +371,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
     private void refreshPlayerList() {
         if (ZhuzheeGame.CLIENT != null) {
-            java.util.List<Player> players = ZhuzheeGame.CLIENT.getConnectedPlayers();
+            java.util.List<Player> players = new ArrayList<>(ZhuzheeGame.CLIENT.getConnectedPlayers());
             playersPanel.removeAll();
 
             for (Player p : players) {
@@ -391,31 +392,20 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 profileIconLabel.setPreferredSize(new Dimension(60, 60));
                 profileIconLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
-                // ถ้านี่คือตัวเราเอง ใช้รูปที่เราเพิ่งเลือก (กรณีรอ Server อัปเดต)
-                // ถ้าเป็นคนอื่น เราอาจจะต้องใช้ getProfileImagePath() จากคลาส Player ถ้ามี (ในตัวอย่างจะดึงจาก local ไว้ชั่วคราว)
-                String imagePath = p.getProfileImagePath();
 
-                if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFilepath.isEmpty()) {
-                    imagePath = selectedProfileFilepath;
-                }
-
-                if (imagePath != null && !imagePath.isEmpty()) {
-                    File imgFile = new File(imagePath);
+                    File imgFile = p.getProfileImageFile();
+//                    System.out.println("Waiting Room : Image File Path of {%s} is %s".formatted(p.getPlayerName(),imgFile.getAbsolutePath()));
                     if (imgFile.exists()) {
-                        ImageIcon icon = new ImageIcon(imagePath);
+                        ImageIcon icon = new ImageIcon(imgFile.getAbsolutePath());
                         profileIconLabel.setIcon(new ImageIcon(icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
                     }
 
-                    playerRow.add(profileIconLabel, BorderLayout.WEST);
 
-                    // 2. ชื่อผู้เล่นตรงกลาง
-                    JLabel nameLabel = UITool.createLabel(p.getPlayerName(), 24f);
-                    playerRow.add(nameLabel, BorderLayout.CENTER);
-
-                    playersPanel.add(playerRow);
-                    playersPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-                }
-
+                playerRow.add(profileIconLabel, BorderLayout.WEST);
+                JLabel nameLabel = UITool.createLabel(p.getPlayerName(), 24f);
+                playerRow.add(nameLabel, BorderLayout.CENTER);
+                playersPanel.add(playerRow);
+                playersPanel.add(Box.createRigidArea(new Dimension(0, 10)));
                 playersPanel.revalidate();
                 playersPanel.repaint();
             }

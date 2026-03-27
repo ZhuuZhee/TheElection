@@ -2,11 +2,10 @@ package Core.Cards.AllArcanaCards;
 
 import Core.Cards.ArcanaCard;
 
-public class TheFoolCard extends ArcanaCard {
+public class Judgement extends ArcanaCard {
 
-    public TheFoolCard(int x, int y) {
-        // สามารถกำหนด maxCooldown ได้จาก contractor ตรงนี้ได้เลย
-        super("TheFoolCard", x, y, 3, "OOPgame/Assets/ImageForCards/Arcana Card/TheFool.png");
+    public Judgement(int x, int y) {
+        super("Judgement", x, y, 5, "OOPgame/Assets/ImageForCards/Arcana Card/Judgemant.png");
     }
 
     @Override
@@ -25,7 +24,7 @@ public class TheFoolCard extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        System.out.println("The Fool activate!");
+        System.out.println("Judgement activate!");
         // Business Logic
     }
 }
