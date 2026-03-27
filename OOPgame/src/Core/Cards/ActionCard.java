@@ -134,19 +134,13 @@ public class ActionCard extends Card {
         g2d.fillOval(x, y, size, size);
         g2d.setColor(Color.BLACK);
         g2d.drawOval(x, y, size, size);
-        int negative;
 
         String text = String.valueOf(value);
         FontMetrics fm = g2d.getFontMetrics();
         // วาดตัวเลขไว้ทางซ้ายของไอคอนเพื่อให้เห็นชัดเจน (หรือจะวาดทับไอคอนก็ได้ถ้าตัวเลขสั้น)
         // เพื่อความสวยงามในแนวตั้ง ให้วาดทับหรือวาดชิดซ้าย
-        if (fm.stringWidth(text) != 6) {
-            if (fm.stringWidth(text) == 12) negative = 10;
-            else negative = 4;
-        } else {
-            negative = 0;
-        }
-        int textX = x + fm.stringWidth(text) - size / 2 + 8 - negative;
+
+        int textX = x + (size - fm.stringWidth(text)) / 2;
         int textY = y + (size - fm.getHeight()) / 2 + fm.getAscent();
 
         g2d.setColor(Color.BLACK);
