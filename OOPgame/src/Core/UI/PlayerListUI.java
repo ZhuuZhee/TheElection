@@ -15,7 +15,7 @@ public class PlayerListUI extends Canvas {
     public PlayerListUI(Scene2D scene, List<Player> players) {
         super(scene);
         this.players = players;
-        
+
         setLayout(new BorderLayout());
         setOpaque(false);
 
@@ -59,11 +59,79 @@ public class PlayerListUI extends Canvas {
     }
 
     private static class PlayerItemUI extends JPanel {
+        int rank = 1;
+        private static int margin = 12; // เพิ่ม margin พื้นฐาน
+        private static int padding = 24; // เพิ่ม margin พื้นฐาน
+
         public PlayerItemUI(Player player, Color teamColor, boolean isActive) {
-            setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+            setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // เพิ่มช่องว่างแนวตั้งเล็กน้อย
             setOpaque(false);
             setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
+            JPanel nameTag = getJPanel(teamColor, isActive);
+            JPanel center = new JPanel(new GridBagLayout());
+            center.setOpaque(false);
+
+            createPlayerNameLabel(player.getPlayerName(),center);
+            createRankLabel(center);
+
+            nameTag.add(center);
+
+            // เพิ่มรูปโปรไฟล์พร้อมระยะห่าง
+            String path = player.getProfileImagePath();
+            ImageIcon icon = loadImg(path, 50);
+            
+            if (icon == null) {
+                System.err.println("[DEBUG] PlayerListUI: Failed to load image for '" + player.getPlayerName() + "' at: " + path);
+            }
+
+            JLabel imgLabel = new JLabel(icon);
+            imgLabel.setPreferredSize(new Dimension(50, 50));
+            imgLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0, 0, 0, 0), // ระยะห่างซ้ายขวา
+                BorderFactory.createLineBorder(teamColor, 2)
+            ));
+            nameTag.add(imgLabel, BorderLayout.WEST);
+
+            add(nameTag);
+        }
+
+        private static ImageIcon loadImg(String path, int size) {
+            if (path == null || path.isEmpty() || !(new java.io.File(path).exists())) return null;
+            ImageIcon icon = new ImageIcon(path);
+            System.out.println("image path is {%s}".formatted(path));
+            return new ImageIcon(icon.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH));
+        }
+
+        private void createRankLabel(JPanel container) {
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(0, margin,0, padding); // เพิ่มช่องว่างด้านขวาของอันดับ
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.ipady = -padding;
+
+            JLabel rankLabel = UITool.createLabel(Integer.toString(rank), 24f);
+            rankLabel.setFont(rankLabel.getFont().deriveFont(Font.ITALIC));
+            rankLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            container.add(rankLabel, gbc);
+        }
+
+        private void createPlayerNameLabel(String playerName, Container container) {
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(0, padding, 0, margin);
+            gbc.anchor = GridBagConstraints.WEST; // เปลี่ยนเป็นชิดซ้าย
+            gbc.gridx = 1; // แยกมาอยู่คอลัมน์ที่ 2
+            gbc.gridy = 0;
+            gbc.ipady = -padding;
+
+            JLabel nameLabel = UITool.createLabel(playerName, 22f);
+            nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
+            nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            container.add(nameLabel, gbc);
+        }
+
+        private JPanel getJPanel(Color teamColor, boolean isActive) {
             int width = isActive ? 300 : 250;
             JPanel nameTag = new JPanel(new BorderLayout()) {
                 @Override
@@ -85,13 +153,7 @@ public class PlayerListUI extends Canvas {
                 }
             };
             nameTag.setPreferredSize(new Dimension(width, 50));
-
-            JLabel nameLabel = UITool.createLabel(player.getPlayerName(), 22f);
-            nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
-            nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            nameTag.add(nameLabel, BorderLayout.CENTER);
-
-            add(nameTag);
+            return nameTag;
         }
     }
 }

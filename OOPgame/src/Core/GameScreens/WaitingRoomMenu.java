@@ -1,9 +1,7 @@
 package Core.GameScreens;
 
-import Core.Network.PacketBuilder.*;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
-import Core.Network.NetworkProtocol;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
@@ -20,7 +18,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -43,7 +40,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     // --- Character Selection Variables ---
     private String selectedColor = "";
     // ลบ private JLabel selectedProfileImagePreview; ออกไป
-    private String selectedProfileFileName = "";
+    private String selectedProfileFilepath = "";
     private String selectedArcanaFileName = "";
 
     private Color[] getColors() {
@@ -130,7 +127,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         // Initial setup for character selection
         File[] profileFiles = loadImageFiles(ZhuzheeGame.PROFILE_FILE_PATH);
         if (profileFiles != null && profileFiles.length > 0) {
-            selectedProfileFileName = profileFiles[0].getAbsolutePath();
+            selectedProfileFilepath = profileFiles[0].getAbsolutePath();
             // ลบโค้ด 2 บรรทัดล่างนี้ออก เพราะเราไม่ได้ใช้ selectedProfileImagePreview แล้ว
             // ImageIcon defaultIcon = new ImageIcon(selectedProfileFileName);
             // selectedProfileImagePreview.setIcon(new ImageIcon(defaultIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
@@ -287,7 +284,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
                 btn.addActionListener(e -> {
                     if (type.equals("PROFILE")) {
-                        selectedProfileFileName = file.getAbsolutePath();
+                        selectedProfileFilepath = file.getAbsolutePath();
                     } else if (type.equals("ARCANA")) {
                         selectedArcanaFileName = file.getAbsolutePath();
                     }
@@ -321,7 +318,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     localPlayer.getPlayerName(),
                     localPlayer.getCoin(),
                     selectedColor,
-                    selectedProfileFileName
+                    selectedProfileFilepath
             );
             ZhuzheeGame.CLIENT.sendAction(playerPacket);
         }
@@ -387,8 +384,8 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 String imagePath = p.getProfileImagePath();
 
                 // ถ้าเป็นตัวเราและเพิ่งกดเปลี่ยนรูป (รอ Server อัปเดต) ให้ใช้รูปปัจจุบันที่หน้าจอเราถือไว้ชั่วคราว
-                if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFileName.isEmpty()) {
-                    imagePath = selectedProfileFileName;
+                if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFilepath.isEmpty()) {
+                    imagePath = selectedProfileFilepath;
                 }
 
                 if (imagePath != null && !imagePath.isEmpty()) {
@@ -421,6 +418,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
             if (ZhuzheeGame.CLIENT != null) {
                 JSONObject startReq = createStartPacket();
                 ZhuzheeGame.CLIENT.sendAction(startReq);
+                sendPlayerDataUpdate();
             }
         } else if (e.getSource() == leaveBtn) {
             refreshTimer.stop();

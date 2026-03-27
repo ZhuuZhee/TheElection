@@ -38,7 +38,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.GameScreens.WaitingRoomMenu WAITING_ROOM_MENU;
     public static CreditUI CREDIT_UI;
     public static OptionMenu OPTION_MENU;
-    public static CharacterSelectMenu CHARACTER_SELECT_MENU;
+//    public static CharacterSelectMenu CHARACTER_SELECT_MENU;
 
     public static Core.Network.Server.GameServerManager SERVER;
     public static Core.Network.Client.GameClientManager CLIENT;
@@ -95,7 +95,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
         CREDIT_UI = new CreditUI();
         OPTION_MENU = new OptionMenu();
-        CHARACTER_SELECT_MENU = new CharacterSelectMenu();
+//        CHARACTER_SELECT_MENU = new CharacterSelectMenu();
 
         if (DEV_MODE) {
             startMainScene(); // Run test ทันที
