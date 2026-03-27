@@ -4,11 +4,11 @@
 package Core.Cards;
 
 import Core.Cards.Stream.CardBufferObject;
+import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
 import Core.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
-import org.json.JSONObject;
 
 import java.awt.*;
 
@@ -88,10 +88,7 @@ public class ActionCard extends Card {
 
         // ระบบ Broadcast updata ค่าเเมืองส่งไปยัง Server
         if (ZhuzheeGame.CLIENT != null && targetCity != null) {
-            JSONObject useCardPacket = new JSONObject();
-            useCardPacket.put("actionType", Core.Network.NetworkProtocol.USE_CARD.name());
-            useCardPacket.put("city", targetCity.toJson()); 
-            ZhuzheeGame.CLIENT.sendAction(useCardPacket);
+            ZhuzheeGame.CLIENT.sendAction(PacketBuilder.createUseCardPacket(targetCity.toJson()));
         }
     }
 

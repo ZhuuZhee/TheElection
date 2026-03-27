@@ -14,7 +14,7 @@ import Core.ZhuzheeGame;
 public class  IronWill extends PolicyCard {
     public IronWill(int x, int y, String imagePath) {
         super("Iron Will", x, y, imagePath, -6);
-        this.description = "Skill: if Development Card has Facility < 0 then change to 0 but if Development Card has Facility > 0 then Facility +5";
+        this.description = "Skill: If Development card has Facility < 0 then change to 0 but if development card has Facility > 0 then Facility +5";
     }
 
     @Override

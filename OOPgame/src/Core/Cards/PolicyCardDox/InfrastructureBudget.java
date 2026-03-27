@@ -10,7 +10,7 @@ public class InfrastructureBudget extends PolicyCard {
 
     public InfrastructureBudget(int x, int y, String imagePath) {
         super("Infrastructure Budget", x, y, imagePath, -5);
-        this.description = "Skill: Play a Development card with Facility >= 3. Gain +5 Facility.";
+        this.description = "Skill: If you play a Development card with Facility >= 3. Gain +5 Facility.";
     }
 
     @Override

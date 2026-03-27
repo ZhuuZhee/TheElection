@@ -20,9 +20,7 @@ import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashSet;
-import java.util.List;
 
-import static Core.Network.PacketBuilder.createPingPacket;
 import static Core.Network.PacketBuilder.createStartPacket;
 
 public class WaitingRoomMenu extends Screen implements ActionListener {
