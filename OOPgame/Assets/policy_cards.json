@@ -17,4 +17,6 @@
   { "class": "GrassrootsMovement",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/9 Policy.png" },
   { "class": "CleanAudit",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/10 Policy.png" },
   { "class": "HipsterCafeBubble",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/11 Policy.png" }
+  { "class": "TradeAgreement",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/16 Policy.png" },
+  { "class": "CabinetShuffle",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/13 Policy.png" }
 ]
