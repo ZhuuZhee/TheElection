@@ -9,7 +9,7 @@ import Core.ZhuzheeGame;
 public class Public_PrivatePartnership extends PolicyCard {
     public Public_PrivatePartnership(int x, int y, String imagePath) {
         super("Public-Private Partnership", x, y, imagePath, -4);
-        this.description = "Condition:\n Play a Development card with +Economic and +Facility.\nSkill:\n Gain 10 coins.";
+        this.description = "Skill: Play a Development card with +Economic and +Facility. Gain 10 coins.";
     }
 
     @Override

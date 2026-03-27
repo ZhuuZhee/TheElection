@@ -14,7 +14,7 @@ import Core.ZhuzheeGame;
 public class GreenPolicy extends PolicyCard {
     public GreenPolicy(int x, int y, String imagePath) {
         super("Green Policy", x, y, imagePath, -5);
-        this.description = "Condition:\n You have Development Card with Environment < 0.\nSkill:\n Change Environment to 0";
+        this.description = "Skill: Play a Development card with Environment < 0. Change Environment to 0";
     }
 
     @Override
