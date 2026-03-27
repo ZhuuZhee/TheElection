@@ -377,7 +377,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 JLabel profileIconLabel = new JLabel();
                 profileIconLabel.setPreferredSize(new Dimension(60, 60));
                 profileIconLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-                
+
                 String imagePath = p.getProfileImagePath();
 
                 if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFileName.isEmpty()) {
