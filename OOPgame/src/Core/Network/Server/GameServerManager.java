@@ -101,6 +101,9 @@ public class GameServerManager {
             return;
         String type = action.getString("type");
 
+        if(!type.equals(NetworkProtocol.PONG.name()))
+            System.out.println("Server : %s form {%s}".formatted(action,playerId) );
+
         if (type.equals(NetworkProtocol.JOIN.name())) {
             onJoinGame(action, playerId);
         } else if (type.equals(NetworkProtocol.START_GAME.name())) {
@@ -114,9 +117,6 @@ public class GameServerManager {
         } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
             onUseCard(action); // อัพเดตค่าเมืองให้ทุกคนเห็นเหมือนกัน
         }
-
-        if(!type.equals(NetworkProtocol.PONG.name()))
-            System.out.println("Server : %s form {%s}".formatted(action,playerId) );
     }
 
     public void removeClient(String playerId) {

@@ -103,8 +103,8 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
 
         // กำหนดภาพเริ่มต้นให้ selectedProfileImage ถ้ามีภาพอยู่ในโฟลเดอร์
         if (profileFiles != null && profileFiles.length > 0) {
-            selectedProfileFileName = profileFiles[0].getAbsolutePath();
-            ImageIcon defaultIcon = new ImageIcon(selectedProfileFileName);
+            selectedProfileFileName = profileFiles[0].getName(); // เก็บแค่ชื่อไฟล์สำหรับ Network
+            ImageIcon defaultIcon = new ImageIcon(profileFiles[0].getAbsolutePath()); // ใช้ Path เต็มสำหรับการโหลดรูปในเครื่องตัวเอง
             selectedProfileImage.setIcon(new ImageIcon(defaultIcon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH)));
         }
 
@@ -293,9 +293,9 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
 
                 // เพิ่ม Action ตามประเภทของ Grid
                 if (type.equals("PROFILE")) {
-                    Btn.addActionListener(new ProfileSelectAction(file, icon, grid, Btn));
+                    Btn.addActionListener(new ProfileSelectAction(file, icon, grid, Btn)); 
                 } else if (type.equals("ARCANA")) {
-                    Btn.addActionListener(new ArcanaCardSelectAction(file, grid, Btn));
+                    Btn.addActionListener(new ArcanaCardSelectAction(file, grid, Btn)); 
                 }
 
                 grid.add(Btn);
@@ -377,7 +377,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
         private JButton profBtn;
         @Override
         public void actionPerformed(ActionEvent e) {
-            selectedProfileFileName = file.getAbsolutePath();
+            selectedProfileFileName = file.getName(); // ส่งแค่ชื่อไฟล์
             selectedProfileImage.setIcon(new ImageIcon(icon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH)));
             AudioManager.getInstance().playSound("click");
 
@@ -400,7 +400,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            selectedArcanaFileName = file.getAbsolutePath();
+            selectedArcanaFileName = file.getName(); // ส่งแค่ชื่อไฟล์
             AudioManager.getInstance().playSound("click");
 
             for (Component c : arcanaGrid.getComponents()) {

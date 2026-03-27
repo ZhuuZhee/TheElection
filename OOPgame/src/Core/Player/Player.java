@@ -86,6 +86,14 @@ public class Player {
         this.playerName = playerName;
     }
 
+    public ArcanaCard getArcanaCard() {
+        return arcanaCard;
+    }
+
+    public void setArcanaCard(ArcanaCard arcanaCard) {
+        this.arcanaCard = arcanaCard;
+    }
+
     public void OnStartTurn() {
         if (isLocal) {
             DrawCard();
@@ -192,11 +200,13 @@ public class Player {
             this.cityOwn = new String[cityArray.length()];
             // ค่อยๆ
         }
+
+        System.out.println("Player{%s} : update data form json successfully!\n%s".formatted(playerName, toString()));
     }
 
     @Override
     public String toString() {
-        return "----------------- \n Player : {%s} (Color : %s) \n----------------".formatted(playerName,colorName);
+        return "Player{%s} : Color(%s), ProfileImagePath(%s)".formatted(playerName,colorName,profileImagePath);
     }
 
     public boolean isLocal() {

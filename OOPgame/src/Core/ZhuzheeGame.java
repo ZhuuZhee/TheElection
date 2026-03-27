@@ -120,7 +120,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.PolicyCardHolderUITest(MAIN_SCENE);
         PlayerUI.ArcanaCardHolderUITest(MAIN_SCENE);
         Tester.TestArcanaCard();
-
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
         if (CLIENT != null && !CLIENT.getConnectedPlayers().isEmpty()) {
