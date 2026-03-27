@@ -72,10 +72,10 @@ public class Shop extends Canvas {
             // สร้างกล่อง Wrapper (JPanel) เพื่อจับการ์ดและปุ่มมาอยู่ด้วยกัน
             JPanel wrapper = new JPanel(new BorderLayout(0, 10));
             wrapper.setOpaque(false);
-
+            wrapper.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             wrapper.add(card, BorderLayout.CENTER);
 
-            JButton buyBtn = new JButton("Buy $" + getPrice(card));
+            JButton buyBtn = new JButton("Buy");
             buyBtn.setBackground(new Color(39, 174, 96));
             buyBtn.setForeground(Color.WHITE);
             buyBtn.setFocusPainted(false);
