@@ -1,34 +1,28 @@
 /**
  * @Munin 10/3/25 - 16:28 - edited : เพิ่มการคำนวนตำแหน่งจาก GameObject.position
  * @Jeng {มาใส่วันที่ด้วย} created
+ * @Update : ระบบ Render น้ำเป็น Pre-calculated Heightmap แบบ Seamless (ไร้รอยต่อ + ลื่นที่สุด)
  */
 package Core.Maps;
 
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.util.Random;
 import java.util.ArrayList;
-//import java.util.;
 
-/**
- * Manages the hexagonal grid system and city placement.
- * Handles map generation using a cluster growth algorithm, mouse interaction,
- * and rendering of the game world and city UI.
- */
 public class Map extends GameObject {
-    /// กำหนดค่าความกว้างของ map ได้ใน attribute นี้เลย
-    private final int rows; // ความกว้าง
-    private final int cols; // ความสูง
+    private final int rows; 
+    private final int cols; 
     private final int citiesCount;
     private final int numPlayers;
-    private static final int DEFAULT_ROWS = 12; // ความสูง
-    private static final int DEFAULT_COLS = 12; // ความสูง
-    private static final int DEFAULT_CITIES_COUNT = 8; // ความสูง
+    private static final int DEFAULT_ROWS = 12;
+    private static final int DEFAULT_COLS = 12;
+    private static final int DEFAULT_CITIES_COUNT = 8;
     private final int maxGridPerCties = 12;
     private final int minStats = 1;
     private final int maxStats = 5;
@@ -38,36 +32,46 @@ public class Map extends GameObject {
     private final float radius = 84;
     private float scaleRatio = 1;
     private final Point startSize;
-    private final Grid[][] gridMap;// array ของช่องแต่ละช่องว่าเป็น city หรือ water
+    private final Grid[][] gridMap;
     private Grid currentHoveredGrid = null;
     private Grid currentClickedGrid = null;
-    private Image background = null;
-    private String imagePath = null;
 
-    public Map() {
-        this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, new Random().nextLong(), 4);
-    }
+    // --- ระบบวาดน้ำแบบ Pre-calculated Heightmap (ลื่นที่สุด) ---
+    private BufferedImage waterBackground = null;
+    private int[] waterPixels;
+    private int renderWidth, renderHeight;
+    private final int PIXEL_SIZE = 2; // ปรับ 1 หรือ 2 ได้ตามใจชอบ
+    private float timeElapsed = 0f; 
+    private final float WATER_SPEED = 20f; 
 
-    public Map(long seed) {
-        this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, seed, 4);
-    }
+    // --- Heightmap Data ---
+    private float[][] heightMap;
+    private final int HEIGHTMAP_SIZE = 1024; // ขนาดของแผนที่ความสูง
 
-    public Map(long seed, int numPlayers) {
-        this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, seed, numPlayers);
-    }
+    // --- ชุดสีน้ำทะเลสไตล์ Pixel Art Shader ---
+    private final int DEEP_WATER    = 0xFF1A4770;
+    private final int MID_WATER     = 0xFF246A9C;
+    private final int CAUSTIC_LINE  = 0xFF3EA3D9;
+    private final int SPARKLE_FOAM  = 0xFFE5F8FF;
 
-    public Map(int rows, int cols, int citiesCount, long seed) {
-        this(rows, cols, citiesCount, seed, 4);
-    }
+    public Map() { this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, new Random().nextLong(), 4); }
+    public Map(long seed) { this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, seed, 4); }
+    public Map(long seed, int numPlayers) { this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, seed, numPlayers); }
+    public Map(int rows, int cols, int citiesCount, long seed) { this(rows, cols, citiesCount, seed, 4); }
 
     public Map(int rows, int cols, int citiesCount, long seed, int numPlayers) {
-        super(-1500, -1500, 3000, 3000, ZhuzheeGame.MAIN_SCENE);
+        super(-2000, -1500, 4000, 3000, ZhuzheeGame.MAIN_SCENE);
         this.rows = rows;
         this.cols = cols;
         this.citiesCount = citiesCount;
         this.numPlayers = Math.max(1, numPlayers);
-        setBackground("OOPgame/Assets/ImageForMapBackground/image.png/");
-        startSize = new Point(getWidth(), getHeight());
+        
+        startSize = new Point(Math.max(1, getWidth()), Math.max(1, getHeight()));
+
+        // สร้าง Heightmap เก็บไว้ใน RAM รอบเดียวตอนเริ่มเกม
+        generateHeightMap(seed);
+
+        initWaterBuffer();
         gridMap = generateMap(seed);
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
@@ -75,96 +79,75 @@ public class Map extends GameObject {
             public void mouseMoved(MouseEvent e) {
                 Grid clicked = getGridAtPoint(e.getPoint());
                 if (currentHoveredGrid != clicked) {
-                    if (currentHoveredGrid != null) {
-                        currentHoveredGrid.setHovered(false);
-                    }
+                    if (currentHoveredGrid != null) currentHoveredGrid.setHovered(false);
                     currentHoveredGrid = clicked;
-                    if (currentHoveredGrid != null) {
-                        currentHoveredGrid.setHovered(true);
-                    }
+                    if (currentHoveredGrid != null) currentHoveredGrid.setHovered(true);
                 }
             }
         });
+        
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Grid clicked = getGridAtPoint(e.getPoint());
-
                 if (clicked != null) {
                     currentClickedGrid = clicked;
                     clicked.getCity().printStats();
                     clicked.getCity().getVotingResults();
-                    System.out.println( "Clicked on city: " + clicked.getCity().getCityName());
                 } else {
-                    System.out.println("Clicked on empty city.");
                     currentClickedGrid = null;
                 }
             }
         });
     }
 
-    public void setBackground(String imagePath) {
-        try {
-            this.background = ImageIO.read(new File(imagePath));
-            this.imagePath = imagePath;
-            repaint(); // สั่งให้วาดใหม่เมื่อโหลดรูปเสร็จ
-        } catch (Exception e) {
-            System.err.println("ไม่สามารถโหลดรูปภาพได้จาก path: " + imagePath);
-            e.printStackTrace();
-        }
-    }
+    /**
+     * คำนวณ Noise ทั้งหมดล่วงหน้า แล้วเก็บเป็น Array 2 มิติ (ใช้เป็น Heightmap)
+     */
+    private void generateHeightMap(long seed) {
+        heightMap = new float[HEIGHTMAP_SIZE][HEIGHTMAP_SIZE];
+        Random random = new Random(seed);
+        float offsetX = random.nextFloat() * 1000f;
+        float offsetY = random.nextFloat() * 1000f;
 
-    /** Resets the hover state for the currently hovered grid. */
-    public void clearHoveredGrid() {
-        if (currentHoveredGrid != null) {
-            currentHoveredGrid.setHovered(false);
-            currentHoveredGrid = null;
-        }
-    }
-
-    /** Sets a specific grid as hovered, updating states accordingly. */
-    public void setHoveredGrid(Grid grid) {
-        if (currentHoveredGrid != grid) {
-            if (currentHoveredGrid != null) {
-                currentHoveredGrid.setHovered(false);
-            }
-            currentHoveredGrid = grid;
-            if (currentHoveredGrid != null) {
-                currentHoveredGrid.setHovered(true);
+        for (int y = 0; y < HEIGHTMAP_SIZE; y++) {
+            for (int x = 0; x < HEIGHTMAP_SIZE; x++) {
+                // ใช้ Seamless Noise เพื่อไม่ให้เกิดรอยต่อสี่เหลี่ยม
+                float noise1 = seamlessNoise(x, y, 0.015f, offsetX, offsetY);
+                float noise2 = seamlessNoise(x, y, 0.04f, -offsetX, -offsetY) * 0.5f;
+                
+                // เก็บค่าความสูงไว้ใน Array
+                heightMap[x][y] = Math.clamp(noise1 + noise2, 0f, 1f);
             }
         }
     }
 
     /**
-     * Finds the Grid object at a specific pixel coordinate.
-     * @param p The point to check.
-     * @return The Grid at that point, or null if empty.
+     * สร้าง Noise แบบเนียนกริ๊บ ไม่มีรอยต่อ (Seamless Tiling)
      */
-    public Grid getGridAtPoint(Point p) {
-        for (Grid[] col : gridMap) {
-            for (Grid grid : col) {
-                if (grid != null && grid.contains(p)) {
-                    return grid;
-                }
-            }
-        }
-        return null;
-    }
+    private float seamlessNoise(int x, int y, float scale, float offsetX, float offsetY) {
+        float s = (float) x / HEIGHTMAP_SIZE;
+        float t = (float) y / HEIGHTMAP_SIZE;
 
-    public City getCityByName(String name) {
-        if (name == null || gridMap == null) return null;
-        for (Grid[] col : gridMap) {
-            for (Grid grid : col) {
-                if (grid != null && grid.getCity() != null) {
-                    if (grid.getCity().getCityName().equals(name)) {
-                        return grid.getCity();
-                    }
-                }
-            }
-        }
-        return null;
-    }
+        float dx = HEIGHTMAP_SIZE * scale;
+        float dy = HEIGHTMAP_SIZE * scale;
 
+        float x1 = x * scale + offsetX;
+        float y1 = y * scale + offsetY;
+
+        float val00 = simpleNoise(x1, y1);
+        float val10 = simpleNoise(x1 - dx, y1);
+        float val01 = simpleNoise(x1, y1 - dy);
+        float val11 = simpleNoise(x1 - dx, y1 - dy);
+
+        float blendX = s * s * (3.0f - 2.0f * s);
+        float blendY = t * t * (3.0f - 2.0f * t);
+
+        float top = val00 * (1.0f - blendX) + val10 * blendX;
+        float bottom = val01 * (1.0f - blendX) + val11 * blendX;
+        
+        return top * (1.0f - blendY) + bottom * blendY;
+    }
     public ArrayList<City> getAllCities() {
         ArrayList<City> uniqueCities = new ArrayList<>();
         if (gridMap != null) {
@@ -190,12 +173,139 @@ public class Map extends GameObject {
         }
         return count;
     }
+    /**
+     * ฟังก์ชันพื้นฐานสำหรับสร้าง Noise
+     */
+    private float simpleNoise(float x, float y) {
+        int xi = (int) Math.floor(x);
+        int yi = (int) Math.floor(y);
+        float xf = x - xi;
+        float yf = y - yi;
+        float u = xf * xf * (3.0f - 2.0f * xf);
+        float v = yf * yf * (3.0f - 2.0f * yf);
+        float a = randomHash(xi, yi);
+        float b = randomHash(xi + 1, yi);
+        float c = randomHash(xi, yi + 1);
+        float d = randomHash(xi + 1, yi + 1);
+        float x1 = a + u * (b - a);
+        float x2 = c + u * (d - c);
+        return x1 + v * (x2 - x1);
+    }
+
+    private float randomHash(int x, int y) {
+        int n = x + y * 57;
+        n = (n << 13) ^ n;
+        float res = (float) (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+        return (res + 1.0f) / 2.0f; 
+    }
 
     /**
-     * Procedurally generates the map grid and populates it with cities.
-     * @param seed Random seed.
-     * @return A 2D array representing the generated hex grid.
+     * ฟังก์ชันอ่านค่าจาก Heightmap แบบ Seamless (ไหลวนลูปไม่มีที่สิ้นสุด)
      */
+    private float sampleHeightMap(float x, float y) {
+        int ix = (((int) x) % HEIGHTMAP_SIZE + HEIGHTMAP_SIZE) % HEIGHTMAP_SIZE;
+        int iy = (((int) y) % HEIGHTMAP_SIZE + HEIGHTMAP_SIZE) % HEIGHTMAP_SIZE;
+        return heightMap[ix][iy];
+    }
+
+    private void initWaterBuffer() {
+        int w = Math.max(1, getWidth());
+        int h = Math.max(1, getHeight());
+        renderWidth = Math.max(1, w / PIXEL_SIZE);
+        renderHeight = Math.max(1, h / PIXEL_SIZE);
+        
+        waterBackground = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_RGB);
+        waterPixels = ((DataBufferInt) waterBackground.getRaster().getDataBuffer()).getData();
+        drawWaterFrame();
+    }
+
+    /**
+     * ระบบวาดน้ำที่อ่านค่าจาก Heightmap เท่านั้น
+     */
+    private void drawWaterFrame() {
+        if (waterPixels == null) return;
+        
+        float currentOffsetX = timeElapsed * WATER_SPEED;
+        float currentOffsetY = timeElapsed * WATER_SPEED * 0.5f;
+
+        float centerX = renderWidth * PIXEL_SIZE / 2.0f;
+        float centerY = renderHeight * PIXEL_SIZE / 2.0f;
+        float safeScale = Math.max(0.01f, scaleRatio); 
+
+        for (int y = 0; y < renderHeight; y++) {
+            for (int x = 0; x < renderWidth; x++) {
+                float screenX = x * PIXEL_SIZE;
+                float screenY = y * PIXEL_SIZE;
+
+                float worldX = (screenX - centerX) / safeScale;
+                float worldY = (screenY - centerY) / safeScale;
+
+                // 1. อ่านค่า Heightmap ทิศทางหลัก (คลื่นน้ำตื้น/ลึก)
+                float baseHeight = sampleHeightMap(worldX + currentOffsetX, worldY + currentOffsetY);
+                
+                // 2. อ่านค่า Heightmap อีกทิศทาง เพื่อนำมาทำเส้นตัด (Caustics) แบบไหลสวนกัน
+                float causticHeight = sampleHeightMap(worldX - (currentOffsetX * 1.2f), worldY + (currentOffsetY * 0.8f));
+
+                int color = DEEP_WATER;
+                
+                // แบ่งสีตามความสูงของ Heightmap
+                if (baseHeight > 0.7f) {
+                    color = MID_WATER;
+                }
+                
+                // สร้างตาข่ายน้ำโดยดึงเฉพาะ "เส้นขอบ" ที่ค่าความสูงตัดกัน
+                float edge = Math.abs(causticHeight - 0.5f);
+                if (edge < 0.04f) { 
+                    color = CAUSTIC_LINE; 
+                }
+                
+                // วาดจุดประกายแสง (Specular) ตรงจุดที่คลื่นสูงชนกับเส้นตาข่าย
+                if (edge < 0.04f && baseHeight > 0.85f) {
+                    color = SPARKLE_FOAM; 
+                }
+                
+                // บันทึกสีลง Array โดยตรง (O(1) Access เร็วมาก)
+                waterPixels[x + y * renderWidth] = color;
+            }
+        }
+    }
+
+    public void clearHoveredGrid() {
+        if (currentHoveredGrid != null) {
+            currentHoveredGrid.setHovered(false);
+            currentHoveredGrid = null;
+        }
+    }
+
+    public void setHoveredGrid(Grid grid) {
+        if (currentHoveredGrid != grid) {
+            if (currentHoveredGrid != null) currentHoveredGrid.setHovered(false);
+            currentHoveredGrid = grid;
+            if (currentHoveredGrid != null) currentHoveredGrid.setHovered(true);
+        }
+    }
+
+    public Grid getGridAtPoint(Point p) {
+        for (Grid[] col : gridMap) {
+            for (Grid grid : col) {
+                if (grid != null && grid.contains(p)) return grid;
+            }
+        }
+        return null;
+    }
+
+    public City getCityByName(String name) {
+        if (name == null || gridMap == null) return null;
+        for (Grid[] col : gridMap) {
+            for (Grid grid : col) {
+                if (grid != null && grid.getCity() != null) {
+                    if (grid.getCity().getCityName().equals(name)) return grid.getCity();
+                }
+            }
+        }
+        return null;
+    }
+
     private Grid[][] generateMap(long seed) {
         Grid[][] grid = new Grid[rows][cols];
         Random random = new Random(seed);
@@ -205,37 +315,29 @@ public class Map extends GameObject {
 
         Point startPosition = new Point(rows / 2, cols / 2);
 
-        // generate the city on grid
         for (int i = 0; i < citiesCount; i++) {
             City city = new City("City Test : " + i,
-                    random.nextInt(minStats, maxStats),
-                    random.nextInt(minStats, maxStats),
-                    random.nextInt(minStats, maxStats),
-                    random.nextInt(minPopulation, maxPopulation),
+                    random.nextInt(minStats, maxStats), random.nextInt(minStats, maxStats),
+                    random.nextInt(minStats, maxStats), random.nextInt(minPopulation, maxPopulation),
                     this.numPlayers);
-            // random color
             do {
                 isDuplicate = false;
-                // สุ่มค่า RGB (ตัวอย่างเดิมของคุณ)
                 int r = random.nextInt(1, 5) * 255 / 5;
                 int g = random.nextInt(1, 5) * 255 / 5;
                 int b = random.nextInt(1, 5) * 255 / 5;
-                newColor = new Color(r, g, b);
+                newColor = new Color(r, g, b, 230); 
 
-                // วนลูปเช็คกับทุกเมืองที่ถูกสร้างไปแล้วใน List
                 for (City c : cities) {
                     if (newColor.equals(c.getColor())) {
                         isDuplicate = true;
-                        System.out.println("พบสีซ้ำ: " + newColor + " กำลังสุ่มใหม่...");
                         break;
                     }
                 }
-            } while (isDuplicate); // ถ้าซ้ำให้กลับไปเริ่มสุ่มใหม่
+            } while (isDuplicate); 
 
             city.setColor(newColor);
             cities.add(city);
 
-            // random start position inside map
             setCityOnGridMapByRandomWalk(grid, city, random.nextInt(6, maxGridPerCties), startPosition, random);
             startPosition = getRandomFilledTile(grid, random);
         }
@@ -246,156 +348,90 @@ public class Map extends GameObject {
         ArrayList<Point> filledTiles = new ArrayList<>();
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[0].length; y++) {
-                if (grid[x][y] != null)
-                    filledTiles.add(new Point(x, y));
+                if (grid[x][y] != null) filledTiles.add(new Point(x, y));
             }
         }
-        if (filledTiles.isEmpty()) {
-            return new Point(rows / 2, cols / 2);
-        }
+        if (filledTiles.isEmpty()) return new Point(rows / 2, cols / 2);
         return filledTiles.get(random.nextInt(filledTiles.size()));
     }
 
-    public float getScaleRatio() {
-        return scaleRatio;
-    }
+    public float getScaleRatio() { return scaleRatio; }
 
-    /**
-     * set the `City` on grid map(2D Array) by a cluster growth algorithm (instead
-     * of random walk)
-     * This makes the city more compact and connected.
-     *
-     * @param city          the city to set on gridMap.
-     * @param grid          grid Map.
-     * @param gridCount     number of tiles to create for this city.
-     * @param startPosition start position in grid map.
-     */
-    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition,
-            Random random) {
+    private void setCityOnGridMapByRandomWalk(Grid[][] grid, City city, int gridCount, Point startPosition, Random random) {
         ArrayList<Point> cityTiles = new ArrayList<>();
         ArrayList<Point> candidates = new ArrayList<>();
 
-        // Ensure start position is within bounds and doesn't already have a city
         int startX = Math.abs(startPosition.x) % grid.length;
         int startY = Math.abs(startPosition.y) % grid[0].length;
 
-        // If start position is occupied, find the nearest empty one (simple approach:
-        // random until empty)
         while (grid[startX][startY] != null) {
             startX = random.nextInt(grid.length);
             startY = random.nextInt(grid[0].length);
         }
 
-        // Add the first tile
         addTileToCity(grid, city, startX, startY, cityTiles, candidates);
         int tilesCreated = 1;
 
         while (tilesCreated < gridCount && !candidates.isEmpty()) {
-            // Pick a random candidate from the list of neighbors
             int index = random.nextInt(candidates.size());
             Point next = candidates.get(index);
 
-            // Double check if it's still null (might have been filled by another city or
-            // same city)
             if (grid[next.x][next.y] == null) {
                 addTileToCity(grid, city, next.x, next.y, cityTiles, candidates);
                 tilesCreated++;
             } else {
-                // If occupied, just remove it from candidates
                 candidates.remove(index);
             }
         }
     }
 
-    /**
-     * Helper to add a tile to a city and update candidate list for expansion.
-     */
-    private void addTileToCity(Grid[][] grid, City city, int x, int y, ArrayList<Point> cityTiles,
-            ArrayList<Point> candidates) {
+    private void addTileToCity(Grid[][] grid, City city, int x, int y, ArrayList<Point> cityTiles, ArrayList<Point> candidates) {
         float xOffset = y % 2 == 0 ? getGridWidth() : getGridWidth() / 2;
         grid[x][y] = new Grid(this, city, x, y, radius, xOffset);
-        Point current = new Point(x, y);
-        cityTiles.add(current);
-
-        // Remove from candidates if it was there
+        cityTiles.add(new Point(x, y));
         candidates.removeIf(p -> p.x == x && p.y == y);
 
-
-        // Add neighbors to candidates
-        int[][] neighbors;
-        if (y % 2 == 0) {
-            // Neighbors for even rows in offset-x hexagon grid
-            neighbors = new int[][] { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
-        } else {
-            // Neighbors for odd rows in offset-x hexagon grid
-            neighbors = new int[][] { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
-        }
+        int[][] neighbors = { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 }, { (y % 2 == 0 ? -1 : 1), -1 }, { (y % 2 == 0 ? -1 : 1), 1 } };
 
         for (int[] offset : neighbors) {
-            int nx = x + offset[0];
-            int ny = y + offset[1];
-
-            // Wrap around or clamp
-            nx = Math.clamp(nx, 0, grid.length - 1);
-            ny = Math.clamp(ny, 0, grid[0].length - 1);
-
+            int nx = Math.clamp(x + offset[0], 0, grid.length - 1);
+            int ny = Math.clamp(y + offset[1], 0, grid[0].length - 1);
             if (grid[nx][ny] == null) {
                 Point p = new Point(nx, ny);
-                if (!candidates.contains(p)) {
-                    candidates.add(p);
-                }
+                if (!candidates.contains(p)) candidates.add(p);
             }
         }
-
     }
 
-    public float getGridWidth() {
-        return (float) Math.sqrt(3) * radius * scaleRatio + gap; // ระยะห่างแนวนอนระหว่างชิ้น
-    }
-
-    public float getGridHeight() {
-        return (float) 1.5 * radius * scaleRatio + gap;
-    }
-
-    public float getGridMapWidth() {
-        return cols * getGridWidth();
-    }
-
-    public float getGridMapHeight() {
-        return rows * getGridHeight();
-    }
+    public float getGridWidth() { return ((float) Math.sqrt(3) * radius + gap) * scaleRatio; }
+    public float getGridHeight() { return ((float) 1.5 * radius + gap) * scaleRatio; }
+    public float getGridMapWidth() { return cols * getGridWidth(); }
+    public float getGridMapHeight() { return rows * getGridHeight(); }
 
     @Override
     public void paintComponent(Graphics g) {
-        scaleRatio = (float) getWidth() / (float) startSize.x;
         super.paintComponent(g);
-        // Guard against null board - prevent NPE
-        if (gridMap == null) {
-            System.err.println("Warning: Map.gridMap is null, cannot render");
-            return;
-        }
+        if (gridMap == null) return;
+        
         Graphics2D g2d = (Graphics2D) g.create();
+        
+        if (waterBackground != null) {
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            g2d.drawImage(waterBackground, 0, 0, getWidth(), getHeight(), null);
+        }
+
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        if (background != null) {
-            // ถ้ามีรูปภาพ ให้วาดรูปลงไปให้เต็มขนาดการ์ด
-            g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
-        }
-
-        // Render all non-hovered grids first
         for (Grid[] col : gridMap) {
             for (Grid grid : col) {
-                if (grid != null && !grid.isHovered())
-                    grid.render(g2d);
+                if (grid != null && !grid.isHovered()) grid.render(g2d);
             }
         }
 
-        // Render the hovered grid last to ensure it is on top
         if (currentHoveredGrid != null) {
             currentHoveredGrid.render(g2d);
         }
 
-        // Render the clicked city stats UI
         if (currentClickedGrid != null) {
             drawCityStatsUI(g2d, currentClickedGrid.getCity());
         }
@@ -403,50 +439,34 @@ public class Map extends GameObject {
         g2d.dispose();
     }
 
-    /**
-     * Renders the informational UI box for a city when it is clicked.
-     */
     private void drawCityStatsUI(Graphics2D g2d, City city) {
-        if (city == null || currentClickedGrid == null)
-            return;
+        if (city == null || currentClickedGrid == null) return;
 
         java.util.List<Core.Player.Player> players = Core.ZhuzheeGame.CURRENT_PLAYERS;
         int availablePlayers = (players != null) ? players.size() : 0;
         int scorePlayers = (city.playerScores != null) ? city.playerScores.length : 0;
         int playersToShow = Math.max(0, Math.min(availablePlayers, scorePlayers));
 
-        // Configuration for the UI box
         int padding = 15;
         int boxWidth = 220;
         int legendLines = Math.max(1, playersToShow);
         int boxHeight = 150 + (legendLines * 30);
 
-        // Use the grid position to anchor the UI
         int x = (int) currentClickedGrid.getX() + 30;
         int y = (int) currentClickedGrid.getY() + 30;
 
-        // Keep the box within the map bounds
-        if (x + boxWidth > getWidth()) {
-            x = (int) currentClickedGrid.getX() - boxWidth - 30;
-        }
-        if (y + boxHeight > getHeight()) {
-            y = (int) currentClickedGrid.getY() - boxHeight - 30;
-        }
+        if (x + boxWidth > getWidth()) x = (int) currentClickedGrid.getX() - boxWidth - 30;
+        if (y + boxHeight > getHeight()) y = (int) currentClickedGrid.getY() - boxHeight - 30;
 
-        // Draw background shadow
         g2d.setColor(new Color(0, 0, 0, 100));
         g2d.fillRoundRect(x + 3, y + 3, boxWidth, boxHeight, 15, 15);
-
-        // Draw background box
         g2d.setColor(new Color(245, 245, 245, 240));
         g2d.fillRoundRect(x, y, boxWidth, boxHeight, 15, 15);
 
-        // Draw border
         g2d.setColor(city.getColor() != null ? city.getColor() : Color.DARK_GRAY);
         g2d.setStroke(new BasicStroke(3));
         g2d.drawRoundRect(x, y, boxWidth, boxHeight, 15, 15);
 
-        // Draw Text
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
         g2d.drawString(city.getCityName(), x + padding, y + padding + 15);
@@ -457,8 +477,7 @@ public class Map extends GameObject {
 
         drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.ECONOMY), x + padding, startY);
         drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.FACILITY), x + padding, startY + lineSpacing);
-        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.ENVIRONMENT), x + padding,
-                startY + lineSpacing * 2);
+        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.ENVIRONMENT), x + padding, startY + lineSpacing * 2);
 
         int barX = x + padding;
         int barY = startY + lineSpacing * 3 - 7;
@@ -477,24 +496,18 @@ public class Map extends GameObject {
             Color c = (p != null && p.getColor() != null) ? p.getColor() : Color.GRAY;
             double percent = city.getPlayerPercentage(i);
 
-            // Label
             g2d.setColor(Color.DARK_GRAY);
             g2d.drawString(String.format("%s: %.2f%%", name, percent), barX, yCursor + 10);
 
-            // Bar background
             int bgY = yCursor + 14;
             g2d.setColor(new Color(220, 220, 220));
             g2d.fillRoundRect(barX, bgY, barWidth, barHeight, 6, 6);
 
-            // Bar fill
             int fillWidth = (int) Math.round(barWidth * (percent / 100.0));
             fillWidth = Math.max(0, Math.min(fillWidth, barWidth));
             g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 220));
-            if (fillWidth > 0) {
-                g2d.fillRoundRect(barX, bgY, fillWidth, barHeight, 6, 6);
-            }
+            if (fillWidth > 0) g2d.fillRoundRect(barX, bgY, fillWidth, barHeight, 6, 6);
 
-            // Bar border
             g2d.setColor(new Color(0, 0, 0, 90));
             g2d.drawRoundRect(barX, bgY, barWidth, barHeight, 6, 6);
 
@@ -506,13 +519,10 @@ public class Map extends GameObject {
         g2d.drawString("Population: " + String.format("%,d", city.population), x + padding, yCursor + 10);
     }
 
-    /**
-     * Renders a single line of stat text (Label: Value).
-     */
     private void drawStatLine(Graphics2D g2d, String label, int value, int x, int y) {
         g2d.setColor(Color.DARK_GRAY);
         g2d.drawString(label, x, y);
-        g2d.setColor(new Color(0, 102, 204)); // Dark blue for stats
+        g2d.setColor(new Color(0, 102, 204)); 
         g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
         g2d.drawString(String.valueOf(value), x + 100, y);
         g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -521,16 +531,29 @@ public class Map extends GameObject {
     @Override
     public void update() {
         super.update();
+        float deltaTime = ZhuzheeEngine.Application.getDeltaTime();
+        timeElapsed += deltaTime;
+
+        if (startSize != null && startSize.x > 0) {
+            scaleRatio = (float) getWidth() / (float) startSize.x;
+        }
+
+        int w = getWidth();
+        int h = getHeight();
+        
+        if (w > 0 && h > 0 && (renderWidth != Math.max(1, w / PIXEL_SIZE) || renderHeight != Math.max(1, h / PIXEL_SIZE))) {
+            initWaterBuffer();
+        } else {
+            drawWaterFrame(); 
+        }
+
         if (gridMap != null) {
-            float deltaTime = ZhuzheeEngine.Application.getDeltaTime();
             for (Grid[] col : gridMap) {
                 for (Grid grid : col) {
-                    if (grid != null) {
-                        grid.animation(deltaTime);
-                    }
+                    if (grid != null) grid.animation(deltaTime);
                 }
             }
-            repaint(); // Re-render if there's any animation
+            repaint(); 
         }
     }
 }
