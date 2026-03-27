@@ -97,9 +97,9 @@ public class GameServerManager {
     }
 
     public synchronized void processAction(String playerId, JSONObject action) {
-        if (!action.has("actionType"))
+        if (!action.has("type"))
             return;
-        String type = action.getString("actionType");
+        String type = action.getString("type");
 
         if (type.equals(NetworkProtocol.JOIN.name())) {
             onJoinGame(action, playerId);
@@ -114,6 +114,9 @@ public class GameServerManager {
         } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
             onUseCard(action); // อัพเดตค่าเมืองให้ทุกคนเห็นเหมือนกัน
         }
+
+        if(!type.equals(NetworkProtocol.PONG.name()))
+            System.out.println("Server : %s form {%s}".formatted(action,playerId) );
     }
 
     public void removeClient(String playerId) {
@@ -163,7 +166,15 @@ public class GameServerManager {
         broadcast(gameState.generateSyncData());
     }
     private synchronized void onUpdatePlayerData(String playerId, JSONObject action){
-        sendToClient(playerId, action);
+        //update game state player datas
+        for (Player player : gameState.getPlayers()){
+            if(player.getPlayerId().equals(playerId)){
+                player.updateFromJSON(action);
+                System.out.println("Server : update player data \n" + player.toString());
+            }
+        }
+        action.put("type", NetworkProtocol.UPDATE_PLAYER.name());
+        broadcast(action);//send to all clients to syn player data
     }
     private synchronized void onStartGame() {
         System.out.println("START_GAME all clients");
