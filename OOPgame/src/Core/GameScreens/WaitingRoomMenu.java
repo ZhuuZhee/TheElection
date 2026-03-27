@@ -48,12 +48,11 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         bgCanvas.setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Waiting Room");
-        title.setFont(new Font("Arial", Font.BOLD, 40));
+        title.setFont(title.getFont().deriveFont(30f));
         title.setHorizontalAlignment(JLabel.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(20, 50, 10, 0));
         
         ipLabel = new JLabel("Your IP: Loading...");
-        ipLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         ipLabel.setHorizontalAlignment(JLabel.CENTER);
         ipLabel.setBorder(BorderFactory.createEmptyBorder(0, 50, 20, 0));
 
@@ -70,7 +69,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
         JLabel subTitle = new JLabel("Connected Players:");
-        subTitle.setFont(new Font("Arial", Font.BOLD, 22));
+        subTitle.setFont(subTitle.getFont().deriveFont(25f));
         subTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         subTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         centerPanel.add(subTitle);
@@ -85,6 +84,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         JPanel btnPanel = new JPanel();
         btnPanel.setOpaque(false);
         btnPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        btnPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 300, 0));
 
         startBtn = UIButtonFactory.createMenuButton("Start Game", btnNormalImg, btnHoverImg, this);
         btnPanel.add(startBtn);
@@ -143,7 +143,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
             
             for (Player p : players) {
                 JLabel pLabel = new JLabel("Player: " + p.getPlayerName());
-                pLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+                pLabel.setFont(pLabel.getFont().deriveFont(20f));
                 pLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
                 playersPanel.add(pLabel);
                 playersPanel.add(Box.createRigidArea(new Dimension(0, 10)));

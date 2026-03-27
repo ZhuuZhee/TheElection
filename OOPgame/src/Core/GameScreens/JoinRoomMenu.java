@@ -42,7 +42,7 @@ public class JoinRoomMenu extends Screen implements ActionListener {
         bgCanvas.setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Join Game");
-        title.setFont(new Font("Arial", Font.BOLD, 40));
+        title.setFont(title.getFont().deriveFont(40f));
         title.setHorizontalAlignment(JLabel.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
         bgCanvas.add(title, BorderLayout.NORTH);
@@ -52,7 +52,6 @@ public class JoinRoomMenu extends Screen implements ActionListener {
         Panel.setLayout(new BoxLayout(Panel, BoxLayout.Y_AXIS));
         
         JLabel nameTitle = new JLabel("Enter Your Name:");
-        nameTitle.setFont(new Font("Arial", Font.BOLD, 18));
         nameTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         nameInput = new JTextField();
@@ -63,14 +62,12 @@ public class JoinRoomMenu extends Screen implements ActionListener {
         nameInput.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         JLabel subtitle = new JLabel("Enter Host IP:");
-        subtitle.setFont(new Font("Arial", Font.BOLD, 18));
         subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         subtitle.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
         
         ipInput = new JTextField();
         ipInput.setMaximumSize(new Dimension(250, 35));
         ipInput.setPreferredSize(new Dimension(250, 35));
-        ipInput.setFont(new Font("Arial", Font.PLAIN, 16));
         ipInput.setHorizontalAlignment(JTextField.CENTER);
         ipInput.setAlignmentX(Component.CENTER_ALIGNMENT);
         
