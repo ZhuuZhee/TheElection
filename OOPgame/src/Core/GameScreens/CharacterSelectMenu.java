@@ -27,7 +27,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
     private NineSliceButton confirmBtn;
     private NineSliceButton backBtn;
 
-    private String selectedColor = "Pink"; // เก็บสีที่เลือกไว้
+    private String selectedColor = ""; // จะถูกกำหนดค่าเริ่มต้นตาม Color Map
 
     private JLabel selectedProfileImage;
     private String selectedProfileFileName = "";
@@ -38,8 +38,12 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
     private BufferedImage btnHoverImg;
     private NineSliceCanvas bgCanvas;
 
-    String[] colorNames = {"Pink", "Red", "Blue", "Green", "Yellow", "Purple"};
-    Color[] colors = {Color.PINK, Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, new Color(128, 0, 128)};
+    private Color[] getColors(){
+        return Player.COLOR_MAP.values().toArray(new Color[0]);
+    }
+    private String[] getColorNames(){
+        return Player.COLOR_MAP.keySet().toArray(new String[0]);
+    }
 
     public CharacterSelectMenu() {
         setLayout(new BorderLayout());
@@ -103,6 +107,10 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
             ImageIcon defaultIcon = new ImageIcon(selectedProfileFileName);
             selectedProfileImage.setIcon(new ImageIcon(defaultIcon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH)));
         }
+
+        // กำหนดสีเริ่มต้นจากสีแรกใน Color Map เพื่อให้ตรงกับ UI
+        String[] names = getColorNames();
+        if (names.length > 0) selectedColor = names[0];
     }
 
     @Override
@@ -114,13 +122,10 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
 
             // เซตเฉพาะสีให้กับผู้เล่น (ชื่อตั้งมาตั้งแต่ Create/Join Room แล้ว)
             if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
-                int colorIndex = java.util.Arrays.asList(colorNames).indexOf(selectedColor);
-                if (colorIndex >= 0 && colorIndex < colors.length) {
-                    sendPlayerData();
-                } else {
-                    System.err.println("Warning: Selected color not found or out of bounds.");
-                    // Optional: Set a default color here
-                }
+                sendPlayerData();
+            }else {
+                System.err.println("Warning: Selected color not found or out of bounds.");
+                // Optional: Set a default color here
             }
 
             Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
@@ -133,14 +138,28 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
 
     private void sendPlayerData(){
         GameClientManager client = ZhuzheeGame.CLIENT;
+        if (client == null || client.getLocalPlayer() == null) {
+            System.err.println("Cannot send Player data. No Local Player Detected");
+            return;
+        }
+
         Player localPlayer = client.getLocalPlayer();
+
+
+        //localPlayer.setProfileImagePath(selectedProfileFileName);
+
         JSONObject playerPacket = PacketBuilder.createPlayerDataPacket(
+                localPlayer.getPlayerId(),
                 localPlayer.getPlayerName(),
                 localPlayer.getCoin(),
                 selectedColor,
-                selectedProfileImage.getText(),
-                new String[0]
+                selectedProfileFileName// ใช้ตัวแปรที่เก็บ Path ของไฟล์จริงๆ
         );
+
+        //update self client
+//        client.getLocalPlayer().updateFromJSON(playerPacket);
+
+        //send to server for update all
         client.sendAction(playerPacket);
     }
 
@@ -308,6 +327,8 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
         new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
 
         ArrayList<JPanel> colorBoxes = new ArrayList<>();
+        Color[] colors = getColors();
+        String[] colorNames = getColorNames();
 
         for (int i = 0; i < colors.length; i++) {
             final int index = i;
@@ -315,7 +336,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
             colorBox.setPreferredSize(new Dimension(30, 30));
             colorBox.setBackground(colors[i]);
 
-            // ตั้งค่าสีเริ่มต้น (Pink มีขอบสีแดง, สีอื่นขอบเทา)
+            // ไฮไลต์สีแรกเป็นค่าเริ่มต้น
             if (i == 0) {
                 colorBox.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
             } else {

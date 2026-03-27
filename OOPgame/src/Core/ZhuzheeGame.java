@@ -120,7 +120,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
         if (CLIENT != null && !CLIENT.getConnectedPlayers().isEmpty()) {
-            actualPlayers = CLIENT.getConnectedPlayers();
+            actualPlayers = CLIENT.getConnectedPlayers().stream().toList();
         } else if (DEV_MODE) {
             actualPlayers.add(new Player("1", "P'Few", true));
             actualPlayers.add(new Player("2", "Xynezter", false));

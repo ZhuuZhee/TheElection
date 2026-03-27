@@ -7,7 +7,7 @@ public class PacketBuilder{
 
     public static JSONObject createPacket(NetworkProtocol protocol){
         JSONObject packet = new JSONObject();
-        packet.put("actionType", protocol.name());
+        packet.put("type", protocol.name());
         return packet;
     }
     public static JSONObject createJoinPacket(String playerName) {
@@ -16,24 +16,32 @@ public class PacketBuilder{
         return joinPacket;
     }
     ///String playerName,int coin,String color,String profileImagePath,String[] cityOwn
-    public static JSONObject createPlayerDataPacket(String playerName,int coin,String color,String profileImagePath,String[] cityOwn){
-        JSONObject packet = new JSONObject();
-        packet.put("actionType", NetworkProtocol.UPDATE_PLAYER.name());
+    public static JSONObject createPlayerDataPacket(String playerId,String playerName,int coin,String color,String profileImagePath){
+        JSONObject packet = createPacket(NetworkProtocol.UPDATE_PLAYER);
+        packet.put("playerId", playerId);
         packet.put("playerName", playerName);
         packet.put("coin", coin);
         packet.put("color", color);
         packet.put("profileImagePath", profileImagePath);
-        packet.put("cityOwn", cityOwn);
         return packet;
     }
-    public static JSONObject createPlayerDataPacket(Player player) {
-        JSONObject packet = player.toJSON();
-        packet.put("actionType", NetworkProtocol.UPDATE_PLAYER.name());
-        return packet;
-    }
+
     public static JSONObject createEndTurnPacket(){
-        JSONObject packet = new JSONObject();
-        packet.put("actionType", NetworkProtocol.END_TURN.name());
+        JSONObject packet = createPacket(NetworkProtocol.END_TURN);;
         return packet;
+    }
+
+    public static JSONObject createPongPacket(){
+        JSONObject packet = createPacket(NetworkProtocol.PONG);;
+        return packet;
+    }
+    public static JSONObject createPingPacket(){
+        JSONObject packet = createPacket(NetworkProtocol.PING);;
+        return packet;
+    }
+
+    public static JSONObject createStartPacket(){
+        JSONObject startReq = createPacket(NetworkProtocol.START_GAME);
+        return startReq;
     }
 }

@@ -21,10 +21,21 @@ public class Player {
     private ArrayList<PolicyCard> policyCards;
     private ArcanaCard arcanaCard;
     private String[] cityOwn;
-    private Color color;
+    private Color color = Color.pink;
+    private String colorName = "Pink";
     private String profileImagePath;
 
     public static final int DEFAULT_DRAW_DEV_CARD_AMOUNT = 4;
+    public static final Map<String, Color> COLOR_MAP = new HashMap<>();
+    static {
+        COLOR_MAP.put("Pink", Color.PINK);
+        COLOR_MAP.put("Red", Color.RED);
+        COLOR_MAP.put("Blue", Color.BLUE);
+        COLOR_MAP.put("Green", Color.GREEN);
+        COLOR_MAP.put("Yellow", Color.YELLOW);
+    }
+
+
 
     public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, ArcanaCard arcanaCard) {
         this.playerId = playerId;
@@ -61,7 +72,10 @@ public class Player {
     public Color getColor() { return color; }
 
     public void setColor(Color color) { this.color = color; }
-
+    public void setColor(String colorName){
+        this.color = getColor(colorName);
+        this.colorName = colorName;
+    }
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
@@ -120,12 +134,13 @@ public class Player {
     public void setCityOwn() {
     }
 
+
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
         json.put("playerId", playerId);
         json.put("playerName", playerName);
         json.put("coin", coin);
-        json.put("color", color);
+        json.put("color", colorName);
         json.put("profileImagePath", profileImagePath);
         if (arcanaCard != null) {
             json.put("arcanaCard", arcanaCard.getName());
@@ -160,7 +175,8 @@ public class Player {
             this.coin = data.getInt("coin");
         }
         if (data.has("color")) {
-            this.color = getColor(data.getString("color"));
+            String colorName = data.getString("color");
+            setColor(colorName);
         }
         if (data.has("profileImagePath")) {
             this.profileImagePath = data.getString("profileImagePath");
@@ -172,29 +188,16 @@ public class Player {
         }
     }
 
+    @Override
+    public String toString() {
+        return "----------------- \n Player : {%s} (Color : %s) \n----------------".formatted(playerName,colorName);
+    }
+
     public boolean isLocal() {
         return isLocal;
     }
 
-    private Color getColor(String color) {
-        if (color != null) {
-            switch (color.toLowerCase()) {
-                case "red":
-                    return Color.RED;
-                case "blue":
-                    return Color.BLUE;
-                case "green":
-                    return Color.GREEN;
-                case "yellow":
-                    return Color.YELLOW;
-                case "black":
-                    return Color.BLACK;
-                case "white":
-                    return Color.WHITE;
-                default:
-                    return Color.GRAY;// สีเริ่มต้น
-            }
-        }
-        return Color.GRAY; // สีเริ่มต้นกรณีไม่ได้ส่งมา
+    private Color getColor(String colorName) {
+        return COLOR_MAP.getOrDefault(colorName, Color.BLACK);
     }
 }

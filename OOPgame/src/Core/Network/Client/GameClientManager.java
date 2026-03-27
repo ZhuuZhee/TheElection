@@ -6,9 +6,11 @@ import Core.Player.Player;
 import Core.Maps.City;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class GameClientManager {
@@ -16,9 +18,9 @@ public class GameClientManager {
     private PrintWriter out;
     private BufferedReader in;
     private Player localPlayer;
-    private List<Player> connectedPlayers = new ArrayList<>();
+    private HashSet<Player> connectedPlayers = new HashSet<>();
 
-    public List<Player> getConnectedPlayers() {
+    public HashSet<Player> getConnectedPlayers() {
         return connectedPlayers;
     }
 
@@ -45,11 +47,13 @@ public class GameClientManager {
             e.printStackTrace();
         }
     }
+
     public void sendAction(JSONObject action) {
         if (out != null) {
             out.println(action.toString());
         }
     }
+
     public void disconnect() {
         try {
             if (socket != null && !socket.isClosed()) {
@@ -59,12 +63,15 @@ public class GameClientManager {
             e.printStackTrace();
         }
     }
+
     public Player getLocalPlayer() {
         return localPlayer;
     }
-    public void endTurn(){
+
+    public void endTurn() {
         sendAction(PacketBuilder.createEndTurnPacket());
     }
+
     public void onDataReceived(JSONObject data) {
         if (data.has("type")) {
             String type = data.getString("type");
@@ -79,9 +86,12 @@ public class GameClientManager {
                 onHostLeft();
             } else if (type.equals(NetworkProtocol.PING.name())) {
                 onPing();
-            } else if(type.equals(NetworkProtocol.UPDATE_PLAYER.name())){
+            } else if (type.equals(NetworkProtocol.UPDATE_PLAYER.name())) {
                 onUpdatePlayer(data);
             }
+
+            if (!type.equals(NetworkProtocol.PING.name()))
+                System.out.println("Client Received : %s".formatted(data.toString()));
         }
     }
 
@@ -89,33 +99,50 @@ public class GameClientManager {
     //---- player action on received data ----
     //----------------------------------------
 
-    private synchronized void onJoinAcknowledge(JSONObject data){
+    private synchronized void onJoinAcknowledge(JSONObject data) {
         String assignedId = data.getString("assignedId");
         this.localPlayer = new Player(assignedId, "Me", true);
         System.out.println("Join success My ID: " + assignedId);
     }
-    private synchronized void onSyncGameState(JSONObject data){
+
+    private synchronized void onSyncGameState(JSONObject data) {
         int phase = data.optInt("phaseCounter", 1);
 
         // cuurentPlayerId คือ ไอดีของผู้เล่นที่มีเทิร์นตอนนี้
         String currentPlayerId = data.optString("currentPlayerId", "");
         System.out.println("Client sync Phase: " + phase + ", CurrentPlayer: " + currentPlayerId);
-
+        
         // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
         boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
-
+        
         if (data.has("players")) {
-            org.json.JSONArray playersArray = data.getJSONArray("players");
-            connectedPlayers.clear();
-            for (int i = 0; i < playersArray.length(); i++) {
-                JSONObject pData = playersArray.getJSONObject(i);
+            org.json.JSONArray playerDatasArray = data.getJSONArray("players");
+            
+            // สร้าง Map ชั่วคราวเพื่อเก็บ Player ที่มีอยู่แล้ว เพื่อการค้นหาที่เร็วขึ้น
+            java.util.Map<String, Player> existingPlayersMap = new java.util.HashMap<>();
+            for (Player p : this.connectedPlayers) {
+                existingPlayersMap.put(p.getPlayerId(), p);
+            }
+            
+            // ล้าง connectedPlayers เดิมออก และจะสร้างใหม่จากข้อมูลที่ได้รับจาก Server
+            this.connectedPlayers.clear();
+
+            for (int i = 0; i < playerDatasArray.length(); i++) {
+                JSONObject pData = playerDatasArray.getJSONObject(i);
                 String pId = pData.getString("playerId");
+                
+                Player playerToUpdate = existingPlayersMap.get(pId);
+                if (playerToUpdate == null) {
+                    // ถ้าเป็นผู้เล่นใหม่ ให้สร้าง Player object ใหม่
+                    playerToUpdate = new Player(pId, pData.optString("playerName", "Unknown"), pId.equals(localPlayer != null ? localPlayer.getPlayerId() : ""));
+                }
+                
+                playerToUpdate.updateFromJSON(pData); // อัปเดตข้อมูลผู้เล่นจาก JSON
+                this.connectedPlayers.add(playerToUpdate); // เพิ่มผู้เล่น (ที่อัปเดตแล้วหรือใหม่) เข้าไปใน Set
 
-                Player p = new Player(pId, pData.optString("playerName", "Unknown"), false);
-                connectedPlayers.add(p);
-
+                // หากเป็น localPlayer ของเรา ให้อัปเดต reference ด้วย
                 if (localPlayer != null && pId.equals(localPlayer.getPlayerId())) {
-                    localPlayer.updateFromJSON(pData);
+                    this.localPlayer = playerToUpdate;
                 }
             }
         }
@@ -135,26 +162,59 @@ public class GameClientManager {
             localPlayer.OnStartTurn();
         }
     }
-    private synchronized void onStartGame(JSONObject data){
+
+    private synchronized void onStartGame(JSONObject data) {
         System.out.println("Host start game");
         if (data.has("mapSeed")) {
             Core.ZhuzheeGame.MAP_SEED = data.getLong("mapSeed");
         }
+
+        System.out.println("Client : All players data logs");
+        for (Player p : connectedPlayers) {
+            System.out.println(p.toString());
+        }
+        System.out.println("-------------------------------");
+
         // เริ่มเกม
         javax.swing.SwingUtilities.invokeLater(Core.ZhuzheeGame::startMainScene);
     }
-    private synchronized void onHostLeft(){
+
+    private synchronized void onHostLeft() {
         System.out.println("Host left the room");
         Core.ZhuzheeGame.CLIENT = null;
         // กลับ LOBBY_MENU
         ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.LOBBY_MENU);
     }
-    private synchronized void onPing(){
-        JSONObject pong = new JSONObject();
-        pong.put("actionType", NetworkProtocol.PONG.name());
+
+    private synchronized void onPing() {
+        JSONObject pong = PacketBuilder.createPongPacket();
         sendAction(pong);
     }
-    private synchronized void onUpdatePlayer(JSONObject data){
-        localPlayer.updateFromJSON(data);
+
+    private synchronized void onUpdatePlayer(JSONObject data) {
+        String pId = data.optString("playerId", ""); // แก้ไข: ใช้ "playerId" แทน "currentPlayerId"
+        if (pId.isEmpty()) {
+            System.err.println("Client: Received UPDATE_PLAYER packet without playerId.");
+            return;
+        }
+
+        System.out.println("Client {%s} : Updating Player Data for ID %s".formatted(localPlayer != null ? localPlayer.getPlayerName() : "Unknown", pId));
+
+        // อัปเดต localPlayer ถ้า packet นี้เป็นของตัวเราเอง
+        if (localPlayer != null && localPlayer.getPlayerId().equals(pId)) {
+            localPlayer.updateFromJSON(data);
+            System.out.println("Updated local player: " + localPlayer.toString());
+        }
+
+        // อัปเดตผู้เล่นคนอื่นๆ ใน connectedPlayers
+        // สร้าง List ชั่วคราวเพื่อหลีกเลี่ยง ConcurrentModificationException
+        List<Player> playersToUpdate = new ArrayList<>(connectedPlayers);
+        for (Player p : playersToUpdate) {
+            if (p.getPlayerId().equals(pId)) {
+                p.updateFromJSON(data);
+                System.out.println("Updated connected player: " + p.toString());
+                break; // พบผู้เล่นแล้ว ไม่ต้องวนลูปต่อ
+            }
+        }
     }
 }

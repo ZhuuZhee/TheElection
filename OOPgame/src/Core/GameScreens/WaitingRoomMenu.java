@@ -1,5 +1,6 @@
 package Core.GameScreens;
 
+import Core.Network.PacketBuilder.*;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
 import Core.Network.NetworkProtocol;
@@ -18,7 +19,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashSet;
 import java.util.List;
+
+import static Core.Network.PacketBuilder.createPingPacket;
+import static Core.Network.PacketBuilder.createStartPacket;
 
 public class WaitingRoomMenu extends Screen implements ActionListener {
 
@@ -138,7 +143,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
     private void refreshPlayerList() {
         if (ZhuzheeGame.CLIENT != null) {
-            List<Player> players = ZhuzheeGame.CLIENT.getConnectedPlayers();
+            HashSet<Player> players = ZhuzheeGame.CLIENT.getConnectedPlayers();
             playersPanel.removeAll();
             
             for (Player p : players) {
@@ -158,8 +163,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startBtn) {
             if (ZhuzheeGame.CLIENT != null) {
-                JSONObject startReq = new JSONObject();
-                startReq.put("actionType", NetworkProtocol.START_GAME.name());
+                JSONObject startReq = createStartPacket();
                 ZhuzheeGame.CLIENT.sendAction(startReq);
             }
         }

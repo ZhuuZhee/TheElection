@@ -36,15 +36,18 @@ public class PlayerListUI extends Canvas {
     public void updatePlayerList() {
         listContainer.removeAll();
 
+        System.out.println("PlayerlistUI : \n ");
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
             boolean isActive = (i == 0);
 
             // แปลงและแสดงผลสีตามที่ผู้เล่นตั้งไว้
+            System.out.println(p.toString());
             Color playerColor = p.getColor();
             listContainer.add(new PlayerItemUI(p, playerColor, isActive));
             listContainer.add(Box.createVerticalStrut(10));
         }
+        System.out.println("-----------------------");
         revalidate();
         repaint();
     }
