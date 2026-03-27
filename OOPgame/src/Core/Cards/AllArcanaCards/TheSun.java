@@ -24,7 +24,7 @@ public class TheSun extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        System.out.println("The Fool activate!");
+        System.out.println("The sun activate!");
         // Business Logic
     }
 }

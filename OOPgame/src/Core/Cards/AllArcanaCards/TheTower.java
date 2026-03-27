@@ -24,7 +24,7 @@ public class TheTower extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        System.out.println("The Wheel Of Fortune activate!");
+        System.out.println("The Tower activate!");
         // Business Logic
     }
 }
