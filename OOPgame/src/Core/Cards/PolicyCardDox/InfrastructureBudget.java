@@ -14,7 +14,7 @@ public class InfrastructureBudget extends PolicyCard {
     }
 
     @Override
-    public boolean isActive() {
+    public boolean isActive() { // อยู่บนมือทำงานตลอด
         if (ZhuzheeGame.POLICY_CARD_HAND != null) {
             return ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
         }

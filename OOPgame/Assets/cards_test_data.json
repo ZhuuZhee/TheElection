@@ -1,321 +1,442 @@
 [
     {
-        "img": "OOPgame/Assets/ImageForCards/red_dragon.png",
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/1 RAction.png",
         "stats": {
-            "environment": 20,
-            "economy": 30,
-            "facility": 10
-        },
-        "name": "Red Dragon",
-        "type": "ActionCard",
-        "coin": 10
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
+            "environment": -2,
+            "economy": 5,
             "facility": 0
         },
-        "name": "Blue Eyes",
+        "name": "Corporate HQ",
         "type": "ActionCard",
         "coin": 2
     },
     {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/2 RAction.png",
         "stats": {
             "environment": 10,
-            "economy": 0,
+            "economy": 4,
+            "facility": 1
+        },
+        "name": "Merchant Guild",
+        "type": "ActionCard",
+        "coin": -1
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/3 RAction.png",
+        "stats": {
+            "environment": -3,
+            "economy": 5,
             "facility": 0
         },
-        "name": "Blue Eyes",
+        "name": "Black Market",
         "type": "ActionCard",
         "coin": 2
     },
     {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/4 RAction.png",
         "stats": {
             "environment": 10,
-            "economy": 0,
+            "economy": 3,
+            "facility": 2
+        },
+        "name": "Trade Route",
+        "type": "ActionCard",
+        "coin": 1
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/5 RAction.png",
+        "stats": {
+            "environment": -3,
+            "economy": 4,
             "facility": 0
         },
-        "name": "Blue Eyes",
+        "name": "Gold Mine",
+        "type": "ActionCard",
+        "coin": 3
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/6 RAction.png",
+        "stats": {
+            "environment": -4,
+            "economy": 5,
+            "facility": 2
+        },
+        "name": "Industrial Zone",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/7 RAction.png",
+        "stats": {
+            "environment": 1,
+            "economy": 3,
+            "facility": 0
+        },
+        "name": "Tech Startup",
+        "type": "ActionCard",
+        "coin": -2
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/8 RAction.png",
+        "stats": {
+            "environment": 0,
+            "economy": 4,
+            "facility": 1
+        },
+        "name": "Grand Bazaar",
         "type": "ActionCard",
         "coin": 2
     },
     {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/9 RAction.png",
         "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
+            "environment": 0,
+            "economy": 4,
+            "facility": 2
         },
-        "name": "Blue Eyes",
+        "name": "Central Bank",
+        "type": "ActionCard",
+        "coin": -2
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Red Style/10 RAction.png",
+        "stats": {
+            "environment": 0,
+            "economy": 5,
+            "facility": -2
+        },
+        "name": "Stock Exchange",
+        "type": "ActionCard",
+        "coin": 3
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/1 BAction.png",
+        "stats": {
+            "environment": -2,
+            "economy": 2,
+            "facility": 5
+        },
+        "name": "Grand Airport",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/2 BAction.png",
+        "stats": {
+            "environment": -2,
+            "economy": -3,
+            "facility": 6
+        },
+        "name": "Spaceport",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/3 BAction.png",
+        "stats": {
+            "environment": 1,
+            "economy": -2,
+            "facility": 4
+        },
+        "name": "Research Lab",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/4 BAction.png",
+        "stats": {
+            "environment": -3,
+            "economy": 2,
+            "facility": 5
+        },
+        "name": "Mana Reactor",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/5 BAction.png",
+        "stats": {
+            "environment": 2,
+            "economy": 0,
+            "facility": 4
+        },
+        "name": "Deep Sea Base",
+        "type": "ActionCard",
+        "coin": -2
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/6 BAction.png",
+        "stats": {
+            "environment": -2,
+            "economy": 2,
+            "facility": 4
+        },
+        "name": "Mega Hospital",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/7 BAction.png",
+        "stats": {
+            "environment": 1,
+            "economy": 2,
+            "facility": 3
+        },
+        "name": "Smart Grid",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/8 BAction.png",
+        "stats": {
+            "environment": -2,
+            "economy": -2,
+            "facility": 5
+        },
+        "name": "Military Fortress",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/9 BAction.png",
+        "stats": {
+            "environment": -1,
+            "economy": 2,
+            "facility": 3
+        },
+        "name": "Highway System",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Blue Style/10 BAction.png",
+        "stats": {
+            "environment": 3,
+            "economy": 0,
+            "facility": 5
+        },
+        "name": "Arcology City",
+        "type": "ActionCard",
+        "coin": -4
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/1 GAction.png",
+        "stats": {
+            "environment": 4,
+            "economy": 2,
+            "facility": -1
+        },
+        "name": "Organic Farm",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/2 GAction.png",
+        "stats": {
+            "environment": 6,
+            "economy": -2,
+            "facility": -2
+        },
+        "name": "World Tree",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/3 GAction.png",
+        "stats": {
+            "environment": 5,
+            "economy": 1,
+            "facility": -2
+        },
+        "name": "Elven Forest",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/4 GAction.png",
+        "stats": {
+            "environment": 3,
+            "economy": 2,
+            "facility": 1
+        },
+        "name": "Solar Farm",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/5 GAction.png",
+        "stats": {
+            "environment": 4,
+            "economy": 0,
+            "facility": 2
+        },
+        "name": "Purifying Plant",
+        "type": "ActionCard",
+        "coin": -2
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/6 GAction.png",
+        "stats": {
+            "environment": 5,
+            "economy": 0,
+            "facility": -2
+        },
+        "name": "National Park",
+        "type": "ActionCard",
+        "coin": 1
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/7 GAction.png",
+        "stats": {
+            "environment": 3,
+            "economy": 0,
+            "facility": -1
+        },
+        "name": "Coral Reef",
         "type": "ActionCard",
         "coin": 2
     },
     {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/8 GAction.png",
         "stats": {
-            "environment": 10,
-            "economy": 0,
+            "environment": 3,
+            "economy": -1,
+            "facility": 2
+        },
+        "name": "Wind Turbine",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/9 GAction.png",
+        "stats": {
+            "environment": 3,
+            "economy": 1,
+            "facility": 1
+        },
+        "name": "Eco-Village",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Green Style/10 GAction.png",
+        "stats": {
+            "environment": 5,
+            "economy": 1,
             "facility": 0
         },
-        "name": "Blue Eyes",
+        "name": "Druid Circle",
+        "type": "ActionCard",
+        "coin": -2
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/1 1 BRAction.png",
+        "stats": {
+            "environment": 0,
+            "economy": 5,
+            "facility": 5
+        },
+        "name": "A.I. Overlord",
+        "type": "ActionCard",
+        "coin": 5
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/2 BRAction.png",
+        "stats": {
+            "environment": -2,
+            "economy": 4,
+            "facility": 0
+        },
+        "name": "Philosopher's Stone",
+        "type": "ActionCard",
+        "coin": 6
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/3 BRAction.png",
+        "stats": {
+            "environment": -4,
+            "economy": 5,
+            "facility": 0
+        },
+        "name": "Underworld Syndicate",
+        "type": "ActionCard",
+        "coin": 5
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/4 BRAction.png",
+        "stats": {
+            "environment": 10,
+            "economy": -3,
+            "facility": 3
+        },
+        "name": "Galactic Casino",
+        "type": "ActionCard",
+        "coin": 6
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/5 BRAction.png",
+        "stats": {
+            "environment": -5,
+            "economy": 4,
+            "facility": 0
+        },
+        "name": "Monopoly Core",
+        "type": "ActionCard",
+        "coin": 7
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/6 BAAction.png",
+        "stats": {
+            "environment": 2,
+            "economy": 2,
+            "facility": 2
+        },
+        "name": "Utopian City",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/7 BAAction.png",
+        "stats": {
+            "environment": 0,
+            "economy": 3,
+            "facility": 3
+        },
+        "name": "The Chancellor",
+        "type": "ActionCard",
+        "coin": -1
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/8 BAAction.png",
+        "stats": {
+            "environment": 1,
+            "economy": 1,
+            "facility": 1
+        },
+        "name": "Equalizer Protocol",
+        "type": "ActionCard",
+        "coin": 0
+    },
+    {
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/9 BAAction.png",
+        "stats": {
+            "environment": 2,
+            "economy": 2,
+            "facility": 0
+        },
+        "name": "Grand Council",
         "type": "ActionCard",
         "coin": 2
     },
     {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
+        "img": "OOPgame/Assets/ImageForCards/Action Card/Black and RedBlack Style/10 BAAction.png",
         "stats": {
-            "environment": 10,
+            "environment": 3,
             "economy": 0,
-            "facility": 0
+            "facility": 3
         },
-        "name": "Blue Eyes",
+        "name": "Perfect Harmony",
         "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
-    },
-    {
-        "img": "OOPgame/Assets/ImageForCards/blue_dragon.png",
-        "stats": {
-            "environment": 10,
-            "economy": 0,
-            "facility": 0
-        },
-        "name": "Blue Eyes",
-        "type": "ActionCard",
-        "coin": 2
+        "coin": -1
     }
 ]
