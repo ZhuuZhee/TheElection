@@ -5,6 +5,7 @@ import Core.Network.NetworkProtocol;
 import java.net.*;
 import java.util.*;
 
+import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import org.json.JSONObject;
 
@@ -104,6 +105,8 @@ public class GameServerManager {
             onJoinGame(action, playerId);
         } else if (type.equals(NetworkProtocol.START_GAME.name())) {
             onStartGame();
+        } else if(type.equals(NetworkProtocol.UPDATE_PLAYER.name())){
+            onUpdatePlayerData(playerId, action);
         } else if (type.equals(NetworkProtocol.PONG.name())) {
             onPong(playerId);
         } else if (type.equals(NetworkProtocol.END_TURN.name())) {
@@ -158,6 +161,9 @@ public class GameServerManager {
         sendToClient(playerId, ack);
 
         broadcast(gameState.generateSyncData());
+    }
+    private synchronized void onUpdatePlayerData(String playerId, JSONObject action){
+        sendToClient(playerId, action);
     }
     private synchronized void onStartGame() {
         System.out.println("START_GAME all clients");
