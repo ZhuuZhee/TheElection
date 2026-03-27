@@ -51,7 +51,6 @@ public class Tester {
         Screen.ChangeScreen(new MainMenu());
     }
 
-
     public static Map MapTest() {
         return new Map();
     }
