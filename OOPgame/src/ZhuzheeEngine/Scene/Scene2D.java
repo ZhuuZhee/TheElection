@@ -117,8 +117,24 @@ public class Scene2D extends Screen {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    public void render() {
+        super.render();
         updateGameObject();
+        for (GameObject obj : new ArrayList<>(gameObjects)) {
+            if (obj.getEnable()) {
+                obj.update();
+            }
+        }
+        for (IZIndex obj : new ArrayList<>(zOrderedObjects)) {
+            if (obj instanceof Core.UI.CardHolderUI ui) {
+                ui.updateCards();
+            }
+        }
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
     }
 
@@ -141,7 +157,11 @@ public class Scene2D extends Screen {
             int scaledHeight = (int) (baseSize.height * zoom);
 
             // Update Swing Component Bounds at once (prevents partial state in setBounds overrides)
-            obj.setBounds(screenX, screenY, scaledWidth, scaledHeight);
+            Rectangle currentBounds = obj.getBounds();
+            if (currentBounds.x != screenX || currentBounds.y != screenY || 
+                currentBounds.width != scaledWidth || currentBounds.height != scaledHeight) {
+                obj.setBounds(screenX, screenY, scaledWidth, scaledHeight);
+            }
         }
     }
 

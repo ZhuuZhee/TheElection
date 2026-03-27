@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * and coordinates ApplicationAdapters for game logic and rendering.
  */
 public final class Application {
-    private static int TARGET_FPS = 60;
+    private static int TARGET_FPS = 120;
 
     /// frame time delay in milliseconds
     private static int FRAME_DELAY_MS = 1000 / TARGET_FPS;

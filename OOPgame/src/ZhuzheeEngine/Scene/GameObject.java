@@ -79,9 +79,6 @@ public class GameObject extends JPanel implements IZIndex {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(getEnable()){
-            update();
-        }
     }
 
     public void update() {

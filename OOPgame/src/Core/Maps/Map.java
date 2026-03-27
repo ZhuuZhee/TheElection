@@ -203,8 +203,8 @@ public class Map extends GameObject {
      * ฟังก์ชันอ่านค่าจาก Heightmap แบบ Seamless (ไหลวนลูปไม่มีที่สิ้นสุด)
      */
     private float sampleHeightMap(float x, float y) {
-        int ix = (((int) x) % HEIGHTMAP_SIZE + HEIGHTMAP_SIZE) % HEIGHTMAP_SIZE;
-        int iy = (((int) y) % HEIGHTMAP_SIZE + HEIGHTMAP_SIZE) % HEIGHTMAP_SIZE;
+        int ix = ((int) x) & (HEIGHTMAP_SIZE - 1);
+        int iy = ((int) y) & (HEIGHTMAP_SIZE - 1);
         return heightMap[ix][iy];
     }
 
@@ -232,19 +232,29 @@ public class Map extends GameObject {
         float centerY = renderHeight * PIXEL_SIZE / 2.0f;
         float safeScale = Math.max(0.01f, scaleRatio); 
 
+        // คำนวณค่าล่วงหน้าเพื่อลดภาระใน Loop
+        float safeScaleInv = 1.0f / safeScale;
+        float offset1X = currentOffsetX;
+        float offset1Y = currentOffsetY;
+        float offset2X = -(currentOffsetX * 1.2f);
+        float offset2Y = currentOffsetY * 0.8f;
+        
+        int index = 0;
         for (int y = 0; y < renderHeight; y++) {
+            float screenY = y * PIXEL_SIZE;
+            float worldY = (screenY - centerY) * safeScaleInv;
+            float wy1 = worldY + offset1Y;
+            float wy2 = worldY + offset2Y;
+            
             for (int x = 0; x < renderWidth; x++) {
                 float screenX = x * PIXEL_SIZE;
-                float screenY = y * PIXEL_SIZE;
-
-                float worldX = (screenX - centerX) / safeScale;
-                float worldY = (screenY - centerY) / safeScale;
+                float worldX = (screenX - centerX) * safeScaleInv;
 
                 // 1. อ่านค่า Heightmap ทิศทางหลัก (คลื่นน้ำตื้น/ลึก)
-                float baseHeight = sampleHeightMap(worldX + currentOffsetX, worldY + currentOffsetY);
+                float baseHeight = sampleHeightMap(worldX + offset1X, wy1);
                 
                 // 2. อ่านค่า Heightmap อีกทิศทาง เพื่อนำมาทำเส้นตัด (Caustics) แบบไหลสวนกัน
-                float causticHeight = sampleHeightMap(worldX - (currentOffsetX * 1.2f), worldY + (currentOffsetY * 0.8f));
+                float causticHeight = sampleHeightMap(worldX + offset2X, wy2);
 
                 int color = DEEP_WATER;
                 
@@ -254,18 +264,19 @@ public class Map extends GameObject {
                 }
                 
                 // สร้างตาข่ายน้ำโดยดึงเฉพาะ "เส้นขอบ" ที่ค่าความสูงตัดกัน
-                float edge = Math.abs(causticHeight - 0.5f);
-                if (edge < 0.04f) { 
-                    color = CAUSTIC_LINE; 
-                }
+                float edge = causticHeight - 0.5f;
+                if (edge < 0) edge = -edge; // เร็วกว่า Math.abs()
                 
-                // วาดจุดประกายแสง (Specular) ตรงจุดที่คลื่นสูงชนกับเส้นตาข่าย
-                if (edge < 0.04f && baseHeight > 0.85f) {
-                    color = SPARKLE_FOAM; 
+                if (edge < 0.04f) { 
+                    if (baseHeight > 0.85f) {
+                        color = SPARKLE_FOAM; 
+                    } else {
+                        color = CAUSTIC_LINE; 
+                    }
                 }
                 
                 // บันทึกสีลง Array โดยตรง (O(1) Access เร็วมาก)
-                waterPixels[x + y * renderWidth] = color;
+                waterPixels[index++] = color;
             }
         }
     }
@@ -553,7 +564,6 @@ public class Map extends GameObject {
                     if (grid != null) grid.animation(deltaTime);
                 }
             }
-            repaint(); 
         }
     }
 }

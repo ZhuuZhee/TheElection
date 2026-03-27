@@ -211,7 +211,7 @@ public abstract class Card extends GameObject {
     // ----------------------------------------
 
     public void onMousePressed(int mouseX, int mouseY) {
-        if (getEnable() && isGrabbed) {
+        if (getEnable() && isDraggable) {
             // ปิด Tooltip ทันทีที่คลิกเพื่อลาก
             if (activeTooltip != null) {
                 scene.remove(activeTooltip);
@@ -522,7 +522,9 @@ public abstract class Card extends GameObject {
         }
 
         setEnable(ZhuzheeGame.isMyTurn());
-        setDraggable(ZhuzheeGame.isMyTurn());
+        if (!(this instanceof PolicyCard) && !(this instanceof ArcanaCard)) {
+            setDraggable(ZhuzheeGame.isMyTurn());
+        }
     }
 
     @Override
