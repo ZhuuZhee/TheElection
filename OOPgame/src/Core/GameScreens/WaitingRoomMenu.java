@@ -184,7 +184,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
         // 2. Profile Selection Grid
         File[] profileFiles = loadImageFiles(ZhuzheeGame.PROFILE_FILE_PATH);
-        JPanel profileGrid = createGridPanel(profileFiles, 3, new Dimension(80, 80), new Dimension(10, 10), "PROFILE");
+        JPanel profileGrid = createGridPanel(profileFiles, 3, new Dimension(100, 100), new Dimension(10, 10), "PROFILE");
 
         JScrollPane profileScroll = new JScrollPane(profileGrid);
         profileScroll.setOpaque(false);
