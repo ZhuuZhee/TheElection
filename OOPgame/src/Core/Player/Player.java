@@ -1,6 +1,7 @@
 package Core.Player;
 
 import Core.Cards.*;
+import Core.Cards.Stream.ArcanaCardRegistry;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.UI.CardHolderUI;
@@ -22,6 +23,7 @@ public class Player {
     private ArrayList<ActionCard> actionCards;
     private ArrayList<PolicyCard> policyCards;
     private ArcanaCard arcanaCard;
+    private String arcanaCardName = "";
     private String[] cityOwn;
     private Color color = Color.RED;
     private String colorName = "Red";
@@ -40,8 +42,6 @@ public class Player {
         COLOR_MAP.put("Cyan", Color.CYAN);
         COLOR_MAP.put("Black", Color.BLACK);
     }
-
-
 
     public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, ArcanaCard arcanaCard) {
         this.playerId = playerId;
@@ -77,6 +77,14 @@ public class Player {
         return file;
     }
 
+    public String getArcanaCard() {
+        return arcanaCardName;
+    }
+
+    public void setArcanaCard(ArcanaCard arcanaCard) {
+        this.arcanaCard = arcanaCard;
+    }
+
     public int getCoin() {
         return coin;
     }
@@ -94,14 +102,6 @@ public class Player {
     }
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
-    }
-
-    public ArcanaCard getArcanaCard() {
-        return arcanaCard;
-    }
-
-    public void setArcanaCard(ArcanaCard arcanaCard) {
-        this.arcanaCard = arcanaCard;
     }
 
     public void OnStartTurn() {
@@ -168,6 +168,8 @@ public class Player {
         json.put("profileImagePath", profileImagePath);
         if (arcanaCard != null) {
             json.put("arcanaCard", arcanaCard.getName());
+        } else if (arcanaCardName != null && !arcanaCardName.isEmpty()) {
+            json.put("arcanaCard", arcanaCardName);
         }
 
         org.json.JSONArray cityArray = new org.json.JSONArray();
@@ -209,6 +211,9 @@ public class Player {
             org.json.JSONArray cityArray = data.getJSONArray("cityOwn");
             this.cityOwn = new String[cityArray.length()];
             // ค่อยๆ
+        }
+        if (data.has("arcanaCard")) {
+            this.arcanaCardName = data.getString("arcanaCard");
         }
 
         System.out.println("Player{%s} : update data form json successfully!\n%s".formatted(playerName, toString()));

@@ -1,6 +1,8 @@
 package Core.UI;
 
 import Core.Cards.Card;
+import Core.Player.Player;
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.*;
 
 import javax.swing.*;
@@ -39,8 +41,10 @@ public class ArcanaCardHolderUI extends CardHolderUI {
     @Override
     public boolean addCard(Card arcanaCard) {
         boolean success = super.addCard(arcanaCard);
-        arcanaCard.setDraggable(false);
-        updateSize();
+
+        if (success && arcanaCard != null) {
+            arcanaCard.setDraggable(false); // ล็อคไม่ให้ลากการ์ด Arcana เล่นได้
+        }
         return success;
     }
 

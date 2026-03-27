@@ -152,6 +152,7 @@ public class CharacterSelectMenu extends Screen implements ActionListener {
                 localPlayer.getPlayerId(),
                 localPlayer.getPlayerName(),
                 localPlayer.getCoin(),
+                selectedArcanaFileName,
                 selectedColor,
                 selectedProfileFileName// ใช้ตัวแปรที่เก็บ Path ของไฟล์จริงๆ
         );

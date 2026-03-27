@@ -284,7 +284,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
                 btn.addActionListener(e -> {
                     if (type.equals("PROFILE")) {
-                        selectedProfileFilepath = file.getName();
+                        selectedProfileFilepath = file.getAbsolutePath();
                     } else if (type.equals("ARCANA")) {
                         selectedArcanaFileName = file.getName();
                     }
@@ -318,7 +318,8 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     localPlayer.getPlayerName(),
                     localPlayer.getCoin(),
                     selectedColor,
-                    selectedProfileFilepath
+                    selectedProfileFilepath,
+                    selectedArcanaFileName
             );
             ZhuzheeGame.CLIENT.sendAction(playerPacket);
             return true;
@@ -399,7 +400,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                         profileIconLabel.setIcon(new ImageIcon(icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
                     }
 
-                
+
                 playerRow.add(profileIconLabel, BorderLayout.WEST);
                 JLabel nameLabel = UITool.createLabel(p.getPlayerName(), 24f);
                 playerRow.add(nameLabel, BorderLayout.CENTER);
