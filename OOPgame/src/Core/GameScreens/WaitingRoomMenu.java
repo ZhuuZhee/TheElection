@@ -19,7 +19,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
 
 import static Core.Network.PacketBuilder.createStartPacket;
 
@@ -141,7 +140,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
     private void refreshPlayerList() {
         if (ZhuzheeGame.CLIENT != null) {
-            HashSet<Player> players = ZhuzheeGame.CLIENT.getConnectedPlayers();
+            java.util.List<Player> players = ZhuzheeGame.CLIENT.getConnectedPlayers();
             playersPanel.removeAll();
             
             for (Player p : players) {

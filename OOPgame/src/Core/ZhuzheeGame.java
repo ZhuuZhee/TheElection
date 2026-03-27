@@ -52,6 +52,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PlayerListUI PLAYER_LIST_UI;
     public static Core.UI.PlayerCoinUI PLAYER_COIN_UI;
 
+    public static List<Player> CURRENT_PLAYERS = new ArrayList<>();
+
     public static final String PROFILE_FILE_PATH = "OOPgame/Assets/ImageForProfile";
     public static final String CARD_IMAGES_FILE_PATH = "OOPgame/Assets/ImageForCards";
 
@@ -108,7 +110,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static void startMainScene() {
         Screen.ChangeScreen(MAIN_SCENE);
 
-        MAP = new Map(MAP_SEED);
+        int playerCountForMap = 4;
+        if (CLIENT != null && !CLIENT.getConnectedPlayers().isEmpty()) {
+            playerCountForMap = CLIENT.getConnectedPlayers().size();
+        }
+        MAP = new Map(MAP_SEED, playerCountForMap);
         Tester.CardsTestingOnScene(MAIN_SCENE);
         CardHolderUI holderUI = PlayerUI.CardHolderUITest(MAIN_SCENE);
         DEVLOPMENT_CARD_HAND = holderUI;
@@ -129,6 +135,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
 
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
+        CURRENT_PLAYERS = actualPlayers;
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
         Tester.CardTesterUI(MAIN_SCENE);
 

@@ -28,7 +28,6 @@ public class City {
     public static final double SCORE_PER_SEAT_BASE = 50.0;
 
     /** Total number of players in the game. */
-    public int numPlayers = 4;
     /** Number of seats available in this city's council. */
     public int councilSeats;
     /** The initial base score for the city. */
@@ -52,8 +51,26 @@ public class City {
         this.baseScore = this.councilSeats * SCORE_PER_SEAT_BASE;
 
         // 3. สร้างคะแนนดิบเริ่มต้นให้ผู้เล่นทุกคนเท่ากัน
-        this.playerScores = new double[numPlayers];
-        for (int i = 0; i < numPlayers; i++) {
+        int safeNumPlayers = 4;
+        this.playerScores = new double[safeNumPlayers];
+        for (int i = 0; i < safeNumPlayers; i++) {
+            this.playerScores[i] = this.baseScore;
+        }
+    }
+
+    public City(String cityName, int facility, int environment, int economy, int population, int numPlayers) {
+        this.stats = new PoliticsStats(facility, environment, economy);
+        this.population = population;
+        this.cityName = cityName;
+
+        this.councilSeats = Math.max(1, this.population / POP_PER_SEAT);
+
+
+        this.baseScore = this.councilSeats * SCORE_PER_SEAT_BASE;
+
+        int safeNumPlayers = Math.max(1, numPlayers);
+        this.playerScores = new double[safeNumPlayers];
+        for (int i = 0; i < safeNumPlayers; i++) {
             this.playerScores[i] = this.baseScore;
         }
     }

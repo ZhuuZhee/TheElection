@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class GameClientManager {
@@ -18,11 +17,20 @@ public class GameClientManager {
     private PrintWriter out;
     private BufferedReader in;
     private Player localPlayer;
-    private HashSet<Player> connectedPlayers = new HashSet<>();
+    private final ArrayList<Player> connectedPlayers = new ArrayList<>();
     private int turnCounter;
 
-    public HashSet<Player> getConnectedPlayers() {
+    public List<Player> getConnectedPlayers() {
         return connectedPlayers;
+    }
+
+    public int getLocalPlayerIndex() {
+        if (localPlayer == null) return 0;
+        String id = localPlayer.getPlayerId();
+        for (int i = 0; i < connectedPlayers.size(); i++) {
+            if (connectedPlayers.get(i).getPlayerId().equals(id)) return i;
+        }
+        return 0;
     }
 
     public void connect(String ip, int port, String playerName) {
