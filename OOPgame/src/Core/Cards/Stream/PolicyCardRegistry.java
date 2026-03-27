@@ -21,11 +21,18 @@ import java.util.List;
 public class PolicyCardRegistry {
 
     private static final String JSON_PATH = "OOPgame/Assets/policy_cards.json";
+    private static final ArrayList<String> usedClassNames = new ArrayList<>();
 
     /**
      * สุ่มการ์ดออกมา maxCount ใบจาก JSON pool
      * จะ instantiate เฉพาะใบที่สุ่มได้เท่านั้น
      */
+    public static void markAsUsed(String className) {
+        if (!usedClassNames.contains(className)) {
+            usedClassNames.add(className);
+        }
+    }
+
     public static List<PolicyCard> rollCards(int maxCount) {
         List<PolicyCard> result = new ArrayList<>();
         try {
@@ -34,7 +41,18 @@ public class PolicyCardRegistry {
 
             // สร้าง list ของ index แล้ว shuffle
             List<Integer> indices = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length(); i++) indices.add(i);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String className = jsonArray.getJSONObject(i).getString("class");
+                if (!usedClassNames.contains(className)) {
+                    indices.add(i);
+                }
+            }
+
+            // กรณีการ์ดหมดกอง (ถูกใช้ครบทุกใบแล้ว) ให้ล้างประวัติเพื่อให้สุ่มใหม่ได้
+            if (indices.isEmpty()) {
+                usedClassNames.clear();
+                for (int i = 0; i < jsonArray.length(); i++) indices.add(i);
+            }
             Collections.shuffle(indices);
 
             // instantiate เฉพาะ maxCount ใบแรกที่ถูกสุ่ม

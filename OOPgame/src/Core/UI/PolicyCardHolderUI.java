@@ -1,6 +1,7 @@
 package Core.UI;
 
 import Core.Cards.Card;
+import Core.Cards.Stream.PolicyCardRegistry;
 import ZhuzheeEngine.Scene.*;
 
 public class PolicyCardHolderUI extends CardHolderUI {
@@ -24,8 +25,11 @@ public class PolicyCardHolderUI extends CardHolderUI {
     @Override
     public boolean addCard(Card card) {
         boolean success = super.addCard(card);
-        card.setDraggable(false);
-        updateSize();
+        if (success) {
+            PolicyCardRegistry.markAsUsed(card.getName());
+            card.setDraggable(false);
+            updateSize();
+        }
         return success;
     }
 
