@@ -57,7 +57,7 @@ public class ActionCard extends Card {
 
     @Override
     protected void onDroppedOnGrid(Grid grid) {
-        System.out.println(name + " was dropped onto Map Grid!");
+        ZhuzheeEngine.Debug.GameLogger.logInfo(name + " was dropped onto Map Grid!");
         City targetCity = grid.getCity();
 
         if (targetCity != null) {

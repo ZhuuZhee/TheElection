@@ -116,12 +116,12 @@ public class Shop extends Canvas {
         int price = getPrice(card);
 
         if (this.localPlayer.getCoin() < price) {
-            System.out.println("เงินไม่พอ! ขาดอีก: " + (price - this.localPlayer.getCoin()));
+            ZhuzheeEngine.Debug.GameLogger.logWarning("เงินไม่พอ! ขาดอีก: " + (price - this.localPlayer.getCoin()));
             return;
         }
 
         this.localPlayer.setCoin(this.localPlayer.getCoin() - price);
-        System.out.println("ซื้อการ์ด " + card.getName() + " สำเร็จ!");
+        ZhuzheeEngine.Debug.GameLogger.logInfo("ซื้อการ์ด " + card.getName() + " สำเร็จ!");
         if(AudioManager.getInstance() != null) {
             AudioManager.getInstance().playSound("click");
         }

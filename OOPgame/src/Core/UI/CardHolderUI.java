@@ -135,7 +135,7 @@ public class CardHolderUI extends Canvas {
         float ratio = (float) height / card.getHeight();
         card.setBounds(0, 0, (int) (card.getWidth() * ratio), height);
 
-        System.out.println("Card added to hand: " + card.getName());
+        ZhuzheeEngine.Debug.GameLogger.logInfo("Card added to hand: " + card.getName());
         cardContainer.revalidate();
         cardContainer.repaint();
         return true;

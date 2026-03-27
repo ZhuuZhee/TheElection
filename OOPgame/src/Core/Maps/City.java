@@ -21,7 +21,7 @@ public class City {
 
     // --- Config ค่าคงที่ต่างๆ (ปรับ Balance ที่นี่) ---
     /** Multiplier for the logarithmic scoring formula. */
-    public static final double K_LOG_MULTIPLIER = 100.0;
+    public static final double K_LOG_MULTIPLIER = 200.0;
     /** Ratio of population required to earn one council seat. */
     public static final int POP_PER_SEAT = 10000;
     /** Base score added per council seat. */

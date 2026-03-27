@@ -92,6 +92,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
 
         MAIN_SCENE = new Scene2D();
+        new Core.UI.GameLogUI(MAIN_SCENE); // เพิ่ม GameLogUI เข้าไปในซีนหลัก
+
         MAIN_MENU = new MainMenu();
         LOBBY_MENU = new Core.GameScreens.LobbyMenu();
         CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
@@ -242,12 +244,53 @@ public class ZhuzheeGame implements ApplicationAdapter {
         if (currentTurn > 1 && currentTurn % turnsPerRound == 1) {
 
             if (currentRound != lastShopOpenedRound) {
-                System.out.println("====== START OF ROUND " + currentRound + "! OPENING SHOP ======");
+                ZhuzheeEngine.Debug.GameLogger.logInfo("====== START OF ROUND " + currentRound + "! OPENING SHOP ======");
 
                 Dummy.Tester.ShopTest();
 
                 lastShopOpenedRound = currentRound;
             }
+        }
+    }
+
+    private static void applyRandomEvent(int round) {
+        if (MAP == null) return;
+        List<Core.Maps.City> cities = MAP.getAllCities();
+        if (cities.isEmpty()) return;
+
+        // Use round number and map seed for deterministic random across all clients
+        java.util.Random rand = new java.util.Random(MAP_SEED + round);
+
+        // Pick a random city to hit with an event
+        Core.Maps.City targetCity = cities.get(rand.nextInt(cities.size()));
+
+        int eventType = rand.nextInt(3);
+        int decayAmount = -(10 + rand.nextInt(15)); // -10 to -24 stats
+
+        String eventName = "";
+        long statType = 0;
+
+        if (eventType == 0) {
+            eventName = "Economic Recession";
+            statType = Core.Maps.PoliticsStats.ECONOMY;
+        } else if (eventType == 1) {
+            eventName = "Infrastructure Decay";
+            statType = Core.Maps.PoliticsStats.FACILITY;
+        } else {
+            eventName = "Pollution Crisis";
+            statType = Core.Maps.PoliticsStats.ENVIRONMENT;
+        }
+
+        // Don't let it go below 1
+        int currentStat = targetCity.stats.getStats(statType);
+        if (currentStat + decayAmount < 1) {
+            decayAmount = 1 - currentStat;
+        }
+
+        if (decayAmount < 0) {
+            targetCity.stats.addStats(statType, decayAmount);
+            ZhuzheeEngine.Debug.GameLogger.logWarning("RANDOM EVENT: " + eventName + " hit " + targetCity.getCityName() + "! Stat changed by " + decayAmount);
+            // Re-calculate scores or just let the next card take advantage of lower stats
         }
     }
     @Override
