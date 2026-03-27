@@ -9,7 +9,7 @@ import Core.ZhuzheeGame;
 public class Recount extends PolicyCard {
     public Recount(int x, int y, String imagePath) {
         super("Recount", x, y, imagePath, -5);
-        this.description = "Skill: Play a Development card with at least 1 negative stat. Gain +3 to all stats.";
+        this.description = "Skill: If you play a Development card with at least 1 negative stat. Gain +3 to all stats.";
     }
 
     @Override
