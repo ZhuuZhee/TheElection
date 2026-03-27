@@ -9,7 +9,7 @@ import java.util.*;
 public class GameState {
     //    private Map
     private List<Player> players = new ArrayList<>();
-    private int phaseCounter = 1;
+    private int turnCounter = 1;
     private String hostId;
     private String currentPlayerId;
     private Player currentPlayer;
@@ -20,7 +20,7 @@ public class GameState {
     }
 
     public void incrementPhaseCounter() {
-        this.phaseCounter++;
+        this.turnCounter++;
     }
 
     public List<Player> getPlayers() {
@@ -53,7 +53,7 @@ public class GameState {
     public JSONObject generateSyncData() {
         JSONObject data = new JSONObject();
         data.put("type", NetworkProtocol.SYNC_STATE.name());
-        data.put("phaseCounter", phaseCounter);
+        data.put("phaseCounter", turnCounter);
         if (hostId != null) {
             data.put("hostId", hostId);
         }

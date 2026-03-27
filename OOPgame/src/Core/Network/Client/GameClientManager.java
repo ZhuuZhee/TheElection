@@ -19,6 +19,7 @@ public class GameClientManager {
     private BufferedReader in;
     private Player localPlayer;
     private HashSet<Player> connectedPlayers = new HashSet<>();
+    private int turnCounter;
 
     public HashSet<Player> getConnectedPlayers() {
         return connectedPlayers;
@@ -95,6 +96,14 @@ public class GameClientManager {
         }
     }
 
+    public int getTurnCounter() {
+        return turnCounter;
+    }
+
+    public void setTurnCounter(int turnCounter) {
+        this.turnCounter = turnCounter;
+    }
+
     //----------------------------------------
     //---- player action on received data ----
     //----------------------------------------
@@ -106,12 +115,12 @@ public class GameClientManager {
     }
 
     private synchronized void onSyncGameState(JSONObject data) {
-        int phase = data.optInt("phaseCounter", 1);
+        int turn = data.optInt("turnCounter", 1);
 
         // cuurentPlayerId คือ ไอดีของผู้เล่นที่มีเทิร์นตอนนี้
         String currentPlayerId = data.optString("currentPlayerId", "");
-        System.out.println("Client sync Phase: " + phase + ", CurrentPlayer: " + currentPlayerId);
-        
+        System.out.println("Client sync Phase: " + turn + ", CurrentPlayer: " + currentPlayerId);
+        turnCounter = turn;
         // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
         boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
         
@@ -217,4 +226,5 @@ public class GameClientManager {
             }
         }
     }
+
 }

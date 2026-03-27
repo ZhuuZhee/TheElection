@@ -110,11 +110,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         MAP = new Map(MAP_SEED);
         Tester.CardsTestingOnScene(MAIN_SCENE);
-        CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
+        CardHolderUI holderUI = PlayerUI.CardHolderUITest(MAIN_SCENE);
         DEVLOPMENT_CARD_HAND = holderUI;
-        Tester.PlayerCoinUITest(MAIN_SCENE);
-        Tester.PolicyCardHolderUITest(MAIN_SCENE);
-        Tester.ArcanaCardHolderUITest(MAIN_SCENE);
+        PlayerUI.PlayerCoinUITest(MAIN_SCENE);
+        PlayerUI.PolicyCardHolderUITest(MAIN_SCENE);
+        PlayerUI.ArcanaCardHolderUITest(MAIN_SCENE);
         Tester.TestArcanaCard();
 
         // Player List UI
@@ -129,7 +129,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
 
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
-        Tester.PlayerCoinUITest(MAIN_SCENE);
+        PlayerUI.PlayerCoinUITest(MAIN_SCENE);
         Tester.CardTesterUI(MAIN_SCENE);
 
         Tester.ShopTest();
@@ -191,7 +191,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
@@ -209,5 +208,31 @@ public class ZhuzheeGame implements ApplicationAdapter {
     @Override
     public void dispose() {
 
+    }
+
+    public static class PlayerUI{
+        public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
+            ZhuzheeGame.POLICY_CARD_HAND = new PolicyCardHolderUI(scene2D);
+            return ZhuzheeGame.POLICY_CARD_HAND;
+        }
+        public static ArcanaCardHolderUI ArcanaCardHolderUITest(Scene2D scene2D){
+            ZhuzheeGame.ARCANA_CARD_UI = new ArcanaCardHolderUI(scene2D);
+            return ZhuzheeGame.ARCANA_CARD_UI;
+        }
+        public static Core.UI.PlayerCoinUI PlayerCoinUITest(Scene2D scene2D) {
+            ZhuzheeGame.PLAYER_COIN_UI = new Core.UI.PlayerCoinUI(scene2D);
+            return ZhuzheeGame.PLAYER_COIN_UI;
+        }
+        public static CardHolderUI CardHolderUITest(Scene2D scene2D){
+            CardHolderUI ui = new CardHolderUI(scene2D);
+            ui.setStrechToFit(true);
+            ui.setPanelSize(164,224);
+            ui.setMargins(224,16,16,16);
+            ui.setAnchorTop(false);
+            Color color = ui.getBackground();
+            color = new Color(color.getRed(),color.getGreen(),color.getBlue(),100);
+            ui.setBackground(color);
+            return ui;
+        }
     }
 }
