@@ -124,10 +124,6 @@ public class CreditUI extends Screen implements ActionListener{
         this.addAncestorListener(new javax.swing.event.AncestorListener() {
             @Override
             public void ancestorAdded(javax.swing.event.AncestorEvent event) {
-                // ทริคสำคัญ: บังคับยืมขนาดจากจอหลักมาใช้ทันที ป้องกันอาการจอมืด/ขนาดเป็น 0
-                if (getParent() != null) {
-                    setBounds(0, 0, getParent().getWidth(), getParent().getHeight());
-                }
 
                 // ส่งสัญญาณให้ Timer รู้ว่าเพิ่งเปิดจอใหม่ (โยนค่า ให้ไปอยู่ล่าง jpanel ไปให้)
                 yOffset = RESET_POSITION_FLAG;
