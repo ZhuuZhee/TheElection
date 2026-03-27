@@ -54,6 +54,7 @@ public class OptionMenu extends Screen {
                 }
             }
         });
+        fullscreen.setSelected(true); // auto-enable fullscreen on start
 
         panel.add(fullscreen);
         add(panel);

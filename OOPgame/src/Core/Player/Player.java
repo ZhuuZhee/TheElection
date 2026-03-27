@@ -160,7 +160,7 @@ public class Player {
             this.coin = data.getInt("coin");
         }
         if (data.has("color")) {
-            this.color = Color.decode(data.getString("color"));
+            this.color = getColor(data.getString("color"));
         }
         if (data.has("profileImagePath")) {
             this.profileImagePath = data.getString("profileImagePath");
@@ -174,5 +174,27 @@ public class Player {
 
     public boolean isLocal() {
         return isLocal;
+    }
+
+    private Color getColor(String color) {
+        if (color != null) {
+            switch (color.toLowerCase()) {
+                case "red":
+                    return Color.RED;
+                case "blue":
+                    return Color.BLUE;
+                case "green":
+                    return Color.GREEN;
+                case "yellow":
+                    return Color.YELLOW;
+                case "black":
+                    return Color.BLACK;
+                case "white":
+                    return Color.WHITE;
+                default:
+                    return Color.GRAY;// สีเริ่มต้น
+            }
+        }
+        return Color.GRAY; // สีเริ่มต้นกรณีไม่ได้ส่งมา
     }
 }

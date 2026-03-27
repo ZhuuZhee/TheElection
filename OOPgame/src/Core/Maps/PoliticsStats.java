@@ -2,6 +2,7 @@ package Core.Maps;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  * Represents a collection of political and economic statistics.
@@ -56,4 +57,36 @@ public class PoliticsStats {
      * @param value The new value.
      */
     public void setStats(long statType, int value) { stats.put(statType, value); }
+
+    public static String getStatName(long id) {
+        if (id == FACILITY) return "Facility";
+        if (id == ENVIRONMENT) return "Environment";
+        if (id == ECONOMY) return "Economics";
+        return "Unknown " + id;
+    }
+
+    public static long getStatId(String name) {
+        if (name.equals("Facility")) return FACILITY;
+        if (name.equals("Environment")) return ENVIRONMENT;
+        if (name.equals("Economics")) return ECONOMY;
+        return -1L;
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        for (Map.Entry<Long, Integer> entry : stats.entrySet()) {
+            json.put(getStatName(entry.getKey()), entry.getValue());
+        }
+        return json;
+    }
+
+    public void updateFromJson(JSONObject json) {
+        if (json == null) return;
+        for (String key : json.keySet()) {
+            long id = getStatId(key);
+            if (id != -1L) {
+                stats.put(id, json.getInt(key));
+            }
+        }
+    }
 }

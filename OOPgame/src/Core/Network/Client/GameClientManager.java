@@ -3,6 +3,8 @@ package Core.Network.Client;
 import Core.Network.NetworkProtocol;
 import Core.Network.PacketBuilder;
 import Core.Player.Player;
+import Core.Maps.City;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
@@ -43,71 +45,11 @@ public class GameClientManager {
             e.printStackTrace();
         }
     }
-
-    public void onDataReceived(JSONObject data) {
-        if (data.has("type")) {
-            String type = data.getString("type");
-
-            if (type.equals(NetworkProtocol.JOIN_ACK.name())) {
-                String assignedId = data.getString("assignedId");
-                this.localPlayer = new Player(assignedId, "Me", true);
-                System.out.println("Join success My ID: " + assignedId);
-            } else if (type.equals(NetworkProtocol.SYNC_STATE.name())) {
-                int phase = data.optInt("phaseCounter", 1);
-
-                // cuurentPlayerId คือ ไอดีของผู้เล่นที่มีเทิร์นตอนนี้
-                String currentPlayerId = data.optString("currentPlayerId", "");
-                System.out.println("Client sync Phase: " + phase + ", CurrentPlayer: " + currentPlayerId);
-
-                // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
-                boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
-                
-                if (data.has("players")) {
-                    org.json.JSONArray playersArray = data.getJSONArray("players");
-                    connectedPlayers.clear();
-                    for (int i = 0; i < playersArray.length(); i++) {
-                        JSONObject pData = playersArray.getJSONObject(i);
-                        String pId = pData.getString("playerId");
-
-                        Player p = new Player(pId, pData.optString("playerName", "Unknown"), false);
-                        connectedPlayers.add(p);
-
-                        if (localPlayer != null && pId.equals(localPlayer.getPlayerId())) {
-                            localPlayer.updateFromJSON(pData);
-                        }
-                    }
-                }
-
-                // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
-                if (myTurnNow && localPlayer != null) {
-                    localPlayer.OnStartTurn();
-                }
-            } else if (type.equals(NetworkProtocol.START_GAME.name())) {
-                System.out.println("Host start game");
-                if (data.has("mapSeed")) {
-                    Core.ZhuzheeGame.MAP_SEED = data.getLong("mapSeed");
-                }
-                // เริ่มเกม
-                javax.swing.SwingUtilities.invokeLater(Core.ZhuzheeGame::startMainScene);
-            } else if (type.equals(NetworkProtocol.HOST_LEFT.name())) {
-                System.out.println("Host left the room");
-                Core.ZhuzheeGame.CLIENT = null;
-                // กลับ LOBBY_MENU
-                ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.LOBBY_MENU);
-            } else if (type.equals(NetworkProtocol.PING.name())) {
-                JSONObject pong = new JSONObject();
-                pong.put("actionType", NetworkProtocol.PONG.name());
-                sendAction(pong);
-            }
-        }
-    }
-
     public void sendAction(JSONObject action) {
         if (out != null) {
             out.println(action.toString());
         }
     }
-
     public void disconnect() {
         try {
             if (socket != null && !socket.isClosed()) {
@@ -122,5 +64,97 @@ public class GameClientManager {
     }
     public void endTurn(){
         sendAction(PacketBuilder.createEndTurnPacket());
+    }
+    public void onDataReceived(JSONObject data) {
+        if (data.has("type")) {
+            String type = data.getString("type");
+
+            if (type.equals(NetworkProtocol.JOIN_ACK.name())) {
+                onJoinAcknowledge(data);
+            } else if (type.equals(NetworkProtocol.SYNC_STATE.name())) {
+                onSyncGameState(data);
+            } else if (type.equals(NetworkProtocol.START_GAME.name())) {
+                onStartGame(data);
+            } else if (type.equals(NetworkProtocol.HOST_LEFT.name())) {
+                onHostLeft();
+            } else if (type.equals(NetworkProtocol.PING.name())) {
+                onPing();
+            } else if(type.equals(NetworkProtocol.UPDATE_PLAYER.name())){
+                onUpdatePlayer(data);
+            }
+        }
+    }
+
+    //----------------------------------------
+    //---- player action on received data ----
+    //----------------------------------------
+
+    private synchronized void onJoinAcknowledge(JSONObject data){
+        String assignedId = data.getString("assignedId");
+        this.localPlayer = new Player(assignedId, "Me", true);
+        System.out.println("Join success My ID: " + assignedId);
+    }
+    private synchronized void onSyncGameState(JSONObject data){
+        int phase = data.optInt("phaseCounter", 1);
+
+        // cuurentPlayerId คือ ไอดีของผู้เล่นที่มีเทิร์นตอนนี้
+        String currentPlayerId = data.optString("currentPlayerId", "");
+        System.out.println("Client sync Phase: " + phase + ", CurrentPlayer: " + currentPlayerId);
+
+        // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
+        boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
+
+        if (data.has("players")) {
+            org.json.JSONArray playersArray = data.getJSONArray("players");
+            connectedPlayers.clear();
+            for (int i = 0; i < playersArray.length(); i++) {
+                JSONObject pData = playersArray.getJSONObject(i);
+                String pId = pData.getString("playerId");
+
+                Player p = new Player(pId, pData.optString("playerName", "Unknown"), false);
+                connectedPlayers.add(p);
+
+                if (localPlayer != null && pId.equals(localPlayer.getPlayerId())) {
+                    localPlayer.updateFromJSON(pData);
+                }
+            }
+        }
+
+        // Sync ข้อมูลเมืองที่มาจาก USE_CARD
+        if (data.has("city") && Core.ZhuzheeGame.MAP != null) {
+            JSONObject cityData = data.getJSONObject("city");
+            String cityName = cityData.optString("name", "");
+            City target = Core.ZhuzheeGame.MAP.getCityByName(cityName);
+            if (target != null) {
+                target.updateFromJson(cityData);
+            }
+        }
+
+        // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
+        if (myTurnNow && localPlayer != null) {
+            localPlayer.OnStartTurn();
+        }
+    }
+    private synchronized void onStartGame(JSONObject data){
+        System.out.println("Host start game");
+        if (data.has("mapSeed")) {
+            Core.ZhuzheeGame.MAP_SEED = data.getLong("mapSeed");
+        }
+        // เริ่มเกม
+        javax.swing.SwingUtilities.invokeLater(Core.ZhuzheeGame::startMainScene);
+    }
+    private synchronized void onHostLeft(){
+        System.out.println("Host left the room");
+        Core.ZhuzheeGame.CLIENT = null;
+        // กลับ LOBBY_MENU
+        ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.LOBBY_MENU);
+    }
+    private synchronized void onPing(){
+        JSONObject pong = new JSONObject();
+        pong.put("actionType", NetworkProtocol.PONG.name());
+        sendAction(pong);
+    }
+    private synchronized void onUpdatePlayer(JSONObject data){
+        localPlayer.updateFromJSON(data);
     }
 }

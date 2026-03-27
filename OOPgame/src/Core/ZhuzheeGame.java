@@ -66,6 +66,21 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public void create() {
         // set Application title
         Application.setMainFrameTitle("Zhuzhee The Game");
+
+        // ตั้งค่า default font ของ Swing เป็น pixelfont
+        try {
+            Font pixelFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("OOPgame/Assets/Fonts/pixelfont.ttf")).deriveFont(Font.PLAIN, 16f);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(pixelFont);
+            javax.swing.plaf.FontUIResource fontRes = new javax.swing.plaf.FontUIResource(pixelFont);
+            for (Object key : javax.swing.UIManager.getLookAndFeelDefaults().keySet()) {
+                if (key != null && key.toString().toLowerCase().contains("font")) {
+                    javax.swing.UIManager.put(key, fontRes);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         MAIN_SCENE = new Scene2D();
         MAIN_MENU = new MainMenu();
         LOBBY_MENU = new Core.GameScreens.LobbyMenu();
@@ -118,6 +133,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     }
 
     private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f, NORMAL_ZOOM = 1;
+    private static final Dimension CAMERA_BOUND = new Dimension(500, 500);
     private static Point mousePoint;
 
     public static void CameraControlEvent(Scene2D scene) {
@@ -144,10 +160,25 @@ public class ZhuzheeGame implements ApplicationAdapter {
                     int dx = e.getLocationOnScreen().x - mousePoint.x;
                     int dy = e.getLocationOnScreen().y - mousePoint.y;
                     var cam = MAIN_SCENE.getCamera();
-                    MAIN_SCENE.getCamera().translate((int) (-dx / cam.getZoom()),
-                            (int) (-dy / (float) cam.getZoom()));
+
+                    Point pos = cam.getPosition();
+                    pos.x -= (int) (dx/ cam.getZoom());
+                    pos.y -= (int) (dy/ cam.getZoom());
+
+                    // camera bounding
+                    int minX = -CAMERA_BOUND.width;
+                    int maxX = CAMERA_BOUND.width;
+                    int minY = -CAMERA_BOUND.height;
+                    int maxY = CAMERA_BOUND.height;
+
+                    pos.x = Math.clamp(pos.x, minX, maxX);
+                    pos.y = Math.clamp(pos.y, minY, maxY);
+
+
+                    cam.setPosition(pos);
+
                     mousePoint = e.getLocationOnScreen(); // ใช้ LocationOnScreen
-                                                          // เพื่อป้องกันหน้าจอกระตุกเมื่อเมาส์ลากข้ามระหว่าง Component
+                    // เพื่อป้องกันหน้าจอกระตุกเมื่อเมาส์ลากข้ามระหว่าง Component
                     MAIN_SCENE.repaint();
                 }
             }
@@ -161,12 +192,12 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     @Override
     public void render() {
-        if(MAIN_SCENE != null) sceneUpdate();
+        if (MAIN_SCENE != null) sceneUpdate();
     }
 
-    public void sceneUpdate(){
+    public void sceneUpdate() {
         Camera2D cam = MAIN_SCENE.getCamera();
-        if(Card.CURRENT_GRABBED_CARD != null && cam.getZoom() != NORMAL_ZOOM){
+        if (Card.CURRENT_GRABBED_CARD != null && cam.getZoom() != NORMAL_ZOOM) {
             cam.smoothZoom(NORMAL_ZOOM, 10);
         }
     }

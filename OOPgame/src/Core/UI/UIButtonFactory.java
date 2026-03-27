@@ -9,10 +9,23 @@ import java.awt.image.BufferedImage;
 
 public class UIButtonFactory {
     
-    public static NineSliceButton createMenuButton(String text, BufferedImage normalImg, BufferedImage hoverImg, ActionListener listener) {
-        NineSliceButton btn = new NineSliceButton(text, normalImg, 6, 6, 6, 6);
+    /**
+     * สร้าง NineSliceButton โดยกำหนดขนาดขอบแต่ละด้านได้
+     * @param text ข้อความปุ่ม
+     * @param normalImg รูปปกติ
+     * @param hoverImg รูป hover
+     * @param listener ActionListener
+     * @param leftSlice ขอบซ้าย (px)
+     * @param rightSlice ขอบขวา (px)
+     * @param topSlice ขอบบน (px)
+     * @param bottomSlice ขอบล่าง (px)
+     * @return NineSliceButton
+     */
+    public static NineSliceButton createMenuButton(String text, BufferedImage normalImg, BufferedImage hoverImg, ActionListener listener,
+                                                   int leftSlice, int rightSlice, int topSlice, int bottomSlice) {
+        NineSliceButton btn = new NineSliceButton(text, normalImg, leftSlice, rightSlice, topSlice, bottomSlice);
         btn.setPreferredSize(new Dimension(150, 35));
-        
+
         if (listener != null) {
             btn.addActionListener(listener);
         }
@@ -27,7 +40,13 @@ public class UIButtonFactory {
                 btn.setSourceImage(normalImg);
             }
         });
-        
+
         return btn;
+    }
+    
+    // เมธอดเดิม (default) เพื่อไม่ให้โค้ดเก่าพัง
+    public static NineSliceButton createMenuButton(String text, BufferedImage normalImg, BufferedImage hoverImg, ActionListener listener) {
+        // ค่า default: left=10, right=10, top=6, bottom=6
+        return createMenuButton(text, normalImg, hoverImg, listener, 10, 10, 6, 6);
     }
 }
