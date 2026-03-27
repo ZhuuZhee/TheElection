@@ -5,6 +5,7 @@ import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.ZhuzheeGame;
 
 /**
  * A specific Policy Card that protects the Environment stat.
@@ -13,11 +14,15 @@ import Core.Maps.PoliticsStats;
 public class GreenPolicy extends PolicyCard {
     public GreenPolicy(int x, int y, String imagePath) {
         super("Green Policy", x, y, imagePath, -5);
+        this.description = "Condition:\n You have Development Card with Environment < 0.\nSkill:\n Change Environment to 0";
     }
 
     @Override
     public boolean isActive() {
-        return true;
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            return ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
+        }
+        return false;
     }
 
     @Override

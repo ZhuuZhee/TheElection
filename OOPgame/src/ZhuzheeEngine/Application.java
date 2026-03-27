@@ -1,12 +1,13 @@
 package ZhuzheeEngine;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
  * The core Engine class responsible for the application lifecycle.
- * It manages the main window (JFrame), the render loop (Timer), 
+ * It manages the main window (JFrame), the render loop (Timer),
  * and coordinates ApplicationAdapters for game logic and rendering.
  */
 public final class Application {
@@ -21,7 +22,7 @@ public final class Application {
     private JFrame mainFrame;
     private Timer renderTimer;
 
-    private int screenWidth = 1280, screenHeight = 720;
+    private int screenWidth = 1920, screenHeight = 1080;
 
     /// main application class for running in Application
     private ApplicationAdapter rootAdapter;
@@ -31,8 +32,8 @@ public final class Application {
 
     /** Singleton instance of the Application. */
     private static Application instance;
-    
-    public static Application getInstance(){
+
+    public static Application getInstance() {
         return instance;
     }
 
@@ -49,16 +50,19 @@ public final class Application {
     /**
      * Updates the title of the main application window.
      */
-    public static void setMainFrameTitle(String s){
-        if(instance == null){
-            throw new IllegalStateException("Main frame not set. Make sure your Application subclass calls super.create().");
+    public static void setMainFrameTitle(String s) {
+        if (instance == null) {
+            throw new IllegalStateException(
+                    "Main frame not set. Make sure your Application subclass calls super.create().");
         }
         instance.mainFrame.setTitle(s);
     }
-    //----------------- screen configuration --------------------
+
+    // ----------------- screen configuration --------------------
     /**
      * Configures the window size. Default is 1280x720.
-     * @param screenWidth Width in pixels.
+     * 
+     * @param screenWidth  Width in pixels.
      * @param screenHeight Height in pixels.
      */
     public void setScreenSize(int screenWidth, int screenHeight) {
@@ -69,7 +73,8 @@ public final class Application {
     public int getScreenHeight() {
         return screenHeight;
     }
-    public int getScreenWidth(){
+
+    public int getScreenWidth() {
         return screenWidth;
     }
     // -------------------------------------------------------
@@ -81,35 +86,38 @@ public final class Application {
     /**
      * Adds a new adapter to the application lifecycle (create, render, dispose).
      */
-    public static void addAdapter(ApplicationAdapter adapter){
-        if(instance == null){
-            throw  new IllegalStateException("Make sure your Application subclass calls super.create().");
+    public static void addAdapter(ApplicationAdapter adapter) {
+        if (instance == null) {
+            throw new IllegalStateException("Make sure your Application subclass calls super.create().");
         }
-        if(instance.adapters.contains(adapter)){
+        if (instance.adapters.contains(adapter)) {
             System.err.println("Application already add this adapter.");
             throw new RuntimeException("Application already add this adapter.");
         }
         instance.adapters.add(adapter);
     }
 
-    public static void removeAdapter(ApplicationAdapter adapter){
+    public static void removeAdapter(ApplicationAdapter adapter) {
         instance.adapters.remove(adapter);
     }
 
     /**
      * Internal method to initialize and start the application.
+     * 
      * @param app The application instance to launch.
      */
     private static void LaunchApp(Application app) {
         app.create();
         if (app.mainFrame == null) {
-            throw new IllegalStateException("Main frame not set. Make sure your Application subclass calls super.create().");
+            throw new IllegalStateException(
+                    "Main frame not set. Make sure your Application subclass calls super.create().");
         }
         startRenderLoop(app);
     }
 
     /**
      * Public entry point to start the engine with a specific root adapter.
+     * 
      * @param appAdapter The main game/logic adapter.
      */
     public static void LaunchApp(ApplicationAdapter appAdapter) {
@@ -137,8 +145,7 @@ public final class Application {
                         return;
                     }
                     app.render();
-                }
-        );
+                });
         app.renderTimer.setRepeats(true);
         app.renderTimer.start();
     }
@@ -149,19 +156,25 @@ public final class Application {
     }
 
     /** Updates the primary adapter responsible for the application logic. */
-    public static void setRootApplicationAdapter(ApplicationAdapter adapter){
-        if(instance == null){
+    public static void setRootApplicationAdapter(ApplicationAdapter adapter) {
+        if (instance == null) {
             throw new IllegalStateException("Application: Have to Instance Yet! Can't Set Root Adapter.");
         }
         instance.rootAdapter = adapter;
     }
+
     /// Called when LaunchApp() is invoked.
     /// Create JFrame
     private void create() {
         mainFrame = new JFrame(getTitle());
-        mainFrame.setSize(screenWidth,screenHeight);
+        mainFrame.setSize(screenWidth, screenHeight);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
+        // Enable exclusive fullscreen on launch
+        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        if (device.isFullScreenSupported()) {
+            device.setFullScreenWindow(mainFrame);
+        }
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -172,30 +185,30 @@ public final class Application {
 
         rootAdapter.create();
 
-        for(ApplicationAdapter adapter : adapters){
+        for (ApplicationAdapter adapter : adapters) {
             adapter.create();
         }
-        if(Screen.currentScreen != null)
+        if (Screen.currentScreen != null)
             Screen.currentScreen.create();
     }
 
     private void resize(int width, int height) {
-        rootAdapter.resize(width,height);
-        for(ApplicationAdapter adapter : adapters){
-            adapter.resize(width,height);
+        rootAdapter.resize(width, height);
+        for (ApplicationAdapter adapter : adapters) {
+            adapter.resize(width, height);
         }
-        if(Screen.currentScreen != null)
-            Screen.currentScreen.resize(width,height);
+        if (Screen.currentScreen != null)
+            Screen.currentScreen.resize(width, height);
     }
 
     /// Called every frame after LaunchApp() succeeds.
     private void render() {
         mainFrame.repaint();
         rootAdapter.render();
-        for(ApplicationAdapter adapter : adapters){
+        for (ApplicationAdapter adapter : adapters) {
             adapter.render();
         }
-        if(Screen.currentScreen != null)
+        if (Screen.currentScreen != null)
             Screen.currentScreen.render();
     }
 
@@ -203,10 +216,10 @@ public final class Application {
     private void dispose() {
         mainFrame.dispose();
         rootAdapter.dispose();
-        for(ApplicationAdapter adapter : adapters){
+        for (ApplicationAdapter adapter : adapters) {
             adapter.dispose();
         }
-        if(Screen.currentScreen != null)
+        if (Screen.currentScreen != null)
             Screen.currentScreen.dispose();
     }
 }

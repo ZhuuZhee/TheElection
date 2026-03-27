@@ -2,6 +2,7 @@ package Core.Maps;
 
 import java.awt.*;
 import java.util.ArrayList;
+import org.json.*;
 
 /**
  * Represents a City in the game world.
@@ -100,24 +101,21 @@ public class City {
         System.out.printf("[%s] Player %d ลงการ์ด %s (+%.1f)%n", cityName, playerId, statName, cardVal);
         System.out.printf("   -> Stat เมืองเปลี่ยนจาก %.1f เป็น %d%n", currentStat, stats.getStats(statType));
         System.out.printf("   -> ได้คะแนนดิบเพิ่ม +%.2f คะแนน%n", scoreGained);
-    }
 
-    /** 
+        // TODO: Sound Effect ตัวเอง
+    }
+    /**
      * Applies all statistics from a card to the city for a specific player.
      * @param playerId Index of the player.
      * @param cardStats The PoliticsStats object containing card effects.
      */
     public void applyStats(int playerId, PoliticsStats cardStats) {
-        if (cardStats != null) {
-            int newEconOffset = cardStats.getStats(PoliticsStats.ECONOMY);
-            if (newEconOffset != 0) applyCard(playerId, PoliticsStats.ECONOMY, newEconOffset);
-
-            int newFacOffset = cardStats.getStats(PoliticsStats.FACILITY);
-            if (newFacOffset != 0) applyCard(playerId, PoliticsStats.FACILITY, newFacOffset);
-
-            int newEnvOffset = cardStats.getStats(PoliticsStats.ENVIRONMENT);
-            if (newEnvOffset != 0) applyCard(playerId, PoliticsStats.ENVIRONMENT, newEnvOffset);
-
+        if (cardStats != null && cardStats.stats != null) {
+            for (java.util.Map.Entry<Long, Integer> entry : cardStats.stats.entrySet()) {
+                if (entry.getValue() != 0) {
+                    applyCard(playerId, entry.getKey(), entry.getValue());
+                }
+            }
             getVotingResults();
         }
     }
@@ -134,13 +132,13 @@ public class City {
     /**
      * Checks if the specified player has the highest score in the city.
      * ตรวจสอบว่าผู้เล่นคนนี้มีคะแนนสูงสุดในเมืองหรือไม่ (รวมถึงกรณีที่คะแนนสูงสุดเท่ากับผู้อื่น)
-     * 
+     *
      * @param playerId ดัชนีของผู้เล่นที่ต้องการตรวจสอบ
      * @return true หากผู้เล่นมีคะแนนมากที่สุดหรือเท่ากับคะแนนสูงสุดในขณะนั้น
      */
     public boolean isPlayerDominateCity(int playerId){
         if (playerId < 0 || playerId >= playerScores.length) return false;
-        
+
         double targetScore = playerScores[playerId];
         for (double score : playerScores) {
             if (score > targetScore) return false;
@@ -193,6 +191,64 @@ public class City {
 
     public ArrayList<Grid> getGrids() {
         return grids;
+    }
+
+    public JSONObject toJson() {
+        JSONObject cityJson = new JSONObject();
+        cityJson.put("name", getCityName());
+        cityJson.put("population", population);
+
+        if (playerScores != null) cityJson.put("players score", new JSONArray(playerScores));
+        if (stats != null) cityJson.put("stats", stats.toJson());
+
+        cityJson.put("color", color != null
+            ? new JSONArray(new int[]{color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()})
+            : new JSONArray(new int[]{255, 255, 255, 255}));
+
+        if (grids != null) {
+            JSONArray gridsArray = new JSONArray();
+            for (Grid g : grids) gridsArray.put(g.toJsonPosition());
+            cityJson.put("grids", gridsArray);
+        }
+        return cityJson;
+    }
+
+
+    public void updateFromJson(JSONObject cityData) {
+        if (cityData == null) return;
+
+        if (cityData.has("players score")) {
+            JSONArray scores = cityData.getJSONArray("players score");
+            if (this.playerScores == null || this.playerScores.length != scores.length()) {
+                this.playerScores = new double[scores.length()];
+            }
+            for (int i = 0; i < scores.length(); i++) {
+                this.playerScores[i] = scores.getDouble(i);
+            }
+        }
+
+        if (cityData.has("stats")) {
+            int oldFac = this.stats.getStats(PoliticsStats.FACILITY);
+            int oldEnv = this.stats.getStats(PoliticsStats.ENVIRONMENT);
+            int oldEcon = this.stats.getStats(PoliticsStats.ECONOMY);
+
+            this.stats.updateFromJson(cityData.getJSONObject("stats"));
+
+            int newFac = this.stats.getStats(PoliticsStats.FACILITY);
+            int newEnv = this.stats.getStats(PoliticsStats.ENVIRONMENT);
+            int newEcon = this.stats.getStats(PoliticsStats.ECONOMY);
+
+            int dFac = newFac - oldFac;
+            int dEnv = newEnv - oldEnv;
+            int dEcon = newEcon - oldEcon;
+
+            // TODO: แสดงผล Effect ตอนsyncข้อมูล เช่น poptext เห็นคะแนนเพื่มที่แผนที่
+        }
+
+        if (cityData.has("color")) {
+            JSONArray c = cityData.getJSONArray("color");
+            if (c.length() == 4) this.color = new Color(c.getInt(0), c.getInt(1), c.getInt(2), c.getInt(3));
+        }
     }
 
     /**

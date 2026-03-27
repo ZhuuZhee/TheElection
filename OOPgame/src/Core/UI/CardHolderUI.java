@@ -45,9 +45,10 @@ public class CardHolderUI extends Canvas {
         setOpaque(true); // สำคัญมาก: ป้องกัน Swing วาดพื้นหลังทึบทับกันซ้ำซ้อนจนกระพริบ
 
         // ส่วนหัวข้อ
-        titleLabel = new JLabel("Card Holder UI");
+        titleLabel = UITool.createLabel("Card Holder UI", 16f);
         titleLabel.setForeground(Color.LIGHT_GRAY);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
+        titleLabel.setForeground(Color.LIGHT_GRAY);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         add(titleLabel, BorderLayout.NORTH);
@@ -79,6 +80,7 @@ public class CardHolderUI extends Canvas {
     public void setAnchorLeft(boolean anchorLeft){
         setAnchors(anchorLeft ? -1 : 1, this.anchorVertical);
     }
+    public void setAnchorRight(boolean anchorRight) { setAnchors(anchorRight ? 1 : -1, this.anchorVertical); }
 
     public void setSetLabel(String label){
         titleLabel.setText(label);

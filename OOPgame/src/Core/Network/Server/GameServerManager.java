@@ -5,6 +5,7 @@ import Core.Network.NetworkProtocol;
 import java.net.*;
 import java.util.*;
 
+import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import org.json.JSONObject;
 
@@ -104,15 +105,14 @@ public class GameServerManager {
             onJoinGame(action, playerId);
         } else if (type.equals(NetworkProtocol.START_GAME.name())) {
             onStartGame();
+        } else if(type.equals(NetworkProtocol.UPDATE_PLAYER.name())){
+            onUpdatePlayerData(playerId, action);
         } else if (type.equals(NetworkProtocol.PONG.name())) {
             onPong(playerId);
         } else if (type.equals(NetworkProtocol.END_TURN.name())) {
             onNextTurn();
-
         } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
-            // Logic อัพเดตเมือง ???
-            onUseCard();
-
+            onUseCard(action); // อัพเดตค่าเมืองให้ทุกคนเห็นเหมือนกัน
         }
     }
 
@@ -162,6 +162,9 @@ public class GameServerManager {
 
         broadcast(gameState.generateSyncData());
     }
+    private synchronized void onUpdatePlayerData(String playerId, JSONObject action){
+        sendToClient(playerId, action);
+    }
     private synchronized void onStartGame() {
         System.out.println("START_GAME all clients");
         org.json.JSONObject startPacket = new org.json.JSONObject();
@@ -184,8 +187,12 @@ public class GameServerManager {
         gameState.incrementPhaseCounter();
         updateGameStateToClients();
     }
-    private synchronized void onUseCard() {
-        updateGameStateToClients();
+
+    // อัปเดตข้อมูลเมือง
+    private synchronized void onUseCard(JSONObject action) {
+        JSONObject relay = new JSONObject(action.toString());
+        relay.put("type", NetworkProtocol.SYNC_STATE.name());
+        broadcast(relay);
     }
     private synchronized void updateGameStateToClients(){
         broadcast(gameState.generateSyncData());

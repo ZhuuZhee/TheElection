@@ -8,6 +8,7 @@ import Core.Player.Player;
 import Core.ZhuzheeGame;
 import Core.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
+import org.json.JSONObject;
 
 import java.awt.*;
 
@@ -83,6 +84,14 @@ public class ActionCard extends Card {
         if (playercoin != null) {
             playercoin.setCoin(playercoin.getCoin() + this.coin);
             System.out.println("playerCoin: " + playercoin.getCoin());
+        }
+
+        // ระบบ Broadcast updata ค่าเเมืองส่งไปยัง Server
+        if (ZhuzheeGame.CLIENT != null && targetCity != null) {
+            JSONObject useCardPacket = new JSONObject();
+            useCardPacket.put("actionType", Core.Network.NetworkProtocol.USE_CARD.name());
+            useCardPacket.put("city", targetCity.toJson()); 
+            ZhuzheeGame.CLIENT.sendAction(useCardPacket);
         }
     }
 

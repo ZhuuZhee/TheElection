@@ -51,9 +51,10 @@ public class MainMenu extends Screen implements ActionListener {
         };
         bgCanvas.setLayout(new BorderLayout());
 
-        // นี่คือส่วนชข้อความชื่อเกม
+
         JLabel title = new JLabel("The Election");
-        title.setFont(new Font("Arial", Font.BOLD, 40));
+        title.setFont(title.getFont().deriveFont(40f));
+        // ไม่ต้อง setFont แล้ว ใช้ default font จาก UIManager
         title.setHorizontalAlignment(JLabel.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
         bgCanvas.add(title, BorderLayout.NORTH); // เพิ่ม title ลงใน bgCanvas
@@ -73,6 +74,8 @@ public class MainMenu extends Screen implements ActionListener {
 
         startBtn.addMouseListener(mouseHover);
         optionBtn.addMouseListener(mouseHover);
+        // ตั้งค่า font ให้ปุ่มเมนู
+        // ไม่ต้อง setFont แล้ว ใช้ default font จาก UIManager
         creditBtn.addMouseListener(mouseHover);
         exitBtn.addMouseListener(mouseHover);
 
@@ -93,19 +96,14 @@ public class MainMenu extends Screen implements ActionListener {
         // audio test
         AudioManager.getInstance().loadSound("click","click.WAV");
         AudioManager.getInstance().loadSound("hover","hover.WAV");
-
-//        System.out.println("Main Menu is Created");
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startBtn) {
-            // JOptionPane.showMessageDialog(this);
             Screen.ChangeScreen(ZhuzheeGame.LOBBY_MENU);
         }
         if (e.getSource() == optionBtn) {
-            // JOptionPane.showMessageDialog(this);
-            // Tester.audioManagerTester.setVisible(true);
             Screen.ChangeScreen(ZhuzheeGame.OPTION_MENU);
         }
         if (e.getSource() == creditBtn) {
