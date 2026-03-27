@@ -147,6 +147,20 @@ public class Map extends GameObject {
         }
         return null;
     }
+    
+    public City getCityByName(String name) {
+        if (name == null || gridMap == null) return null;
+        for (Grid[] col : gridMap) {
+            for (Grid grid : col) {
+                if (grid != null && grid.getCity() != null) {
+                    if (grid.getCity().getCityName().equals(name)) {
+                        return grid.getCity();
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * Procedurally generates the map grid and populates it with cities.

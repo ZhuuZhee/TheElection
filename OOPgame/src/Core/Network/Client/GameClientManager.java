@@ -3,6 +3,8 @@ package Core.Network.Client;
 import Core.Network.NetworkProtocol;
 import Core.Network.PacketBuilder;
 import Core.Player.Player;
+import Core.Maps.City;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
@@ -75,6 +77,16 @@ public class GameClientManager {
                         if (localPlayer != null && pId.equals(localPlayer.getPlayerId())) {
                             localPlayer.updateFromJSON(pData);
                         }
+                    }
+                }
+
+                // Sync ข้อมูลเมืองที่มาจาก USE_CARD
+                if (data.has("city") && Core.ZhuzheeGame.MAP != null) {
+                    JSONObject cityData = data.getJSONObject("city");
+                    String cityName = cityData.optString("name", "");
+                    City target = Core.ZhuzheeGame.MAP.getCityByName(cityName);
+                    if (target != null) {
+                        target.updateFromJson(cityData);
                     }
                 }
 

@@ -108,11 +108,8 @@ public class GameServerManager {
             onPong(playerId);
         } else if (type.equals(NetworkProtocol.END_TURN.name())) {
             onNextTurn();
-
         } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
-            // Logic อัพเดตเมือง ???
-            onUseCard();
-
+            onUseCard(action); // อัพเดตค่าเมืองให้ทุกคนเห็นเหมือนกัน
         }
     }
 
@@ -184,8 +181,12 @@ public class GameServerManager {
         gameState.incrementPhaseCounter();
         updateGameStateToClients();
     }
-    private synchronized void onUseCard() {
-        updateGameStateToClients();
+
+    // อัปเดตข้อมูลเมือง
+    private synchronized void onUseCard(JSONObject action) {
+        JSONObject relay = new JSONObject(action.toString());
+        relay.put("type", NetworkProtocol.SYNC_STATE.name());
+        broadcast(relay);
     }
     private synchronized void updateGameStateToClients(){
         broadcast(gameState.generateSyncData());

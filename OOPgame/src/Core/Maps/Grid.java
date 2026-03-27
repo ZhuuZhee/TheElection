@@ -2,6 +2,7 @@ package Core.Maps;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
+import org.json.JSONArray;
 
 public class Grid{
     private final Map map;
@@ -124,5 +125,9 @@ public class Grid{
 //        g2d.setStroke(new BasicStroke(1));
 //        g2d.draw(hexagon); // วาดเส้น hitbox กรอบแดงบางๆ
 //        g2d.fillOval((int)x - 3, (int)y - 3, 6, 6); // จุดกึ่งกลาง
+    }
+
+    public JSONArray toJsonPosition() {
+        return new JSONArray(new int[]{gridX, gridY});
     }
 }
