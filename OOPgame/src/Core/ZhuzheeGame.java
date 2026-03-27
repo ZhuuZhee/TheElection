@@ -66,6 +66,21 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public void create() {
         // set Application title
         Application.setMainFrameTitle("Zhuzhee The Game");
+
+        // ตั้งค่า default font ของ Swing เป็น pixelfont
+        try {
+            Font pixelFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("OOPgame/Assets/Fonts/pixelfont.ttf")).deriveFont(Font.PLAIN, 16f);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(pixelFont);
+            javax.swing.plaf.FontUIResource fontRes = new javax.swing.plaf.FontUIResource(pixelFont);
+            for (Object key : javax.swing.UIManager.getLookAndFeelDefaults().keySet()) {
+                if (key != null && key.toString().toLowerCase().contains("font")) {
+                    javax.swing.UIManager.put(key, fontRes);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         MAIN_SCENE = new Scene2D();
         MAIN_MENU = new MainMenu();
         LOBBY_MENU = new Core.GameScreens.LobbyMenu();

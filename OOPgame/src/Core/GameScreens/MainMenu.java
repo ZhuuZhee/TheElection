@@ -53,7 +53,7 @@ public class MainMenu extends Screen implements ActionListener {
 
         // นี่คือส่วนชข้อความชื่อเกม
         JLabel title = new JLabel("The Election");
-        title.setFont(new Font("Arial", Font.BOLD, 40));
+        // ไม่ต้อง setFont แล้ว ใช้ default font จาก UIManager
         title.setHorizontalAlignment(JLabel.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
         bgCanvas.add(title, BorderLayout.NORTH); // เพิ่ม title ลงใน bgCanvas
@@ -73,6 +73,8 @@ public class MainMenu extends Screen implements ActionListener {
 
         startBtn.addMouseListener(mouseHover);
         optionBtn.addMouseListener(mouseHover);
+        // ตั้งค่า font ให้ปุ่มเมนู
+        // ไม่ต้อง setFont แล้ว ใช้ default font จาก UIManager
         creditBtn.addMouseListener(mouseHover);
         exitBtn.addMouseListener(mouseHover);
 
