@@ -10,7 +10,7 @@ import Core.Maps.PoliticsStats;
  * IronWill:  ถ้า Facility บนการ์ดเป็นลบ → ป้องกันเปลี่ยนให้เป็น 0
  * ถ้า Facility เป็นบวกอยู่แล้ว → บวกเพิ่มอีก +5
  */
-public class IronWill extends PolicyCard {
+public class  IronWill extends PolicyCard {
     public IronWill(int x, int y, String imagePath) {
         super("Iron Will", x, y, imagePath, -6);
     }
