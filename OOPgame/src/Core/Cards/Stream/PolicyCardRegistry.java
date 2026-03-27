@@ -70,12 +70,10 @@ public class PolicyCardRegistry {
             case "NaturePact"    -> new NaturePact(0, 0, img);
             case "InfrastructureBudget"   -> new InfrastructureBudget(0,0,img);
             case "DamageControl"   -> new DamageControl(0,0,img);
-<<<<<<< Updated upstream
             case "PublicBriefing"   -> new PublicBriefing(0,0,img);
             case "Fundraiser"   -> new Fundraiser(0,0,img);
-=======
             case "TradeAgreement" -> new TradeAgreement(0,0,img);
->>>>>>> Stashed changes
+            case "FakeNews"   -> new FakeNews(0,0,img);
             default -> {
                 System.err.println("[PolicyCardRegistry] ไม่รู้จัก class: " + className);
                 yield null;
