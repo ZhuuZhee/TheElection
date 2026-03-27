@@ -361,7 +361,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
     private void refreshPlayerList() {
         if (ZhuzheeGame.CLIENT != null) {
-            HashSet<Player> players = ZhuzheeGame.CLIENT.getConnectedPlayers();
+            java.util.List<Player> players = ZhuzheeGame.CLIENT.getConnectedPlayers();
             playersPanel.removeAll();
 
             for (Player p : players) {
