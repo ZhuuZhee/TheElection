@@ -158,15 +158,12 @@ public class Tester {
         };
 
         private void drawPolicyCard() {
-            ArrayList<Card> deletedPolicyCards = new ArrayList<>();
-            boolean isPolicyCardDrawn = false;
             Card policyCard = PolicyCardRegistry.rollCards(1).getFirst();
 
             if (policyhand.isFull()) {
                 Card firstPolicyCard = policyhand.getCards().getFirst();
 
                 // 4. ลบออกจาก UI และทำลาย Object ทิ้งเพื่อไม่ให้ค้างในหน่วยความจำหรือบนแผนที่
-                deletedPolicyCards.add(firstPolicyCard);
                 policyhand.removeCard(firstPolicyCard);
                 GameObject.Destroy(firstPolicyCard);
 
@@ -176,7 +173,7 @@ public class Tester {
             policyhand.addCard(policyCard);
         }
 
-        private void drawDevCard(){
+        private void drawDevCard() {
             int index = new Random().nextInt(actionCards.length);
             Card card = new ActionCard(actionCards[index],0,0);
             if(!hand.addCard(card))

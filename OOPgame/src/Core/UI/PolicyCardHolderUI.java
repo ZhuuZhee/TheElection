@@ -26,7 +26,8 @@ public class PolicyCardHolderUI extends CardHolderUI {
     public boolean addCard(Card card) {
         boolean success = super.addCard(card);
         if (success) {
-            PolicyCardRegistry.markAsUsed(card.getName());
+            // ใช้ชื่อ Class แทนชื่อการ์ด (เช่น "GreenPolicy" แทน "Green Policy") เพื่อให้ตรงกับ JSON
+            PolicyCardRegistry.markAsUsed(card.getClass().getName());
             card.setDraggable(false);
             card.setGrabbed(false);
             updateSize();

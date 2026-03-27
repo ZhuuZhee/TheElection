@@ -28,9 +28,17 @@ public class PolicyCardRegistry {
      * จะ instantiate เฉพาะใบที่สุ่มได้เท่านั้น
      */
     public static void markAsUsed(String className) {
+        if (className == null) return;
         if (!usedClassNames.contains(className)) {
             usedClassNames.add(className);
         }
+    }
+
+    /**
+     * คืนค่าการ์ดลงกอง (ถ้าต้องการให้สุ่มได้อีกครั้ง)
+     */
+    public static void markAsAvailable(String className) {
+        usedClassNames.remove(className);
     }
 
     public static List<PolicyCard> rollCards(int maxCount) {
@@ -50,6 +58,7 @@ public class PolicyCardRegistry {
 
             // กรณีการ์ดหมดกอง (ถูกใช้ครบทุกใบแล้ว) ให้ล้างประวัติเพื่อให้สุ่มใหม่ได้
             if (indices.isEmpty()) {
+                System.out.println("[PolicyCardRegistry] Cards exhausted, clearing history");
                 usedClassNames.clear();
                 for (int i = 0; i < jsonArray.length(); i++) indices.add(i);
             }
@@ -63,7 +72,11 @@ public class PolicyCardRegistry {
                 String img = obj.optString("img", "OOPgame/Assets/ImageForCards/gay.png");
 
                 PolicyCard card = createCard(className, img);
-                if (card != null) result.add(card);
+                if (card != null) {
+                    result.add(card);
+                    // Mark as used ทันทีที่สุ่มออกมา เพื่อป้องกันใบซ้ำในมือคนอื่นหรือรอบถัดไป
+                    markAsUsed(className);
+                }
             }
         } catch (IOException e) {
             System.err.println("[PolicyCardRegistry] ไม่พบไฟล์: " + JSON_PATH);
