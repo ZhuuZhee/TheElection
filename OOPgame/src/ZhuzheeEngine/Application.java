@@ -1,5 +1,7 @@
 package ZhuzheeEngine;
 
+import Core.ZhuzheeGame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
