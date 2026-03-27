@@ -76,6 +76,7 @@ public class PolicyCardRegistry {
             case "FakeNews"   -> new FakeNews(0,0,img);
             case "GrassrootsMovement"   -> new GrassrootsMovement(0,0,img);
             case "CleanAudit"   -> new CleanAudit(0,0,img);
+            case "HipsterCafeBubble"   -> new HipsterCafeBubble(0,0,img);
             default -> {
                 System.err.println("[PolicyCardRegistry] ไม่รู้จัก class: " + className);
                 yield null;
