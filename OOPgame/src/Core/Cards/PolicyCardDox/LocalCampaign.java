@@ -10,7 +10,7 @@ import Core.ZhuzheeGame;
 public class LocalCampaign extends PolicyCard {
     public LocalCampaign(int x, int y, String imagePath) {
         super("Local Campaign", x, y, imagePath, -3);
-        this.description = "Skill: Play a Development card with +5 Economic. Gain 6 coins.";
+        this.description = "Skill: If you play a Development card with +5 Economic. Gain 6 coins.";
     }
     @Override
     public boolean isActive() {

@@ -10,7 +10,7 @@ public class CoinBoom extends PolicyCard {
 
     public CoinBoom(int x, int y, String imagePath) {
         super("Coin Boom", x, y, imagePath, -5);
-        this.description = "Skill: You have 4 Development cards in hand. Gain 15 coins immediately.";
+        this.description = "Skill: If you have 4 Development cards in hand. Gain 15 coins immediately.";
     }
 
     @Override
