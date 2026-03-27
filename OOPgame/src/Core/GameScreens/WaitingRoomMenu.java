@@ -198,7 +198,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
         // 3. Arcana Selection Grid
         File[] arcanaFiles = loadImageFiles(ZhuzheeGame.CARD_IMAGES_FILE_PATH);
-        JPanel arcanaGrid = createGridPanel(arcanaFiles, 4, new Dimension(80, 120), new Dimension(10, 10), "ARCANA");
+        JPanel arcanaGrid = createGridPanel(arcanaFiles, 3, new Dimension(80, 120), new Dimension(10, 10), "ARCANA");
 
         JScrollPane arcanaScroll = new JScrollPane(arcanaGrid);
         arcanaScroll.setOpaque(false);
