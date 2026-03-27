@@ -14,5 +14,6 @@
   { "class": "FakeNews",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/4 Policy.png" },
   { "class": "Fundraiser",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/6 Policy.png" },
   { "class": "TradeAgreement",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/16 Policy.png" },
-  { "class": "GrassrootsMovement",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/9 Policy.png" }
+  { "class": "GrassrootsMovement",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/9 Policy.png" },
+  { "class": "CleanAudit",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/10 Policy.png" }
 ]
