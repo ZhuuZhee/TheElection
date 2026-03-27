@@ -9,7 +9,7 @@ import Core.ZhuzheeGame;
 public class DamageControl extends PolicyCard {
     public DamageControl(int x, int y, String imagePath) {
         super("Damage Control", x, y, imagePath, -6);
-        this.description = "Skill: Any negative stat on your played Development Card becomes positive.";
+        this.description = "Skill: Any negative stats on played Development Card  change - to +.";
     }
 
     @Override
