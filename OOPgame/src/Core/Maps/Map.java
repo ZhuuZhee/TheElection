@@ -475,9 +475,9 @@ public class Map extends GameObject {
         int startY = y + padding + 40;
         int lineSpacing = 20;
 
-        drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.ECONOMY), x + padding, startY);
-        drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.FACILITY), x + padding, startY + lineSpacing);
-        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.ENVIRONMENT), x + padding, startY + lineSpacing * 2);
+        drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.FACILITY), x + padding, startY);
+        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.ENVIRONMENT), x + padding, startY + lineSpacing);
+        drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.ECONOMY), x + padding, startY + lineSpacing * 2);
 
         int barX = x + padding;
         int barY = startY + lineSpacing * 3 - 7;
