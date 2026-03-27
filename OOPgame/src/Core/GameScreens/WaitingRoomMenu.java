@@ -1,9 +1,8 @@
 package Core.GameScreens;
 
-import Core.Network.Client.ClientAdapter;
+import Core.Cards.Stream.ArcanaCardName;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
-import Core.Network.NetworkProtocol;
 import ZhuzheeEngine.Audios.AudioManager;
 import ZhuzheeEngine.Screen;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
@@ -20,7 +19,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -45,7 +43,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     private String selectedColor = "";
     // ลบ private JLabel selectedProfileImagePreview; ออกไป
     private String selectedProfileFilepath = "";
-    private String selectedArcanaFileName = "";
+    private String selectedArcanaName = ArcanaCardName.THE_FOOL;
 
     private Color[] getColors() {
         return Player.COLOR_MAP.values().toArray(new Color[0]);
@@ -295,7 +293,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     if (type.equals("PROFILE")) {
                         selectedProfileFilepath = file.getName();
                     } else if (type.equals("ARCANA")) {
-                        selectedArcanaFileName = file.getName().replace(".png", "").replace(".jpg", "");
+                        selectedArcanaName = file.getName().replace(".png", "").replace(".jpg", "");
                     }
 
                     AudioManager.getInstance().playSound("click");
@@ -328,7 +326,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     localPlayer.getCoin(),
                     selectedColor,
                     selectedProfileFilepath,
-                    selectedArcanaFileName
+                    selectedArcanaName
             );
             ZhuzheeGame.CLIENT.sendAction(playerPacket);
             return true;

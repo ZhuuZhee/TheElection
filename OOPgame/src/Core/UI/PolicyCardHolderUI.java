@@ -24,10 +24,15 @@ public class PolicyCardHolderUI extends CardHolderUI {
 
     @Override
     public boolean addCard(Card card) {
+        if(isFull())
+            removeCard(cards.getFirst());//เอาใบแรกออกถ้าเต็ม
+
         boolean success = super.addCard(card);
         if (success) {
-            PolicyCardRegistry.markAsUsed(card.getName());
+            // ใช้ชื่อ Class แทนชื่อการ์ด (เช่น "GreenPolicy" แทน "Green Policy") เพื่อให้ตรงกับ JSON
+            PolicyCardRegistry.markAsUsed(card.getClass().getName());
             card.setDraggable(false);
+            card.setGrabbed(false);
             updateSize();
         }
         return success;

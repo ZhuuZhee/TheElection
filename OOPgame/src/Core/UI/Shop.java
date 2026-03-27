@@ -161,6 +161,13 @@ public class Shop extends Canvas {
     }
 
     public void closeShop() {
+        // คืนค่าการ์ดที่ไม่ได้ซื้อกลับเข้ากองสุ่ม (ถ้าต้องการ)
+        for (PolicyCard card : shopCards) {
+            PolicyCardRegistry.markAsAvailable(card.getClass().getName());
+            GameObject.Destroy(card);
+        }
+        shopCards.clear();
+
         setVisible(false);
         scene.remove((Component) this);
         scene.revalidate();

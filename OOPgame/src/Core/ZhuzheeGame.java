@@ -125,17 +125,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
         PlayerUI.PolicyCardHolderUITest(MAIN_SCENE);
         PlayerUI.ArcanaCardHolderUITest(MAIN_SCENE);
-        Player localPlayer = (CLIENT != null) ? CLIENT.getLocalPlayer() : null;
 
-        if (localPlayer != null) {
-            String cardName = localPlayer.getArcanaCard();
-
-            if (cardName != null && !cardName.isEmpty()) {
-                Core.Cards.ArcanaCard card = Core.Cards.Stream.ArcanaCardRegistry.createCard(cardName);
-                localPlayer.setArcanaCard(card); // เก็บไพ่จริงใส่ตัว Player
-                ARCANA_CARD_UI.addCard(card);    // ยัดไพ่ลงกระดาน UI
-            }
-        }
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
         if (CLIENT != null && !CLIENT.getConnectedPlayers().isEmpty()) {
@@ -155,7 +145,18 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);
 
-        CLIENT.getLocalPlayer().DrawCard();
+        Player localPlayer = (CLIENT != null) ? CLIENT.getLocalPlayer() : null;
+
+        if (localPlayer != null) {
+            String cardName = localPlayer.getArcanaCardName();
+            System.out.println("Get Player ArcanaCard{%s}".formatted(cardName));
+            if (cardName != null && !cardName.isEmpty()) {
+                Core.Cards.ArcanaCard card = Core.Cards.Stream.ArcanaCardRegistry.createCard(cardName);
+                localPlayer.setArcanaCard(card); // เก็บไพ่จริงใส่ตัว Player
+                ARCANA_CARD_UI.addCard(card);    // ยัดไพ่ลงกระดาน UI
+            }
+        }
+        localPlayer.DrawCard();
     }
 
     private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.75f, NORMAL_ZOOM = 1;
@@ -225,8 +226,30 @@ public class ZhuzheeGame implements ApplicationAdapter {
         if (Card.CURRENT_GRABBED_CARD != null && cam.getZoom() != NORMAL_ZOOM) {
             cam.smoothZoom(NORMAL_ZOOM, 10);
         }
+        checkRoundAndShop();
     }
+    private static int lastShopOpenedRound = -1;
 
+    public static void checkRoundAndShop() {
+        if (CLIENT == null) return;
+
+        int currentTurn = CLIENT.getTurnCounter();
+        int playerCount = Math.max(1, CLIENT.getConnectedPlayers().size());
+        int turnsPerRound = playerCount * 4;
+
+        int currentRound = ((currentTurn - 1) / turnsPerRound) + 1;
+
+        if (currentTurn > 1 && currentTurn % turnsPerRound == 1) {
+
+            if (currentRound != lastShopOpenedRound) {
+                System.out.println("====== START OF ROUND " + currentRound + "! OPENING SHOP ======");
+
+                Dummy.Tester.ShopTest();
+
+                lastShopOpenedRound = currentRound;
+            }
+        }
+    }
     @Override
     public void dispose() {
 

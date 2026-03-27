@@ -176,7 +176,9 @@ public abstract class Card extends GameObject {
     public void setDraggable(boolean draggable) {
         this.isDraggable = draggable;
     }
-
+    public void setGrabbed(boolean grabbed){
+        this.isGrabbed = grabbed;
+    }
     public int getCoin() {
         return this.coin;
     }
@@ -209,7 +211,7 @@ public abstract class Card extends GameObject {
     // ----------------------------------------
 
     public void onMousePressed(int mouseX, int mouseY) {
-        if (getEnable() && isDraggable) {
+        if (getEnable() && isGrabbed) {
             // ปิด Tooltip ทันทีที่คลิกเพื่อลาก
             if (activeTooltip != null) {
                 scene.remove(activeTooltip);
@@ -234,7 +236,7 @@ public abstract class Card extends GameObject {
     }
 
     public void onMouseDragged(int mouseX, int mouseY) {
-        if (getEnable() && isGrabbed) {
+        if (getEnable() && isDraggable) {
             // 1. Calculate target Screen Position
             Point pos = getLocation();
             int targetScreenX = pos.x + mouseX - offset.x;
