@@ -143,10 +143,12 @@ public class GameClientManager {
             this.currentPlayerId = currentPlayerId;
             System.out.println("Client sync Turn: " + turn + ", CurrentPlayer: " + currentPlayerId);
             turnCounter = turn;
-            boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
-            // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
-            if (myTurnNow && localPlayer != null) {
-                localPlayer.OnStartTurn();
+            if (turn > 1) {
+                boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
+                // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
+                if (myTurnNow && localPlayer != null) {
+                    localPlayer.OnStartTurn();
+                }
             }
         }
         // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
@@ -170,7 +172,10 @@ public class GameClientManager {
                 Player playerToUpdate = existingPlayersMap.get(pId);
                 if (playerToUpdate == null) {
                     // ถ้าเป็นผู้เล่นใหม่ ให้สร้าง Player object ใหม่
-                    playerToUpdate = new Player(pId, pData.optString("playerName", "Unknown"), pId.equals(localPlayer != null ? localPlayer.getPlayerId() : ""));
+                    playerToUpdate = new Player(
+                            pId,
+                            pData.optString("playerName", "Unknown"),
+                            pId.equals(localPlayer != null ? localPlayer.getPlayerId() : ""));
                 }
 
                 playerToUpdate.updateFromJSON(pData); // อัปเดตข้อมูลผู้เล่นจาก JSON

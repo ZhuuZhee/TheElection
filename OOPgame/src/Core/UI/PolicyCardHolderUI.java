@@ -28,6 +28,7 @@ public class PolicyCardHolderUI extends CardHolderUI {
         if (success) {
             PolicyCardRegistry.markAsUsed(card.getName());
             card.setDraggable(false);
+            card.setGrabbed(false);
             updateSize();
         }
         return success;
