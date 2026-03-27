@@ -15,6 +15,7 @@ public class PacketBuilder{
         joinPacket.put("playerName", playerName);
         return joinPacket;
     }
+    ///String playerName,int coin,String color,String profileImagePath,String[] cityOwn
     public static JSONObject createPlayerDataPacket(String playerName,int coin,String color,String profileImagePath,String[] cityOwn){
         JSONObject packet = new JSONObject();
         packet.put("actionType", NetworkProtocol.UPDATE_PLAYER.name());
