@@ -1,6 +1,7 @@
 package Core.Player;
 
 import Core.Cards.*;
+import Core.Cards.Stream.ArcanaCardName;
 import Core.Cards.Stream.ArcanaCardRegistry;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
@@ -57,7 +58,7 @@ public class Player {
     }
 
     public Player(String playerId, String playerName, boolean isLocal) {
-        this(playerId, playerName, isLocal, "Red", DEFAULT_PROFILE_FILE, null);
+        this(playerId, playerName, isLocal, "Red", DEFAULT_PROFILE_FILE, ArcanaCardRegistry.createCard(ArcanaCardName.THE_FOOL));
     }
 
     public String getPlayerId() {
