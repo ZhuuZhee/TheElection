@@ -3,30 +3,30 @@
 ## ฝั่ง Client
 ## class
 - GameClientManager: เชื่อมต่อและจัดการ UI
-เวลาผู้เล่นกดปุ่มอะไรในเกม (กดเข้าห้อง, กดจบเทิร์น, กดใช้การ์ด) โปรแกรมจะส่งข้อมูลแบบ JSON แบบ actionType ไปหา Server 
+เวลาผู้เล่นกดปุ่มอะไรในเกม (กดเข้าห้อง, กดจบเทิร์น, กดใช้การ์ด) โปรแกรมจะส่งข้อมูลแบบ JSON แบบ type ไปหา Server 
 
-`(actionType: "JOIN")`
+`(type: "JOIN")`
 GameClientManager.connect(ip, port, name)
 ```json
 {
-  "actionType": "JOIN",
+  "type": "JOIN",
   "playerName": "Pong"
 }
 ```
 
-`(actionType: "END_TURN")`
+`(type: "END_TURN")`
 ต้องมีปุ่มกดจบเทิร์น
 ```json
 {
-  "actionType": "END_TURN"
+  "type": "END_TURN"
 }
 ```
 
-`(actionType: "USE_CARD")`
+`(type: "USE_CARD")`
 ลากการ์ดใส่เมืองต่างๆ 
 ```json
 {
-  "actionType": "USE_CARD"
+  "type": "USE_CARD"
 }
 ```
 

@@ -1,6 +1,5 @@
 package Core.Network;
 
-import Core.Player.Player;
 import org.json.JSONObject;
 
 public class PacketBuilder{
@@ -43,5 +42,11 @@ public class PacketBuilder{
     public static JSONObject createStartPacket(){
         JSONObject startReq = createPacket(NetworkProtocol.START_GAME);
         return startReq;
+    }
+
+    public static JSONObject createUseCardPacket(JSONObject cityJson) {
+        JSONObject packet = createPacket(NetworkProtocol.USE_CARD);
+        packet.put("city", cityJson);
+        return packet;
     }
 }
