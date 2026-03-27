@@ -66,6 +66,12 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
     };
 
+    public static boolean isMyTurn(){
+        if(CLIENT != null){
+            return CLIENT.getCurrentPlayerId().equals(CLIENT.getLocalPlayer().getPlayerId());
+        }
+        return false;
+    }
     @Override
     public void create() {
         // set Application title
@@ -138,6 +144,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         Tester.ShopTest();
         CameraControlEvent(MAIN_SCENE);
+
+        CLIENT.getLocalPlayer().DrawCard();
     }
 
     private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.25f, NORMAL_ZOOM = 1;

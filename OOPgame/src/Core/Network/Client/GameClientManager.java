@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class GameClientManager {
@@ -17,8 +19,10 @@ public class GameClientManager {
     private PrintWriter out;
     private BufferedReader in;
     private Player localPlayer;
+    private String currentPlayerId;
     private final ArrayList<Player> connectedPlayers = new ArrayList<>();
     private int turnCounter;
+    private final HashSet<ClientListener> clientListeners = new HashSet<>();
 
     public List<Player> getConnectedPlayers() {
         return connectedPlayers;
@@ -112,6 +116,10 @@ public class GameClientManager {
         this.turnCounter = turnCounter;
     }
 
+    public String getCurrentPlayerId() {
+        return currentPlayerId;
+    }
+
     //----------------------------------------
     //---- player action on received data ----
     //----------------------------------------
@@ -120,40 +128,51 @@ public class GameClientManager {
         String assignedId = data.getString("assignedId");
         this.localPlayer = new Player(assignedId, "Me", true);
         System.out.println("Join success My ID: " + assignedId);
+
+        // Notify listeners
+        for (ClientListener listener : clientListeners) {
+            listener.onJoinAcknowledge();
+        }
     }
 
     private synchronized void onSyncGameState(JSONObject data) {
-        int turn = data.optInt("turnCounter", 1);
-
         // cuurentPlayerId คือ ไอดีของผู้เล่นที่มีเทิร์นตอนนี้
-        String currentPlayerId = data.optString("currentPlayerId", "");
-        System.out.println("Client sync Phase: " + turn + ", CurrentPlayer: " + currentPlayerId);
-        turnCounter = turn;
+        if (data.has("currentPlayerId")) {
+            int turn = data.optInt("turnCounter", 1);
+            String currentPlayerId = data.optString("currentPlayerId", "");
+            this.currentPlayerId = currentPlayerId;
+            System.out.println("Client sync Phase: " + turn + ", CurrentPlayer: " + currentPlayerId);
+            turnCounter = turn;
+            boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
+            // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
+            if (myTurnNow && localPlayer != null) {
+                localPlayer.OnStartTurn();
+            }
+        }
         // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
-        boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
-        
+
         if (data.has("players")) {
             org.json.JSONArray playerDatasArray = data.getJSONArray("players");
-            
+
             // สร้าง Map ชั่วคราวเพื่อเก็บ Player ที่มีอยู่แล้ว เพื่อการค้นหาที่เร็วขึ้น
             java.util.Map<String, Player> existingPlayersMap = new java.util.HashMap<>();
             for (Player p : this.connectedPlayers) {
                 existingPlayersMap.put(p.getPlayerId(), p);
             }
-            
+
             // ล้าง connectedPlayers เดิมออก และจะสร้างใหม่จากข้อมูลที่ได้รับจาก Server
             this.connectedPlayers.clear();
 
             for (int i = 0; i < playerDatasArray.length(); i++) {
                 JSONObject pData = playerDatasArray.getJSONObject(i);
                 String pId = pData.getString("playerId");
-                
+
                 Player playerToUpdate = existingPlayersMap.get(pId);
                 if (playerToUpdate == null) {
                     // ถ้าเป็นผู้เล่นใหม่ ให้สร้าง Player object ใหม่
                     playerToUpdate = new Player(pId, pData.optString("playerName", "Unknown"), pId.equals(localPlayer != null ? localPlayer.getPlayerId() : ""));
                 }
-                
+
                 playerToUpdate.updateFromJSON(pData); // อัปเดตข้อมูลผู้เล่นจาก JSON
                 this.connectedPlayers.add(playerToUpdate); // เพิ่มผู้เล่น (ที่อัปเดตแล้วหรือใหม่) เข้าไปใน Set
 
@@ -174,9 +193,9 @@ public class GameClientManager {
             }
         }
 
-        // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
-        if (myTurnNow && localPlayer != null) {
-            localPlayer.OnStartTurn();
+        // Notify listeners
+        for (ClientListener listener : clientListeners) {
+            listener.onSyncGameState();
         }
     }
 
@@ -192,12 +211,23 @@ public class GameClientManager {
         }
         System.out.println("-------------------------------");
 
+        // Notify listeners
+        for (ClientListener listener : clientListeners) {
+            listener.onStartGame();
+        }
+
         // เริ่มเกม
         javax.swing.SwingUtilities.invokeLater(Core.ZhuzheeGame::startMainScene);
     }
 
     private synchronized void onHostLeft() {
         System.out.println("Host left the room");
+
+        // Notify listeners before cleanup
+        for (ClientListener listener : clientListeners) {
+            listener.onHostLeft();
+        }
+
         Core.ZhuzheeGame.CLIENT = null;
         // กลับ LOBBY_MENU
         ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.LOBBY_MENU);
@@ -233,6 +263,24 @@ public class GameClientManager {
                 break; // พบผู้เล่นแล้ว ไม่ต้องวนลูปต่อ
             }
         }
+
+        // Notify listeners
+        for (ClientListener listener : clientListeners) {
+            listener.onUpdatePlayer();
+        }
     }
 
+    //--------------------------------
+    //--------- event handler --------
+    //--------------------------------
+
+    public void addClientListener(ClientListener listener) {
+        if (listener != null) {
+            clientListeners.add(listener);
+        }
+    }
+
+    public void removeClientListener(ClientListener listener) {
+        clientListeners.remove(listener);
+    }
 }

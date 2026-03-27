@@ -203,7 +203,6 @@ public final class Application {
 
     /// Called every frame after LaunchApp() succeeds.
     private void render() {
-        mainFrame.repaint();
         rootAdapter.render();
         for (ApplicationAdapter adapter : adapters) {
             adapter.render();

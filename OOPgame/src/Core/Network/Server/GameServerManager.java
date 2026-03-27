@@ -183,6 +183,7 @@ public class GameServerManager {
         startPacket.put("mapSeed", gameState.getMapSeed());
         gameState.onStartGame();
         broadcast(startPacket);
+        broadcast(gameState.generateSyncData());
     }
     private synchronized void onPong(String playerId){
         // อัพเดตเวลา PONG ของ client คนนี้

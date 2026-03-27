@@ -31,14 +31,6 @@ public class GameState {
         return currentPlayer;
     }
 
-    public String getCurrentPlayerId() {
-        return currentPlayerId;
-    }
-
-    public void setCurrentPlayerId(String currentPlayerId) {
-        this.currentPlayerId = currentPlayerId;
-    }
-
     public void setCurrentPlayer(Player player) {
         currentPlayer = player;
         currentPlayerId = player.getPlayerId();

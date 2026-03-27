@@ -110,7 +110,7 @@ public class Player {
         }
     }
 
-    private void DrawCard() {
+    public void DrawCard() {
         // เช็ค
         if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null && ZhuzheeGame.DEVLOPMENT_CARD_HAND.isFull()) {
             System.out.println("Hand is full, skipping draw.");

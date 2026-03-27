@@ -7,6 +7,8 @@ package Core.Cards;
 import Core.Maps.Grid;
 import Core.Maps.Map;
 import Core.Maps.PoliticsStats;
+import Core.Network.Client.ClientAdapter;
+import Core.Network.Client.GameClientManager;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
@@ -516,6 +518,9 @@ public abstract class Card extends GameObject {
                 super.setBounds(baseX - shiftX, baseY - shiftY, finalWidth, finalHeight);
             }
         }
+
+        setEnable(ZhuzheeGame.isMyTurn());
+        setDraggable(ZhuzheeGame.isMyTurn());
     }
 
     @Override
