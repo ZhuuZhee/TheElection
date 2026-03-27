@@ -8,4 +8,5 @@
   { "class": "CoinBoom",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/3 Policy.png"},
   { "class": "Public_PrivatePartnership", "img": "OOPgame/Assets/ImageForCards/Poilicy Card/14 Policy.png"},
   { "class": "InfrastructureBudget",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/7 Policy.png" },
+  { "class": "DamageControl",    "img": "OOPgame/Assets/ImageForCards/Poilicy Card/8 Policy.png" }
 ]
