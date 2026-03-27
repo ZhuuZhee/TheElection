@@ -50,7 +50,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PolicyCardHolderUI POLICY_CARD_HAND;
     public static ArcanaCardHolderUI ARCANA_CARD_UI;
     public static PlayerListUI PLAYER_LIST_UI;
-
+    public static Core.UI.PlayerCoinUI PLAYER_COIN_UI;
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
     public static final boolean DEV_MODE = false;
 
@@ -108,7 +108,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.CardsTestingOnScene(MAIN_SCENE);
         CardHolderUI holderUI = Tester.CardHolderUITest(MAIN_SCENE);
         DEVLOPMENT_CARD_HAND = holderUI;
-
+        Tester.PlayerCoinUITest(MAIN_SCENE);
         Tester.PolicyCardHolderUITest(MAIN_SCENE);
         Tester.ArcanaCardHolderUITest(MAIN_SCENE);
         Tester.TestArcanaCard();
@@ -125,7 +125,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
 
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
-
+        Tester.PlayerCoinUITest(MAIN_SCENE);
         Tester.CardTesterUI(MAIN_SCENE);
 
         Tester.ShopTest();

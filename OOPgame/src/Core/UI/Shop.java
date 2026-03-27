@@ -49,10 +49,9 @@ public class Shop extends Canvas {
         setOpaque(true);
 
         // สร้าง Header ไว้ด้านบน
-        headerLabel = new JLabel();
+        headerLabel = UITool.createLabel("Shop | Your Money: $ " + localPlayer.getCoin(), 16f);
         headerLabel.setForeground(Color.LIGHT_GRAY);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        headerLabel.setFont(headerLabel.getFont().deriveFont(Font.BOLD));
         headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         updateHeader();
         add(headerLabel, BorderLayout.NORTH);
@@ -77,7 +76,6 @@ public class Shop extends Canvas {
             wrapper.add(card, BorderLayout.CENTER);
 
             JButton buyBtn = new JButton("Buy $" + getPrice(card));
-            buyBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
             buyBtn.setBackground(new Color(39, 174, 96));
             buyBtn.setForeground(Color.WHITE);
             buyBtn.setFocusPainted(false);
@@ -124,9 +122,12 @@ public class Shop extends Canvas {
 
         this.localPlayer.setCoin(this.localPlayer.getCoin() - price);
         System.out.println("ซื้อการ์ด " + card.getName() + " สำเร็จ!");
-
         if(AudioManager.getInstance() != null) {
             AudioManager.getInstance().playSound("click");
+        }
+
+        if (ZhuzheeGame.PLAYER_COIN_UI != null) {
+            ZhuzheeGame.PLAYER_COIN_UI.updateCoinDisplay();
         }
 
         // ถอดกล่อง Wrapper ทั้งกล่องออกจากหน้าร้าน (ปุ่ม Buy จะปลิวหายไปพร้อมกล่อง)
@@ -149,7 +150,7 @@ public class Shop extends Canvas {
         updateHeader(); // อัปเดตเงิน
         cardContainer.revalidate();
         cardContainer.repaint();
-        closeShop();
+//        closeShop();
     }
 
     @Override

@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.ZhuzheeGame;
 
 public class InfrastructureBudget extends PolicyCard {
 
@@ -13,7 +14,10 @@ public class InfrastructureBudget extends PolicyCard {
 
     @Override
     public boolean isActive() {
-        return true;
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            return ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
+        }
+        return false;
     }
 
     @Override

@@ -66,6 +66,10 @@ public class Tester {
         ZhuzheeGame.ARCANA_CARD_UI = new ArcanaCardHolderUI(scene2D);
         return ZhuzheeGame.ARCANA_CARD_UI;
     }
+    public static Core.UI.PlayerCoinUI PlayerCoinUITest(Scene2D scene2D) {
+        ZhuzheeGame.PLAYER_COIN_UI = new Core.UI.PlayerCoinUI(scene2D);
+        return ZhuzheeGame.PLAYER_COIN_UI;
+    }
 
     public static Map MapTest() {
         return new Map();

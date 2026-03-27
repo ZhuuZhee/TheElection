@@ -8,10 +8,16 @@ import Core.Maps.PoliticsStats;
 import Core.ZhuzheeGame;
 
 public class LocalCampaign extends PolicyCard {
-    public LocalCampaign(int x, int y, String imagePath) {super("Local Campaign", x, y, imagePath, -3);}
+    public LocalCampaign(int x, int y, String imagePath) {
+        super("Local Campaign", x, y, imagePath, -3);
+        this.description = "Condition:\n Play a Development card with +5 Economic\nSkill:\n Gain 6 coins.";
+    }
     @Override
     public boolean isActive() {
-        return true; // ให้การ์ดทำงานเสมอเมื่อถูกวางลงใน Slot
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            return ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
+        }
+        return false;
     }
 
     @Override
@@ -23,15 +29,16 @@ public class LocalCampaign extends PolicyCard {
                 // ดึงค่า Environment ของการ์ดที่เพิ่งเล่นออกมาเช็ค
                 int envValue = stats.getStats(PoliticsStats.ENVIRONMENT);
                 // ถ้าการ์ดใบนั้นมีค่า Environment เป็นบวก
-                if (envValue > 0) {
+                if (envValue > 5) {
                     System.out.println("----------------------------------");
                     System.out.println("PolicyCard [Local Campaign] ทำงาน!");
                     System.out.println("เนื่องจากคุณเล่นการ์ด " + playedCard.getName() + " ที่มี +Environment");
                     System.out.println(">>> คุณได้รับ 3 Coin จากธนาคาร! <<<");
                     System.out.println("----------------------------------");
 
-                    // ดึง coin มาบวก 3
-                    ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(ZhuzheeGame.CLIENT.getLocalPlayer().getCoin() + 3);
+                    // ดึง coin มาบวก 6
+                    int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();
+                    ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin + 6);
                 }
             }
         }
