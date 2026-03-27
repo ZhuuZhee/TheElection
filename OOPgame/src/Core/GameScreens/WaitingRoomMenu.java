@@ -286,7 +286,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     if (type.equals("PROFILE")) {
                         selectedProfileFilepath = file.getName();
                     } else if (type.equals("ARCANA")) {
-                        selectedArcanaFileName = file.getName();
+                        selectedArcanaFileName = file.getName().replace(".png", "").replace(".jpg", "");
                     }
 
                     AudioManager.getInstance().playSound("click");
