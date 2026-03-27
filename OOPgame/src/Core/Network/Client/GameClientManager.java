@@ -141,7 +141,7 @@ public class GameClientManager {
             int turn = data.optInt("turnCounter", 1);
             String currentPlayerId = data.optString("currentPlayerId", "");
             this.currentPlayerId = currentPlayerId;
-            System.out.println("Client sync Phase: " + turn + ", CurrentPlayer: " + currentPlayerId);
+            System.out.println("Client sync Turn: " + turn + ", CurrentPlayer: " + currentPlayerId);
             turnCounter = turn;
             boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
             // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)

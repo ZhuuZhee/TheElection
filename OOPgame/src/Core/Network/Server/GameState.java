@@ -41,11 +41,11 @@ public class GameState {
     public void reorderPlayers() {
         // players.sort ???
     }
-    ///game state data as json for socket
+    ///game state data as JSON for socket
     public JSONObject generateSyncData() {
         JSONObject data = new JSONObject();
         data.put("type", NetworkProtocol.SYNC_STATE.name());
-        data.put("phaseCounter", turnCounter);
+        data.put("turnCounter", turnCounter);
         if (hostId != null) {
             data.put("hostId", hostId);
         }

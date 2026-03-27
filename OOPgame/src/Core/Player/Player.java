@@ -45,7 +45,7 @@ public class Player {
         COLOR_MAP.put("Black", Color.BLACK);
     }
 
-    public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, ArcanaCard arcanaCard) {
+    public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, String arcanaCardName) {
         this.playerId = playerId;
         this.playerName = playerName;
         this.isLocal = isLocal;
@@ -54,11 +54,11 @@ public class Player {
         this.policyCards = new ArrayList<>();
         this.cityOwn = new String[0];
         this.profileImagePath = profileImagePath;
-        this.arcanaCard = arcanaCard;
+        this.arcanaCardName = arcanaCardName;
     }
 
     public Player(String playerId, String playerName, boolean isLocal) {
-        this(playerId, playerName, isLocal, "Red", DEFAULT_PROFILE_FILE, ArcanaCardRegistry.createCard(ArcanaCardName.THE_FOOL));
+        this(playerId, playerName, isLocal, "Red", DEFAULT_PROFILE_FILE, ArcanaCardName.THE_FOOL);
     }
 
     public String getPlayerId() {
