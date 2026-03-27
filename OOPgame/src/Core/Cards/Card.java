@@ -416,18 +416,18 @@ public abstract class Card extends GameObject {
             g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
             // วาดชื่อการ์ด
-            if (!isGrabbed) {
-                FontMetrics fm = g2d.getFontMetrics();
-                int textX = (getWidth() - fm.stringWidth(name)) / 2;
-                int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-
-                // พื้นหลังตัวหนังสือแบบโปร่งแสง
-                g2d.setColor(new Color(255, 255, 255, 180));
-                g2d.fillRect(textX - 2, textY - fm.getAscent() - 2, fm.stringWidth(name) + 4, fm.getHeight() + 4);
-
-                g2d.setColor(Color.BLACK);
-                g2d.drawString(name, textX, textY);
-            }
+//            if (!isGrabbed) {
+//                FontMetrics fm = g2d.getFontMetrics();
+//                int textX = (getWidth() - fm.stringWidth(name)) / 2;
+//                int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+//
+//                // พื้นหลังตัวหนังสือแบบโปร่งแสง
+//                g2d.setColor(new Color(255, 255, 255, 180));
+//                g2d.fillRect(textX - 2, textY - fm.getAscent() - 2, fm.stringWidth(name) + 4, fm.getHeight() + 4);
+//
+//                g2d.setColor(Color.BLACK);
+//                g2d.drawString(name, textX, textY);
+//            }
 
             // วาดค่า Stat เฉพาะของแต่ละประเภทการ์ด
             drawStats(g2d);
@@ -607,9 +607,9 @@ public abstract class Card extends GameObject {
                 }
 
                 g2d.setColor(new Color(80, 80, 80));
-                g2d.drawString("Economic:", 15, 55);
-                g2d.drawString("Facility:", 15, 80);
-                g2d.drawString("Environment:", 15, 105);
+                g2d.drawString("Facility:", 15, 55);
+                g2d.drawString("Environment:", 15, 80);
+                g2d.drawString("Economy:", 15, 105);
 
                 g2d.setColor(new Color(0, 102, 204));
                 g2d.drawString(String.valueOf(fac), 150, 55);
