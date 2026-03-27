@@ -131,9 +131,6 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         File[] profileFiles = loadImageFiles(ZhuzheeGame.PROFILE_FILE_PATH);
         if (profileFiles != null && profileFiles.length > 0) {
             selectedProfileFileName = profileFiles[0].getAbsolutePath();
-            // ลบโค้ด 2 บรรทัดล่างนี้ออก เพราะเราไม่ได้ใช้ selectedProfileImagePreview แล้ว
-            // ImageIcon defaultIcon = new ImageIcon(selectedProfileFileName);
-            // selectedProfileImagePreview.setIcon(new ImageIcon(defaultIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
         }
         String[] names = getColorNames();
         if (names.length > 0) selectedColor = names[0];
@@ -179,7 +176,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         rGbc.weightx = 1.0;
         rGbc.gridx = 0;
 
-        // 1. Color Selection (ย้ายขึ้นมาบนสุดและไม่มีรูปพรีวิว)
+        // 1. Color Selection
         JPanel colorPanel = createColorSelectionPanel();
         rGbc.gridy = 0;
         rGbc.weighty = 0.1;
@@ -267,7 +264,6 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 Image scaledImg = icon.getImage().getScaledInstance(imageScale.width, imageScale.height, Image.SCALE_SMOOTH);
                 btn.setIcon(new ImageIcon(scaledImg));
 
-                // เพิ่มเอฟเฟกต์ Hover ทั้งเสียงและขอบ
                 btn.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseEntered(MouseEvent e) {
@@ -365,7 +361,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
             playersPanel.removeAll();
 
             for (Player p : players) {
-                JPanel playerRow = new JPanel(new BorderLayout(15, 0)); // เพิ่มระยะห่างแนวนอน
+                JPanel playerRow = new JPanel(new BorderLayout(15, 0));
                 playerRow.setOpaque(true);
                 playerRow.setBackground(new Color(255, 255, 255, 150));
 
@@ -381,12 +377,9 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 JLabel profileIconLabel = new JLabel();
                 profileIconLabel.setPreferredSize(new Dimension(60, 60));
                 profileIconLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-
-                // ถ้านี่คือตัวเราเอง ใช้รูปที่เราเพิ่งเลือก (กรณีรอ Server อัปเดต)
-                // ถ้าเป็นคนอื่น เราอาจจะต้องใช้ getProfileImagePath() จากคลาส Player ถ้ามี (ในตัวอย่างจะดึงจาก local ไว้ชั่วคราว)
+                
                 String imagePath = p.getProfileImagePath();
 
-                // ถ้าเป็นตัวเราและเพิ่งกดเปลี่ยนรูป (รอ Server อัปเดต) ให้ใช้รูปปัจจุบันที่หน้าจอเราถือไว้ชั่วคราว
                 if (p == ZhuzheeGame.CLIENT.getLocalPlayer() && !selectedProfileFileName.isEmpty()) {
                     imagePath = selectedProfileFileName;
                 }
