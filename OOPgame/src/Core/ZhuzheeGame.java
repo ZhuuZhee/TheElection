@@ -51,6 +51,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static ArcanaCardHolderUI ARCANA_CARD_UI;
     public static PlayerListUI PLAYER_LIST_UI;
 
+    public static final String PROFILE_FILE_PATH = "OOPgame/Assets/ImageForProfile";
+    public static final String CARD_IMAGES_FILE_PATH = "OOPgame/Assets/ImageForCards";
+
     /// ตั้งเป็น true เพื่อ Run test ทันที, ตั้ง false เพื่อ Run Main
     public static final boolean DEV_MODE = false;
 
