@@ -2,7 +2,6 @@ package Core.Player;
 
 import Core.Cards.*;
 import Core.Cards.Stream.ArcanaCardName;
-import Core.Cards.Stream.ArcanaCardRegistry;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.UI.CardHolderUI;
@@ -29,6 +28,7 @@ public class Player {
     private Color color = Color.RED;
     private String colorName = "Red";
     private String profileImagePath;
+    private boolean isLoose;//แพ้ป่าว
 
     public static final String DEFAULT_PROFILE_FILE = "1Pro.png";
     public static final int DEFAULT_DRAW_DEV_CARD_AMOUNT = 4;
@@ -45,7 +45,8 @@ public class Player {
         COLOR_MAP.put("Black", Color.BLACK);
     }
 
-    public Player(String playerId, String playerName, boolean isLocal, String color, String profileImagePath, String arcanaCardName) {
+    private Player(String playerId, String playerName, boolean isLocal, String color,
+                  String profileImagePath, String arcanaCardName) {
         this.playerId = playerId;
         this.playerName = playerName;
         this.isLocal = isLocal;
@@ -79,8 +80,11 @@ public class Player {
         return file;
     }
 
-    public String getArcanaCard() {
+    public String getArcanaCardName() {
         return arcanaCardName;
+    }
+    public void setArcanaCardName(String arcanaCardName){
+        this.arcanaCardName = arcanaCardName;
     }
 
     public void setArcanaCard(ArcanaCard arcanaCard) {

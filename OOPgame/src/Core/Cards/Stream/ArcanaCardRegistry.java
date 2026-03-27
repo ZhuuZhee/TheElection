@@ -8,7 +8,7 @@ public class ArcanaCardRegistry {
         if (cardName == null || cardName.isEmpty()) return null;
 
         String safeName = cardName.replace(" ", "");
-
+        System.out.println("Try to create ArcanaCard{%s}".formatted(cardName));
         return switch (safeName) {
             case ArcanaCardName.THE_FOOL -> new TheFoolCard(0, 0);
             case ArcanaCardName.WOF -> new TheWheelOfFortune(0, 0);
