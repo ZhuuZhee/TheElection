@@ -225,8 +225,30 @@ public class ZhuzheeGame implements ApplicationAdapter {
         if (Card.CURRENT_GRABBED_CARD != null && cam.getZoom() != NORMAL_ZOOM) {
             cam.smoothZoom(NORMAL_ZOOM, 10);
         }
+        checkRoundAndShop();
     }
+    private static int lastShopOpenedRound = -1;
 
+    public static void checkRoundAndShop() {
+        if (CLIENT == null) return;
+
+        int currentTurn = CLIENT.getTurnCounter();
+        int playerCount = Math.max(1, CLIENT.getConnectedPlayers().size());
+        int turnsPerRound = playerCount * 4;
+
+        int currentRound = ((currentTurn - 1) / turnsPerRound) + 1;
+
+        if (currentTurn > 1 && currentTurn % turnsPerRound == 1) {
+
+            if (currentRound != lastShopOpenedRound) {
+                System.out.println("====== START OF ROUND " + currentRound + "! OPENING SHOP ======");
+
+                Dummy.Tester.ShopTest();
+
+                lastShopOpenedRound = currentRound;
+            }
+        }
+    }
     @Override
     public void dispose() {
 
