@@ -167,7 +167,15 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     }
 
     private JPanel createRightPanel() {
-        JPanel rightPanel = new JPanel(new GridBagLayout());
+        JPanel rightPanel = new JPanel(new GridBagLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                g.setColor(getBackground());
+                g.fillRect(0, 0, getWidth(), getHeight());
+                super.paintComponent(g);
+            }
+        };
+        rightPanel.setOpaque(false); // ต้องปิด Opaque เสมอเมื่อใช้สีโปร่งแสง
         rightPanel.setBackground(new Color(230, 230, 230, 200)); // สีพื้นหลังโปร่งแสงเล็กน้อย
         rightPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -258,7 +266,6 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 btn.setPreferredSize(new Dimension(imageScale.width, imageScale.height));
                 btn.setContentAreaFilled(false);
                 btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-                btn.setCursor(new Cursor(Cursor.HAND_CURSOR)); // เปลี่ยนเมาส์เป็นรูปมือ
 
                 ImageIcon icon = new ImageIcon(file.getAbsolutePath());
                 Image scaledImg = icon.getImage().getScaledInstance(imageScale.width, imageScale.height, Image.SCALE_SMOOTH);
@@ -270,13 +277,14 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     public void mouseEntered(MouseEvent e) {
                         ZhuzheeGame.MOUSE_HOVER_SFX.mouseEntered(e); // เล่นเสียง Hover
                         if (((javax.swing.border.LineBorder) btn.getBorder()).getLineColor() == Color.GRAY) {
-                            btn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 3));
+                            // เปลี่ยนสี Hover ให้เข้มขึ้นเป็น DARK_GRAY
+                            btn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3));
                         }
                     }
 
                     @Override
                     public void mouseExited(MouseEvent e) {
-                        if (((javax.swing.border.LineBorder) btn.getBorder()).getLineColor() == Color.LIGHT_GRAY) {
+                        if (((javax.swing.border.LineBorder) btn.getBorder()).getLineColor() == Color.DARK_GRAY) {
                             btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                         }
                     }
@@ -286,7 +294,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     if (type.equals("PROFILE")) {
                         selectedProfileFilepath = file.getName();
                     } else if (type.equals("ARCANA")) {
-                        selectedArcanaFileName = file.getName();
+                        selectedArcanaFileName = file.getName().replace(".png", "").replace(".jpg", "");
                     }
 
                     AudioManager.getInstance().playSound("click");
@@ -318,7 +326,8 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     localPlayer.getPlayerName(),
                     localPlayer.getCoin(),
                     selectedColor,
-                    selectedProfileFilepath
+                    selectedProfileFilepath,
+                    selectedArcanaFileName
             );
             ZhuzheeGame.CLIENT.sendAction(playerPacket);
             return true;
@@ -393,13 +402,13 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
 
 
                     File imgFile = p.getProfileImageFile();
-//                    System.out.println("Waiting Room : Image File Path of {%s} is %s".formatted(p.getPlayerName(),imgFile.getAbsolutePath()));
+//                  System.out.println("Waiting Room : Image File Path of {%s} is %s".formatted(p.getPlayerName(),imgFile.getAbsolutePath()));
                     if (imgFile.exists()) {
                         ImageIcon icon = new ImageIcon(imgFile.getAbsolutePath());
                         profileIconLabel.setIcon(new ImageIcon(icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
                     }
 
-                
+
                 playerRow.add(profileIconLabel, BorderLayout.WEST);
                 JLabel nameLabel = UITool.createLabel(p.getPlayerName(), 24f);
                 playerRow.add(nameLabel, BorderLayout.CENTER);

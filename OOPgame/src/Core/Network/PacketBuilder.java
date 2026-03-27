@@ -15,13 +15,14 @@ public class PacketBuilder{
         return joinPacket;
     }
     ///String playerName,int coin,String color,String profileImagePath,String[] cityOwn
-    public static JSONObject createPlayerDataPacket(String playerId,String playerName,int coin,String color,String profileImagePath){
+    public static JSONObject createPlayerDataPacket(String playerId,String playerName,int coin,String color,String profileImagePath, String arcanaCardName){
         JSONObject packet = createPacket(NetworkProtocol.UPDATE_PLAYER);
         packet.put("playerId", playerId);
         packet.put("playerName", playerName);
         packet.put("coin", coin);
         packet.put("color", color);
         packet.put("profileImagePath", profileImagePath);
+        packet.put("arcanaCard", arcanaCardName);
         return packet;
     }
 

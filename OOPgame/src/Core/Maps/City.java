@@ -35,6 +35,8 @@ public class City {
     /** Current weighted scores for each player in this city. */
     public double[] playerScores;
 
+    private int ownerId = -1;
+
     /**
      * Constructs a new City with specified parameters and initializes scoring.
      */
@@ -73,6 +75,7 @@ public class City {
         for (int i = 0; i < safeNumPlayers; i++) {
             this.playerScores[i] = this.baseScore;
         }
+        updateOwner();
     }
 
     public String getCityName() {
@@ -110,7 +113,9 @@ public class City {
         playerScores[playerId] += scoreGained;
 
         // อัปเดต Stat เมือง
-        stats.addStats(statType, (int)cardVal);
+        stats.addStats(statType, (int) cardVal);
+
+        updateOwner();
 
         String statName = statType == PoliticsStats.FACILITY ? "Facility" :
                 statType == PoliticsStats.ENVIRONMENT ? "Environment" : "Economy";
@@ -165,6 +170,34 @@ public class City {
 
     public double[] getPlayerScores() {
         return playerScores;
+    }
+
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public void updateOwner() {
+        if (playerScores == null || playerScores.length == 0) {
+            ownerId = -1;
+            return;
+        }
+        int bestPlayer = -1;
+        double maxScore = -1;
+        boolean tie = false;
+        for (int i = 0; i < playerScores.length; i++) {
+            if (playerScores[i] > maxScore) {
+                maxScore = playerScores[i];
+                bestPlayer = i;
+                tie = false;
+            } else if (playerScores[i] == maxScore) {
+                tie = true;
+            }
+        }
+        ownerId = tie ? -1 : bestPlayer;
+
+        if (Core.ZhuzheeGame.PLAYER_LIST_UI != null) {
+            Core.ZhuzheeGame.PLAYER_LIST_UI.updatePlayerList();
+        }
     }
 
     /**
@@ -242,6 +275,7 @@ public class City {
             for (int i = 0; i < scores.length(); i++) {
                 this.playerScores[i] = scores.getDouble(i);
             }
+            updateOwner();
         }
 
         if (cityData.has("stats")) {
