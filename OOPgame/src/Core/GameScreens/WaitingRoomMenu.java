@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import static Core.Network.PacketBuilder.createStartPacket;
+
 import Core.UI.UITool;
 
 public class WaitingRoomMenu extends Screen implements ActionListener {
@@ -133,9 +134,9 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         }
         String[] names = getColorNames();
         if (names.length > 0) selectedColor = names[0];
-
         refreshTimer = new Timer(1000, e -> refreshPlayerList());
     }
+
 
     private JPanel createLeftPanel() {
         JPanel leftPanel = new JPanel();
@@ -309,7 +310,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         return folder.listFiles((dir, name) -> name.endsWith(".png") || name.endsWith(".jpg"));
     }
 
-    private void sendPlayerDataUpdate() {
+    private boolean sendPlayerDataUpdate() {
         if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
             Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
             org.json.JSONObject playerPacket = Core.Network.PacketBuilder.createPlayerDataPacket(
@@ -320,13 +321,25 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                     selectedProfileFilepath
             );
             ZhuzheeGame.CLIENT.sendAction(playerPacket);
+            return true;
         }
+        System.err.println("No Local Player in here");
+        return false;
     }
 
     @Override
     public void onScreenEnter() {
         super.onScreenEnter();
         refreshPlayerList();
+        new Thread(() -> {
+            while (!sendPlayerDataUpdate()) {
+                try {
+                    Thread.sleep(16);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -407,11 +420,10 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 playersPanel.repaint();
             }
         }
-
-
     }
+
     @Override
-    public void actionPerformed (ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startBtn) {
             if (ZhuzheeGame.CLIENT != null) {
                 JSONObject startReq = createStartPacket();
