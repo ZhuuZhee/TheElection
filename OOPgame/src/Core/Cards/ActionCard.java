@@ -66,51 +66,37 @@ public class ActionCard extends Card {
 
         Player playercoin = ZhuzheeGame.CLIENT.getLocalPlayer();
 
-        if (playercoin != null && (playercoin.getCoin() + this.coin) < 0) {
-            ZhuzheeEngine.Debug.GameLogger.logWarning("เงินไม่พอลงการ์ด! (ขาดอีก $" + Math.abs(playercoin.getCoin() + this.coin) + ")");
-
-            if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
-                ZhuzheeGame.DEVLOPMENT_CARD_HAND.addCard(this);
-            }
-            return;
-        }
-
         ZhuzheeEngine.Debug.GameLogger.logInfo(name + " was dropped onto Map Grid!");
 
-        if (targetCity != null) {
-            // หักเงินผู้เล่นทันทีที่รู้ว่าลงเมืองสำเร็จ
-            if (playercoin != null) {
-                playercoin.setCoin(playercoin.getCoin() + this.coin);
-                System.out.println("playerCoin เหลือ: " + playercoin.getCoin());
+        if (playercoin != null) {
+            playercoin.setCoin(playercoin.getCoin() + this.coin); // บวกค่าติดลบ = หักเงิน
+            System.out.println("playerCoin เหลือ: " + playercoin.getCoin());
 
-                // อัปเดตเงิน
-                if (ZhuzheeGame.PLAYER_COIN_UI != null) {
-                    ZhuzheeGame.PLAYER_COIN_UI.updateCoinDisplay();
-                }
+            // อัปเดตตัวเลขป้ายเงินบนจอ
+            if (ZhuzheeGame.PLAYER_COIN_UI != null) {
+                ZhuzheeGame.PLAYER_COIN_UI.updateCoinDisplay();
             }
-
-            // คำนวณบัฟจาก Policy Card ที่มีในมือ
-            PoliticsStats finalStat = new PoliticsStats(this.stats);
-            if (ZhuzheeGame.POLICY_CARD_HAND != null) {
-                for (Card card : ZhuzheeGame.POLICY_CARD_HAND.getCards()) {
-                    if (card instanceof PolicyCard passive) {
-                        if (passive.isActive()) {
-                            finalStat.addStats(passive.calculateStats(this, targetCity));
-                        }
-                    }
-                }
-            }
-
-            grid.triggerFlash();
-            showDropEffectPopup(grid, finalStat);
-
-            // ส่งผลลัพธ์ให้เมือง และทำลายการ์ดทิ้ง
-            this.ActionOn(targetCity, finalStat);
-            GameObject.Destroy(this);
         }
 
+        PoliticsStats finalStat = new PoliticsStats(this.stats);
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            for (Card card : ZhuzheeGame.POLICY_CARD_HAND.getCards()) {
+                if (card instanceof PolicyCard passive && passive.isActive()) {
+                    finalStat.addStats(passive.calculateStats(this, targetCity));
+                }
+            }
+        }
+
+        // แสดงเอฟเฟกต์กระพริบและ Popup
+        grid.triggerFlash();
+        showDropEffectPopup(grid, finalStat);
+
+        // ส่งผลลัพธ์ให้เมือง และทำลายการ์ดทิ้ง
+        this.ActionOn(targetCity, finalStat);
+        GameObject.Destroy(this);
+
         // ระบบ Broadcast update ค่าเมืองส่งไปยัง Server (ถ้าเล่นออนไลน์)
-        if (ZhuzheeGame.CLIENT != null && targetCity != null) {
+        if (ZhuzheeGame.CLIENT != null) {
             ZhuzheeGame.CLIENT.useCard(targetCity);
         }
     }
