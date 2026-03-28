@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 public abstract class Canvas extends JPanel implements IZIndex {
     private int zIndex = Scene2D.Layer.UI; // Default UI ให้สูงกว่า GameObject
@@ -21,6 +25,20 @@ public abstract class Canvas extends JPanel implements IZIndex {
     protected int anchorHorizontal = 0;
     protected Point screenPos = new Point(0, 0);
 
+    // 9-Slice Variables
+    private static BufferedImage defaultFrameImage;
+    protected BufferedImage bgImage;
+    protected int sliceLeft = 28, sliceRight = 28, sliceTop = 28, sliceBottom = 28;
+    protected boolean useNineSlice = false;
+
+    static {
+        try {
+            defaultFrameImage = ImageIO.read(new File("OOPgame/Assets/UI/frame2.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Canvas(Scene2D scene) {
         this.scene = scene;
         scene.add(this);
@@ -30,6 +48,30 @@ public abstract class Canvas extends JPanel implements IZIndex {
                 onResize(scene.getWidth(), scene.getHeight());
             }
         });
+        setOpaque(false); // Default to transparent so we can draw 9-slice
+    }
+
+    /**
+     * เปิดการใช้งาน 9-Slice Background ด้วยรูป default (frame.png) หรือรูปอื่น
+     */
+    public void enableNineSliceBackground(boolean enable) {
+        this.useNineSlice = enable;
+        if (enable && this.bgImage == null) {
+            this.bgImage = defaultFrameImage;
+        }
+        setOpaque(!enable);
+        repaint();
+    }
+
+    public void setNineSliceImage(BufferedImage image, int left, int right, int top, int bottom) {
+        this.bgImage = image;
+        this.sliceLeft = left;
+        this.sliceRight = right;
+        this.sliceTop = top;
+        this.sliceBottom = bottom;
+        this.useNineSlice = true;
+        setOpaque(false);
+        repaint();
     }
 
     @Override
@@ -45,8 +87,44 @@ public abstract class Canvas extends JPanel implements IZIndex {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        if (!useNineSlice) {
+            super.paintComponent(g);
+            return;
+        }
+
+        if (bgImage != null) {
+            Graphics2D g2d = (Graphics2D) g;
+            int width = getWidth();
+            int height = getHeight();
+            int imgWidth = bgImage.getWidth();
+            int imgHeight = bgImage.getHeight();
+
+            int[] dx = {0, sliceLeft, width - sliceRight, width};
+            int[] dy = {0, sliceTop, height - sliceBottom, height};
+            int[] sx = {0, sliceLeft, imgWidth - sliceRight, imgWidth};
+            int[] sy = {0, sliceTop, imgHeight - sliceBottom, imgHeight};
+
+            if (width < sliceLeft + sliceRight) {
+                dx[1] = width / 2;
+                dx[2] = width / 2;
+            }
+            if (height < sliceTop + sliceBottom) {
+                dy[1] = height / 2;
+                dy[2] = height / 2;
+            }
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    g2d.drawImage(bgImage,
+                            dx[i], dy[j], dx[i + 1], dy[j + 1],
+                            sx[i], sy[j], sx[i + 1], sy[j + 1],
+                            null);
+                }
+            }
+        }
+        super.paintComponent(g); // Draw child components if any
     }
+
     @Override
     public Component asComponent() {
         return this;

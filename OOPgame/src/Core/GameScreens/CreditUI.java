@@ -11,8 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public class CreditUI extends Screen implements ActionListener{
@@ -156,7 +154,7 @@ public class CreditUI extends Screen implements ActionListener{
     }
 
     private void startScroll() {
-        scrollTimer = new Timer(16, e -> {
+        scrollTimer = new Timer(16, _ -> {
 
             // ถ้าเพิ่งเปิดหน้าจอใหม่ (ได้รับค่า 9999 พิกัด) ให้ดึงเครดิตกลับมาที่ขอบล่างสุดพอดีเป๊ะ
             if (yOffset == RESET_POSITION_FLAG) {

@@ -11,6 +11,7 @@ import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
@@ -52,6 +53,7 @@ public class ActionCard extends Card {
         String pId = "";
         if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
             pId = ZhuzheeGame.CLIENT.getLocalPlayer().getPlayerId();
+            ZhuzheeGame.CLIENT.getLocalPlayer().useCard();
         }
 
         city.applyCard(pId, stats);
@@ -104,14 +106,13 @@ public class ActionCard extends Card {
         }
     }
 
-
     @Override
     protected void onHoverGrid(Grid grid, Map mapComponent) {
         super.onHoverGrid(grid, mapComponent);
         if (grid == null) {
             if (currentGrid != null) {
                 currentGrid = null;
-                hideOnDropPreview(null);
+                hideOnDropPreview();
                 if (ZhuzheeGame.POLICY_CARD_HAND != null) {
                     ZhuzheeGame.POLICY_CARD_HAND.hideActiveCards();
                 }
@@ -124,9 +125,9 @@ public class ActionCard extends Card {
             ZhuzheeGame.POLICY_CARD_HAND.showActiveCards();
         }
 
-        if(currentGrid != grid){//new grid
+        if (currentGrid != grid) {//new grid
             currentGrid = grid;
-            hideOnDropPreview(grid);
+            hideOnDropPreview();
             showOnDropPreview(grid);
         } else {
             // อัปเดตตำแหน่ง Tooltip ให้ตามเมาส์ขณะขยับอยู่บน Grid เดิม
@@ -135,7 +136,7 @@ public class ActionCard extends Card {
     }
 
 
-    private void hideOnDropPreview(Grid grid){
+    private void hideOnDropPreview() {
         // --- ปิด Tooltip เมื่อเมาส์ออก ---
         if (onDropPreviewUI != null) {
             System.out.println("hideOnDropPreview");
@@ -193,7 +194,6 @@ public class ActionCard extends Card {
                     int eco = effectStats.getStats(PoliticsStats.ECONOMY);
                     if (eco != 0) description += "[+ %d ECONOMY]".formatted(eco);
                 }
-
             }
         }
         onDropPreviewUI = new SmartTooltipUI(finalStats, "On Drop Card", description, true);
@@ -207,6 +207,20 @@ public class ActionCard extends Card {
         scene.add(onDropPreviewUI);
         scene.setComponentZOrder(onDropPreviewUI, 0);
         scene.repaint();
+    }
+
+    private static java.awt.Image ecoImg;
+    private static java.awt.Image envImg;
+    private static java.awt.Image facilImg;
+
+    static {
+        try {
+            ecoImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/eco.png"));
+            envImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/env.png"));
+            facilImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/facil.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -229,34 +243,40 @@ public class ActionCard extends Card {
         // วาดค่าสเตตัสจากล่างขึ้นบน (Economy อยู่ล่างสุดถ้ามี)
         int currentY = startY;
         if (economy != 0) {
-            drawSingleStat(g2d, economy, new Color(255, 100, 100), x, currentY, iconSize);
+            drawSingleStat(g2d, economy, ecoImg, x, currentY, iconSize);
             currentY -= (iconSize + 2);
         }
         if (environment != 0) {
-            drawSingleStat(g2d, environment, new Color(100, 255, 100), x, currentY, iconSize);
+            drawSingleStat(g2d, environment, envImg, x, currentY, iconSize);
             currentY -= (iconSize + 2);
         }
         if (facility != 0) {
-            drawSingleStat(g2d, facility, new Color(100, 100, 255), x, currentY, iconSize);
+            drawSingleStat(g2d, facility, facilImg, x, currentY, iconSize);
         }
     }
 
-    private void drawSingleStat(Graphics2D g2d, int value, Color color, int x, int y, int size) {
-        g2d.setFont(new Font("Arial", Font.BOLD, 10));
-        g2d.setColor(color);
-        g2d.fillOval(x, y, size, size);
-        g2d.setColor(Color.BLACK);
-        g2d.drawOval(x, y, size, size);
+    private void drawSingleStat(Graphics2D g2d, int value, java.awt.Image iconImg, int x, int y, int size) {
+        g2d.setFont(g2d.getFont().deriveFont(java.awt.Font.BOLD, 12f));
+
+        if (iconImg != null) {
+            g2d.drawImage(iconImg, x, y, size, size, null);
+        } else {
+            g2d.setColor(Color.LIGHT_GRAY);
+            g2d.fillOval(x, y, size, size);
+            g2d.setColor(Color.BLACK);
+            g2d.drawOval(x, y, size, size);
+        }
 
         String text = String.valueOf(value);
         FontMetrics fm = g2d.getFontMetrics();
-        // วาดตัวเลขไว้ทางซ้ายของไอคอนเพื่อให้เห็นชัดเจน (หรือจะวาดทับไอคอนก็ได้ถ้าตัวเลขสั้น)
-        // เพื่อความสวยงามในแนวตั้ง ให้วาดทับหรือวาดชิดซ้าย
 
         int textX = x + (size - fm.stringWidth(text)) / 2;
         int textY = y + (size - fm.getHeight()) / 2 + fm.getAscent();
 
         g2d.setColor(Color.BLACK);
+        // วาดเงาให้ตัวหนังสืออ่านง่ายขึ้นถ้าทับรูป
+        g2d.drawString(text, textX + 1, textY + 1);
+        g2d.setColor(Color.WHITE);
         g2d.drawString(text, textX, textY);
     }
 
@@ -275,7 +295,7 @@ public class ActionCard extends Card {
         scene.repaint();
 
         // ตั้งเวลาลบทิ้ง
-        javax.swing.Timer timer = new javax.swing.Timer(500, e -> {
+        Timer timer = new Timer(1500, _ -> {
             scene.remove(dropPopup);
             scene.repaint();
         });

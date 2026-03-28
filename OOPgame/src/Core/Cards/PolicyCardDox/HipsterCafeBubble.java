@@ -23,23 +23,7 @@ public class HipsterCafeBubble extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-//        if (!isActive()) return;
-//        if (ZhuzheeGame.CLIENT == null) return;
-//        Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
-//        if (localPlayer == null) return;
-//
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) return;
-//        int currentEco = stats.getStats(PoliticsStats.ECONOMY);
-//        if (currentEco > 0) {
-//            stats.setStats(PoliticsStats.ECONOMY, currentEco * 2);
-//            int currentCoin = localPlayer.getCoin();
-//            localPlayer.setCoin(Math.max(0, currentCoin - 3));
-//            UINotificationToast.showNotification("☕ [HIPSTER CAFE] ปั่นกระแสคาเฟ่ฮิปสเตอร์ให้ " + playedCard.getName() + "! (x2 Economy, -3 Coin)");
-//        }
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
 
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
@@ -49,7 +33,6 @@ public class HipsterCafeBubble extends PolicyCard {
         if (localPlayer == null) return null;
 
         PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-        if (stats == null) return null;
         int currentEco = stats.getStats(PoliticsStats.ECONOMY);
         if (currentEco > 0) {
             stats.setStats(PoliticsStats.ECONOMY, currentEco * 2);

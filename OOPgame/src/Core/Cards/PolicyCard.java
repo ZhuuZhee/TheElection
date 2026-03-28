@@ -14,7 +14,7 @@ import java.awt.*;
  * or react when Action Cards are played.
  */
 public abstract class PolicyCard extends Card {
-    protected boolean isInSlot = false; /** Tracks if the card is currently active in a slot. */
+     /** Tracks if the card is currently active in a slot. */
     private boolean isShowHighlight = false;
     public PolicyCard(String name, int x, int y, int coin) {
         super(name, x, y, 100, 150);

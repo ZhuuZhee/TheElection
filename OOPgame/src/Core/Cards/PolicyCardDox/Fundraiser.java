@@ -3,7 +3,6 @@ package Core.Cards.PolicyCardDox;
 import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
-import Core.Maps.PoliticsStats;
 import Core.Player.Player;
 import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
@@ -31,9 +30,5 @@ public class Fundraiser extends PolicyCard {
         UINotificationToast.showNotification("[Fundraiser] Activate! " + playedCard.getName() + " Gain 20 Coins!");
         int currentCoin = localPlayer.getCoin();
         localPlayer.setCoin(currentCoin + 20);
-    }
-    @Override
-    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
-        return null;
     }
 }

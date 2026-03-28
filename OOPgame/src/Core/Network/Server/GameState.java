@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import java.util.*;
 
 public class GameState {
-    //    private Map
     private List<Player> players = new ArrayList<>();
     private int turnCounter = 1;
     private String hostId;
@@ -65,25 +64,78 @@ public class GameState {
 
         return data;
     }
+    public void updateFormJSON(JSONObject data) {
+        if (data == null) return;
 
+        if (data.has("turnCounter")) {
+            this.turnCounter = data.getInt("turnCounter");
+        }
+
+        if (data.has("hostId")) {
+            this.hostId = data.getString("hostId");
+        }
+
+        if (data.has("players")) {
+            org.json.JSONArray playersArray = data.getJSONArray("players");
+            for (int i = 0; i < playersArray.length(); i++) {
+                JSONObject pData = playersArray.getJSONObject(i);
+                String pId = pData.getString("playerId");
+                float score = pData.getFloat("player score");
+
+                // ค้นหาผู้เล่นเดิมหรือสร้างใหม่ถ้าไม่พบ
+                Player player = players.stream()
+                        .filter(p -> p.getPlayerId().equals(pId))
+                        .findFirst()
+                        .orElse(null);
+
+                if (player == null) {
+                    player = new Player(pId, pData.optString("playerName", "Unknown"), false);
+                    players.add(player);
+                }
+                player.updateFromJSON(pData);
+            }
+        }
+
+        if (data.has("currentPlayerId")) {
+            String cId = data.getString("currentPlayerId");
+            this.currentPlayer = players.stream()
+                    .filter(p -> p.getPlayerId().equals(cId))
+                    .findFirst()
+                    .orElse(null);
+        }
+    }
     public String getHostId() {
         return hostId;
     }
 
 
     //----------------------------------------
-
-    /// --------   game state events method
+    // --------   game state events method
     //-----------------------------------------
+
     public synchronized void onStartGame() {
         Player startPlayer = players.getFirst();
         setCurrentPlayer(startPlayer);
         // ไม่ต้องเรียก OnStartTurn ที่นี่ เพราะ Client จะเริ่มเทิร์นเองเมื่อ SYNC_STATE มาถึง
     }
+    public synchronized void onVoting(){
+        currentPlayer = null;
+    }
 
     public synchronized void nextTurn() {
-        int index = players.indexOf(currentPlayer);
-        setCurrentPlayer(players.get((index + 1) % players.size()));
+        if (players.isEmpty() || currentPlayer == null) return;
+
+        int currentIndex = players.indexOf(currentPlayer);
+        for (int i = 1; i <= players.size(); i++) {
+            int nextIndex = (currentIndex + i) % players.size();
+            Player candidate = players.get(nextIndex);
+            
+            // ถ้าผู้เล่นคนนี้ยังไม่แพ้ ให้เป็นคนเล่นคนต่อไป
+            if (!candidate.isLose()) {
+                setCurrentPlayer(candidate);
+                return;
+            }
+        }
     }
 
     public void playersLog() {

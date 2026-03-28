@@ -94,10 +94,12 @@ public class PoliticsStats {
     }
 
     public static long getStatId(String name) {
-        if (name.equals("Facility")) return FACILITY;
-        if (name.equals("Environment")) return ENVIRONMENT;
-        if (name.equals("Economics")) return ECONOMY;
-        return -1L;
+        return switch (name) {
+            case "Facility" -> FACILITY;
+            case "Environment" -> ENVIRONMENT;
+            case "Economics" -> ECONOMY;
+            default -> -1L;
+        };
     }
 
     public JSONObject toJson() {

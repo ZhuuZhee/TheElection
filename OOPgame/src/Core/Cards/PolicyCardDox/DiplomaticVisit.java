@@ -25,11 +25,6 @@ public class DiplomaticVisit extends PolicyCard {
     }
 
     @Override
-    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
-        return null;
-    }
-
-    @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
         //เช็คว่าการ์ด Policy ใบนี้อยู่ในช่องที่ทำงานได้หรือไม่
         if (!isActive()) return;

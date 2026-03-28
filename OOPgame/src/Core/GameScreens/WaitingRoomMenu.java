@@ -367,7 +367,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         return grid;
     }
 
-    File[] loadImageFiles(String path) {
+    private File[] loadImageFiles(String path) {
         File folder = new File(path);
         return folder.listFiles((dir, name) -> name.endsWith(".png") || name.endsWith(".jpg"));
     }

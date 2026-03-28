@@ -8,15 +8,29 @@ import ZhuzheeEngine.Scene.Scene2D;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import ZhuzheeEngine.Scene.NineSliceCanvas;
+import java.io.File;
+import java.io.IOException;
 
 public class PlayerListUI extends Canvas {
     private final List<Player> players;
     private final JPanel listContainer;
     private final Map<String, PlayerItemUI> playerItemMap = new ConcurrentHashMap<>();
+
+    private static BufferedImage frameImage;
+    static {
+        try {
+            frameImage = ImageIO.read(new File("OOPgame/Assets/UI/frame.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public PlayerListUI(Scene2D scene, List<Player> players) {
         super(scene);
@@ -97,8 +111,8 @@ public class PlayerListUI extends Canvas {
 
     private static class PlayerItemUI extends JPanel {
         int rank = 1;
-        private static int margin = 12; // เพิ่ม margin พื้นฐาน
-        private static int padding = 24; // เพิ่ม margin พื้นฐาน
+        private final static int margin = 12; // เพิ่ม margin พื้นฐาน
+        private final static int padding = 24; // เพิ่ม margin พื้นฐาน
         public Color teamColor;
         public boolean isActive;
         public boolean isMe;
@@ -223,25 +237,21 @@ public class PlayerListUI extends Canvas {
         }
 
         private JPanel getJPanel() {
-            JPanel nameTag = new JPanel(new BorderLayout()) {
+            JPanel nameTag = new JPanel() {
                 @Override
                 protected void paintComponent(Graphics g) {
+                    super.paintComponent(g); // Draws the 9-slice background
                     Graphics2D g2d = (Graphics2D) g;
                     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                    g2d.setColor(Color.WHITE);
-                    g2d.fillRect(0, 0, getWidth(), getHeight());
-
+                    // วาดแถบสีบ่งบอกว่าเป็นผู้เล่นทีมไหน
                     int borderSize = 4;
                     g2d.setColor(teamColor);
-                    g2d.fillRect(0, 0, getWidth(), borderSize);
-                    g2d.fillRect(0, getHeight() - borderSize, getWidth(), borderSize);
-
-                    g2d.setColor(new Color(50, 50, 80));
-                    g2d.fillRect(0, 0, getWidth(), 1);
-                    g2d.fillRect(0, getHeight() - 1, getWidth(), 1);
+                    g2d.fillRect(10, 5, getWidth() - 20, borderSize);
+                    g2d.fillRect(10, getHeight() - borderSize - 5, getWidth() - 20, borderSize);
                 }
             };
+            nameTag.setLayout(new BorderLayout());
             int width = isActive ? 300 : 250;
             nameTag.setPreferredSize(new Dimension(width, 50));
             return nameTag;

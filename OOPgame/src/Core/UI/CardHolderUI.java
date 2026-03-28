@@ -40,9 +40,10 @@ public class CardHolderUI extends Canvas {
         setAnchors(-1, 1); // Default: Left-Top
 
         // กำหนดดีไซน์พื้นหลังและขอบ
-        setBackground(new Color(50, 50, 50, 220)); // สีเทาเข้มโปร่งแสง
-        setBorder(new LineBorder(new Color(150, 150, 150), 2));
-        setOpaque(true); // สำคัญมาก: ป้องกัน Swing วาดพื้นหลังทึบทับกันซ้ำซ้อนจนกระพริบ
+        enableNineSliceBackground(true);
+        // setBackground(new Color(50, 50, 50, 220)); // สีเทาเข้มโปร่งแสง
+        // setBorder(new LineBorder(new Color(150, 150, 150), 2));
+        // setOpaque(true); // สำคัญมาก: ป้องกัน Swing วาดพื้นหลังทึบทับกันซ้ำซ้อนจนกระพริบ
 
         // ส่วนหัวข้อ
         titleLabel = UITool.createLabel("Card Holder UI", 16f);
@@ -82,6 +83,14 @@ public class CardHolderUI extends Canvas {
         titleLabel.setText(label);
     }
 
+    public void setTitleIcon(javax.swing.Icon icon) {
+        titleLabel.setIcon(icon);
+    }
+
+    public void setTitleColor(java.awt.Color color) {
+        titleLabel.setForeground(color);
+    }
+
     public int getMaxCard() {
         return maxCard;
     }
@@ -100,14 +109,6 @@ public class CardHolderUI extends Canvas {
 
     public boolean containsCard(Card card) {
         return cards.contains(card);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        // วาดสีพื้นหลังแบบโปร่งแสงเอง (เพื่อไม่ให้บั๊กกระพริบตอนแอนิเมชันรันรัวๆ)
-        g.setColor(getBackground());
-        g.fillRect(0, 0, getWidth(), getHeight());
-        super.paintComponent(g);
     }
 
     public void updateCards() {
@@ -152,7 +153,13 @@ public class CardHolderUI extends Canvas {
         cardContainer.revalidate();
         cardContainer.repaint();
     }
-
+    public ArrayList<Card> removeAllCards(){
+        ArrayList<Card> tempCard = new ArrayList<Card>(cards);
+        for(Card card : new ArrayList<Card>(cards)){
+            removeCard(card);
+        }
+        return tempCard;
+    }
     public ArrayList<Card> getCards() {
         return cards;
     }

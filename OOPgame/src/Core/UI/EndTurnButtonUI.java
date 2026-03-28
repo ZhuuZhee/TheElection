@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 
 public class EndTurnButtonUI extends Canvas {
 
-    private JButton endTurnBtn;
+    private final JButton endTurnBtn;
 
     public EndTurnButtonUI(Scene2D scene) {
         super(scene);
@@ -60,6 +60,12 @@ public class EndTurnButtonUI extends Canvas {
         });
 
         endTurnBtn.addActionListener(e -> {
+            // เช็คว่าถึงตาตัวเองหรือเปล่า
+            if (!ZhuzheeGame.isMyTurn()) {
+               GameLogger.logWarning("It's not your turn!");
+               return;
+            }
+
             // กันสแปมปุ่ม
             endTurnBtn.setEnabled(false);
             endTurnBtn.setBackground(new Color(30, 30, 30));
@@ -72,8 +78,7 @@ public class EndTurnButtonUI extends Canvas {
 
             // หน่วงเวลาเปิดปุ่มใหม่
             Timer reenableTimer = new Timer(1500, event -> {
-                endTurnBtn.setEnabled(true);
-                endTurnBtn.setBackground(new Color(50, 50, 50));
+                updateButtonState();
             });
             reenableTimer.setRepeats(false);
             reenableTimer.start();
@@ -81,5 +86,19 @@ public class EndTurnButtonUI extends Canvas {
 
         // แปะปุ่มลงใน Canvas ของเรา
         this.add(endTurnBtn, BorderLayout.CENTER);
+
+        updateButtonState();
+    }
+
+    public void updateButtonState() {
+        boolean myTurn = ZhuzheeGame.isMyTurn();
+        if (endTurnBtn.isEnabled() != myTurn) {
+            endTurnBtn.setEnabled(myTurn);
+            if (myTurn) {
+                endTurnBtn.setBackground(new Color(50, 50, 50));
+            } else {
+                endTurnBtn.setBackground(new Color(30, 30, 30));
+            }
+        }
     }
 }

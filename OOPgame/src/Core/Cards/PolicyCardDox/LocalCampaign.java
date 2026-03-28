@@ -21,27 +21,7 @@ public class LocalCampaign extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-//        if (!isActive()) {
-//            return;
-//        }
-//
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) {
-//            return;
-//        }
-//
-//        int ecoValue = stats.getStats(PoliticsStats.ECONOMY);
-//        if (ecoValue > 0) {
-//            UINotificationToast.showNotification("📢 [Local Campaign] เล่นการ์ด " + playedCard.getName() + " สำเร็จ! ได้รับ 6 Coin และ +20 Economy");
-//            if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
-//                int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();
-//                ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin + 6);
-//            }
-//            stats.addStats(PoliticsStats.ECONOMY, ecoValue + 20);
-//        }
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
 
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
@@ -49,9 +29,6 @@ public class LocalCampaign extends PolicyCard {
             return null;
         }
         PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-        if (stats == null) {
-            return null;
-        }
         int ecoValue = stats.getStats(PoliticsStats.ECONOMY);
         if (ecoValue > 0) {
             UINotificationToast.showNotification("[Local Campaign] Activate! " + playedCard.getName() + " Gain 6 coins and +20 Economy!");

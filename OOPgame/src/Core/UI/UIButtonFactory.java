@@ -31,13 +31,16 @@ public class UIButtonFactory {
         }
 
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            private Color originalColor = btn.getForeground();
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn.setSourceImage(hoverImg);
+                btn.setForeground(Color.WHITE);
             }
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btn.setSourceImage(normalImg);
+                btn.setForeground(originalColor);
             }
         });
 

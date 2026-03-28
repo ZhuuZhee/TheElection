@@ -284,8 +284,7 @@ public abstract class Card extends GameObject {
         }
     }
 
-    protected void onHoverGrid(Grid grid, Map mapComponent) {
-    }
+    protected void onHoverGrid(Grid grid, Map mapComponent) {}
 
     public void onMouseReleased() {
         if (getEnable() && isGrabbed) {
@@ -387,8 +386,7 @@ public abstract class Card extends GameObject {
     /**
      * Xynezter 14/3/2569 14:12 : Update method is non abstract Arcanacards dont need to Override
      **/
-    protected void onDroppedOnGrid(Grid grid) {
-    }
+    protected void onDroppedOnGrid(Grid grid) {}
 
     @Override
     public void paintComponent(Graphics g) {
@@ -427,6 +425,17 @@ public abstract class Card extends GameObject {
         }
     }
 
+    private static java.awt.Image coinImg;
+    private static java.awt.Image redCoinImg;
+    static {
+        try {
+            coinImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/Coin.png"));
+            redCoinImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/red_coin.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void drawStats(Graphics2D g2d) {
         if (isGrabbed) return;
         // วาดค่า Coin (Cost) ที่มุมบนขวาของการ์ด
@@ -435,25 +444,37 @@ public abstract class Card extends GameObject {
         int x = getWidth() - margin * 2 - iconSize;
         int y = margin * 2;
         String coinStr;
-        // วาดวงกลมสีทองสำหรับเหรียญ
 
         if (coin > 0) {
-            g2d.setColor(new Color(255, 215, 0));
             coinStr = String.valueOf(coin);// Gold
         } else {
-            g2d.setColor(new Color(255, 0, 0));
             coinStr = String.valueOf(coin * -1);
         }
         if (coin != 0) {
-            g2d.fillOval(x, y, iconSize, iconSize);
-            g2d.setColor(Color.BLACK);
-            g2d.drawOval(x, y, iconSize, iconSize);
+            java.awt.Image targetImg = (coin > 0) ? coinImg : redCoinImg;
+            if (targetImg != null) {
+                g2d.drawImage(targetImg, x, y, iconSize, iconSize, null);
+            } else {
+                if (coin > 0) {
+                    g2d.setColor(new Color(255, 215, 0));
+                } else {
+                    g2d.setColor(new Color(255, 0, 0));
+                }
+                g2d.fillOval(x, y, iconSize, iconSize);
+                g2d.setColor(Color.BLACK);
+                g2d.drawOval(x, y, iconSize, iconSize);
+            }
 
             // วาดค่าตัวเลข coin
-            g2d.setFont(new Font("Arial", Font.BOLD, 12));
+            g2d.setFont(g2d.getFont().deriveFont(java.awt.Font.BOLD, 12f));
+
             FontMetrics fm = g2d.getFontMetrics();
             int textX = x + (iconSize - fm.stringWidth(coinStr)) / 2;
             int textY = y + (iconSize - fm.getHeight()) / 2 + fm.getAscent();
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawString(coinStr, textX + 1, textY + 1);
+            g2d.setColor(Color.WHITE);
             g2d.drawString(coinStr, textX, textY);
         }
     }
