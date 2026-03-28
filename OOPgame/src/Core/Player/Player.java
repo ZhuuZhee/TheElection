@@ -4,7 +4,6 @@ import Core.Cards.*;
 import Core.Cards.Stream.ArcanaCardName;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
-import Core.Maps.City;
 import Core.Network.PacketBuilder;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
@@ -30,9 +29,10 @@ public class Player {
     private Color color = Color.RED;
     private String colorName = "Red";
     private String profileImagePath;
-    private boolean isLoose;//แพ้ป่าว
+    private boolean isLose;//แพ้ป่าว
     private boolean skipDrawNextTurn = false; // ตัวแปรสำหรับสถานะห้ามจั่วการ์ด
-    
+    private float score;
+
     // เพิ่มตัวแปรสำหรับสกิล Judgement
     private boolean isPolicySilenced = false;
     private ArrayList<Core.Cards.Card> silencedPolicyCards = new ArrayList<>();
@@ -134,13 +134,13 @@ public class Player {
         this.playerName = playerName;
     }
 
-    public boolean isLoose() {
-        return isLoose;
+    public boolean isLose() {
+        return isLose;
     }
 
-    public void setLoose(boolean loose) {
-        isLoose = loose;
-        if(loose){
+    public void setLose(boolean lose) {
+        isLose = lose;
+        if(lose){
             onLoose();
         }
     }
@@ -148,6 +148,18 @@ public class Player {
     private void onLoose(){
         //ปิด card holder ทั้งหมด และ ทำลายการ์ด
         //เปลี่ยน playerList UI เป็นสีเทา
+        Core.UI.UINotificationToast.showNotification("You lost the election! Better luck next time.", 5000);
+
+        ZhuzheeGame.ARCANA_CARD_UI.removeAllCards();
+        ZhuzheeGame.ARCANA_CARD_UI.setVisible(false);
+
+        ZhuzheeGame.POLICY_CARD_HAND.removeAllCards();
+        ZhuzheeGame.POLICY_CARD_HAND.setVisible(false);
+
+        ZhuzheeGame.DEVLOPMENT_CARD_HAND.removeAllCards();
+        ZhuzheeGame.DEVLOPMENT_CARD_HAND.setVisible(false);
+
+        ZhuzheeGame.CLIENT.sendAction(PacketBuilder.createUpdatePlayerPacket(this));
     }
 
     public void setSkipDrawNextTurn(boolean skip) {
@@ -160,7 +172,7 @@ public class Player {
                 System.out.println("⚡ [The Tower Effect] You cannot draw cards this turn!");
                 skipDrawNextTurn = false; // เคลียร์สถานะหลังจากโดนข้ามไปแล้ว 1 เทิร์น
             } else {
-                DrawCard();
+                drawCard();
             }
         }
     }
@@ -204,7 +216,7 @@ public class Player {
         isPolicySilenced = true;
     }
 
-    public void DrawCard() {
+    public void drawCard() {
         // เช็ค
         if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null && ZhuzheeGame.DEVLOPMENT_CARD_HAND.isFull()) {
             System.out.println("Hand is full, skipping draw.");
@@ -243,10 +255,13 @@ public class Player {
         return cards.toArray(new CardBufferObject[0]);
     }
 
-    public void UseCard() {
+    public void useCard() {
+        score = ZhuzheeGame.MAP.getPlayerScore(playerId);
+        //update player to server for sync data
+        JSONObject packet = PacketBuilder.createUpdatePlayerPacket(this);
+        packet.put("debug","Update Player Score");
+        ZhuzheeGame.CLIENT.sendAction(packet);
     }
-
-
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
@@ -255,6 +270,7 @@ public class Player {
         json.put("coin", coin);
         json.put("color", colorName);
         json.put("profileImagePath", profileImagePath);
+        json.put("isLose", isLose);
         if (arcanaCard != null) {
             json.put("arcanaCard", arcanaCard.getName());
         } else if (arcanaCardName != null && !arcanaCardName.isEmpty()) {
@@ -304,6 +320,9 @@ public class Player {
         if (data.has("arcanaCard")) {
             this.arcanaCardName = data.getString("arcanaCard");
         }
+        if(data.has("isLose")){
+            this.isLose = data.getBoolean("isLose");
+        }
 
         if (ZhuzheeGame.PLAYER_LIST_UI != null) {
             ZhuzheeGame.PLAYER_LIST_UI.updatePlayerList();
@@ -314,7 +333,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{%s} : Color(%s), ProfileImagePath(%s)".formatted(playerName,colorName,profileImagePath);
+        return "Player{%s} : Color(%s), ProfileImagePath(%s), score(%f), isLose(%b)".formatted(playerName,colorName,profileImagePath,score,isLose);
     }
 
     public boolean isLocal() {
@@ -323,5 +342,9 @@ public class Player {
 
     private Color getColor(String colorName) {
         return COLOR_MAP.getOrDefault(colorName, Color.BLACK);
+    }
+
+    public float getScore() {
+        return score;
     }
 }

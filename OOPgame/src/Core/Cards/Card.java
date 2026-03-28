@@ -388,6 +388,7 @@ public abstract class Card extends GameObject {
      * Xynezter 14/3/2569 14:12 : Update method is non abstract Arcanacards dont need to Override
      **/
     protected void onDroppedOnGrid(Grid grid) {
+
     }
 
     @Override
@@ -483,6 +484,7 @@ public abstract class Card extends GameObject {
 
             // ใช้ Math.max/min แทน Math.clamp เพื่อรองรับ Java ต่ำกว่า 21
             // และใช้ getWidth() ที่เป็นขนาดปัจจุบัน (Scaled Size) เพื่อกันเมาส์หลุดขอบ
+            if(offset == null) return;
             int currentW = Math.max(1, getWidth() - MARGIN); // กัน 0
             int currentH = Math.max(1, getHeight() - MARGIN);
             int maxMouseOffsetX = Math.max(0, Math.min(offset.x + MARGIN, currentW));

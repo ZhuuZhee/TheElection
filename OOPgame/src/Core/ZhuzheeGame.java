@@ -163,7 +163,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
             // เอาไว้เปิด PlayerProfileUI
             PlayerUI.PlayerProfileUITest(MAIN_SCENE, localPlayer);
         }
-        localPlayer.DrawCard();
+        localPlayer.drawCard();
     }
     public static void resetGame() {
         if (CLIENT != null) {

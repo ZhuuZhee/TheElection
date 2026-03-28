@@ -5,7 +5,6 @@ import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import Core.Maps.City;
 import Core.ZhuzheeGame;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -21,23 +20,24 @@ public class GameClientManager {
     private BufferedReader in;
     private Player localPlayer;
     private String currentPlayerId;
-    private final HashMap<String,Player> connectedPlayers = new HashMap<>();
+    private final HashMap<String, Player> connectedPlayers = new HashMap<>();
     private int turnCounter;
     private final HashSet<ClientListener> clientListeners = new HashSet<>();
+    private boolean isVotingState = false;
 
     public List<Player> getConnectedPlayers() {
         return new ArrayList<>(connectedPlayers.values());
     }
-    public HashMap<String,Player> getConnectedPlayersWithId(){
+
+    public HashMap<String, Player> getConnectedPlayersWithId() {
         return connectedPlayers;
     }
 
-    public Player getPlayerFormId(String playerId){
+    public Player getPlayerFormId(String playerId) {
         Player p = connectedPlayers.get(playerId);
-        if(p != null){
+        if (p != null) {
             return p;
-        }
-        else {
+        } else {
             throw new NullPointerException("Cannot get Player Id : %s \n player not found!".formatted(playerId));
         }
     }
@@ -69,6 +69,7 @@ public class GameClientManager {
     public void sendAction(JSONObject action) {
         if (out != null) {
             out.println(action.toString());
+            System.out.println("Cleint send : " + action.toString());
         }
     }
 
@@ -93,7 +94,9 @@ public class GameClientManager {
 
             if (!type.equals(NetworkProtocol.PING.name()))
                 System.out.println("Client : Received %s".formatted(data.toString()));
-
+            if(type.equals(NetworkProtocol.VOTING.name())){
+                onVotingEvent();
+            } else
             if (type.equals(NetworkProtocol.JOIN_ACK.name())) {
                 onJoinAcknowledge(data);
             } else if (type.equals(NetworkProtocol.SYNC_STATE.name())) {
@@ -106,11 +109,11 @@ public class GameClientManager {
                 onPing();
             } else if (type.equals(NetworkProtocol.UPDATE_PLAYER.name())) {
                 onUpdatePlayer(data);
-            }else if (type.equals(NetworkProtocol.DESTROY_AND_SKIP_DRAW.name())) {
+            } else if (type.equals(NetworkProtocol.DESTROY_AND_SKIP_DRAW.name())) {
                 onDestroyHand(data); // เพิ่ม Handler ตรงนี้
-            }else if (type.equals(NetworkProtocol.NEGATIVE_HAND_STATS.name())) {
+            } else if (type.equals(NetworkProtocol.NEGATIVE_HAND_STATS.name())) {
                 onNegativeHandStats(data);
-            }else if (type.equals(NetworkProtocol.JUDGEMENT_SKILL.name())) {
+            } else if (type.equals(NetworkProtocol.JUDGEMENT_SKILL.name())) {
                 onJudgementSkill(data);
             }
         }
@@ -132,23 +135,26 @@ public class GameClientManager {
     //------- player action by client --------
     //----------------------------------------
 
+    public void endVotingState() {
+        isVotingState = false;
+    }
+
     public void endTurn() {
         localPlayer.onEndTurn();
-        JSONObject packet = PacketBuilder.createEndTurnPacket();
-        HashMap<String,Float> playerPercentages = new HashMap<>(ZhuzheeGame.MAP.getAllPlayerPercentages());
-
-        packet.put("voting data",PacketBuilder.createVotingPacket(playerPercentages));
-
-        sendAction(packet);
 
         // Notify listeners
         for (ClientListener listener : clientListeners) {
             listener.onEndTurn();
         }
 
+        //if this turn is Voting turn send voting protocol instead.
         int roundModer = connectedPlayers.size() * 4;
-        if(turnCounter % roundModer == 0){
-            //create voting event
+        if (turnCounter % roundModer == 0) {
+            //send player score packet to server
+            sendAction(PacketBuilder.createVotingPacket());
+        }
+        else {
+            sendAction(PacketBuilder.createEndTurnPacket());
         }
     }
 
@@ -164,7 +170,7 @@ public class GameClientManager {
         sendAction(PacketBuilder.createJudgementSkillPacket(localPlayer.getPlayerId()));
     }
 
-    public void useCard(City targetCity){
+    public void useCard(City targetCity) {
         ZhuzheeGame.CLIENT.sendAction(PacketBuilder.createUseCardPacket(targetCity.toJson()));
     }
 
@@ -278,7 +284,7 @@ public class GameClientManager {
                 }
 
                 playerToUpdate.updateFromJSON(pData); // อัปเดตข้อมูลผู้เล่นจาก JSON
-                this.connectedPlayers.put(playerToUpdate.getPlayerId(),playerToUpdate); // เพิ่มผู้เล่น (ที่อัปเดตแล้วหรือใหม่) เข้าไปใน Set
+                this.connectedPlayers.put(playerToUpdate.getPlayerId(), playerToUpdate); // เพิ่มผู้เล่น (ที่อัปเดตแล้วหรือใหม่) เข้าไปใน Set
 
                 // หากเป็น localPlayer ของเรา ให้อัปเดต reference ด้วย
                 if (localPlayer != null && pId.equals(localPlayer.getPlayerId())) {
@@ -302,7 +308,8 @@ public class GameClientManager {
             listener.onSyncGameState();
         }
     }
-    private synchronized void onStartTurn(){
+
+    private synchronized void onStartTurn() {
         // Notify listeners
         for (ClientListener listener : clientListeners) {
             listener.onStartTurn();
@@ -381,19 +388,46 @@ public class GameClientManager {
         }
     }
 
-    private synchronized void onVotingEvent(JSONObject data){
-        if (data.has("players score")) {
-
-            JSONArray scores = data.getJSONArray("players score");
-            HashMap<String,Float> playerSocres = new HashMap<String,Float>();
-
-            for (int i = 0; i < scores.length(); i++) {
-                JSONObject pScoreData = scores.getJSONObject(i);
-                String pId = pScoreData.getString("id");
-                float pScore = pScoreData.getFloat("score");
-                playerSocres.put(pId,pScore);
-            }
+    private synchronized void onVotingEvent() {
+        if (isVotingState) {
+            System.err.println("Client : cannot received VOTING data this Client voting now");
+            return;
         }
+        isVotingState = true;
+
+        //open ui for Voting
+
+        // หน่วงเวลา 3 วิ
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+
+                // ดึงคะแนนรวมเปอร์เซ็นต์ของผู้เล่นทุกคนจากแผนที่
+                HashMap<String, Float> percentages = ZhuzheeGame.MAP.getAllPlayerPercentages();
+                if (percentages.isEmpty()) return;
+
+                String loserId = "";
+                float minScore = Float.MAX_VALUE;
+
+                // ค้นหา Player ID ที่มีคะแนน (Percentage) น้อยที่สุด
+                for (java.util.Map.Entry<String, Float> entry : percentages.entrySet()) {
+                    if (entry.getValue() < minScore) {
+                        minScore = entry.getValue();
+                        loserId = entry.getKey();
+                    }
+                }
+
+                // ตรวจสอบว่าผู้เล่นเครื่องนี้ (localPlayer) คือผู้ที่ได้คะแนนน้อยสุดหรือไม่
+                if (localPlayer != null && localPlayer.getPlayerId().equals(loserId)) {
+                    System.out.println("Election Result: You have the lowest score. You lose!");
+                    localPlayer.setLose(true);
+                }
+
+                isVotingState = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
     //--------------------------------
     //--------- event handler --------
