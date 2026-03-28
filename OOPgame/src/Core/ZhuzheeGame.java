@@ -266,6 +266,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
         if (TURN_UI != null) {
             TURN_UI.updateTurnDisplay();
         }
+        if (END_TURN_UI != null) {
+            END_TURN_UI.updateButtonState();
+        }
     }
     private static int lastShopOpenedRound = -1;
 
