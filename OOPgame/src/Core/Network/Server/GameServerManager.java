@@ -140,6 +140,16 @@ public class GameServerManager {
                 break;
             }
         }
+
+        // ตรวจสอบว่าผู้เล่นที่หลุดไป กำลังถือครองเทิร์นอยู่หรือไม่
+        if (targetPlayer != null && gameState.getCurrentPlayer() != null) {
+            if (gameState.getCurrentPlayer().getPlayerId().equals(playerId)) {
+                System.out.println("Server : Current player disconnected. Advancing turn automatically.");
+                gameState.nextTurn();
+                gameState.incrementPhaseCounter();
+            }
+        }
+
         if (targetPlayer != null)
             gameState.getPlayers().remove(targetPlayer);
 
