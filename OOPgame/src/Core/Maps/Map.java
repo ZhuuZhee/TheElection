@@ -545,16 +545,19 @@ public class Map extends GameObject {
         g2d.drawRoundRect(x, y, boxWidth, boxHeight, 15, 15);
 
         g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g2d.setFont(g2d.getFont().deriveFont(18f));
+
         g2d.drawString(city.getCityName(), x + padding, y + padding + 15);
 
-        g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        g2d.setFont(g2d.getFont().deriveFont(14f));
+
+
         int startY = y + padding + 40;
         int lineSpacing = 20;
 
-        drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.FACILITY), x + padding, startY);
-        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.ENVIRONMENT), x + padding, startY + lineSpacing);
-        drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.ECONOMY), x + padding, startY + lineSpacing * 2);
+        drawStatLine(g2d, "Facility: ", city.stats.getStats(PoliticsStats.FACILITY), x + padding, startY, new Color(0, 102, 204));
+        drawStatLine(g2d, "Environment: ", city.stats.getStats(PoliticsStats.ENVIRONMENT), x + padding, startY + lineSpacing, new Color(34, 139, 34));
+        drawStatLine(g2d, "Economy: ", city.stats.getStats(PoliticsStats.ECONOMY), x + padding, startY + lineSpacing * 2, new Color(220, 20, 60));
 
         int barX = x + padding;
         int barY = startY + lineSpacing * 3 - 7;
@@ -562,9 +565,7 @@ public class Map extends GameObject {
         int barHeight = 15;
         int rowGap = 6;
 
-        g2d.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        g2d.setColor(Color.DARK_GRAY);
-        g2d.drawString("Vote share:", barX, barY - 4);
+
 
         int yCursor = barY + 6;
         for (int i = 0; i < playersToShow; i++) {
@@ -593,17 +594,19 @@ public class Map extends GameObject {
         }
 
         g2d.setColor(Color.GRAY);
-        g2d.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        g2d.setFont(g2d.getFont().deriveFont(14f));
+
         g2d.drawString("Population: " + String.format("%,d", city.population), x + padding, yCursor + 10);
     }
 
-    private void drawStatLine(Graphics2D g2d, String label, int value, int x, int y) {
-        g2d.setColor(Color.DARK_GRAY);
+    private void drawStatLine(Graphics2D g2d, String label, int value, int x, int y, Color color) {
+        Font originalFont = g2d.getFont();
+        g2d.setColor(color);
         g2d.drawString(label, x, y);
-        g2d.setColor(new Color(0, 102, 204)); 
+        g2d.setColor(Color.DARK_GRAY); 
         g2d.setFont(new Font("SansSerif", Font.BOLD, 14));
         g2d.drawString(String.valueOf(value), x + 100, y);
-        g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        g2d.setFont(originalFont);
     }
 
     @Override

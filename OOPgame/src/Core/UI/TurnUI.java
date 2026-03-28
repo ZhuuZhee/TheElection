@@ -3,7 +3,21 @@ package Core.UI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.Scene2D;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class TurnUI extends CardHolderUI{
+    private static BufferedImage btnHoverImg;
+    static {
+        try {
+            btnHoverImg = ImageIO.read(new File("OOPgame/Assets/UI/btn_hover.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public TurnUI(Scene2D scene) {
         super(scene);
         setAnchorTop(true);
@@ -12,6 +26,12 @@ public class TurnUI extends CardHolderUI{
         setMargins(16, 16, 16, 16);
         
         setPanelSize(180, 30);
+        
+        if (btnHoverImg != null) {
+            setNineSliceImage(btnHoverImg, 16, 16, 16, 16);
+        } else {
+            enableNineSliceBackground(false);
+        }
 
         setMaxCard(0);
 
