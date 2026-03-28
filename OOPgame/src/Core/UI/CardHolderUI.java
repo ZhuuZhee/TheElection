@@ -152,7 +152,11 @@ public class CardHolderUI extends Canvas {
         cardContainer.revalidate();
         cardContainer.repaint();
     }
-
+    public void removeAllCards(){
+        for(Card card : new ArrayList<Card>(cards)){
+            removeCard(card);
+        }
+    }
     public ArrayList<Card> getCards() {
         return cards;
     }

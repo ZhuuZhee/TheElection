@@ -53,6 +53,7 @@ public class ActionCard extends Card {
         String pId = "";
         if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
             pId = ZhuzheeGame.CLIENT.getLocalPlayer().getPlayerId();
+            ZhuzheeGame.CLIENT.getLocalPlayer().useCard();
         }
 
         city.applyCard(pId, stats);

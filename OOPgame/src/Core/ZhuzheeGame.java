@@ -146,6 +146,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
 //        Tester.CardTesterUI(MAIN_SCENE);
 
+        // test EliminationUI
+         new EliminationUI(MAIN_SCENE);
+        // new EliminationUI(MAIN_SCENE, actualPlayers);
+
         Tester.ShopTest();
 
         Player localPlayer = (CLIENT != null) ? CLIENT.getLocalPlayer() : null;
@@ -161,7 +165,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
             // เอาไว้เปิด PlayerProfileUI
             PlayerUI.PlayerProfileUITest(MAIN_SCENE, localPlayer);
         }
-        localPlayer.DrawCard();
+        localPlayer.drawCard();
     }
     public static void resetGame() {
         if (CLIENT != null) {

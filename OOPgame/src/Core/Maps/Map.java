@@ -291,6 +291,27 @@ public class Map extends GameObject {
         }
     }
 
+    public float getTotalScore(){
+        float total = 0f;
+        for (City city : getAllCities()) {
+            for (float score : city.playerScores.values()) {
+                total += score;
+            }
+        }
+        return total;
+    }
+    public float getPlayerScore(String playerId){
+        float score = 0f;
+        for (City city : getAllCities()) {
+            score += city.playerScores.getOrDefault(playerId, 0f);
+        }
+        return score;
+    }
+    public float getPlayerPercentage(String playerId){
+        float totalGlobal = getTotalScore();
+        if (totalGlobal <= 0) return 0f;
+        return (getPlayerScore(playerId) / totalGlobal) * 100f;
+    }
     public HashMap<String, Float> getAllPlayerPercentages(){
         HashMap<String,Float> playerScores = new HashMap<>();
         float totalScore = 0f;
