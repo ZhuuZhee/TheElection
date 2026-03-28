@@ -28,6 +28,10 @@ public class OptionMenu extends Screen {
     GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
     public OptionMenu() {
+        this(false);
+    }
+
+    public OptionMenu(boolean inGame) {
         setLayout(new BorderLayout());
 
         try {
@@ -126,9 +130,30 @@ public class OptionMenu extends Screen {
         // ปุ่ม Close / Back
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel.setBackground(Color.WHITE);
+
+        // อยู่ใน Game จะเห็น btn exitBtn
+        if (inGame) {
+            NineSliceButton exitBtn = UIButtonFactory.createMenuButton("Exit Game", btnNormalImg, btnHoverImg, e -> {
+                AudioManager.getInstance().playSound("click");
+                int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    if (ZhuzheeGame.CLIENT != null) {
+                        ZhuzheeGame.CLIENT.disconnect();
+                    }
+                    Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
+                }
+            });
+            exitBtn.addMouseListener(ZhuzheeGame.MOUSE_HOVER_SFX);
+            btnPanel.add(exitBtn);
+        }
+
         NineSliceButton backBtn = UIButtonFactory.createMenuButton("Close", btnNormalImg, btnHoverImg, e -> {
             AudioManager.getInstance().playSound("click");
-            Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
+            if (inGame) {
+                Screen.ChangeScreen(ZhuzheeGame.MAIN_SCENE);
+            } else {
+                Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
+            }
         });
         backBtn.addMouseListener(ZhuzheeGame.MOUSE_HOVER_SFX);
         btnPanel.add(backBtn);

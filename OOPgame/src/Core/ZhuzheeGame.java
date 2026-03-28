@@ -12,6 +12,7 @@ import Core.UI.PlayerProfile;
 import Core.UI.PolicyCardHolderUI;
 import Core.UI.ArcanaCardHolderUI;
 import Core.UI.PlayerCoinUI;
+import Core.UI.GameSettingUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -52,6 +53,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PlayerListUI PLAYER_LIST_UI;
     public static PlayerProfile PLAYER_PROFILE_UI;
     public static Core.UI.PlayerCoinUI PLAYER_COIN_UI;
+    public static GameSettingUI SETTINGS_UI;
 
     public static List<Player> CURRENT_PLAYERS = new ArrayList<>();
 
@@ -130,6 +132,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
         PlayerUI.PolicyCardHolderUITest(MAIN_SCENE);
         PlayerUI.ArcanaCardHolderUITest(MAIN_SCENE);
+        PlayerUI.GameSettingUI(MAIN_SCENE);
 
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
@@ -302,6 +305,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
     }
 
     public static class PlayerUI{
+        public static GameSettingUI GameSettingUI(Scene2D scene2D) {
+            ZhuzheeGame.SETTINGS_UI = new GameSettingUI(scene2D);
+            return  ZhuzheeGame.SETTINGS_UI;
+        }
         public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
             ZhuzheeGame.POLICY_CARD_HAND = new PolicyCardHolderUI(scene2D);
             return ZhuzheeGame.POLICY_CARD_HAND;
