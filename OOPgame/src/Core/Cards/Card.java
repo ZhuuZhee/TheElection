@@ -7,8 +7,6 @@ package Core.Cards;
 import Core.Maps.Grid;
 import Core.Maps.Map;
 import Core.Maps.PoliticsStats;
-import Core.Network.Client.ClientAdapter;
-import Core.Network.Client.GameClientManager;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
@@ -38,7 +36,6 @@ public abstract class Card extends GameObject {
     public static Card CURRENT_GRABBED_CARD;
     private static final int Z_INDEX_TOP = Scene2D.Layer.DRAGGED;
     private static final int Z_INDEX_NORMAL = Scene2D.Layer.DEFAULT;
-    private static final int SNAP_MARGIN = 5;
     private static final double DEFAULT_OFFSET = 1.0; // ขนาดตอนปกติ
     private static final double ZOOM_OFFSET = 1.15;
     private static final double GRAB_OFFSET = 0.85; // อัตราส่วนตอนกำลังหยิบการ์ดลาก (ลดเหลือ 85%)
@@ -83,9 +80,6 @@ public abstract class Card extends GameObject {
         this.setOpaque(true);
         //set size forever
         this.setPreferredSize(new Dimension(width, height));
-//        System.out.println("--------------------");
-//        System.out.println(name + " : enable : " + getEnable());
-//        System.out.println("--------------------");
         this.baseWidth = width;
         this.baseHeight = height;
         this.baseX = x;
@@ -173,6 +167,14 @@ public abstract class Card extends GameObject {
         this.isHovered = hovered;
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String newDesc) {
+        this.description = newDesc;
+    }
+
     public void setDraggable(boolean draggable) {
         this.isDraggable = draggable;
     }
@@ -228,9 +230,7 @@ public abstract class Card extends GameObject {
             // Store the click point relative to the card's top-left
             offset.x = mouseX;
             offset.y = mouseY;
-
             setZIndex(Z_INDEX_TOP);
-//                scene.setComponentZOrder(this,0);
             repaint();
         }
     }
@@ -387,17 +387,14 @@ public abstract class Card extends GameObject {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // Call JPanel paint
-        // 1. สร้างก๊อปปี้ของ Graphics เพื่อไม่ให้ Scale ไปกระทบตัวอื่น
+        // สร้างก๊อปปี้ของ Graphics เพื่อไม่ให้ Scale ไปกระทบตัวอื่น
         Graphics2D g2d = (Graphics2D) g.create();
 
         try {
-            // --------- Hover Effect --------- //
-
             // --------- Drawing Logic --------- //
             if (cardImage != null) {
                 // ถ้ามีรูปภาพ ให้วาดรูปลงไปให้เต็มขนาดการ์ด
                 g2d.drawImage(cardImage, 0, 0, getWidth(), getHeight(), null);
-
                 // สร้าง Overlay สีใสๆ เพื่อบอกสถานะของการ์ด (ทับบนรูปอีกที)
                 if (!getEnable()) {
                     g2d.setColor(new Color(128, 128, 128, 150)); // สีเทาโปร่งแสง
@@ -415,35 +412,17 @@ public abstract class Card extends GameObject {
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
 
-            // วาดกรอบสีดำ
             g2d.setColor(Color.BLACK);
             g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
-            // วาดชื่อการ์ด
-//            if (!isGrabbed) {
-//                FontMetrics fm = g2d.getFontMetrics();
-//                int textX = (getWidth() - fm.stringWidth(name)) / 2;
-//                int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-//
-//                // พื้นหลังตัวหนังสือแบบโปร่งแสง
-//                g2d.setColor(new Color(255, 255, 255, 180));
-//                g2d.fillRect(textX - 2, textY - fm.getAscent() - 2, fm.stringWidth(name) + 4, fm.getHeight() + 4);
-//
-//                g2d.setColor(Color.BLACK);
-//                g2d.drawString(name, textX, textY);
-//            }
-
-            // วาดค่า Stat เฉพาะของแต่ละประเภทการ์ด
             drawStats(g2d);
         } finally {
-            // 2. ทำลายก๊อปปี้ทิ้ง เพื่อคืนค่าเดิมให้ Graphics หลักสำหรับ Cards ใบถัดไป
             g2d.dispose();
         }
     }
 
     protected void drawStats(Graphics2D g2d) {
         if (isGrabbed) return;
-
         // วาดค่า Coin (Cost) ที่มุมบนขวาของการ์ด
         int iconSize = 20;
         int margin = 5;
@@ -477,10 +456,6 @@ public abstract class Card extends GameObject {
         return this.name;
     }
 
-    public boolean isHovered() {
-        return this.isHovered;
-    }
-
     public boolean isGrabbed() {
         return this.isGrabbed;
     }
@@ -490,7 +465,7 @@ public abstract class Card extends GameObject {
         super.update();
 
         double targetScaleOffset = DEFAULT_OFFSET;
-        if (isHovered && !isGrabbed && !(getParent() instanceof CardSlot)) {
+        if (isHovered && !isGrabbed) {
             targetScaleOffset = ZOOM_OFFSET;
         } else if (isGrabbed) {
             targetScaleOffset = GRAB_OFFSET;
@@ -545,7 +520,7 @@ public abstract class Card extends GameObject {
     // ==========================================
     // Inner Class: หน้าต่าง Tooltip อัจฉริยะ
     // ==========================================
-    private class SmartTooltipUI extends JPanel {
+    public class SmartTooltipUI extends JPanel {
         private Card targetCard;
 
         public SmartTooltipUI(Card card) {
@@ -560,13 +535,12 @@ public abstract class Card extends GameObject {
                 int fixedWidth = 240;
                 int calculatedHeight = 65; // ความสูงเริ่มต้น (เผื่อที่ให้ขอบบนและชื่อการ์ด)
 
-                if (card.description != null && !card.description.isEmpty()) {
+                if (card.getDescription() != null && !card.getDescription().isEmpty()) {
                     FontMetrics fm = getFontMetrics(getFont());
-                    // ขอตัววัดขนาดตัวอักษร
                     int maxWidth = fixedWidth - 30;
 
                     // จำลองการตัดบรรทัดเพื่อนับความสูง
-                    for (String line : card.description.split("\n")) {
+                    for (String line : card.getDescription().split("\n")) {
                         String[] words = line.split(" ");
                         String currentLine = "";
 
@@ -626,15 +600,15 @@ public abstract class Card extends GameObject {
                 g2d.drawString(String.valueOf(eco), 150, 105);
 
             } else {
-                // --- โหมด Policy/Arcana: วาดคำอธิบาย ---
+                // --- Policy/Arcana: วาดคำอธิบาย ---
                 g2d.setColor(new Color(60, 60, 60));
 
                 int startY = 55;
-                if (targetCard.description != null) {
+                if (targetCard.getDescription() != null) {
                     FontMetrics fm = g2d.getFontMetrics();
                     int maxWidth = getWidth() - 30;
                     // ตัดบรรทัดด้วย \n
-                    for (String line : targetCard.description.split("\n")) {
+                    for (String line : targetCard.getDescription().split("\n")) {
                         String[] words = line.split(" ");
                         String currentLine = "";
 

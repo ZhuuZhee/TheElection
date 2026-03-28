@@ -44,7 +44,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     // ลบ private JLabel selectedProfileImagePreview; ออกไป
     private String selectedProfileFilepath = "";
     private String selectedArcanaName = ArcanaCardName.THE_FOOL;
-
+    private JPanel activeTooltipUI = null;
     private Color[] getColors() {
         return Player.COLOR_MAP.values().toArray(new Color[0]);
     }
@@ -269,7 +269,6 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 ImageIcon icon = new ImageIcon(file.getAbsolutePath());
                 Image scaledImg = icon.getImage().getScaledInstance(imageScale.width, imageScale.height, Image.SCALE_SMOOTH);
                 btn.setIcon(new ImageIcon(scaledImg));
-
                 // เพิ่มเอฟเฟกต์ Hover ทั้งเสียงและขอบ
                 btn.addMouseListener(new MouseAdapter() {
                     @Override
@@ -279,12 +278,65 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                             // เปลี่ยนสี Hover ให้เข้มขึ้นเป็น DARK_GRAY
                             btn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3));
                         }
+                        if (type.equals("ARCANA")) {
+                            String cleanName = file.getName().replace(".png", "").replace(".jpg", "");
+                            Core.Cards.ArcanaCard dummyCard = Core.Cards.Stream.ArcanaCardRegistry.createCard(cleanName);
+
+                            if (dummyCard != null) {
+
+                                String currentDesc = dummyCard.getDescription();
+                                if (currentDesc == null || currentDesc.isEmpty()) {
+                                    dummyCard.setDescription("Cooldown: " + dummyCard.getMaxCooldown() + " Rounds");
+                                } else {
+                                    dummyCard.setDescription(currentDesc + "\n\nCooldown: " + dummyCard.getMaxCooldown() + " Rounds");
+                                }
+
+                                // ดึง panel ชั้นบนสุดของจอเกมมาใช้
+                                JLayeredPane layeredPane = SwingUtilities.getRootPane(btn).getLayeredPane();
+
+                                // ถ้ามีอันเก่าค้างอยู่ เคลียร์ทิ้งก่อน
+                                if (activeTooltipUI != null) {
+                                    layeredPane.remove(activeTooltipUI);
+                                    layeredPane.repaint();
+                                }
+
+                                // สร้าง Tooltip
+                                activeTooltipUI = dummyCard.new SmartTooltipUI(dummyCard);
+                                activeTooltipUI.setSize(activeTooltipUI.getPreferredSize());
+
+                                // แปลงพิกัดเมาส์ให้เป็นพิกัดของจอเกม
+                                Point p = SwingUtilities.convertPoint(btn, e.getPoint(), layeredPane);
+
+                                int x = p.x + 15;
+                                int y = p.y + 15;
+
+                                // เช็คไม่ให้ล้นขอบจอ
+                                if (x + activeTooltipUI.getWidth() > layeredPane.getWidth()) {
+                                    x = p.x - activeTooltipUI.getWidth() - 15;
+                                }
+                                if (y + activeTooltipUI.getHeight() > layeredPane.getHeight()) {
+                                    y = p.y - activeTooltipUI.getHeight() - 15;
+                                }
+
+                                activeTooltipUI.setLocation(x, y);
+
+                                // แปะลงเลเยอร์ POPUP_LAYER (บนสุดเสมอ)
+                                layeredPane.add(activeTooltipUI, JLayeredPane.POPUP_LAYER);
+                                layeredPane.repaint();
+                            }
+                        }
                     }
 
                     @Override
                     public void mouseExited(MouseEvent e) {
                         if (((javax.swing.border.LineBorder) btn.getBorder()).getLineColor() == Color.DARK_GRAY) {
                             btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+                        }
+                        if (activeTooltipUI != null) {
+                            JLayeredPane layeredPane = SwingUtilities.getRootPane(btn).getLayeredPane();
+                            layeredPane.remove(activeTooltipUI);
+                            layeredPane.repaint();
+                            activeTooltipUI = null;
                         }
                     }
                 });

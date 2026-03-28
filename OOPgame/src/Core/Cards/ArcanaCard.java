@@ -8,16 +8,18 @@ import java.awt.*;
 
 public abstract class ArcanaCard extends Card {
     protected final int maxCooldown;
-    protected int currentCooldown;
     private int lastUsedTurn = -9999;
 
     public ArcanaCard(String name, int x, int y, int maxCooldown, String imagePath) {
         super(name, x, y, 100, 150, imagePath);
         this.maxCooldown = maxCooldown;
-        this.currentCooldown = 0;
     }
 
     protected abstract void activateSkill();
+
+    public int getMaxCooldown() {
+        return this.maxCooldown;
+    }
 
     public int getRemainingCooldown() {
         if (lastUsedTurn == -9999) return 0;
@@ -51,7 +53,6 @@ public abstract class ArcanaCard extends Card {
             } else {
                 lastUsedTurn = 0;
             }
-            this.currentCooldown = this.maxCooldown;
 
         } else {
             System.out.println(this.name + " Can't use! wait for " + remainingCooldown + " round(s)");
@@ -70,11 +71,9 @@ public abstract class ArcanaCard extends Card {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             try {
-                // วาดฟิล์มดำคลุม
                 g2d.setColor(new Color(0, 0, 0, 180));
                 g2d.fillRect(0, 0, getWidth(), getHeight());
 
-                // วาดข้อความให้กึ่งกลางเสมอ
                 g2d.setColor(Color.WHITE);
 
                 String text = remainingCooldown + " ROUNDS";

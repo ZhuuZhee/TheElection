@@ -34,11 +34,6 @@ public abstract class PolicyCard extends Card {
      */
     public abstract boolean isActive();
 
-    /** @return true if the card is currently occupying a slot. */
-    public boolean isInSlot() {
-        return isInSlot;
-    }
-
     /**
      * Triggered when an Action Card is played in a city where this policy is active.
      * @param playedCard The action card being played.

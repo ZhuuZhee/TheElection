@@ -3,7 +3,6 @@ package Dummy;
 import Core.Cards.ActionCard;
 import Core.Cards.AllArcanaCards.TheFoolCard;
 import Core.Cards.Card;
-import Core.Cards.CardSlot;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Cards.Stream.CardWriter;
@@ -62,7 +61,6 @@ public class Tester {
             // ArcanaCard requires a CardSlot for positioning in constructor,
             // but since it will be in a Holder UI, we can use a dummy position.
             // We create a temporary CardSlot at (0,0) just to satisfy the constructor.
-            CardSlot dummySlot = new CardSlot(0, 0, 100, 150, null);
             TheFoolCard foolCard = new TheFoolCard(ZhuzheeGame.ARCANA_CARD_UI.getX(), ZhuzheeGame.ARCANA_CARD_UI.getY());
             ZhuzheeGame.ARCANA_CARD_UI.addCard(foolCard);
         }

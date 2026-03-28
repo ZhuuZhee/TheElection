@@ -1,7 +1,6 @@
 package Core.Cards.PolicyCardDox;
 
 import Core.Cards.ActionCard;
-import Core.Cards.CardSlot;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
