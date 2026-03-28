@@ -9,7 +9,7 @@ import Core.ZhuzheeGame;
 public class GrassrootsMovement extends PolicyCard {
     public GrassrootsMovement(int x, int y, String imagePath) {
         super("Grassroots Movement", x, y, imagePath, -3);
-        this.description = "Skill: Play Dev Card with Environment <= 0 change Environment to +5.";
+        this.description = "Skill: Play Dev Card with Environment <= 0 change Environment to +20.";
     }
 
     @Override
@@ -27,11 +27,11 @@ public class GrassrootsMovement extends PolicyCard {
         if (stats == null) return;
         int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
         if (currentEnv <= 0) {
-            stats.setStats(PoliticsStats.ENVIRONMENT, 5);
+            stats.setStats(PoliticsStats.ENVIRONMENT, 20);
             System.out.println("----------------------------------");
             System.out.println("🌱 [GRASSROOTS MOVEMENT] ทำงาน!");
             System.out.println("พลังรากหญ้า! พลิกฟื้นสิ่งแวดล้อมให้การ์ด " + playedCard.getName());
-            System.out.println(">>> ค่า Environment เปลี่ยนเป็น +5 ทันที! <<<");
+            System.out.println(">>> ค่า Environment เปลี่ยนเป็น +20 ทันที! <<<");
             System.out.println("----------------------------------");
         }
     }

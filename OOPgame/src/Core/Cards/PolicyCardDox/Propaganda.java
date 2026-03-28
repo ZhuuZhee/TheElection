@@ -12,7 +12,7 @@ public class Propaganda extends PolicyCard {
 
     public Propaganda(int x, int y, String imagePath) {
         super("Propaganda", x, y, imagePath, -4);
-        this.description = "Skill: All played Dev Cards gain +3 stats, but you lose 2 coin per card.";
+        this.description = "Skill: All played Dev Cards gain +10 stats and -1 coin per card.";
     }
 
     @Override
@@ -29,27 +29,22 @@ public class Propaganda extends PolicyCard {
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
         boolean active = isActive();
-
         if (active && playedCard != lastProcessedCard
                 && ZhuzheeGame.CLIENT != null
                 && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
 
-            //เพิ่ม Stats +3 ให้การ์ดที่กำลังจะลง
             PoliticsStats stats = playedCard.getStats();
             if (stats != null) {
-                stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 3);
-                stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 3);
-                stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 3);
+                stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 10);
+                stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 10);
+                stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 10);
             }
 
-            //หักเงิน Player -2 Coin
             int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();
-            ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin - 2);
-
+            ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin - 1);
             //ปักธงว่าการ์ดใบนี้ประมวลผลไปแล้ว (เหมือนตอนเซ็ต rewardGranted = true)
             lastProcessedCard = playedCard;
-
-            System.out.println("Propaganda activated: +3 Stats to " + playedCard.getName() + " and -2 coin");
+            System.out.println("Propaganda activated: +10 Stats to " + playedCard.getName() + " and -1 coin");
         }
     }
 }

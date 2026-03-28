@@ -77,13 +77,6 @@ public class CardHolderUI extends Canvas {
      *
      * @param anchorTop true ยึดขอบบน (ใช้ marginTop), false ยึดขอบล่าง (ใช้ marginBottom)
      */
-    public void setAnchorTop(boolean anchorTop) {
-        setAnchors(this.anchorHorizontal, anchorTop ? 1 : -1);
-    }
-    public void setAnchorLeft(boolean anchorLeft){
-        setAnchors(anchorLeft ? -1 : 1, this.anchorVertical);
-    }
-    public void setAnchorRight(boolean anchorRight) { setAnchors(anchorRight ? 1 : -1, this.anchorVertical); }
 
     public void setSetLabel(String label){
         titleLabel.setText(label);

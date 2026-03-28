@@ -58,7 +58,7 @@ public class City {
     public HashMap<String, Float> playerScores = new HashMap<>();
     public ArrayList<String> playerIds = new ArrayList<>();
 
-    private int ownerId = -1;
+    private String ownerId = "";
 
     /**
      * Constructs a new City with specified parameters and initializes scoring.
@@ -164,7 +164,7 @@ public class City {
         return true;
     }
 
-    public int getOwnerId() {
+    public String getOwnerId() {
         return ownerId;
     }
 
@@ -175,7 +175,7 @@ public class City {
         // 2. จัดลำดับจาก "มากไปน้อย" (Descending Order) ตามค่าคะแนน (Value)
         sortedScores.sort((a, b) -> b.getValue().compareTo(a.getValue()));
 
-        int bestPlayerIndex = -1;
+        String bestPlayerId = "";
         if (!sortedScores.isEmpty()) {
             float maxScore = sortedScores.get(0).getValue();
             // 3. ตรวจสอบว่าคะแนนสูงสุดมีการ "เสมอ" กันหรือไม่
@@ -183,12 +183,12 @@ public class City {
 
             // ถ้าไม่เสมอและคะแนนมากกว่า 0 ให้หา Index ของผู้เล่นจากรายชื่อ playerIds
             if (!tie && maxScore > 0) {
-                bestPlayerIndex = playerIds.indexOf(sortedScores.get(0).getKey());
+                bestPlayerId = sortedScores.getFirst().getKey();
             }
         }
 
         // อัปเดต ID เจ้าของเมือง (ถ้าเสมอจะเป็น -1)
-        ownerId = bestPlayerIndex;
+        ownerId = bestPlayerId;
 
         if (Core.ZhuzheeGame.PLAYER_LIST_UI != null) {
             Core.ZhuzheeGame.PLAYER_LIST_UI.updatePlayerList();

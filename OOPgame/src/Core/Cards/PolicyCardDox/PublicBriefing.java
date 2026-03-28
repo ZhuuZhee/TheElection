@@ -9,7 +9,7 @@ import Core.ZhuzheeGame;
 public class PublicBriefing extends PolicyCard {
     public PublicBriefing(int x, int y, String imagePath) {
         super("Public Briefing", x, y, imagePath, -4);
-        this.description = "Skill: Play a Dev Card with Facility >= 4 to gain 5 Coins.";
+        this.description = "Skill: Play a Dev Card with Facility >= 4 gain x5 Facility.";
     }
 
     @Override
@@ -28,16 +28,12 @@ public class PublicBriefing extends PolicyCard {
         int fac = stats.getStats(PoliticsStats.FACILITY);
 
         if (fac >= 4) {
+            stats.setStats(PoliticsStats.FACILITY, fac * 5);
             System.out.println("----------------------------------");
             System.out.println("🎤 [PUBLIC BRIEFING] ทำงาน!");
-            System.out.println("โฆษกชี้แจงโครงการขนาดเล็ก " + playedCard.getName() + " ให้มวลชนเข้าใจ!");
-            System.out.println(">>> คุณได้รับ 5 Coin จากสปอนเซอร์! <<<");
+            System.out.println("โฆษกชี้แจงโปรเจกต์ยักษ์ใหญ่ " + playedCard.getName() + " จนมวลชนมั่นใจ!");
+            System.out.println(">>> ค่า Facility ของการ์ดใบนี้ถูกคูณ 5 ทันที! (กลายเป็น " + (fac * 5) + ") <<<");
             System.out.println("----------------------------------");
-
-            if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
-                int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();
-                ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin + 5);
-            }
         }
     }
 }

@@ -165,7 +165,7 @@ public class Map extends GameObject {
         return uniqueCities;
     }
 
-    public int getOwnedCitiesCount(int playerId) {
+    public int getOwnedCitiesCount(String playerId) {
         int count = 0;
         for (City city : getAllCities()) {
             if (city.getOwnerId() == playerId) {
