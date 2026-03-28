@@ -95,6 +95,9 @@ public class CreditUI extends Screen implements ActionListener{
         addCredit("68070204", 22, true, Color.BLACK);
         addCredit("Aphiraks Noppakhrao", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/7Pro.png");
+        addSpace(30);
+
+        addImage("OOPgame/Assets/ImageForMapBackground/Thank_you.png");
         addSpace(20);
 
         backBtn = UIButtonFactory.createMenuButton("Back", btnNormalImg, btnHoverImg, this);
