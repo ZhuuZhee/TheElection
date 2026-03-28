@@ -275,7 +275,7 @@ public class ActionCard extends Card {
         scene.repaint();
 
         // ตั้งเวลาลบทิ้ง
-        javax.swing.Timer timer = new javax.swing.Timer(2500, e -> {
+        javax.swing.Timer timer = new javax.swing.Timer(500, e -> {
             scene.remove(dropPopup);
             scene.repaint();
         });
