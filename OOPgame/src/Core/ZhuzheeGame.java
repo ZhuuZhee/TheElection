@@ -273,6 +273,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
     }
     private static int lastShopOpenedRound = -1;
+    private static int lastStatResetMarker = -1;
 
     public static void checkRoundAndShop() {
         if (CLIENT == null) return;
@@ -293,6 +294,52 @@ public class ZhuzheeGame implements ApplicationAdapter {
                 lastShopOpenedRound = currentRound;
             }
         }
+
+        // --- STAT RESET EVENT (Mid-Phase and Start-Phase) ---
+        // Happens every 2 rounds (i.e. every playerCount * 2 turns)
+        int resetInterval = playerCount * 2;
+        int resetMarker = ((currentTurn - 1) / resetInterval) + 1;
+        
+        if (currentTurn > 1 && currentTurn % resetInterval == 1) {
+            if (resetMarker != lastStatResetMarker) {
+                System.out.println("====== MAP STAT RESET TRIGGERED ======");
+                if (MAP != null) {
+                    resetAllCityStats();
+                }
+                lastStatResetMarker = resetMarker;
+            }
+        }
+    }
+
+    public static void resetAllCityStats() {
+        if (MAP == null) return;
+        java.util.List<Core.Maps.City> cities = MAP.getAllCities();
+        if (cities.isEmpty()) return;
+
+        int maxStat = 1;
+        for (Core.Maps.City city : cities) {
+            maxStat = Math.max(maxStat, city.stats.getStats(Core.Maps.PoliticsStats.FACILITY));
+            maxStat = Math.max(maxStat, city.stats.getStats(Core.Maps.PoliticsStats.ENVIRONMENT));
+            maxStat = Math.max(maxStat, city.stats.getStats(Core.Maps.PoliticsStats.ECONOMY));
+        }
+
+        for (Core.Maps.City city : cities) {
+            int oldFac = city.stats.getStats(Core.Maps.PoliticsStats.FACILITY);
+            int oldEnv = city.stats.getStats(Core.Maps.PoliticsStats.ENVIRONMENT);
+            int oldEco = city.stats.getStats(Core.Maps.PoliticsStats.ECONOMY);
+
+            // Scale to 0-20 based on highest stat
+            int newFac = (int) Math.round((oldFac * 20.0) / maxStat);
+            int newEnv = (int) Math.round((oldEnv * 20.0) / maxStat);
+            int newEco = (int) Math.round((oldEco * 20.0) / maxStat);
+
+            city.stats.setStats(Core.Maps.PoliticsStats.FACILITY, newFac);
+            city.stats.setStats(Core.Maps.PoliticsStats.ENVIRONMENT, newEnv);
+            city.stats.setStats(Core.Maps.PoliticsStats.ECONOMY, newEco);
+        }
+
+        Core.UI.UINotificationToast.showNotification("City Stats have been rebalanced!", 5000);
+        ZhuzheeEngine.Audios.AudioManager.getInstance().playSound("beeb"); // optional sound
     }
 
 //    private static void applyRandomEvent(int round) {
