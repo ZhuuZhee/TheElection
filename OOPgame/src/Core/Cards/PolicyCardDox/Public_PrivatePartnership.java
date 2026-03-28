@@ -31,7 +31,7 @@ public class Public_PrivatePartnership extends PolicyCard {
         int fac = stats.getStats(PoliticsStats.FACILITY);
         if (eco > 0 && fac > 0) {
             stats.setStats(PoliticsStats.ECONOMY, eco + 10);
-            stats.setStats(PoliticsStats.ECONOMY, fac + 10);        
+            stats.setStats(PoliticsStats.ECONOMY, fac + 10);
             System.out.println("Public-Private Partnership activated: +10 Economy");
             System.out.println("Public-Private Partnership activated: +10 Facility");
         }
