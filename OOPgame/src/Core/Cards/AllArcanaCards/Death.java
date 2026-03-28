@@ -1,6 +1,8 @@
 package Core.Cards.AllArcanaCards;
 
 import Core.Cards.ArcanaCard;
+import Core.Network.PacketBuilder;
+import Core.ZhuzheeGame;
 
 public class Death extends ArcanaCard {
     public Death(int x, int y) {
@@ -11,5 +13,6 @@ public class Death extends ArcanaCard {
     protected void activateSkill() {
         System.out.println("Death activate!");
         // Business Logic
+        ZhuzheeGame.CLIENT.getConnectedPlayers();//คนอื่นติดลบ
     }
 }

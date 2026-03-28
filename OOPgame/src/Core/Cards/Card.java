@@ -18,6 +18,7 @@ import java.awt.event.*;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -208,6 +209,7 @@ public abstract class Card extends GameObject {
     public String getImagePath() {
         return imagePath;
     }
+
     // ----------------------------------------
     // ------------  Mouse Events  ------------
     // ----------------------------------------
@@ -266,7 +268,7 @@ public abstract class Card extends GameObject {
             if (comp instanceof Map mapComponent) {
                 Point mapPos = SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
                 Grid grid = mapComponent.getGridAtPoint(mapPos);
-                mapComponent.setHoveredGrid(grid);
+                onHoverGrid(grid, mapComponent);
             }
         }
     }
@@ -282,6 +284,9 @@ public abstract class Card extends GameObject {
     }
 
     public void onMouseReleased() {
+
+        ZhuzheeGame.POLICY_CARD_HAND.hideActiveCards();
+
         if (getEnable() && isGrabbed) {
             isGrabbed = false;
             CURRENT_GRABBED_CARD = null;
@@ -320,7 +325,9 @@ public abstract class Card extends GameObject {
             repaint();
         }
     }
-
+    public void onHoverGrid(Grid grid, Map mapComponent){
+        mapComponent.setHoveredGrid(grid);
+    }
     // check ว่า card ชนกับขอบของ your hand มั้ย " ให้ card เป้นตัวเช็ค "
     private CardHolderUI getHandUIOnBottom() {
         if (getParent() == null) return null;
@@ -521,35 +528,43 @@ public abstract class Card extends GameObject {
     // Inner Class: หน้าต่าง Tooltip อัจฉริยะ
     // ==========================================
     public class SmartTooltipUI extends JPanel {
-        private Card targetCard;
-
-        public SmartTooltipUI(Card card) {
-            this.targetCard = card;
+        private PoliticsStats stats;
+        private String description;
+        private String title;
+        private boolean isActionCard;
+        public SmartTooltipUI(Card card){
+            this(card.stats,card.getName(),card.getDescription(),card instanceof ActionCard);
+        }
+        public SmartTooltipUI(PoliticsStats stats, String title,String description, boolean isActionCard) {
+            this.stats = stats;
+            this.description = description;
+            this.title = title;
+            this.isActionCard = isActionCard;
             setOpaque(false);
 
             // ปรับขนาดหน้าต่างตามประเภทของการ์ด
-            if (card instanceof ActionCard) {
+            if (isActionCard) {
                 setPreferredSize(new Dimension(200, 120)); // Action Card สเตตัสคงที่ ฟิกซ์ไว้ได้
             } else {
                 // --- ระบบคำนวณความสูง Dynamic สำหรับ Policy/Arcana ---
                 int fixedWidth = 240;
                 int calculatedHeight = 65; // ความสูงเริ่มต้น (เผื่อที่ให้ขอบบนและชื่อการ์ด)
 
-                if (card.getDescription() != null && !card.getDescription().isEmpty()) {
+                if (description != null && !description.isEmpty()) {
                     FontMetrics fm = getFontMetrics(getFont());
                     int maxWidth = fixedWidth - 30;
 
                     // จำลองการตัดบรรทัดเพื่อนับความสูง
-                    for (String line : card.getDescription().split("\n")) {
+                    for (String line : description.split("\n")) {
                         String[] words = line.split(" ");
-                        String currentLine = "";
+                        StringBuilder currentLine = new StringBuilder();
 
                         for (String word : words) {
                             if (fm.stringWidth(currentLine + word) < maxWidth) {
-                                currentLine += word + " ";
+                                currentLine.append(word).append(" ");
                             } else {
                                 calculatedHeight += 20; // ล้นปุ๊บ บวกความสูงเพิ่ม 20px
-                                currentLine = word + " ";
+                                currentLine = new StringBuilder(word + " ");
                             }
                         }
                         if (!currentLine.isEmpty()) {
@@ -577,16 +592,16 @@ public abstract class Card extends GameObject {
 
             // วาดชื่อการ์ด
             g2d.setColor(Color.BLACK);
-            g2d.drawString(targetCard.getName(), 15, 25);
+            g2d.drawString(title, 15, 25);
 
             // เช็คว่าเป็นการ์ดประเภทไหนเพื่อวาดข้อมูล
-            if (targetCard instanceof ActionCard) {
+            if (isActionCard) {
                 // --- โหมด Action Card: วาดตัวเลข Stat ---
                 int eco = 0, fac = 0, env = 0;
-                if (targetCard.stats != null) {
-                    eco = targetCard.stats.getStats(PoliticsStats.ECONOMY);
-                    fac = targetCard.stats.getStats(PoliticsStats.FACILITY);
-                    env = targetCard.stats.getStats(PoliticsStats.ENVIRONMENT);
+                if (stats != null) {
+                    eco = stats.getStats(PoliticsStats.ECONOMY);
+                    fac = stats.getStats(PoliticsStats.FACILITY);
+                    env = stats.getStats(PoliticsStats.ENVIRONMENT);
                 }
 
                 g2d.setColor(new Color(80, 80, 80));
@@ -604,11 +619,11 @@ public abstract class Card extends GameObject {
                 g2d.setColor(new Color(60, 60, 60));
 
                 int startY = 55;
-                if (targetCard.getDescription() != null) {
+                if (description != null) {
                     FontMetrics fm = g2d.getFontMetrics();
                     int maxWidth = getWidth() - 30;
                     // ตัดบรรทัดด้วย \n
-                    for (String line : targetCard.getDescription().split("\n")) {
+                    for (String line : description.split("\n")) {
                         String[] words = line.split(" ");
                         String currentLine = "";
 

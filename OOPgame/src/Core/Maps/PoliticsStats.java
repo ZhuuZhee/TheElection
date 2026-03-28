@@ -2,6 +2,8 @@ package Core.Maps;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import Core.UI.PolicyCardHolderUI;
 import org.json.JSONObject;
 
 /**
@@ -10,21 +12,34 @@ import org.json.JSONObject;
  * for both Cities and Cards.
  */
 public class PoliticsStats {
-    /** Internal map storing stat types (IDs) and their integer values. */
+    /**
+     * Internal map storing stat types (IDs) and their integer values.
+     */
     public Map<Long, Integer> stats;
-    
-    /** Constant ID for the Facility statistic. */
+
+    /**
+     * Constant ID for the Facility statistic.
+     */
     public final static long FACILITY = 0L;
-    /** Constant ID for the Environment statistic. */
+    /**
+     * Constant ID for the Environment statistic.
+     */
     public final static long ENVIRONMENT = 1L;
-    /** Constant ID for the Economy statistic. */
+    /**
+     * Constant ID for the Economy statistic.
+     */
     public final static long ECONOMY = 2L;
+
+    public PoliticsStats(PoliticsStats stats) {
+        this(stats.getStats(FACILITY), stats.getStats(ENVIRONMENT), stats.getStats(ECONOMY));
+    }
 
     /**
      * Constructs a new PoliticsStats object with initial values.
-     * @param facility Initial value for facilities.
+     *
+     * @param facility    Initial value for facilities.
      * @param environment Initial value for environment.
-     * @param economy Initial value for economy.
+     * @param economy     Initial value for economy.
      */
     public PoliticsStats(int facility, int environment, int economy) {
         stats = new HashMap<>();
@@ -35,6 +50,7 @@ public class PoliticsStats {
 
     /**
      * Retrieves the value of a specific statistic.
+     *
      * @param statType The ID of the statistic (FACILITY, ENVIRONMENT, or ECONOMY).
      * @return The current value of the statistic, or 0 if not found.
      */
@@ -44,19 +60,31 @@ public class PoliticsStats {
 
     /**
      * Adds a value to an existing statistic.
+     *
      * @param statType The ID of the statistic to modify.
-     * @param value The amount to add (can be negative).
+     * @param value    The amount to add (can be negative).
      */
     public void addStats(long statType, int value) {
         stats.put(statType, getStats(statType) + value);
     }
 
+    public void addStats(PoliticsStats stats) {
+        if (stats != null) {
+            this.stats.put(FACILITY, stats.getStats(FACILITY));
+            this.stats.put(ECONOMY, stats.getStats(ECONOMY));
+            this.stats.put(ENVIRONMENT, stats.getStats(ENVIRONMENT));
+        }
+    }
+
     /**
      * Directly sets the value of a specific statistic.
+     *
      * @param statType The ID of the statistic to set.
-     * @param value The new value.
+     * @param value    The new value.
      */
-    public void setStats(long statType, int value) { stats.put(statType, value); }
+    public void setStats(long statType, int value) {
+        stats.put(statType, value);
+    }
 
     public static String getStatName(long id) {
         if (id == FACILITY) return "Facility";

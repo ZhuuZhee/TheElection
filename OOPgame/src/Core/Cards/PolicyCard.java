@@ -3,8 +3,6 @@
  */
 package Core.Cards;
 
-import Core.Player.Player;
-import Core.ZhuzheeGame;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 
@@ -17,7 +15,7 @@ import java.awt.*;
  */
 public abstract class PolicyCard extends Card {
     protected boolean isInSlot = false; /** Tracks if the card is currently active in a slot. */
-
+    private boolean isShowHighlight = false;
     public PolicyCard(String name, int x, int y, int coin) {
         super(name, x, y, 100, 150);
         this.coin = coin;
@@ -40,4 +38,31 @@ public abstract class PolicyCard extends Card {
      * @param city The city where the action is taking place.
      */
     public abstract void onActionCardPlayed(ActionCard playedCard, City city);
+    public PoliticsStats calculateStats(ActionCard playedCard, City city){
+        return null;
+    }
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (isShowHighlight) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            try {
+                // วาดกรอบสีขาวหนา 4px เพื่อเน้นว่าการ์ดกำลังทำงาน (Active)
+                g2d.setColor(Color.WHITE);
+                float thickness = 4f;
+                g2d.setStroke(new BasicStroke(thickness));
+                // วาด Rect โดยขยับพิกัดเข้ามาครึ่งหนึ่งของความหนาเส้นเพื่อให้กรอบอยู่ภายในขอบการ์ดพอดี
+                g2d.drawRect((int)(thickness/2), (int)(thickness/2), getWidth() - (int)thickness, getHeight() - (int)thickness);
+            } finally {
+                g2d.dispose();
+            }
+        }
+    }
+
+    public void setShowHighlight(boolean showHighlight) {
+        isShowHighlight = showHighlight;
+    }
 }

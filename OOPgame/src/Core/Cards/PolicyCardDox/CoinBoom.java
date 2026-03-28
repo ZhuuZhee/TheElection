@@ -3,6 +3,7 @@ package Core.Cards.PolicyCardDox;
 import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
+import Core.Maps.PoliticsStats;
 import Core.ZhuzheeGame;
 
 public class CoinBoom extends PolicyCard {
@@ -40,5 +41,10 @@ public class CoinBoom extends PolicyCard {
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
         // no use.
+    }
+
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        return null;
     }
 }
