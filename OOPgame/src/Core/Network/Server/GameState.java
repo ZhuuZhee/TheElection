@@ -18,6 +18,15 @@ public class GameState {
         return mapSeed;
     }
 
+    public void resetForNewGame() {
+        this.turnCounter = 1;
+        this.currentPlayer = null;
+        this.mapSeed = new Random().nextLong();
+        for (Player p : players) {
+            p.resetState();
+        }
+    }
+
     public void incrementPhaseCounter() {
         this.turnCounter++;
     }

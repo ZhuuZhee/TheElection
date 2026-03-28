@@ -122,6 +122,24 @@ public class Player {
         }
     }
 
+    /**
+     * ล้างสถานะของผู้เล่นเพื่อเริ่มเกมใหม่ 
+     * โดยยังคงรักษาข้อมูล identity (ชื่อ, สี, รูป, การ์ด Arcana ที่เลือกไว้)
+     */
+    public void resetState() {
+        this.coin = 10;
+        this.actionCards = new ArrayList<>();
+        this.policyCards = new ArrayList<>();
+        this.arcanaCard = null; // จะถูกสร้างใหม่จาก arcanaCardName เมื่อเริ่มเกม
+        this.cityOwn = new String[0];
+        this.isLose = false;
+        this.skipDrawNextTurn = false;
+        this.drawAmountNextTurn = -1;
+        this.score = 0;
+        this.isPolicySilenced = false;
+        this.silencedPolicyCards = new ArrayList<>();
+    }
+
     public Color getColor() { return color; }
 
     public void setColor(Color color) { this.color = color; }

@@ -8,7 +8,6 @@ import Core.GameScreens.WaitingRoomMenu;
 import Core.Maps.Map;
 import Core.Player.Player;
 import Core.UI.*;
-import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Audios.AudioManager;
@@ -48,6 +47,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static GameSettingUI SETTINGS_UI;
     public static Core.UI.TurnUI TURN_UI;
     public static Core.UI.EndTurnButtonUI END_TURN_UI;
+    public static Shop SHOP_UI;
 
     public static List<Player> CURRENT_PLAYERS = new ArrayList<>();
 
@@ -123,7 +123,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
             playerCountForMap = CLIENT.getConnectedPlayers().size();
         }
         MAP = new Map(MAP_SEED, playerCountForMap);
-        Tester.CardsTestingOnScene(MAIN_SCENE);
         CardHolderUI holderUI = PlayerUI.CardHolderUITest(MAIN_SCENE);
         DEVLOPMENT_CARD_HAND = holderUI;
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
@@ -132,6 +131,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.GameSettingUI(MAIN_SCENE);
         PlayerUI.TurnUITest(MAIN_SCENE);
         PlayerUI.EndTurnUI(MAIN_SCENE);
+        PlayerUI.ShopUI(MAIN_SCENE);
 
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
@@ -150,8 +150,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
 //        Tester.CardTesterUI(MAIN_SCENE);
 
         // new EliminationUI(MAIN_SCENE, actualPlayers);
-
-        Tester.ShopTest();
+//
+//        if (CLIENT != null && !CLIENT.isGameEnded()) Tester.ShopTest();
 
         Player localPlayer = (CLIENT != null) ? CLIENT.getLocalPlayer() : null;
 
@@ -178,13 +178,19 @@ public class ZhuzheeGame implements ApplicationAdapter {
             SERVER.stopServer();
             SERVER = null;
         }
+        CURRENT_PLAYERS = new ArrayList<>();
+        resetMainScene();
+    }
+
+    public static void resetMainScene() {
         if (MAIN_SCENE != null) {
             MAIN_SCENE.clearScene();
-            MAIN_SCENE.getCamera().setPosition(new java.awt.Point(0, 0));
-            MAIN_SCENE.getCamera().setZoom(1.0f);
         }
+
+        MAIN_SCENE = new Scene2D();
+        new Core.UI.UINotificationToast(MAIN_SCENE); // ลงทะเบียน NotificationToast ให้กับ Scene ใหม่
+
         MAP = null;
-        CURRENT_PLAYERS = new ArrayList<>();
         DEVLOPMENT_CARD_HAND = null;
         POLICY_CARD_HAND = null;
         ARCANA_CARD_UI = null;
@@ -192,7 +198,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PLAYER_PROFILE_UI = null;
         PLAYER_COIN_UI = null;
         SETTINGS_UI = null;
+        TURN_UI = null;
+        END_TURN_UI = null;
         lastShopOpenedRound = -1;
+        lastStatResetMarker = -1;
     }
 
     private static final float MAX_ZOOM = 1.25f, MIN_ZOOM = 0.75f, NORMAL_ZOOM = 1;
@@ -277,6 +286,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     public static void checkRoundAndShop() {
         if (CLIENT == null) return;
+        if (CLIENT.isGameEnded()) return;
 
         int currentTurn = CLIENT.getTurnCounter();
         int playerCount = Math.max(1, CURRENT_PLAYERS.size());
@@ -288,8 +298,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
             if (currentRound != lastShopOpenedRound) {
                 ZhuzheeEngine.Debug.GameLogger.logInfo("====== START OF ROUND " + currentRound + "! OPENING SHOP ======");
-
-                Dummy.Tester.ShopTest();
 
                 lastShopOpenedRound = currentRound;
             }
@@ -415,6 +423,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
         public static EndTurnButtonUI EndTurnUI(Scene2D scene2D) {
             ZhuzheeGame.END_TURN_UI = new EndTurnButtonUI(scene2D);
             return ZhuzheeGame.END_TURN_UI;
+        }
+        public static Shop ShopUI(Scene2D scene2D) {
+            ZhuzheeGame.SHOP_UI = new Shop(scene2D);
+            return ZhuzheeGame.SHOP_UI;
         }
         public static CardHolderUI CardHolderUITest(Scene2D scene2D){
             CardHolderUI ui = new CardHolderUI(scene2D);

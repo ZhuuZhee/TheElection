@@ -99,8 +99,6 @@ public class TradeAgreement extends PolicyCard {
         Player player = null;
         if (ZhuzheeGame.CLIENT != null) {
             player = ZhuzheeGame.CLIENT.getLocalPlayer();
-        } else {
-            player = Dummy.Tester.dummyPlayer;
         }
 
         if (player != null) {
