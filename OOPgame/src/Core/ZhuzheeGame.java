@@ -146,8 +146,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
 //        Tester.CardTesterUI(MAIN_SCENE);
 
-        // test EliminationUI
-         new EliminationUI(MAIN_SCENE);
         // new EliminationUI(MAIN_SCENE, actualPlayers);
 
         Tester.ShopTest();
@@ -265,6 +263,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
         checkRoundAndShop();
         if (TURN_UI != null) {
             TURN_UI.updateTurnDisplay();
+        }
+        if (END_TURN_UI != null) {
+            END_TURN_UI.updateButtonState();
         }
     }
     private static int lastShopOpenedRound = -1;
