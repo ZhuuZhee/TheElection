@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Player.Player;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class DiplomaticVisit extends PolicyCard {
@@ -13,7 +14,7 @@ public class DiplomaticVisit extends PolicyCard {
 
     public DiplomaticVisit(int x, int y, String imagePath) {
         super("Diplomatic Visit", x, y, imagePath, -5);
-        this.description = "Skill: Play Dev card to gain +2 coins. (If you have > 7 coins, gain +1 instead).";
+        this.description = "Skill: Play Dev card to gain +5 coins. (If you have > 10 coins, gain +20 instead).";
     }
 
     @Override
@@ -41,10 +42,10 @@ public class DiplomaticVisit extends PolicyCard {
             int bonusAmount;
 
             //เงื่อนไขถ้ามีเงิน > 7 ได้ +1, ถ้ามี <= 7 ได้ +2
-            if (currentCoin > 7) {
-                bonusAmount = 1;
+            if (currentCoin > 10) {
+                bonusAmount = 20;
             } else {
-                bonusAmount = 2;
+                bonusAmount = 5;
             }
 
             //ใช้ setCoin() จากคลาส Player เพื่ออัปเดตเงิน
@@ -53,12 +54,7 @@ public class DiplomaticVisit extends PolicyCard {
             //บันทึกไว้ว่าการ์ดใบนี้ทำงานไปแล้วนะ รอบหน้าถ้า Engine ส่งมาอีกจะได้ไม่บวกเงินซ้ำ
             lastTriggeredCard = playedCard;
 
-            // พิมพ์บอกใน Console เพื่อความชัวร์
-            System.out.println("----------------------------------");
-            System.out.println("🤝 [DIPLOMATIC VISIT] ทำงานสำเร็จ!");
-            System.out.println("เงินก่อนบวก: " + currentCoin + " | โบนัสที่ได้: +" + bonusAmount);
-            System.out.println("เงินปัจจุบันอัปเดตเป็น: " + localPlayer.getCoin());
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("🤝 [DIPLOMATIC VISIT] ได้รับโบนัส +" + bonusAmount + " Coin!");
         }
     }
 }

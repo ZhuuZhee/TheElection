@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 /**
@@ -31,16 +32,11 @@ public class  IronWill extends PolicyCard {
 
         int fac = stats.getStats(PoliticsStats.FACILITY);
         if (fac < 0) {
-            System.out.println("----------------------------------");
-            System.out.println("🛡️ [IRON WILL] Facility damage blocked!");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("🛡️ [IRON WILL] ป้องกันความเสียหาย Facility ให้ " + playedCard.getName());
             stats.setStats(PoliticsStats.FACILITY, 0);
         } else if (fac > 0) {
-            System.out.println("----------------------------------");
-            System.out.println("🛡️ [IRON WILL] Facility +5 bonus!");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("🛡️ [IRON WILL] เพิ่มโบนัส Facility (+5) ให้ " + playedCard.getName());
             stats.addStats(PoliticsStats.FACILITY, fac + 5);
         }
     }
-
 }

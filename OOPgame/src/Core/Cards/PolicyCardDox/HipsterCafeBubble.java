@@ -5,6 +5,7 @@ import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 import Core.Player.Player;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class HipsterCafeBubble extends PolicyCard {
@@ -35,11 +36,7 @@ public class HipsterCafeBubble extends PolicyCard {
             stats.setStats(PoliticsStats.ECONOMY, currentEco * 2);
             int currentCoin = localPlayer.getCoin();
             localPlayer.setCoin(Math.max(0, currentCoin - 3));
-            System.out.println("----------------------------------");
-            System.out.println("☕ [HIPSTER CAFE BUBBLE] ทำงาน!");
-            System.out.println("ปั่นกระแสคาเฟ่ฮิปสเตอร์! โครงการ " + playedCard.getName() + " ได้รับ x2 Economy");
-            System.out.println(">>> แต่คุณโดนหักเงินค่าครองชีพ (แวะซื้อกาแฟแพงๆ) -3 Coin! <<<");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("☕ [HIPSTER CAFE] ปั่นกระแสคาเฟ่ฮิปสเตอร์ให้ " + playedCard.getName() + "! (x2 Economy, -3 Coin)");
         }
     }
 }

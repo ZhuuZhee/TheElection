@@ -5,12 +5,13 @@ import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 import Core.Player.Player;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class TradeAgreement extends PolicyCard {
     public TradeAgreement(int x, int y, String imagePath) {
         super("Trade Agreement", x, y, imagePath, -4);
-        this.description = "Skill: Negative stats on your played Development card become 0. Lose 1 coin per fixed stat.";
+        this.description = "Skill: Negative stats on your played Development card become 0 and -1 coin per fixed stat.";
     }
 
     @Override
@@ -62,10 +63,6 @@ public class TradeAgreement extends PolicyCard {
             player.setCoin(player.getCoin() - fixedStatCount);
         }
 
-        System.out.println("----------------------------------");
-        System.out.println("PolicyCard [Trade Agreement] ทำงาน!");
-        System.out.println("สแตทติดลบของการ์ด " + playedCard.getName() + " ถูกเปลี่ยนเป็น 0 จำนวน " + fixedStatCount + " ค่า");
-        System.out.println(">>> คุณเสีย " + fixedStatCount + " Coin <<<");
-        System.out.println("----------------------------------");
+        UINotificationToast.showNotification("🤝 [TRADE AGREEMENT] ป้องกันค่าติดลบให้ " + playedCard.getName() + " (-" + fixedStatCount + " Coin)");
     }
 }

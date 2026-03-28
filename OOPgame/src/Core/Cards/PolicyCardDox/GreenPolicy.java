@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 /**
@@ -36,12 +37,7 @@ public class GreenPolicy extends PolicyCard {
             if (stats != null) {
                 int env = stats.getStats(PoliticsStats.ENVIRONMENT);
                 if (env < 0) {
-                    System.out.println("----------------------------------");
-                    System.out.println("PolicyCard [Green Policy] ทำงาน!");
-                    System.out.println("ค่า Environmentที่ติดลบ ถูกป้องกัน");
-                    System.out.println(">>> Environment ถูกเปลี่ยนเป็น 0 <<<");
-                    System.out.println("----------------------------------");
-
+                    UINotificationToast.showNotification("🌿 [Green Policy] ป้องกันค่า Environment ติดลบให้ " + playedCard.getName());
                     stats.setStats(PoliticsStats.ENVIRONMENT, 0);
                 }
             }

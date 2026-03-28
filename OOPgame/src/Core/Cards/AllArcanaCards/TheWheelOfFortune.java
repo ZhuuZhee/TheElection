@@ -5,6 +5,7 @@ import Core.Cards.PolicyCard;
 import Core.Cards.Stream.PolicyCardRegistry;
 import Core.Network.Client.ClientAdapter;
 import Core.UI.PolicyCardHolderUI;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 
@@ -67,7 +68,7 @@ public class TheWheelOfFortune extends ArcanaCard {
                 }
             }
             temporaryPolicyCards.clear();
-            System.out.println("The Wheel Of Fortune effect ended. Temporary policy cards removed.");
+            UINotificationToast.showNotification("The Wheel Of Fortune effect ended. Temporary policy cards removed.");
         }
         ZhuzheeGame.POLICY_CARD_HAND.setMaxCard(PolicyCardHolderUI.DEFAULT_MAX_CARD);
     }

@@ -5,6 +5,7 @@ import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 import Core.Player.Player;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class FakeNews extends PolicyCard {
@@ -42,11 +43,7 @@ public class FakeNews extends PolicyCard {
             int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
             stats.setStats(PoliticsStats.ENVIRONMENT, currentEnv - 2);
 
-
-            System.out.println("----------------------------------");
-            System.out.println("🗣️ [FAKE NEWS] Smear Campaign Active!");
-            System.out.println(">>> +3 Coins | Environment x2 bonus! <<<");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("🗣️ [FAKE NEWS] Smear Campaign Active! (+1 Coin, x3 Economy)");
         }
     }
 }
