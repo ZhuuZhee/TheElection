@@ -4,13 +4,13 @@
 package Core.Cards;
 
 import Core.Cards.Stream.CardBufferObject;
-import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
 import Core.Maps.*;
 import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
@@ -44,7 +44,7 @@ public class ActionCard extends Card {
     }
 
     // โยนให้ city จัดการ stat
-    public void ActionOn(City city) {
+    public void ActionOn(City city, PoliticsStats stats) {
         if (!getEnable()) return;
 
         // ใน City.java มี applyStats(PoliticsStats cardStats) อยู่แล้ว
@@ -52,8 +52,8 @@ public class ActionCard extends Card {
         if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
             pId = ZhuzheeGame.CLIENT.getLocalPlayer().getPlayerId();
         }
-        
-        city.applyCard(pId, this.stats);
+
+        city.applyCard(pId, stats);
     }
 
     @Override
@@ -64,18 +64,18 @@ public class ActionCard extends Card {
         if (targetCity != null) {
             // วิ่งไปหาการ์ดนโยบายจาก UI โดยตรงเลย (ไม่ต้องหาจาก scene แล้ว)
             // แก้ไขจาก POLICY_CARD_UI เป็น POLICY_CARD_HAND ตามที่มีใน ZhuzheeGame.java
+            PoliticsStats finalStat = new PoliticsStats(this.stats);
             if (ZhuzheeGame.POLICY_CARD_HAND != null) {
                 for (Card card : ZhuzheeGame.POLICY_CARD_HAND.getCards()) {
                     if (card instanceof PolicyCard passive) {
-
                         // เอา isInSlot() ออก เหลือแค่เช็ค IsActivate() อย่างเดียว
                         if (passive.isActive()) {
-                            passive.onActionCardPlayed(this, targetCity);
+                            finalStat.addStats(passive.calculateStats(this, targetCity));
                         }
                     }
                 }
             }
-            this.ActionOn(targetCity);
+            this.ActionOn(targetCity, finalStat);
             GameObject.Destroy(this);
         }
         Player playercoin = null;
@@ -95,6 +95,19 @@ public class ActionCard extends Card {
         if (ZhuzheeGame.CLIENT != null && targetCity != null) {
             ZhuzheeGame.CLIENT.useCard(targetCity);
         }
+    }
+
+    @Override
+    public void onHoverGrid(Grid grid, Map mapComponent) {
+        super.onHoverGrid(grid, mapComponent);
+
+        ZhuzheeGame.POLICY_CARD_HAND.showActiveCards();
+        PoliticsStats finalState = new PoliticsStats(stats);
+        for(Card card : new ArrayList<>(ZhuzheeGame.POLICY_CARD_HAND.getCards())){
+            PolicyCard policyCard = (PolicyCard)card;
+            finalState.addStats(policyCard.calculateStats(this, grid.getCity()));
+        }
+//        SmartTooltipUI tooltipUI = new SmartTooltipUI("");
     }
 
     @Override

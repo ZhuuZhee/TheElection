@@ -3,7 +3,6 @@ package Core.Cards.PolicyCardDox;
 import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
-import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class CoinBoom extends PolicyCard {
@@ -32,7 +31,7 @@ public class CoinBoom extends PolicyCard {
             int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();
             ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin + 15);
             rewardGrantedAtCurrentThreshold = true;
-            UINotificationToast.showNotification("💰 Coin Boom activated: +15 coin");
+            System.out.println("Coin Boom activated: +15 coin");
         } else if (!active) {
             rewardGrantedAtCurrentThreshold = false;
         }

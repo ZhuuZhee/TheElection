@@ -4,7 +4,6 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
-import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class CabinetShuffle extends PolicyCard {
@@ -39,6 +38,10 @@ public class CabinetShuffle extends PolicyCard {
         stats.setStats(PoliticsStats.FACILITY, -facValue);
         stats.setStats(PoliticsStats.ENVIRONMENT, -envValue);
         stats.setStats(PoliticsStats.ECONOMY, -ecoValue);
-        UINotificationToast.showNotification("PolicyCard [Cabinet Shuffle] ทำงาน! สลับเครื่องหมายของ " + playedCard.getName());
+
+        System.out.println("----------------------------------");
+        System.out.println("PolicyCard [Cabinet Shuffle] ทำงาน!");
+        System.out.println("ค่าสถานะของการ์ด " + playedCard.getName() + " ถูกสลับเครื่องหมายทั้งหมด");
+        System.out.println("----------------------------------");
     }
 }

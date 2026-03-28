@@ -1,8 +1,8 @@
 package Core.UI;
 
 import Core.Cards.Card;
+import Core.Cards.PolicyCard;
 import Core.Cards.Stream.PolicyCardRegistry;
-import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.*;
 
 public class PolicyCardHolderUI extends CardHolderUI {
@@ -33,6 +33,19 @@ public class PolicyCardHolderUI extends CardHolderUI {
         int totalWidth = (actualCardWidth * cards.size()) + (hGap * (cards.size() + 1)) + 30;
         
         setPanelSize(Math.max(164, totalWidth), 224);
+    }
+
+    public void showActiveCards(){
+        for(Card card : cards){
+            PolicyCard policyCard = (PolicyCard) card;
+            policyCard.setShowHighlight(policyCard.isActive());
+        }
+    }
+    public void hideActiveCards(){
+        for(Card card : cards){
+            PolicyCard policyCard = (PolicyCard) card;
+            policyCard.setShowHighlight(false);
+        }
     }
 
     @Override
