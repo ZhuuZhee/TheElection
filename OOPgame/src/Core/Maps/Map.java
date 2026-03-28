@@ -399,7 +399,7 @@ public class Map extends GameObject {
     }
 
     private String pickCityName(ArrayList<String> namePool, int cityIndex) {
-        if (namePool == null || namePool.isEmpty()) return "City Test : " + cityIndex;
+        if (namePool == null || namePool.isEmpty()) return "City : " + cityIndex;
         if (cityIndex < namePool.size()) return namePool.get(cityIndex);
 
         int baseIdx = cityIndex % namePool.size();
