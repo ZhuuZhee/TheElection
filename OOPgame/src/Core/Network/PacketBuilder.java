@@ -51,6 +51,13 @@ public class PacketBuilder{
         packet.put("city", cityJson);
         return packet;
     }
+
+    public static JSONObject createDestroyHandPacket(String fromPlayerId) {
+        JSONObject packet = createPacket(NetworkProtocol.DESTROY_AND_SKIP_DRAW);
+        packet.put("fromPlayerId", fromPlayerId);
+        return packet;
+    }
+
     public static JSONObject createKickPacket(){
         return createPacket(NetworkProtocol.HOST_LEFT);
     }
