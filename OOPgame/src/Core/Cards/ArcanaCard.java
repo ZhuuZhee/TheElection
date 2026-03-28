@@ -42,6 +42,10 @@ public abstract class ArcanaCard extends Card {
 
     @Override
     public void onMousePressed(int mouseX, int mouseY) {
+        if (!ZhuzheeGame.isMyTurn()) {
+            System.out.println("It's not your turn!");
+            return;
+        }
         int remainingCooldown = getRemainingCooldown();
 
         if (remainingCooldown <= 0) {
