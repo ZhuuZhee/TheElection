@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class PlayerListUI extends Canvas {
-    private final List<Player> players;
     private final JPanel listContainer;
     private final Map<String, PlayerItemUI> playerItemMap = new ConcurrentHashMap<>();
 
@@ -34,7 +33,6 @@ public class PlayerListUI extends Canvas {
 
     public PlayerListUI(Scene2D scene, List<Player> players) {
         super(scene);
-        this.players = players;
 
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -55,19 +53,30 @@ public class PlayerListUI extends Canvas {
     }
 
     public void updatePlayerList() {
+        if (ZhuzheeGame.CLIENT == null) return;
+        
+        // ดึงรายชื่อผู้เล่นล่าสุดจาก Client Manager
+        List<Player> currentPlayers = ZhuzheeGame.CLIENT.getConnectedPlayers();
+
+        // 1. Cleanup: ลบ UI ของผู้เล่นที่ไม่อยู่ในระบบแล้วออกจาก Map
+        java.util.Set<String> activeIds = new java.util.HashSet<>();
+        for (Player p : currentPlayers) activeIds.add(p.getPlayerId());
+        playerItemMap.keySet().retainAll(activeIds);
+
         // ล้างข้อมูลใน Container เพื่อจัดลำดับใหม่ตามคะแนน/Rank
         listContainer.removeAll();
 
-        // 1. Get city counts for each player
-        int[] cityCounts = new int[players.size()];
-        for (int i = 0; i < players.size(); i++) {
+        // 2. Get city counts for each player
+        int[] cityCounts = new int[currentPlayers.size()];
+        for (int i = 0; i < currentPlayers.size(); i++) {
             if (Core.ZhuzheeGame.MAP != null) {
-                cityCounts[i] = Core.ZhuzheeGame.MAP.getOwnedCitiesCount(players.get(i).getPlayerId());
+                cityCounts[i] = Core.ZhuzheeGame.MAP.getOwnedCitiesCount(currentPlayers.get(i).getPlayerId());
             }
         }
 
-        for (int i = 0; i < players.size(); i++) {
-            Player p = players.get(i);
+        // 3. วาด UI และคำนวณ Rank
+        for (int i = 0; i < currentPlayers.size(); i++) {
+            Player p = currentPlayers.get(i);
             
             // ตรวจสอบค่า Null เพื่อป้องกัน Error กรณี Client ยังโหลดไม่เสร็จ
             String currentPlayerId = (ZhuzheeGame.CLIENT != null) ? ZhuzheeGame.CLIENT.getCurrentPlayerId() : "";
@@ -75,9 +84,9 @@ public class PlayerListUI extends Canvas {
             boolean isMe = p.isLocal();
             Color playerColor = p.getColor();
 
-            // 2. คำนวณอันดับ (Rank)
+            // คำนวณอันดับ (Rank)
             int Rank = 1;
-            for (int k = 0; k < players.size(); k++) {
+            for (int k = 0; k < currentPlayers.size(); k++) {
                 if (k == i) {
                     continue;
                 }
@@ -86,11 +95,8 @@ public class PlayerListUI extends Canvas {
                 }
             }
 
-            // แปลงและแสดงผลสีตามที่ผู้เล่นตั้งไว้
-//            System.out.println(p.toString());
-            
-            // 3. ตรวจสอบว่ามี UI เดิมอยู่หรือไม่ ถ้าไม่มีให้สร้างใหม่ ถ้ามีให้ดึงมาอัปเดต
             int finalRank = Rank;
+            // ตรวจสอบว่ามี UI เดิมอยู่หรือไม่ ถ้าไม่มีให้สร้างใหม่ ถ้ามีให้ดึงมาอัปเดต
             PlayerItemUI item = playerItemMap.computeIfAbsent(p.getPlayerId(),
                 id -> new PlayerItemUI(p, finalRank, playerColor, isActive, isMe));
             

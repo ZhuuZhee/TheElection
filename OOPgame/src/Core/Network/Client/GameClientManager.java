@@ -293,6 +293,9 @@ public class GameClientManager {
                     this.localPlayer = playerToUpdate;
                 }
             }
+            
+            // อัปเดตรายชื่อผู้เล่นส่วนกลางของเกม
+            ZhuzheeGame.CURRENT_PLAYERS = getConnectedPlayers();
         }
 
         // Sync ข้อมูลเมืองที่มาจาก USE_CARD
@@ -303,6 +306,11 @@ public class GameClientManager {
             if (target != null) {
                 target.updateFromJson(cityData);
             }
+        }
+
+        // สั่งให้ UI อัปเดตรายชื่อผู้เล่นทันที (รวมถึงกรณีมีคน Disconnect หรือ Join ใหม่)
+        if (ZhuzheeGame.PLAYER_LIST_UI != null) {
+            ZhuzheeGame.PLAYER_LIST_UI.updatePlayerList();
         }
 
         // Notify listeners
@@ -382,6 +390,11 @@ public class GameClientManager {
                 System.out.println("Client : Updated connected player: " + p.toString());
                 break; // พบผู้เล่นแล้ว ไม่ต้องวนลูปต่อ
             }
+        }
+
+        // อัปเดต UI เมื่อข้อมูลผู้เล่น (เช่น สี หรือ ชื่อ) เปลี่ยนแปลง
+        if (ZhuzheeGame.PLAYER_LIST_UI != null) {
+            ZhuzheeGame.PLAYER_LIST_UI.updatePlayerList();
         }
 
         // Notify listeners
