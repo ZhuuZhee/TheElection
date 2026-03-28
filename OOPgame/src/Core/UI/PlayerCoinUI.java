@@ -14,7 +14,7 @@ public class PlayerCoinUI extends CardHolderUI {
         if (ZhuzheeGame.CLIENT != null) {
             this.localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
         } else {
-            this.localPlayer = Dummy.Tester.dummyPlayer;
+            this.localPlayer = null;
         }
 
         // ตั้งให้อยู่มุมขวาบน
