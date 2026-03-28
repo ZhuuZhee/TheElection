@@ -5,7 +5,7 @@ import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import Core.Maps.City;
 import Core.UI.EliminationUI;
-import Core.UI.WinUI;
+import Core.UI.WinnerUI;
 import Core.ZhuzheeGame;
 import org.json.JSONObject;
 
@@ -397,7 +397,7 @@ public class GameClientManager {
         if (ZhuzheeGame.SETTINGS_UI != null) ZhuzheeGame.SETTINGS_UI.setVisible(false);
 
         // สร้างและแสดงหน้าจอ WinUI
-        new WinUI(ZhuzheeGame.MAIN_SCENE);
+        new WinnerUI(ZhuzheeGame.MAIN_SCENE);
     }
 
     private synchronized void onStartGame(JSONObject data) {
