@@ -18,17 +18,13 @@ public class GameLogger {
         }
     }
 
-    public static void removeListener(LogListener listener) {
-        listeners.remove(listener);
-    }
-
     public static void log(String message) {
         System.out.println("[GAME LOG] " + message);
         logs.add(message);
         if (logs.size() > MAX_LOGS) {
-            logs.remove(0);
+            logs.removeFirst();
         }
-        
+
         for (LogListener listener : listeners) {
             listener.onLogAdded(message);
         }
@@ -42,15 +38,7 @@ public class GameLogger {
         log("WARNING: " + message);
     }
 
-    public static void logError(String message) {
-        log("ERROR: " + message);
-    }
-
     public static List<String> getLogs() {
         return new ArrayList<>(logs);
-    }
-
-    public static void clear() {
-        logs.clear();
     }
 }

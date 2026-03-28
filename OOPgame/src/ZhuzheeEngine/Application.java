@@ -61,17 +61,6 @@ public final class Application {
     }
 
     // ----------------- screen configuration --------------------
-    /**
-     * Configures the window size. Default is 1280x720.
-     * 
-     * @param screenWidth  Width in pixels.
-     * @param screenHeight Height in pixels.
-     */
-    public void setScreenSize(int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-    }
-
     public int getScreenHeight() {
         return screenHeight;
     }
@@ -83,24 +72,6 @@ public final class Application {
 
     public static JFrame getMainFrame() {
         return instance.mainFrame;
-    }
-
-    /**
-     * Adds a new adapter to the application lifecycle (create, render, dispose).
-     */
-    public static void addAdapter(ApplicationAdapter adapter) {
-        if (instance == null) {
-            throw new IllegalStateException("Make sure your Application subclass calls super.create().");
-        }
-        if (instance.adapters.contains(adapter)) {
-            System.err.println("Application already add this adapter.");
-            throw new RuntimeException("Application already add this adapter.");
-        }
-        instance.adapters.add(adapter);
-    }
-
-    public static void removeAdapter(ApplicationAdapter adapter) {
-        instance.adapters.remove(adapter);
     }
 
     /**
@@ -195,15 +166,6 @@ public final class Application {
         }
         if (Screen.currentScreen != null)
             Screen.currentScreen.create();
-    }
-
-    private void resize(int width, int height) {
-        rootAdapter.resize(width, height);
-        for (ApplicationAdapter adapter : adapters) {
-            adapter.resize(width, height);
-        }
-        if (Screen.currentScreen != null)
-            Screen.currentScreen.resize(width, height);
     }
 
     /// Called every frame after LaunchApp() succeeds.

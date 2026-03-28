@@ -250,9 +250,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }, eventMask);
     }
 
-    @Override
-    public void resize(int width, int height) {
-    }
+//    @Override
+//    public void resize(int width, int height) {
+//    }
 
     @Override
     public void render() {
@@ -302,8 +302,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
         int eventType = rand.nextInt(3);
         int decayAmount = -(10 + rand.nextInt(15)); // -10 to -24 stats
 
-        String eventName = "";
-        long statType = 0;
+        String eventName;
+        long statType;
 
         if (eventType == 0) {
             eventName = "Economic Recession";
