@@ -38,7 +38,7 @@ public class TheSun extends ArcanaCard {
                     }
                 }
             }
-            UINotificationToast.showNotification("The Sun activate! \nMultiply all your development cards by 20 if they have negative stats change to positive.");
+            UINotificationToast.showNotification("The Sun activate! Multiply all your development cards by 20 if they have negative stats change to positive.");
         }
     }
 }

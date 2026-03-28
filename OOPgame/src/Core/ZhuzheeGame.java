@@ -1,6 +1,5 @@
 package Core;
 
-import Core.Cards.Card;
 import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
@@ -11,7 +10,6 @@ import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
 import ZhuzheeEngine.Audios.AudioManager;
-import ZhuzheeEngine.Scene.Camera2D;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Screen;
 

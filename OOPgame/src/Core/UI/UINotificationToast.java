@@ -32,7 +32,7 @@ public class UINotificationToast extends Canvas {
         setMargins(0, 0, 50, 0); // ห่างจากขอบบน 50px
 
         setLayout(new BorderLayout());
-        setOpaque(false); 
+        setOpaque(false);
 
         // สร้าง Label สำหรับข้อความ
         messageLabel = new JLabel("");
@@ -66,7 +66,7 @@ public class UINotificationToast extends Canvas {
         }
 
         // สร้าง Timer ใหม่เพื่อซ่อน
-        hideTimer = new Timer(durationMs, e -> setVisible(false));
+        hideTimer = new Timer(durationMs, _ -> setVisible(false));
         hideTimer.setRepeats(false);
         hideTimer.start();
         
@@ -79,7 +79,7 @@ public class UINotificationToast extends Canvas {
      * @param message ข้อความที่ต้องการแจ้งเตือน
      */
     public static void showNotification(String message) {
-        showNotification(message, 3000);
+        showNotification(message, 5000);
     }
 
     /**
@@ -87,6 +87,7 @@ public class UINotificationToast extends Canvas {
      * @param message ข้อความที่ต้องการแจ้งเตือน
      * @param durationMs ระยะเวลาที่แสดง (มิลลิวินาที)
      */
+    // กำหนดระยะเวลาแสดงผลของ Toast ได้
     public static void showNotification(String message, int durationMs) {
         if (instance != null) {
             instance.show(message, durationMs);
