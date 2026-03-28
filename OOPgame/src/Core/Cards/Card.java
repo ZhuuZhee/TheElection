@@ -18,7 +18,6 @@ import java.awt.event.*;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -179,9 +178,11 @@ public abstract class Card extends GameObject {
     public void setDraggable(boolean draggable) {
         this.isDraggable = draggable;
     }
-    public void setGrabbed(boolean grabbed){
+
+    public void setGrabbed(boolean grabbed) {
         this.isGrabbed = grabbed;
     }
+
     public int getCoin() {
         return this.coin;
     }
@@ -200,8 +201,7 @@ public abstract class Card extends GameObject {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             System.err.println("ไม่สามารถโหลดรูปภาพได้จาก path: " + imagePath);
         }
     }
@@ -209,7 +209,6 @@ public abstract class Card extends GameObject {
     public String getImagePath() {
         return imagePath;
     }
-
     // ----------------------------------------
     // ------------  Mouse Events  ------------
     // ----------------------------------------
@@ -268,6 +267,7 @@ public abstract class Card extends GameObject {
             if (comp instanceof Map mapComponent) {
                 Point mapPos = SwingUtilities.convertPoint(getParent(), cardCenter, mapComponent);
                 Grid grid = mapComponent.getGridAtPoint(mapPos);
+                mapComponent.setHoveredGrid(grid);
                 onHoverGrid(grid, mapComponent);
             }
         }
@@ -279,14 +279,15 @@ public abstract class Card extends GameObject {
         for (Component comp : getParent().getComponents()) {
             if (comp instanceof Map mapComponent) {
                 mapComponent.clearHoveredGrid();
+                onHoverGrid(null, mapComponent);
             }
         }
     }
 
+    protected void onHoverGrid(Grid grid, Map mapComponent) {
+    }
+
     public void onMouseReleased() {
-
-        ZhuzheeGame.POLICY_CARD_HAND.hideActiveCards();
-
         if (getEnable() && isGrabbed) {
             isGrabbed = false;
             CURRENT_GRABBED_CARD = null;
@@ -325,9 +326,7 @@ public abstract class Card extends GameObject {
             repaint();
         }
     }
-    public void onHoverGrid(Grid grid, Map mapComponent){
-        mapComponent.setHoveredGrid(grid);
-    }
+
     // check ว่า card ชนกับขอบของ your hand มั้ย " ให้ card เป้นตัวเช็ค "
     private CardHolderUI getHandUIOnBottom() {
         if (getParent() == null) return null;
@@ -528,43 +527,39 @@ public abstract class Card extends GameObject {
     // Inner Class: หน้าต่าง Tooltip อัจฉริยะ
     // ==========================================
     public class SmartTooltipUI extends JPanel {
-        private PoliticsStats stats;
-        private String description;
-        private String title;
-        private boolean isActionCard;
-        public SmartTooltipUI(Card card){
-            this(card.stats,card.getName(),card.getDescription(),card instanceof ActionCard);
-        }
-        public SmartTooltipUI(PoliticsStats stats, String title,String description, boolean isActionCard) {
-            this.stats = stats;
-            this.description = description;
-            this.title = title;
-            this.isActionCard = isActionCard;
+        private Card targetCard;
+        private PoliticsStats previewStats;
+        private String previewTitle;
+        private String previewDesc;
+        private boolean isPreview = false;
+
+        public SmartTooltipUI(Card card) {
+            this.targetCard = card;
             setOpaque(false);
 
             // ปรับขนาดหน้าต่างตามประเภทของการ์ด
-            if (isActionCard) {
+            if (card instanceof ActionCard) {
                 setPreferredSize(new Dimension(200, 120)); // Action Card สเตตัสคงที่ ฟิกซ์ไว้ได้
             } else {
                 // --- ระบบคำนวณความสูง Dynamic สำหรับ Policy/Arcana ---
                 int fixedWidth = 240;
                 int calculatedHeight = 65; // ความสูงเริ่มต้น (เผื่อที่ให้ขอบบนและชื่อการ์ด)
 
-                if (description != null && !description.isEmpty()) {
+                if (card.getDescription() != null && !card.getDescription().isEmpty()) {
                     FontMetrics fm = getFontMetrics(getFont());
                     int maxWidth = fixedWidth - 30;
 
                     // จำลองการตัดบรรทัดเพื่อนับความสูง
-                    for (String line : description.split("\n")) {
+                    for (String line : card.getDescription().split("\n")) {
                         String[] words = line.split(" ");
-                        StringBuilder currentLine = new StringBuilder();
+                        String currentLine = "";
 
                         for (String word : words) {
                             if (fm.stringWidth(currentLine + word) < maxWidth) {
-                                currentLine.append(word).append(" ");
+                                currentLine += word + " ";
                             } else {
                                 calculatedHeight += 20; // ล้นปุ๊บ บวกความสูงเพิ่ม 20px
-                                currentLine = new StringBuilder(word + " ");
+                                currentLine = word + " ";
                             }
                         }
                         if (!currentLine.isEmpty()) {
@@ -577,6 +572,16 @@ public abstract class Card extends GameObject {
                 // กำหนดขนาดตามที่คำนวณได้เป๊ะๆ!
                 setPreferredSize(new Dimension(fixedWidth, calculatedHeight));
             }
+        }
+
+        public SmartTooltipUI(PoliticsStats stats, String title, String desc, boolean isPreview) {
+            this.previewStats = stats;
+            this.previewTitle = title;
+            this.previewDesc = desc;
+            this.isPreview = isPreview;
+            setOpaque(false);
+            // กำหนดขนาดพื้นฐานสำหรับโหมดพรีวิว
+            setPreferredSize(new Dimension(240, 150));
         }
 
         @Override
@@ -592,16 +597,18 @@ public abstract class Card extends GameObject {
 
             // วาดชื่อการ์ด
             g2d.setColor(Color.BLACK);
+            String title = isPreview ? previewTitle : targetCard.getName();
             g2d.drawString(title, 15, 25);
 
             // เช็คว่าเป็นการ์ดประเภทไหนเพื่อวาดข้อมูล
-            if (isActionCard) {
+            if (isPreview || targetCard instanceof ActionCard) {
                 // --- โหมด Action Card: วาดตัวเลข Stat ---
                 int eco = 0, fac = 0, env = 0;
-                if (stats != null) {
-                    eco = stats.getStats(PoliticsStats.ECONOMY);
-                    fac = stats.getStats(PoliticsStats.FACILITY);
-                    env = stats.getStats(PoliticsStats.ENVIRONMENT);
+                PoliticsStats st = isPreview ? previewStats : targetCard.stats;
+                if (st != null) {
+                    eco = st.getStats(PoliticsStats.ECONOMY);
+                    fac = st.getStats(PoliticsStats.FACILITY);
+                    env = st.getStats(PoliticsStats.ENVIRONMENT);
                 }
 
                 g2d.setColor(new Color(80, 80, 80));
@@ -610,20 +617,26 @@ public abstract class Card extends GameObject {
                 g2d.drawString("Economy:", 15, 105);
 
                 g2d.setColor(new Color(0, 102, 204));
-                g2d.drawString(String.valueOf(fac), 150, 55);
-                g2d.drawString(String.valueOf(env), 150, 80);
-                g2d.drawString(String.valueOf(eco), 150, 105);
+                g2d.drawString((fac > 0 ? "+" : "") + fac, 150, 55);
+                g2d.drawString((env > 0 ? "+" : "") + env, 150, 80);
+                g2d.drawString((eco > 0 ? "+" : "") + eco, 150, 105);
+
+                if (isPreview && previewDesc != null && !previewDesc.isEmpty()) {
+                    g2d.setFont(new Font("SansSerif", Font.PLAIN, 10));
+                    g2d.setColor(new Color(150, 50, 50));
+                    g2d.drawString(previewDesc, 15, 130);
+                }
 
             } else {
                 // --- Policy/Arcana: วาดคำอธิบาย ---
                 g2d.setColor(new Color(60, 60, 60));
 
                 int startY = 55;
-                if (description != null) {
+                if (targetCard.getDescription() != null) {
                     FontMetrics fm = g2d.getFontMetrics();
                     int maxWidth = getWidth() - 30;
                     // ตัดบรรทัดด้วย \n
-                    for (String line : description.split("\n")) {
+                    for (String line : targetCard.getDescription().split("\n")) {
                         String[] words = line.split(" ");
                         String currentLine = "";
 
