@@ -25,4 +25,14 @@ public class ClientAdapter implements ClientListener {
     public void onUpdatePlayer() {
 
     }
+
+    @Override
+    public void onEndTurn() {
+
+    }
+
+    @Override
+    public void onStartTurn() {
+
+    }
 }

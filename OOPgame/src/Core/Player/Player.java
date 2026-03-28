@@ -4,6 +4,8 @@ import Core.Cards.*;
 import Core.Cards.Stream.ArcanaCardName;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
+import Core.Maps.City;
+import Core.Network.PacketBuilder;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
@@ -126,10 +128,14 @@ public class Player {
         this.playerName = playerName;
     }
 
-    public void OnStartTurn() {
+    public void onStartTurn() {
         if (isLocal) {
             DrawCard();
         }
+    }
+
+    public void onEndTurn(){
+
     }
 
     public void DrawCard() {
@@ -174,11 +180,6 @@ public class Player {
     public void UseCard() {
     }
 
-    public void getCityOwn() {
-    }
-
-    public void setCityOwn() {
-    }
 
 
     public JSONObject toJSON() {

@@ -6,4 +6,6 @@ public interface ClientListener {
     void onStartGame();
     void onHostLeft();
     void onUpdatePlayer();
+    void onEndTurn();
+    void onStartTurn();
 }

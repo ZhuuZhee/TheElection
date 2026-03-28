@@ -4,13 +4,12 @@ import Core.Network.NetworkProtocol;
 import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import Core.Maps.City;
-import org.json.JSONArray;
+import Core.ZhuzheeGame;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -81,10 +80,6 @@ public class GameClientManager {
         return localPlayer;
     }
 
-    public void endTurn() {
-        sendAction(PacketBuilder.createEndTurnPacket());
-    }
-
     public void onDataReceived(JSONObject data) {
         if (data.has("type")) {
             String type = data.getString("type");
@@ -121,6 +116,23 @@ public class GameClientManager {
     }
 
     //----------------------------------------
+    //------- player action by client --------
+    //----------------------------------------
+
+    public void endTurn() {
+        localPlayer.onEndTurn();
+        sendAction(PacketBuilder.createEndTurnPacket());
+
+        // Notify listeners
+        for (ClientListener listener : clientListeners) {
+            listener.onEndTurn();
+        }
+    }
+    public void useCard(City targetCity){
+        ZhuzheeGame.CLIENT.sendAction(PacketBuilder.createUseCardPacket(targetCity.toJson()));
+    }
+
+    //----------------------------------------
     //---- player action on received data ----
     //----------------------------------------
 
@@ -147,7 +159,7 @@ public class GameClientManager {
                 boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
                 // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
                 if (myTurnNow && localPlayer != null) {
-                    localPlayer.OnStartTurn();
+                    onStartTurn();
                 }
             }
         }
@@ -202,6 +214,13 @@ public class GameClientManager {
         for (ClientListener listener : clientListeners) {
             listener.onSyncGameState();
         }
+    }
+    private synchronized void onStartTurn(){
+        // Notify listeners
+        for (ClientListener listener : clientListeners) {
+            listener.onStartTurn();
+        }
+        localPlayer.onStartTurn();
     }
 
     private synchronized void onStartGame(JSONObject data) {

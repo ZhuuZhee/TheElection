@@ -90,9 +90,9 @@ public class ActionCard extends Card {
             System.out.println("playerCoin: " + playercoin.getCoin());
         }
 
-        // ระบบ Broadcast updata ค่าเเมืองส่งไปยัง Server
+        // ระบบ Broadcast update ค่าเเมืองส่งไปยัง Server
         if (ZhuzheeGame.CLIENT != null && targetCity != null) {
-            ZhuzheeGame.CLIENT.sendAction(PacketBuilder.createUseCardPacket(targetCity.toJson()));
+            ZhuzheeGame.CLIENT.useCard(targetCity);
         }
     }
 

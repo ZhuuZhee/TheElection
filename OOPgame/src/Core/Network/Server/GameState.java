@@ -11,7 +11,6 @@ public class GameState {
     private List<Player> players = new ArrayList<>();
     private int turnCounter = 1;
     private String hostId;
-    private String currentPlayerId;
     private Player currentPlayer;
     private long mapSeed = new Random().nextLong();
 
@@ -33,7 +32,6 @@ public class GameState {
 
     public void setCurrentPlayer(Player player) {
         currentPlayer = player;
-        currentPlayerId = player.getPlayerId();
         System.out.println("Server : Current Player is " + player.getPlayerName() + "\n id : " + player.getPlayerId());
         playersLog();
     }
@@ -49,8 +47,8 @@ public class GameState {
         if (hostId != null) {
             data.put("hostId", hostId);
         }
-        if (currentPlayerId != null) {
-            data.put("currentPlayerId", currentPlayerId);
+        if (currentPlayer != null) {
+            data.put("currentPlayerId", currentPlayer.getPlayerId());
         }
 
         org.json.JSONArray playersArray = new org.json.JSONArray();
@@ -80,8 +78,6 @@ public class GameState {
 
     public synchronized void nextTurn() {
         int index = players.indexOf(currentPlayer);
-
-        Player prevPlayer = getCurrentPlayer();
         setCurrentPlayer(players.get((index + 1) % players.size()));
     }
 
