@@ -31,8 +31,7 @@ public class TheWheelOfFortune extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        System.out.println("The Wheel Of Fortune activate!");
-        
+        UINotificationToast.showNotification("The Wheel Of Fortune Activate!");
         // เช็กก่อนว่ามีที่วาง Policy Card ไหม
         if (ZhuzheeGame.POLICY_CARD_HAND != null) {
             ZhuzheeGame.POLICY_CARD_HAND.setMaxCard(MAX_POLICY_CARD_COUNT);

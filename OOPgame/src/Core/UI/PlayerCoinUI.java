@@ -18,13 +18,14 @@ public class PlayerCoinUI extends CardHolderUI {
         }
 
         // ตั้งให้อยู่มุมขวาบน
-        setAnchorTop(true);
+        setAnchorTop(false);
         setAnchorRight(true);
+        setAnchorLeft(false);
 
         // เว้นระยะขอบ (Top, Right, Bottom, Left)
-        setMargins(16, 16, 128, 16);
+        setMargins(0, 16, 0, 250);
 
-        setPanelSize(160, 30);
+        setPanelSize(180, 30);
         setMaxCard(0);
 
         updateCoinDisplay();

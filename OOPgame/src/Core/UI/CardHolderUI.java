@@ -36,7 +36,7 @@ public class CardHolderUI extends Canvas {
 
         setPanelSize(width, height);
         setScreenPos(x, y);
-        setMargins(20, 20, 20, 20);
+        setMargins(0, 20, 20, 20);
         setAnchors(-1, 1); // Default: Left-Top
 
         // กำหนดดีไซน์พื้นหลังและขอบ

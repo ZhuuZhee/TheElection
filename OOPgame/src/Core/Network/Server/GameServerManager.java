@@ -116,7 +116,7 @@ public class GameServerManager {
             onNextTurn();
         } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
             onUseCard(action); // อัพเดตค่าเมืองให้ทุกคนเห็นเหมือนกัน
-        }else if (type.equals(NetworkProtocol.DESTROY_AND_SKIP_DRAW.name())) {
+        }else if (type.equals(NetworkProtocol.DESTROY_AND_SKIP_DRAW.name()) || type.equals(NetworkProtocol.NEGATIVE_HAND_STATS.name()) || type.equals(NetworkProtocol.JUDGEMENT_SKILL.name())) {
             broadcast(action); // ส่งให้ทุกคนรับกรรมพร้อมกัน
         }
     }

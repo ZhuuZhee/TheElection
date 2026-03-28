@@ -32,8 +32,13 @@ public class Player {
     private String profileImagePath;
     private boolean isLoose;//แพ้ป่าว
     private boolean skipDrawNextTurn = false; // ตัวแปรสำหรับสถานะห้ามจั่วการ์ด
+    
+    // เพิ่มตัวแปรสำหรับสกิล Judgement
+    private boolean isPolicySilenced = false;
+    private ArrayList<Core.Cards.Card> silencedPolicyCards = new ArrayList<>();
 
     public static final String DEFAULT_PROFILE_FILE = "1Pro.png";
+
     public static final int DEFAULT_DRAW_DEV_CARD_AMOUNT = 4;
     public static final Map<String, Color> COLOR_MAP = new HashMap<>();
     static {
@@ -146,6 +151,41 @@ public class Player {
 
     public void onEndTurn(){
 
+    }
+
+    public void applyJudgementPenalty() {
+        if (!isLocal) return;
+
+        // 1. ลบการ์ด Action ออกครึ่งมือ (ปัดเศษลง)
+        if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
+            java.util.List<Core.Cards.Card> devCards = new ArrayList<>(ZhuzheeGame.DEVLOPMENT_CARD_HAND.getCards());
+            int cardsToRemove = devCards.size() / 2;
+            Random random = new Random();
+            for (int i = 0; i < cardsToRemove; i++) {
+                if (devCards.isEmpty()) break;
+                int index = random.nextInt(devCards.size());
+                Core.Cards.Card card = devCards.remove(index);
+                ZhuzheeGame.DEVLOPMENT_CARD_HAND.removeCard(card);
+                ZhuzheeEngine.Scene.GameObject.Destroy(card);
+            }
+        }
+
+        // 2. ห้ามจั่วเทิร์นหน้า
+        setSkipDrawNextTurn(true);
+
+        // 3. ดูด Policy Card ออกจากมือไปเก็บไว้ชั่วคราว
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            silencedPolicyCards.clear();
+            java.util.List<Core.Cards.Card> policies = new ArrayList<>(ZhuzheeGame.POLICY_CARD_HAND.getCards());
+            for (Core.Cards.Card p : policies) {
+                silencedPolicyCards.add(p);
+                ZhuzheeGame.POLICY_CARD_HAND.removeCard(p);
+            }
+            ZhuzheeGame.POLICY_CARD_HAND.revalidate();
+            ZhuzheeGame.POLICY_CARD_HAND.repaint();
+        }
+        
+        isPolicySilenced = true;
     }
 
     public void DrawCard() {

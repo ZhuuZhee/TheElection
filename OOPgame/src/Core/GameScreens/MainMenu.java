@@ -52,8 +52,9 @@ public class MainMenu extends Screen implements ActionListener {
         bgCanvas.setLayout(new BorderLayout());
 
 
-        JLabel title = new JLabel("The Election");
+        JLabel title = new JLabel("Divide and conquer");
         title.setFont(title.getFont().deriveFont(40f));
+        title.setForeground(Color.BLACK);
         // ไม่ต้อง setFont แล้ว ใช้ default font จาก UIManager
         title.setHorizontalAlignment(JLabel.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));

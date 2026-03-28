@@ -6,31 +6,46 @@ import ZhuzheeEngine.Scene.*;
 import ZhuzheeEngine.Scene.Canvas;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 
 public class PlayerProfile extends Canvas {
     private final Player player;
-    private final int panelWidth = 180;
-    private final int panelHeight = 220;
     private Image profileImage;
+    private JLabel nameLabel;
 
-    // Dummy value for percentage for now
-    private float partyListPercentage = 0.45f;
+    private final Color colorBorder = new Color(200, 180, 150);
+    private final Color colorBorder2 = new Color(100, 90, 75);
+    private final Color colorBg = new Color(20, 20, 20, 240);
+    private final int arcSize = 15;
 
     public PlayerProfile(Scene2D scene, Player player) {
         super(scene);
         this.player = player;
 
-        // ขวาล่าง (เว้นที่ให้ GameEventLog ด้านล่าง)
-        setPanelSize(panelWidth, panelHeight);
-        setAnchors(1, -1);
-        setMargins(0, 20, 230, 20); // bottom margin 230 เพื่อให้ลอยอยู่เหนือ GameLogUI
+        setPanelSize(180, 224);
+        setAnchorTop(false);
+        setAnchorRight(true);
+        setAnchorLeft(false);
+        setMargins(16, 16, 16, 16);
         setOpaque(false);
+
+        this.setLayout(new BorderLayout());
+
+        String playerName = player != null ? player.getPlayerName() : "Name";
+        nameLabel = new JLabel(playerName);
+        nameLabel.setHorizontalAlignment(JLabel.CENTER);
+        nameLabel.setForeground(Color.WHITE);
+        nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0)); // เว้นขอบล่าง 15px
+
+        this.add(nameLabel, BorderLayout.SOUTH);
 
         updateProfile();
         setVisible(true);
+
+        onResize(scene.getWidth(), scene.getHeight());
     }
 
     public void updateProfile() {
@@ -39,20 +54,9 @@ public class PlayerProfile extends Canvas {
         File imageFile = player.getProfileImageFile();
         if (imageFile != null && imageFile.exists()) {
             ImageIcon icon = new ImageIcon(imageFile.getAbsolutePath());
-            if (icon.getIconWidth() > 0) {
-                profileImage = icon.getImage();
-            } else {
-                profileImage = null;
-            }
-        } else {
-            profileImage = null;
+            this.profileImage = icon.getImage();
         }
-
-        repaint();
-    }
-
-    public void setPartyListPercentage(float percentage) {
-        this.partyListPercentage = Math.max(0f, Math.min(1f, percentage));
+        nameLabel.setText(player.getPlayerName());
         repaint();
     }
 
@@ -62,69 +66,27 @@ public class PlayerProfile extends Canvas {
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int width = getWidth();
-        int height = getHeight();
+        // วาดพื้นหลังกล่องโปรไฟล์
+        g2d.setColor(new Color(50, 50, 50, 220));
+        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), arcSize, arcSize);
 
-        // Sizes and Positions
-        int barWidth = 15;
-        int barHeight = 170; // Height covering image + name
-        int barX = 0;
-        int barY = 25; // Top alignment
+        setBorder(new LineBorder(new Color(150, 150, 150), 2));
 
-        int boxX = barWidth + 12;
-        int boxY = 25;
-        int boxWidth = width - boxX - 10;
-        int boxHeight = 140; // Square-ish
-        int arcSize = 25;
+        int boxX = 15;
+        int boxY = 15;
+        int boxWidth = 150;
+        int boxHeight = 150;
 
-        // 1. Draw Vertical Bar (PartyList %)
-        // Background of bar (White)
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(barX, barY, barWidth, barHeight);
-        
-        // Fill of bar (Blue) based on percentage (from bottom up)
-        int fillHeight = (int) (barHeight * partyListPercentage);
-        g2d.setColor(new Color(0, 51, 153)); // Dark blue
-        g2d.fillRect(barX, barY + barHeight - fillHeight, barWidth, fillHeight);
+        Shape clipShape = new RoundRectangle2D.Float(boxX, boxY, boxWidth, boxHeight, 10, 10);
+        g2d.setClip(clipShape);
 
-        // 2. Draw Profile Box (White background with rounded corners)
-        g2d.setColor(Color.WHITE);
-        g2d.fillRoundRect(boxX, boxY, boxWidth, boxHeight, arcSize, arcSize);
-
-        // Draw Profile Image inside the box
-        Shape clip = new RoundRectangle2D.Float(boxX, boxY, boxWidth, boxHeight, arcSize, arcSize);
-        g2d.setClip(clip);
         if (profileImage != null) {
-            // Draw image maintaining aspect ratio or scaling to fit
             g2d.drawImage(profileImage, boxX, boxY, boxWidth, boxHeight, null);
         } else {
-            g2d.setColor(player != null ? player.getColor() : Color.GRAY);
+            g2d.setColor(player != null && player.getColor() != null ? player.getColor() : Color.GRAY);
             g2d.fillRect(boxX, boxY, boxWidth, boxHeight);
         }
-        g2d.setClip(null); // Remove clip
-
-        // 3. Draw Name (Outside, below the image box)
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Segoe UI", Font.PLAIN, 20)); // Adjusted font to look like the design
-        String name = player != null ? player.getPlayerName() : "Name";
-        FontMetrics fm = g2d.getFontMetrics();
-        // Position name slightly below the image box, aligned to the left of the image box
-        int nameY = boxY + boxHeight + 25; 
-        g2d.drawString(name, boxX, nameY);
-
-        // 4. Draw Bottom Right Oval Button/Badge
-        int badgeWidth = 55;
-        int badgeHeight = 35;
-        // Positioned overlapping the bottom right corner of the profile box
-        int badgeX = boxX + boxWidth - badgeWidth + 10; 
-        int badgeY = boxY + boxHeight - badgeHeight + 15;
-        
-        // Draw oval (badge)
-        g2d.setColor(new Color(150, 150, 150, 200)); // Grey semi-transparent like the image
-        g2d.fillRoundRect(badgeX, badgeY, badgeWidth, badgeHeight, badgeHeight, badgeHeight);
-        g2d.setColor(Color.WHITE);
-        g2d.setStroke(new BasicStroke(1.5f));
-        g2d.drawRoundRect(badgeX, badgeY, badgeWidth, badgeHeight, badgeHeight, badgeHeight);
+        g2d.setClip(null);
 
         g2d.dispose();
     }
