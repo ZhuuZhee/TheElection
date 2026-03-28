@@ -194,7 +194,7 @@ public class GameServerManager {
         org.json.JSONObject startPacket = new org.json.JSONObject();
         startPacket.put("type", NetworkProtocol.START_GAME.name());
         startPacket.put("mapSeed", gameState.getMapSeed());
-        gameState.onStartGame();
+        gameState.onStartTurn();
         broadcast(startPacket);
         broadcast(gameState.generateSyncData());
     }
@@ -213,7 +213,6 @@ public class GameServerManager {
         updateGameStateToClients();
     }
     private synchronized void onVoting(){
-        gameState.onVoting();
         JSONObject packet = gameState.generateSyncData();
         packet.put("type",NetworkProtocol.VOTING.name());
         broadcast(packet);

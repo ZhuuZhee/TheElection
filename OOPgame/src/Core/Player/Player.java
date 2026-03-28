@@ -137,9 +137,10 @@ public class Player {
     }
 
     public void setLose(boolean lose) {
-        isLose = lose;
-        if(lose){
-            onLoose();
+        if (this.isLose == lose) return;
+        this.isLose = lose;
+        if (this.isLocal && lose) {
+            onLoose(); // รันเฉพาะเครื่องตัวเองเพื่อเคลียร์ UI
         }
     }
 
@@ -329,7 +330,7 @@ public class Player {
             this.arcanaCardName = data.getString("arcanaCard");
         }
         if(data.has("isLose")){
-            isLose = data.getBoolean("isLose");
+            setLose(data.getBoolean("isLose"));
         }
 
         if (ZhuzheeGame.PLAYER_LIST_UI != null) {

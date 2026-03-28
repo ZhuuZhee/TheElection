@@ -322,10 +322,18 @@ public class Map extends GameObject {
         HashMap<String,Float> playerScores = new HashMap<>();
         float totalScore = 0f;
 
-        //รวมคะแนนสะสมของผู้เล่นแต่ละคนจากทุกเมือง
+        // 1. ดึง ID ของผู้เล่นที่ยังอยู่ในเกมและยังไม่แพ้เท่านั้น
+        java.util.List<String> activePlayerIds = new java.util.ArrayList<>();
+        for (Player p : ZhuzheeGame.CURRENT_PLAYERS) {
+            if (!p.isLose()) activePlayerIds.add(p.getPlayerId());
+        }
+
+        // 2. รวมคะแนนสะสมเฉพาะผู้เล่นที่ยัง Active
         for (City city : getAllCities()) {
             for (java.util.Map.Entry<String, Float> entry : city.playerScores.entrySet()) {
                 String pId = entry.getKey();
+                if (!activePlayerIds.contains(pId)) continue; // กรองผู้เล่นที่หลุดหรือแพ้แล้วออก
+
                 float score = entry.getValue();
                 
                 playerScores.put(pId, playerScores.getOrDefault(pId, 0f) + score);

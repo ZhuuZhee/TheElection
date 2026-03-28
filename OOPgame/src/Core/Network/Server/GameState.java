@@ -126,13 +126,17 @@ public class GameState {
     // --------   game state events method
     //-----------------------------------------
 
-    public synchronized void onStartGame() {
-        Player startPlayer = players.getFirst();
+    public synchronized void onStartTurn() {
+        if (players.isEmpty()) return;
+
+        // ค้นหาผู้เล่นคนแรกที่ยังไม่แพ้
+        Player startPlayer = players.stream()
+                .filter(p -> !p.isLose())
+                .findFirst()
+                .orElse(players.getFirst());
+
         setCurrentPlayer(startPlayer);
         // ไม่ต้องเรียก OnStartTurn ที่นี่ เพราะ Client จะเริ่มเทิร์นเองเมื่อ SYNC_STATE มาถึง
-    }
-    public synchronized void onVoting(){
-        currentPlayer = null;
     }
 
     public synchronized void nextTurn() {
