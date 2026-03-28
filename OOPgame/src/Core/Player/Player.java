@@ -31,6 +31,7 @@ public class Player {
     private String colorName = "Red";
     private String profileImagePath;
     private boolean isLoose;//แพ้ป่าว
+    private boolean skipDrawNextTurn = false; // ตัวแปรสำหรับสถานะห้ามจั่วการ์ด
 
     public static final String DEFAULT_PROFILE_FILE = "1Pro.png";
     public static final int DEFAULT_DRAW_DEV_CARD_AMOUNT = 4;
@@ -128,9 +129,18 @@ public class Player {
         this.playerName = playerName;
     }
 
+    public void setSkipDrawNextTurn(boolean skip) {
+        this.skipDrawNextTurn = skip;
+    }
+
     public void onStartTurn() {
         if (isLocal) {
-            DrawCard();
+            if (skipDrawNextTurn) {
+                System.out.println("⚡ [The Tower Effect] You cannot draw cards this turn!");
+                skipDrawNextTurn = false; // เคลียร์สถานะหลังจากโดนข้ามไปแล้ว 1 เทิร์น
+            } else {
+                DrawCard();
+            }
         }
     }
 
