@@ -6,13 +6,7 @@ import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
 import Core.Maps.Map;
 import Core.Player.Player;
-import Core.UI.CardHolderUI;
-import Core.UI.PlayerListUI;
-import Core.UI.PlayerProfile;
-import Core.UI.PolicyCardHolderUI;
-import Core.UI.ArcanaCardHolderUI;
-import Core.UI.PlayerCoinUI;
-import Core.UI.GameSettingUI;
+import Core.UI.*;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -54,6 +48,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PlayerProfile PLAYER_PROFILE_UI;
     public static Core.UI.PlayerCoinUI PLAYER_COIN_UI;
     public static GameSettingUI SETTINGS_UI;
+    public static Core.UI.TurnUI TURN_UI;
 
     public static List<Player> CURRENT_PLAYERS = new ArrayList<>();
 
@@ -133,6 +128,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.PolicyCardHolderUITest(MAIN_SCENE);
         PlayerUI.ArcanaCardHolderUITest(MAIN_SCENE);
         PlayerUI.GameSettingUI(MAIN_SCENE);
+        PlayerUI.TurnUITest(MAIN_SCENE);
 
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
@@ -235,6 +231,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
     public void sceneUpdate() {
         checkRoundAndShop();
+        if (TURN_UI != null) {
+            TURN_UI.updateTurnDisplay();
+        }
     }
     private static int lastShopOpenedRound = -1;
 
@@ -324,6 +323,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
         public static PlayerProfile PlayerProfileUITest(Scene2D scene2D, Player player) {
             ZhuzheeGame.PLAYER_PROFILE_UI = new PlayerProfile(scene2D, player);
             return ZhuzheeGame.PLAYER_PROFILE_UI;
+        }
+        public static TurnUI TurnUITest(Scene2D scene2D) {
+            ZhuzheeGame.TURN_UI = new TurnUI(scene2D);
+            return ZhuzheeGame.TURN_UI;
         }
         public static CardHolderUI CardHolderUITest(Scene2D scene2D){
             CardHolderUI ui = new CardHolderUI(scene2D);
