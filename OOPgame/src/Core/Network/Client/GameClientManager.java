@@ -5,6 +5,7 @@ import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import Core.Maps.City;
 import Core.UI.EliminationUI;
+import Core.UI.WinUI;
 import Core.ZhuzheeGame;
 import org.json.JSONObject;
 
@@ -26,6 +27,7 @@ public class GameClientManager {
     private int turnCounter;
     private final HashSet<ClientListener> clientListeners = new HashSet<>();
     private boolean isVotingState = false;
+    private boolean gameEnded = false;
 
     public List<Player> getConnectedPlayers() {
         return new ArrayList<>(connectedPlayers.values());
@@ -317,6 +319,9 @@ public class GameClientManager {
             
             // อัปเดตรายชื่อผู้เล่นส่วนกลางของเกม
             ZhuzheeGame.CURRENT_PLAYERS = getConnectedPlayers();
+            
+            // ตรวจสอบเงื่อนไขการชนะทุกครั้งที่มีการ Sync ข้อมูลผู้เล่น
+            checkWinCondition();
         }
 
         // Sync ข้อมูลเมืองที่มาจาก USE_CARD
@@ -348,8 +353,56 @@ public class GameClientManager {
         localPlayer.onStartTurn();
     }
 
+    private void checkWinCondition() {
+        // ตรวจสอบว่าเกมจบไปแล้วหรือยัง และมีผู้เล่นในระบบหรือไม่
+        if (gameEnded || connectedPlayers.isEmpty()) return;
+
+        int activePlayersCount = 0;
+        Player potentialWinner = null;
+        
+        for (Player p : connectedPlayers.values()) {
+            if (!p.isLose()) {
+                activePlayersCount++;
+                potentialWinner = p;
+            }
+        }
+
+        // เงื่อนไข: ถ้าเหลือผู้เล่นเพียงคนเดียวที่ยังไม่แพ้ (ในเกมที่มีผู้เล่นมากกว่า 1 คน)
+        if (activePlayersCount == 1 && connectedPlayers.size() > 1) {
+            gameEnded = true;
+            boolean isMeWinner = (localPlayer != null && localPlayer.getPlayerId().equals(potentialWinner.getPlayerId()));
+            
+            if (isMeWinner) {
+                // หากเราเป็นผู้ชนะ: แสดงหน้าจอชัยชนะและปิด UI อื่นๆ
+                javax.swing.SwingUtilities.invokeLater(this::showWinUI);
+            } else if (localPlayer != null && localPlayer.isLose()) {
+                // หากเราแพ้แล้วและเกมจบลง: ย้ายเรากลับไปหน้า Waiting Room ทันที
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    ZhuzheeEngine.Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
+                });
+            }
+        }
+    }
+
+    private void showWinUI() {
+        // ปิดการแสดงผล UI ที่เกี่ยวข้องกับการเล่นทั้งหมด
+        if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) ZhuzheeGame.DEVLOPMENT_CARD_HAND.setVisible(false);
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) ZhuzheeGame.POLICY_CARD_HAND.setVisible(false);
+        if (ZhuzheeGame.ARCANA_CARD_UI != null) ZhuzheeGame.ARCANA_CARD_UI.setVisible(false);
+        if (ZhuzheeGame.END_TURN_UI != null) ZhuzheeGame.END_TURN_UI.setVisible(false);
+        if (ZhuzheeGame.PLAYER_LIST_UI != null) ZhuzheeGame.PLAYER_LIST_UI.setVisible(false);
+        if (ZhuzheeGame.PLAYER_PROFILE_UI != null) ZhuzheeGame.PLAYER_PROFILE_UI.setVisible(false);
+        if (ZhuzheeGame.PLAYER_COIN_UI != null) ZhuzheeGame.PLAYER_COIN_UI.setVisible(false);
+        if (ZhuzheeGame.TURN_UI != null) ZhuzheeGame.TURN_UI.setVisible(false);
+        if (ZhuzheeGame.SETTINGS_UI != null) ZhuzheeGame.SETTINGS_UI.setVisible(false);
+
+        // สร้างและแสดงหน้าจอ WinUI
+        new WinUI(ZhuzheeGame.MAIN_SCENE);
+    }
+
     private synchronized void onStartGame(JSONObject data) {
         System.out.println("Host start game");
+        gameEnded = false; // รีเซ็ตสถานะเมื่อเริ่มเกมใหม่
         if (data.has("mapSeed")) {
             Core.ZhuzheeGame.MAP_SEED = data.getLong("mapSeed");
         }
