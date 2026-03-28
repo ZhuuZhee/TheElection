@@ -196,13 +196,8 @@ public class Grid {
             g2d.setColor(Color.WHITE);
             g2d.setStroke(new BasicStroke(4 * map.getScaleRatio()));
         } else {
-            // ถ้ายึดได้แล้ว ใช้สีขอบที่เข้มกว่าสี Player แต่ถ้ายังสีเทาอยู่ (owner == null) ให้ใช้สีเดิมของเมืองเป็นสีกรอบเพื่อให้แยกออก
-            if (owner != null) {
-                g2d.setColor(getDarkerColor(baseColor, 0.6f));
-            } else {
-                g2d.setColor(city.getColor());
-            }
-            g2d.setStroke(new BasicStroke(3 * map.getScaleRatio())); // ทำให้กรอบหนาขึ้นเพื่อให้เห็นสีเมืองชัดขึ้น
+            g2d.setColor(getDarkerColor(baseColor, 0.6f));
+            g2d.setStroke(new BasicStroke(2 * map.getScaleRatio()));
         }
         g2d.draw(hexagon);
     }
