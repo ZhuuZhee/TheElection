@@ -150,6 +150,7 @@ public class Shop extends Canvas {
         updateHeader(); // อัปเดตเงิน
         cardContainer.revalidate();
         cardContainer.repaint();
+        // เอาไว้เปิด shopUI
         closeShop();
     }
 

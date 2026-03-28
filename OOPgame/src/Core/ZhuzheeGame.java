@@ -8,6 +8,7 @@ import Core.Maps.Map;
 import Core.Player.Player;
 import Core.UI.CardHolderUI;
 import Core.UI.PlayerListUI;
+import Core.UI.PlayerProfile;
 import Core.UI.PolicyCardHolderUI;
 import Core.UI.ArcanaCardHolderUI;
 import Dummy.Tester;
@@ -48,6 +49,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PolicyCardHolderUI POLICY_CARD_HAND;
     public static ArcanaCardHolderUI ARCANA_CARD_UI;
     public static PlayerListUI PLAYER_LIST_UI;
+    public static PlayerProfile PLAYER_PROFILE_UI;
     public static Core.UI.PlayerCoinUI PLAYER_COIN_UI;
 
     public static List<Player> CURRENT_PLAYERS = new ArrayList<>();
@@ -157,6 +159,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
                 localPlayer.setArcanaCard(card); // เก็บไพ่จริงใส่ตัว Player
                 ARCANA_CARD_UI.addCard(card);    // ยัดไพ่ลงกระดาน UI
             }
+            // เอาไว้เปิด PlayerProfileUI
+//            PlayerUI.PlayerProfileUITest(MAIN_SCENE, localPlayer);
         }
         localPlayer.DrawCard();
     }
@@ -310,6 +314,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
         public static Core.UI.PlayerCoinUI PlayerCoinUITest(Scene2D scene2D) {
             ZhuzheeGame.PLAYER_COIN_UI = new Core.UI.PlayerCoinUI(scene2D);
             return ZhuzheeGame.PLAYER_COIN_UI;
+        }
+        public static PlayerProfile PlayerProfileUITest(Scene2D scene2D, Player player) {
+            ZhuzheeGame.PLAYER_PROFILE_UI = new PlayerProfile(scene2D, player);
+            return ZhuzheeGame.PLAYER_PROFILE_UI;
         }
         public static CardHolderUI CardHolderUITest(Scene2D scene2D){
             CardHolderUI ui = new CardHolderUI(scene2D);
