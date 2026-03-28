@@ -5,6 +5,7 @@
  */
 package Core.Maps;
 
+import Core.Player.Player;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 
@@ -338,7 +339,7 @@ public class Map extends GameObject {
             City city = new City("City Test : " + i,
                     random.nextInt(minStats, maxStats), random.nextInt(minStats, maxStats),
                     random.nextInt(minStats, maxStats), random.nextInt(minPopulation, maxPopulation),
-                    this.numPlayers);
+                    (ArrayList<Player>) ZhuzheeGame.CLIENT.getConnectedPlayers());
             do {
                 isDuplicate = false;
                 int r = random.nextInt(1, 5) * 255 / 5;
@@ -473,7 +474,7 @@ public class Map extends GameObject {
 
         java.util.List<Core.Player.Player> players = Core.ZhuzheeGame.CURRENT_PLAYERS;
         int availablePlayers = (players != null) ? players.size() : 0;
-        int scorePlayers = (city.playerScores != null) ? city.playerScores.length : 0;
+        int scorePlayers = (city.playerScores != null) ? city.playerScores.size() : 0;
         int playersToShow = Math.max(0, Math.min(availablePlayers, scorePlayers));
 
         int padding = 15;
@@ -523,7 +524,7 @@ public class Map extends GameObject {
             Core.Player.Player p = players.get(i);
             String name = (p != null) ? p.getPlayerName() : ("Player " + i);
             Color c = (p != null && p.getColor() != null) ? p.getColor() : Color.GRAY;
-            double percent = city.getPlayerPercentage(i);
+            float percent = city.getPlayerPercentage(p.getPlayerId());
 
             g2d.setColor(Color.DARK_GRAY);
             g2d.drawString(String.format("%s: %.2f%%", name, percent), barX, yCursor + 10);

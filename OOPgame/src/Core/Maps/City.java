@@ -2,6 +2,9 @@ package Core.Maps;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import Core.Player.Player;
 import org.json.*;
 
 /**
@@ -21,26 +24,27 @@ public class City {
 
     // --- Config ค่าคงที่ต่างๆ (ปรับ Balance ที่นี่) ---
     /** Multiplier for the logarithmic scoring formula. */
-    public static final double K_LOG_MULTIPLIER = 200.0;
+    public static final float K_LOG_MULTIPLIER = 200.0f;
     /** Ratio of population required to earn one council seat. */
     public static final int POP_PER_SEAT = 10000;
     /** Base score added per council seat. */
-    public static final double SCORE_PER_SEAT_BASE = 50.0;
+    public static final float SCORE_PER_SEAT_BASE = 50.0f;
 
     /** Total number of players in the game. */
     /** Number of seats available in this city's council. */
     public int councilSeats;
     /** The initial base score for the city. */
-    public double baseScore;
+    public float baseScore;
     /** Current weighted scores for each player in this city. */
-    public double[] playerScores;
+    public HashMap<String,Float> playerScores = new HashMap<>();
+    public ArrayList<String> playerIds = new ArrayList<>();
 
     private int ownerId = -1;
 
     /**
      * Constructs a new City with specified parameters and initializes scoring.
      */
-    public City(String cityName, int facility, int environment, int economy, int population) {
+    public City(String cityName, int facility, int environment, int economy, int population, ArrayList<Player> playerList) {
         // เริ่มต้นสถานะของเมือง
         this.stats = new PoliticsStats(facility, environment, economy);
         this.population = population;
@@ -48,34 +52,11 @@ public class City {
 
         // 1. คำนวณจำนวนที่นั่งสภา (Council Seats)
         this.councilSeats = Math.max(1, this.population / POP_PER_SEAT);
-
-        // 2. คำนวณ Dynamic Base Score (คะแนนตั้งต้น)
         this.baseScore = this.councilSeats * SCORE_PER_SEAT_BASE;
-
-        // 3. สร้างคะแนนดิบเริ่มต้นให้ผู้เล่นทุกคนเท่ากัน
-        int safeNumPlayers = 4;
-        this.playerScores = new double[safeNumPlayers];
-        for (int i = 0; i < safeNumPlayers; i++) {
-            this.playerScores[i] = this.baseScore;
+        for(Player p: playerList){
+            playerIds.add(p.getPlayerId());
+            playerScores.put(p.getPlayerId(),baseScore);
         }
-    }
-
-    public City(String cityName, int facility, int environment, int economy, int population, int numPlayers) {
-        this.stats = new PoliticsStats(facility, environment, economy);
-        this.population = population;
-        this.cityName = cityName;
-
-        this.councilSeats = Math.max(1, this.population / POP_PER_SEAT);
-
-
-        this.baseScore = this.councilSeats * SCORE_PER_SEAT_BASE;
-
-        int safeNumPlayers = Math.max(1, numPlayers);
-        this.playerScores = new double[safeNumPlayers];
-        for (int i = 0; i < safeNumPlayers; i++) {
-            this.playerScores[i] = this.baseScore;
-        }
-        updateOwner();
     }
 
     public String getCityName() {
@@ -88,13 +69,13 @@ public class City {
      * @param cardVal The value being added by a card.
      * @return The calculated score increase.
      */
-    public double calculateLogScore(double currentStatVal, double cardVal) {
+    public float calculateLogScore(double currentStatVal, double cardVal) {
         // ป้องกันค่าติดลบ
-        double currentVal = Math.max(0, currentStatVal);
-        double newVal = Math.max(0, currentStatVal + cardVal);
+        float currentVal = (float) Math.max(0, currentStatVal);
+        float newVal = (float) Math.max(0, currentStatVal + cardVal);
 
         // สูตร: K * [ln(new + 1) - ln(old + 1)]
-        return K_LOG_MULTIPLIER * (Math.log(newVal + 1) - Math.log(currentVal + 1));
+        return (float) (K_LOG_MULTIPLIER * (Math.log(newVal + 1) - Math.log(currentVal + 1)));
     }
 
     /**
@@ -103,14 +84,14 @@ public class City {
      * @param statType The type of stat being modified.
      * @param cardVal The amount of change.
      */
-    public void applyCard(int playerId, long statType, double cardVal) {
-        double currentStat = stats.getStats(statType);
+    public void applyCard(String playerId, long statType, double cardVal) {
+        float currentStat = stats.getStats(statType);
 
         // คำนวณคะแนนที่ได้รับ
-        double scoreGained = calculateLogScore(currentStat, cardVal);
+        float scoreGained = calculateLogScore(currentStat, cardVal);
 
         // อัปเดตคะแนนผู้เล่น (Score Weight)
-        playerScores[playerId] += scoreGained;
+        playerScores.put(playerId,scoreGained);
 
         // อัปเดต Stat เมือง
         stats.addStats(statType, (int) cardVal);
@@ -131,7 +112,7 @@ public class City {
      * @param playerId Index of the player.
      * @param cardStats The PoliticsStats object containing card effects.
      */
-    public void applyStats(int playerId, PoliticsStats cardStats) {
+    public void applyStats(String playerId, PoliticsStats cardStats) {
         if (cardStats != null && cardStats.stats != null) {
             for (java.util.Map.Entry<Long, Integer> entry : cardStats.stats.entrySet()) {
                 if (entry.getValue() != 0) {
@@ -143,33 +124,18 @@ public class City {
     }
 
     /**
-     * Convenience method to apply stats for the default player (Player 0).
-     * @param cardStats The stats to apply.
-     */
-    public void applyStats(PoliticsStats cardStats) {
-        // หากไม่ระบุ Player ให้ถือว่าเป็น Player 0
-        applyStats(0, cardStats);
-    }
-
-    /**
      * Checks if the specified player has the highest score in the city.
      * ตรวจสอบว่าผู้เล่นคนนี้มีคะแนนสูงสุดในเมืองหรือไม่ (รวมถึงกรณีที่คะแนนสูงสุดเท่ากับผู้อื่น)
      *
      * @param playerId ดัชนีของผู้เล่นที่ต้องการตรวจสอบ
      * @return true หากผู้เล่นมีคะแนนมากที่สุดหรือเท่ากับคะแนนสูงสุดในขณะนั้น
      */
-    public boolean isPlayerDominateCity(int playerId){
-        if (playerId < 0 || playerId >= playerScores.length) return false;
-
-        double targetScore = playerScores[playerId];
-        for (double score : playerScores) {
+    public boolean isPlayerDominateCity(String playerId){
+        double targetScore = playerScores.get(playerId);
+        for (double score : playerScores.values()) {
             if (score > targetScore) return false;
         }
         return true;
-    }
-
-    public double[] getPlayerScores() {
-        return playerScores;
     }
 
     public int getOwnerId() {
@@ -177,23 +143,26 @@ public class City {
     }
 
     public void updateOwner() {
-        if (playerScores == null || playerScores.length == 0) {
-            ownerId = -1;
-            return;
-        }
-        int bestPlayer = -1;
-        double maxScore = -1;
-        boolean tie = false;
-        for (int i = 0; i < playerScores.length; i++) {
-            if (playerScores[i] > maxScore) {
-                maxScore = playerScores[i];
-                bestPlayer = i;
-                tie = false;
-            } else if (playerScores[i] == maxScore) {
-                tie = true;
+        // 1. นำข้อมูลจาก HashMap (ID ผู้เล่น และ คะแนน) มาใส่ใน ArrayList เพื่อจัดลำดับ
+        ArrayList<java.util.Map.Entry<String, Float>> sortedScores = new ArrayList<>(playerScores.entrySet());
+
+        // 2. จัดลำดับจาก "มากไปน้อย" (Descending Order) ตามค่าคะแนน (Value)
+        sortedScores.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+
+        int bestPlayerIndex = -1;
+        if (!sortedScores.isEmpty()) {
+            float maxScore = sortedScores.get(0).getValue();
+            // 3. ตรวจสอบว่าคะแนนสูงสุดมีการ "เสมอ" กันหรือไม่
+            boolean tie = sortedScores.size() > 1 && sortedScores.get(1).getValue() == maxScore;
+
+            // ถ้าไม่เสมอและคะแนนมากกว่า 0 ให้หา Index ของผู้เล่นจากรายชื่อ playerIds
+            if (!tie && maxScore > 0) {
+                bestPlayerIndex = playerIds.indexOf(sortedScores.get(0).getKey());
             }
         }
-        ownerId = tie ? -1 : bestPlayer;
+
+        // อัปเดต ID เจ้าของเมือง (ถ้าเสมอจะเป็น -1)
+        ownerId = bestPlayerIndex;
 
         if (Core.ZhuzheeGame.PLAYER_LIST_UI != null) {
             Core.ZhuzheeGame.PLAYER_LIST_UI.updatePlayerList();
@@ -205,14 +174,14 @@ public class City {
      * @param playerId Index of the player.
      * @return Percentage (0.0 to 100.0).
      */
-    public double getPlayerPercentage(int playerId) {
-        if (playerId < 0 || playerId >= playerScores.length) return 0;
+    public float getPlayerPercentage(String playerId) {
+        if(playerId.isEmpty() || playerScores.isEmpty()) return 0;
         double totalScore = 0;
-        for (double score : playerScores) {
+        for (double score : playerScores.values()) {
             totalScore += score;
         }
         if (totalScore == 0) return 0;
-        return (playerScores[playerId] / totalScore) * 100;
+        return (float) (playerScores.get(playerId) / totalScore) * 100f;
     }
 
     /**
@@ -220,14 +189,14 @@ public class City {
      */
     public void getVotingResults() {
         double totalScore = 0;
-        for (double score : playerScores) totalScore += score;
+        for (float score : playerScores.values()) totalScore += score;
 
         System.out.printf("%n--- ผลการเลือกตั้งเมือง: %s (ประชากร: %,d, ที่นั่ง: %d) ---%n", cityName, population, councilSeats);
 
-        for (int i = 0; i < playerScores.length; i++) {
-            double percent = (playerScores[i] / totalScore) * 100;
-            int votes = (int)((playerScores[i] / totalScore) * this.population);
-            System.out.printf("Player %d: %.2f%% (%,d เสียง)%n", i, percent, votes);
+        for (String playerId : playerScores.keySet()) {
+            double percent = (playerScores.get(playerId) / totalScore) * 100;
+            int votes = (int)((playerScores.get(playerId) / totalScore) * this.population);
+            System.out.printf("Player %d: %.2f%% (%,d เสียง)%n", playerId, percent, votes);
         }
     }
 
@@ -269,11 +238,10 @@ public class City {
 
         if (cityData.has("players score")) {
             JSONArray scores = cityData.getJSONArray("players score");
-            if (this.playerScores == null || this.playerScores.length != scores.length()) {
-                this.playerScores = new double[scores.length()];
-            }
             for (int i = 0; i < scores.length(); i++) {
-                this.playerScores[i] = scores.getDouble(i);
+                if (i < playerIds.size()) {
+                    this.playerScores.put(playerIds.get(i), (float) scores.getDouble(i));
+                }
             }
             updateOwner();
         }

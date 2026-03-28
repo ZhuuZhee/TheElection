@@ -9,6 +9,8 @@ import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import org.json.JSONObject;
 
+import static Core.Network.PacketBuilder.createKickPacket;
+
 public class GameServerManager {
     private static final int PING_INTERVAL_MS = 5000;
     private ServerSocket serverSocket;
@@ -64,9 +66,7 @@ public class GameServerManager {
         running = false;
         try {
             // บอก client ว่า Host ออก
-            org.json.JSONObject kickPacket = new org.json.JSONObject();
-            kickPacket.put("type", NetworkProtocol.HOST_LEFT.name());
-            broadcast(kickPacket);
+            broadcast(createKickPacket());
 
             for (ClientHandler client : clients) {
                 client.disconnect();

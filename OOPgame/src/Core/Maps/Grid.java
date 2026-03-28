@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
+
+import Core.ZhuzheeGame;
 import org.json.JSONArray;
 
 public class Grid {
@@ -89,21 +91,21 @@ public class Grid {
         if (players == null || players.isEmpty()) return null;
 
         double totalScore = 0;
-        for (double score : city.playerScores) {
+        for (double score : city.playerScores.values()) {
             totalScore += score;
         }
         if (totalScore == 0) return null;
 
         double highestPct = -1;
         double secondHighestPct = -1;
-        int leaderId = -1;
+        String leaderId = "";
 
-        for (int i = 0; i < city.playerScores.length; i++) {
-            double pct = (city.playerScores[i] / totalScore) * 100.0;
+        for (String playerId : city.playerIds) {
+            float pct = (float) ((city.playerScores.get(playerId) / totalScore) * 100f);
             if (pct > highestPct) {
                 secondHighestPct = highestPct;
                 highestPct = pct;
-                leaderId = i;
+                leaderId = playerId;
             } else if (pct > secondHighestPct) {
                 secondHighestPct = pct;
             }
@@ -113,8 +115,8 @@ public class Grid {
             return null; // สีเทาถ้าสูสีกันไม่เกิน 1%
         }
 
-        if (leaderId >= 0 && leaderId < players.size()) {
-            return players.get(leaderId);
+        if (!leaderId.isEmpty()) {
+            return ZhuzheeGame.CLIENT.getConnectedPlayersWithId().get(leaderId);
         }
         return null;
     }

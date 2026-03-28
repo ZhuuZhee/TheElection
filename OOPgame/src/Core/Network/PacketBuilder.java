@@ -51,4 +51,7 @@ public class PacketBuilder{
         packet.put("city", cityJson);
         return packet;
     }
+    public static JSONObject createKickPacket(){
+        return createPacket(NetworkProtocol.HOST_LEFT);
+    }
 }

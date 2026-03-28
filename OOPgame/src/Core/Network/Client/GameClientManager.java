@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -19,21 +20,15 @@ public class GameClientManager {
     private BufferedReader in;
     private Player localPlayer;
     private String currentPlayerId;
-    private final ArrayList<Player> connectedPlayers = new ArrayList<>();
+    private final HashMap<String,Player> connectedPlayers = new HashMap<>();
     private int turnCounter;
     private final HashSet<ClientListener> clientListeners = new HashSet<>();
 
     public List<Player> getConnectedPlayers() {
-        return connectedPlayers;
+        return new ArrayList<>(connectedPlayers.values());
     }
-
-    public int getLocalPlayerIndex() {
-        if (localPlayer == null) return 0;
-        String id = localPlayer.getPlayerId();
-        for (int i = 0; i < connectedPlayers.size(); i++) {
-            if (connectedPlayers.get(i).getPlayerId().equals(id)) return i;
-        }
-        return 0;
+    public HashMap<String,Player> getConnectedPlayersWithId(){
+        return connectedPlayers;
     }
 
     public void connect(String ip, int port, String playerName) {
@@ -70,6 +65,7 @@ public class GameClientManager {
         try {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
+                System.out.println("Client : Disconnect form server");
             }
         } catch (java.io.IOException e) {
             e.printStackTrace();
@@ -166,19 +162,19 @@ public class GameClientManager {
         // ตรวจสอบว่าเป็นเทิร์นของเราหรือไม่
 
         if (data.has("players")) {
-            org.json.JSONArray playerDatasArray = data.getJSONArray("players");
+            org.json.JSONArray playerDataArray = data.getJSONArray("players");
 
             // สร้าง Map ชั่วคราวเพื่อเก็บ Player ที่มีอยู่แล้ว เพื่อการค้นหาที่เร็วขึ้น
             java.util.Map<String, Player> existingPlayersMap = new java.util.HashMap<>();
-            for (Player p : this.connectedPlayers) {
+            for (Player p : this.connectedPlayers.values()) {
                 existingPlayersMap.put(p.getPlayerId(), p);
             }
 
             // ล้าง connectedPlayers เดิมออก และจะสร้างใหม่จากข้อมูลที่ได้รับจาก Server
             this.connectedPlayers.clear();
 
-            for (int i = 0; i < playerDatasArray.length(); i++) {
-                JSONObject pData = playerDatasArray.getJSONObject(i);
+            for (int i = 0; i < playerDataArray.length(); i++) {
+                JSONObject pData = playerDataArray.getJSONObject(i);
                 String pId = pData.getString("playerId");
 
                 Player playerToUpdate = existingPlayersMap.get(pId);
@@ -191,7 +187,7 @@ public class GameClientManager {
                 }
 
                 playerToUpdate.updateFromJSON(pData); // อัปเดตข้อมูลผู้เล่นจาก JSON
-                this.connectedPlayers.add(playerToUpdate); // เพิ่มผู้เล่น (ที่อัปเดตแล้วหรือใหม่) เข้าไปใน Set
+                this.connectedPlayers.put(playerToUpdate.getPlayerId(),playerToUpdate); // เพิ่มผู้เล่น (ที่อัปเดตแล้วหรือใหม่) เข้าไปใน Set
 
                 // หากเป็น localPlayer ของเรา ให้อัปเดต reference ด้วย
                 if (localPlayer != null && pId.equals(localPlayer.getPlayerId())) {
@@ -230,7 +226,7 @@ public class GameClientManager {
         }
 
         System.out.println("Client : All players data logs");
-        for (Player p : connectedPlayers) {
+        for (Player p : connectedPlayers.values()) {
             System.out.println(p.toString());
         }
         System.out.println("-------------------------------");
@@ -279,7 +275,7 @@ public class GameClientManager {
 
         // อัปเดตผู้เล่นคนอื่นๆ ใน connectedPlayers
         // สร้าง List ชั่วคราวเพื่อหลีกเลี่ยง ConcurrentModificationException
-        List<Player> playersToUpdate = new ArrayList<>(connectedPlayers);
+        List<Player> playersToUpdate = new ArrayList<>(connectedPlayers.values());
         for (Player p : playersToUpdate) {
             if (p.getPlayerId().equals(pId)) {
                 p.updateFromJSON(data);
