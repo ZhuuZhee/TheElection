@@ -10,5 +10,6 @@ public enum NetworkProtocol {
     PING,
     PONG,
     END_TURN,
-    USE_CARD
+    USE_CARD,
+    DESTROY_AND_SKIP_DRAW
 }

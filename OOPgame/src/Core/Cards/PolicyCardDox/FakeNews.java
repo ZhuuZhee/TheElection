@@ -10,7 +10,7 @@ import Core.ZhuzheeGame;
 public class FakeNews extends PolicyCard {
     public FakeNews(int x, int y, String imagePath) {
         super("Fake News", x, y, imagePath, -5);
-        this.description = "Skill: If play Dev Card with 0 Facility gain +3 Coins and +1 Environment.";
+        this.description = "Skill: Play a card with Facility = 0. Gain +1 coins, Economy x3, and Environment -2.";
     }
 
     @Override
@@ -34,15 +34,18 @@ public class FakeNews extends PolicyCard {
         int fac = stats.getStats(PoliticsStats.FACILITY);
         if (fac == 0) {
             int currentCoin = localPlayer.getCoin();
-            localPlayer.setCoin(currentCoin + 3);
+            localPlayer.setCoin(currentCoin + 1);
+
+            int currentEco = stats.getStats(PoliticsStats.ECONOMY);
+            stats.setStats(PoliticsStats.ECONOMY, currentEco * 3);
 
             int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
-            stats.setStats(PoliticsStats.ENVIRONMENT, currentEnv + 1);
+            stats.setStats(PoliticsStats.ENVIRONMENT, currentEnv - 2);
+
 
             System.out.println("----------------------------------");
-            System.out.println("📰 [FAKE NEWS] ทำงาน!");
-            System.out.println("ปั่นข่าวโคมลอย! การ์ด " + playedCard.getName() + " ได้รับ +1 Environment");
-            System.out.println("และคุณได้รับเงินสนับสนุน 3 Coin!");
+            System.out.println("🗣️ [FAKE NEWS] Smear Campaign Active!");
+            System.out.println(">>> +3 Coins | Environment x2 bonus! <<<");
             System.out.println("----------------------------------");
         }
     }

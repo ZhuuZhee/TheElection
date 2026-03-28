@@ -51,6 +51,7 @@ public class PlayerListUI extends Canvas {
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
             boolean isActive = (i == 0);
+            boolean isMe = p.isLocal();
 
             int Rank = 1;
             for (int k = 0; k < players.size(); k++) {
@@ -63,7 +64,7 @@ public class PlayerListUI extends Canvas {
             // แปลงและแสดงผลสีตามที่ผู้เล่นตั้งไว้
             System.out.println(p.toString());
             Color playerColor = p.getColor();
-            listContainer.add(new PlayerItemUI(p, Rank, playerColor, isActive));
+            listContainer.add(new PlayerItemUI(p, Rank, playerColor, isActive, isMe));
             listContainer.add(Box.createVerticalStrut(10));
         }
         System.out.println("-----------------------");
@@ -82,7 +83,7 @@ public class PlayerListUI extends Canvas {
         private static int margin = 12; // เพิ่ม margin พื้นฐาน
         private static int padding = 24; // เพิ่ม margin พื้นฐาน
 
-        public PlayerItemUI(Player player, int calculatedRank, Color teamColor, boolean isActive) {
+        public PlayerItemUI(Player player, int calculatedRank, Color teamColor, boolean isActive, boolean isMe) {
             this.rank = calculatedRank;
             setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // เพิ่มช่องว่างแนวตั้งเล็กน้อย
             setOpaque(false);
@@ -94,6 +95,9 @@ public class PlayerListUI extends Canvas {
 
             createPlayerNameLabel(player.getPlayerName(),center);
             createRankLabel(center);
+            if (isMe) {
+                createYouLabel(center);
+            }
 
             nameTag.add(center);
 
@@ -148,6 +152,25 @@ public class PlayerListUI extends Canvas {
             nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
             nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
             container.add(nameLabel, gbc);
+        }
+
+        private void createYouLabel(Container container) {
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(0, 0, 0, margin);
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.gridx = 2;
+            gbc.gridy = 0;
+            gbc.ipady = -padding + 30;
+
+            JLabel youLabel = new JLabel("you");
+            youLabel.setFont(getFont().deriveFont(Font.BOLD, 12f));
+            youLabel.setForeground(Color.WHITE);
+            youLabel.setBackground(new Color(50, 50, 80));
+            youLabel.setOpaque(true);
+            youLabel.setBorder(BorderFactory.createEmptyBorder(2, 6, 2, 6));
+            youLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            
+            container.add(youLabel, gbc);
         }
 
         private JPanel getJPanel(Color teamColor, boolean isActive) {

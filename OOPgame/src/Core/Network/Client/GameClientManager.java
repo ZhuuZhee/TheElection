@@ -95,6 +95,8 @@ public class GameClientManager {
                 onPing();
             } else if (type.equals(NetworkProtocol.UPDATE_PLAYER.name())) {
                 onUpdatePlayer(data);
+            }else if (type.equals(NetworkProtocol.DESTROY_AND_SKIP_DRAW.name())) {
+                onDestroyHand(data); // เพิ่ม Handler ตรงนี้
             }
         }
     }
@@ -124,6 +126,11 @@ public class GameClientManager {
             listener.onEndTurn();
         }
     }
+
+    public void sendDestroyHandSkill() {
+        sendAction(PacketBuilder.createDestroyHandPacket(localPlayer.getPlayerId()));
+    }
+
     public void useCard(City targetCity){
         ZhuzheeGame.CLIENT.sendAction(PacketBuilder.createUseCardPacket(targetCity.toJson()));
     }
@@ -131,6 +138,27 @@ public class GameClientManager {
     //----------------------------------------
     //---- player action on received data ----
     //----------------------------------------
+
+    private synchronized void onDestroyHand(JSONObject data) {
+        String fromPlayerId = data.optString("fromPlayerId", "");
+
+        // ถ้าเราไม่ใช่คนที่ใช้การ์ด (เราคือเหยื่อ)
+        if (localPlayer != null && !localPlayer.getPlayerId().equals(fromPlayerId)) {
+            System.out.println("💣 BOOM! The Tower activated! Your hand is destroyed and you can't draw next turn!");
+
+            // 1. ห้ามจั่วตาหน้า
+            localPlayer.setSkipDrawNextTurn(true);
+
+            // 2. ลบการ์ด Action ทั้งหมดบนมือตัวเอง
+            if (Core.ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
+                java.util.List<Core.Cards.Card> currentHand = new java.util.ArrayList<>(Core.ZhuzheeGame.DEVLOPMENT_CARD_HAND.getCards());
+                for (Core.Cards.Card card : currentHand) {
+                    Core.ZhuzheeGame.DEVLOPMENT_CARD_HAND.removeCard(card);
+                    ZhuzheeEngine.Scene.GameObject.Destroy(card);
+                }
+            }
+        }
+    }
 
     private synchronized void onJoinAcknowledge(JSONObject data) {
         String assignedId = data.getString("assignedId");

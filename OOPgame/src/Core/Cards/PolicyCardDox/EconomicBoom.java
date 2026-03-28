@@ -11,8 +11,8 @@ import Core.ZhuzheeGame;
  */
 public class EconomicBoom extends PolicyCard {
     public EconomicBoom(int x, int y, String imagePath) {
-        super("Economic Boom", x, y, imagePath, -6);
-        this.description = "Skill: If you have Development card with Economy > 0. Gain x2 Economy.";
+        super("Economic Boom", x, y, imagePath, -10);
+        this.description = "Skill: If played card has Economy > 0. Economy x4 and Environment x2 bonus!";
     }
 
     @Override
@@ -30,11 +30,18 @@ public class EconomicBoom extends PolicyCard {
         if (stats == null) return;
 
         int eco = stats.getStats(PoliticsStats.ECONOMY);
+        int env = stats.getStats(PoliticsStats.ENVIRONMENT);
+
         if (eco > 0) {
             System.out.println("----------------------------------");
-            System.out.println("💰 [ECONOMIC BOOM] Economy x2!");
+            System.out.println("💰 [ECONOMIC BOOM] Economy x4 ENVIRONMENT x2!");
             System.out.println("----------------------------------");
-            stats.setStats(PoliticsStats.ECONOMY, eco * 2);
+
+            //Economy x4
+            stats.setStats(PoliticsStats.ECONOMY, eco * 4);
+
+            //Environment x2 (คูณจากค่าเดิมที่มีอยู่)
+            stats.setStats(PoliticsStats.ENVIRONMENT, env * 2);
         }
     }
 
