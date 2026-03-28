@@ -1,5 +1,6 @@
 package Core.Network.Server;
 
+import Core.Maps.City;
 import Core.Network.NetworkProtocol;
 import Core.Player.Player;
 import org.json.JSONObject;
@@ -30,6 +31,10 @@ public class GameState {
         return currentPlayer;
     }
 
+    public int getTurnCounter() {
+        return turnCounter;
+    }
+
     public void setCurrentPlayer(Player player) {
         currentPlayer = player;
         System.out.println("Server : Current Player is " + player.getPlayerName() + "\n id : " + player.getPlayerId());
@@ -39,7 +44,8 @@ public class GameState {
     public void reorderPlayers() {
         // players.sort ???
     }
-    ///game state data as JSON for socket
+
+    /// game state data as JSON for socket
     public JSONObject generateSyncData() {
         JSONObject data = new JSONObject();
         data.put("type", NetworkProtocol.SYNC_STATE.name());
@@ -65,11 +71,10 @@ public class GameState {
     }
 
 
-
     //----------------------------------------
-    ///--------   game state events method
-    //-----------------------------------------
 
+    /// --------   game state events method
+    //-----------------------------------------
     public synchronized void onStartGame() {
         Player startPlayer = players.getFirst();
         setCurrentPlayer(startPlayer);
@@ -81,10 +86,10 @@ public class GameState {
         setCurrentPlayer(players.get((index + 1) % players.size()));
     }
 
-    public void playersLog(){
+    public void playersLog() {
         System.out.println("------ All Players -------");
         for (Player p : players) {
-            System.out.println("Player : " + p.getPlayerName() + (p.isLocal()? " this is Local" : ""));
+            System.out.println("Player : " + p.getPlayerName() + (p.isLocal() ? " this is Local" : ""));
         }
         System.out.println("Current Player is " + currentPlayer.getPlayerName());
         System.out.println("------ ----------- -------");

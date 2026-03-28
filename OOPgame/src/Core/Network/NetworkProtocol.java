@@ -13,5 +13,6 @@ public enum NetworkProtocol {
     USE_CARD,
     DESTROY_AND_SKIP_DRAW,
     NEGATIVE_HAND_STATS,
+    VOTING,
     JUDGEMENT_SKILL
 }
