@@ -1,8 +1,6 @@
 package Core.UI;
 
 import Core.Cards.Card;
-import Core.Player.Player;
-import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.*;
 
 import javax.swing.*;

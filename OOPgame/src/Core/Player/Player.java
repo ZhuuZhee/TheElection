@@ -16,9 +16,9 @@ import java.util.*;
 import java.util.List;
 
 public class Player {
-    private String playerId;
+    private final String playerId;
     private String playerName;
-    private boolean isLocal;
+    private final boolean isLocal;
     private int coin;
     private ArrayList<ActionCard> actionCards;
     private ArrayList<PolicyCard> policyCards;

@@ -11,6 +11,7 @@ import Core.UI.PlayerListUI;
 import Core.UI.PlayerProfile;
 import Core.UI.PolicyCardHolderUI;
 import Core.UI.ArcanaCardHolderUI;
+import Core.UI.PlayerCoinUI;
 import Dummy.Tester;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.ApplicationAdapter;
@@ -311,7 +312,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
             ZhuzheeGame.ARCANA_CARD_UI = new ArcanaCardHolderUI(scene2D);
             return ZhuzheeGame.ARCANA_CARD_UI;
         }
-        public static Core.UI.PlayerCoinUI PlayerCoinUITest(Scene2D scene2D) {
+        public static PlayerCoinUI PlayerCoinUITest(Scene2D scene2D) {
             ZhuzheeGame.PLAYER_COIN_UI = new Core.UI.PlayerCoinUI(scene2D);
             return ZhuzheeGame.PLAYER_COIN_UI;
         }
