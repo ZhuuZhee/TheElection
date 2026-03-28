@@ -50,7 +50,7 @@ public class CreditUI extends Screen implements ActionListener{
         creditPanel.setOpaque(false);
 
         // เพิ่มข้อความเครดิต
-        addCredit("DIVIDE AND CONQUER", 40, true, Color.ORANGE);
+        addCredit("The Election", 40, true, Color.ORANGE);
         addSpace(30);
 
         addCredit("68070006", 16, true, Color.BLACK);

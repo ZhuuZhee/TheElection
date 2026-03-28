@@ -55,7 +55,7 @@ public class MainMenu extends Screen implements ActionListener {
         topTextGroup.setOpaque(false);
         topTextGroup.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
 
-        JLabel title = new JLabel("DIVIDE AND CONQUER");
+        JLabel title = new JLabel("The Election");
         title.setFont(title.getFont().deriveFont(50f));
         title.setForeground(Color.BLACK);
         title.setHorizontalAlignment(JLabel.CENTER);

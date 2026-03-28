@@ -146,7 +146,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
         CURRENT_PLAYERS = actualPlayers;
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
-        Tester.CardTesterUI(MAIN_SCENE);
+//        Tester.CardTesterUI(MAIN_SCENE);
 
         Tester.ShopTest();
 
