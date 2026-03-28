@@ -10,7 +10,7 @@ import Core.ZhuzheeGame;
 public class HipsterCafeBubble extends PolicyCard {
     public HipsterCafeBubble(int x, int y, String imagePath) {
         super("Hipster Cafe Bubble", x, y, imagePath, -5);
-        this.description = "Skill: Play Dev Card with Economy > 0 gain +4 Economy and -3 Coins.";
+        this.description = "Skill: Play Dev Card with Economy > 0 gain x2 Economy and -3 Coins.";
     }
 
     @Override
@@ -32,12 +32,12 @@ public class HipsterCafeBubble extends PolicyCard {
         if (stats == null) return;
         int currentEco = stats.getStats(PoliticsStats.ECONOMY);
         if (currentEco > 0) {
-            stats.setStats(PoliticsStats.ECONOMY, currentEco + 4);
+            stats.setStats(PoliticsStats.ECONOMY, currentEco * 2);
             int currentCoin = localPlayer.getCoin();
             localPlayer.setCoin(Math.max(0, currentCoin - 3));
             System.out.println("----------------------------------");
             System.out.println("☕ [HIPSTER CAFE BUBBLE] ทำงาน!");
-            System.out.println("ปั่นกระแสคาเฟ่ฮิปสเตอร์! โครงการ " + playedCard.getName() + " ได้รับ +4 Economy");
+            System.out.println("ปั่นกระแสคาเฟ่ฮิปสเตอร์! โครงการ " + playedCard.getName() + " ได้รับ x2 Economy");
             System.out.println(">>> แต่คุณโดนหักเงินค่าครองชีพ (แวะซื้อกาแฟแพงๆ) -3 Coin! <<<");
             System.out.println("----------------------------------");
         }
