@@ -63,6 +63,12 @@ public class WinUI extends Canvas {
         backBtn.setFocusPainted(false);
         backBtn.addActionListener(e -> {
             AudioManager.getInstance().playSound("click");
+            
+            // ล้างค่าสถานะการเล่นก่อนกลับหน้า Waiting Room
+            if (ZhuzheeGame.CLIENT != null) {
+                ZhuzheeGame.CLIENT.resetClientState();
+            }
+            
             // ย้ายผู้เล่นที่ชนะกลับไปยังหน้า Waiting Room
             Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
         });

@@ -189,8 +189,14 @@ public class GameServerManager {
         action.put("type", NetworkProtocol.UPDATE_PLAYER.name());
         broadcast(action);//send to all clients to syn player data
     }
+
+    public void resetGameState() {
+        gameState.resetForNewGame();
+    }
+
     private synchronized void onStartGame() {
         System.out.println("START_GAME all clients");
+        gameState.resetForNewGame(); // มั่นใจว่าล้างสถานะเก่าก่อนเริ่มรอบใหม่เสมอ
         org.json.JSONObject startPacket = new org.json.JSONObject();
         startPacket.put("type", NetworkProtocol.START_GAME.name());
         startPacket.put("mapSeed", gameState.getMapSeed());

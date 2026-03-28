@@ -178,13 +178,19 @@ public class ZhuzheeGame implements ApplicationAdapter {
             SERVER.stopServer();
             SERVER = null;
         }
+        CURRENT_PLAYERS = new ArrayList<>();
+        resetMainScene();
+    }
+
+    public static void resetMainScene() {
         if (MAIN_SCENE != null) {
             MAIN_SCENE.clearScene();
-            MAIN_SCENE.getCamera().setPosition(new java.awt.Point(0, 0));
-            MAIN_SCENE.getCamera().setZoom(1.0f);
         }
+
+        MAIN_SCENE = new Scene2D();
+        new Core.UI.UINotificationToast(MAIN_SCENE); // ลงทะเบียน NotificationToast ให้กับ Scene ใหม่
+
         MAP = null;
-        CURRENT_PLAYERS = new ArrayList<>();
         DEVLOPMENT_CARD_HAND = null;
         POLICY_CARD_HAND = null;
         ARCANA_CARD_UI = null;
@@ -192,7 +198,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PLAYER_PROFILE_UI = null;
         PLAYER_COIN_UI = null;
         SETTINGS_UI = null;
+        TURN_UI = null;
+        END_TURN_UI = null;
         lastShopOpenedRound = -1;
+        lastStatResetMarker = -1;
     }
 
     private static final float MAX_ZOOM = 1.25f, MIN_ZOOM = 0.75f, NORMAL_ZOOM = 1;

@@ -146,6 +146,25 @@ public class GameClientManager {
     //------- player action by client --------
     //----------------------------------------
 
+    public void resetClientState() {
+        this.turnCounter = 1;
+        this.isVotingState = false;
+        this.gameEnded = false;
+        
+        // ล้างสถานะผู้เล่นทุกคนที่เชื่อมต่ออยู่
+        for (Player p : connectedPlayers.values()) {
+            p.resetState();
+        }
+
+        // ลบ MainScene และ UI ต่างๆ แล้วสร้างใหม่
+        ZhuzheeGame.resetMainScene();
+
+        // หากเราเป็น Host ให้รีเซ็ต GameState ของฝั่ง Server ด้วย
+        if (ZhuzheeGame.SERVER != null) {
+            ZhuzheeGame.SERVER.resetGameState();
+        }
+    }
+
     public void endVotingState() {
         isVotingState = false;
     }
@@ -320,6 +339,8 @@ public class GameClientManager {
             // อัปเดตรายชื่อผู้เล่นส่วนกลางของเกม
             ZhuzheeGame.CURRENT_PLAYERS = getConnectedPlayers();
             
+            if (gameEnded) return; // ถ้าเกมจบแล้ว ไม่ต้องเช็คซ้ำ
+
             // ตรวจสอบเงื่อนไขการชนะทุกครั้งที่มีการ Sync ข้อมูลผู้เล่น
             checkWinCondition();
         }
@@ -377,6 +398,7 @@ public class GameClientManager {
                 javax.swing.SwingUtilities.invokeLater(this::showWinUI);
             } else if (localPlayer != null && localPlayer.isLose()) {
                 // หากเราแพ้แล้วและเกมจบลง: ย้ายเรากลับไปหน้า Waiting Room ทันที
+                resetClientState();
                 javax.swing.SwingUtilities.invokeLater(() -> {
                     ZhuzheeEngine.Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
                 });
@@ -491,7 +513,12 @@ public class GameClientManager {
             try {
                 // ดึงคะแนนรวมเปอร์เซ็นต์ของผู้เล่นทุกคนจากแผนที่
                 HashMap<String, Float> percentages = ZhuzheeGame.MAP.getAllPlayerPercentages();
-                if (percentages.isEmpty()) return;
+
+                // หากเหลือผู้เล่นคนเดียว (หรือไม่มี) ไม่ต้องคำนวณการคัดออกเพื่อป้องกันผู้ชนะกลายเป็นผู้แพ้
+                if (percentages.size() <= 1) {
+                    isVotingState = false;
+                    return;
+                }
 
                 String loserId = "";
                 float minScore = Float.MAX_VALUE;
