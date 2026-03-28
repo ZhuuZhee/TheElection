@@ -188,10 +188,10 @@ public class GameClientManager {
 
         // ถ้าเราไม่ใช่คนที่ใช้การ์ด (เราคือเหยื่อ)
         if (localPlayer != null && !localPlayer.getPlayerId().equals(fromPlayerId)) {
-            System.out.println("💣 BOOM! The Tower activated! Your hand is destroyed and you can't draw next turn!");
+            System.out.println("💣 BOOM! The Tower activated! Your hand is destroyed and you will draw 2 cards next turn!");
 
-            // 1. ห้ามจั่วตาหน้า
-            localPlayer.setSkipDrawNextTurn(true);
+            // 1. ตั้งค่าจั่วให้เป็น 2 ใบตาหน้า
+            localPlayer.setDrawAmountNextTurn(2);
 
             // 2. ลบการ์ด Action ทั้งหมดบนมือตัวเอง
             if (Core.ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
