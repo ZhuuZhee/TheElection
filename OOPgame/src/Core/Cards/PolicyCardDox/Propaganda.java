@@ -32,7 +32,7 @@ public class Propaganda extends PolicyCard {
         if (active && playedCard != lastProcessedCard
                 && ZhuzheeGame.CLIENT != null
                 && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
-            
+
             PoliticsStats stats = playedCard.getStats();
             if (stats != null) {
                 stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 10);
