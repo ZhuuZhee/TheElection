@@ -15,9 +15,34 @@ public class GameServerManager {
     private List<ClientHandler> clients = new ArrayList<>();
     private GameState gameState = new GameState();
     private boolean running = false;
+    private static final int BROADCAST_PORT = 8888;
+    private Thread broadcastThread;
 
     public void startServer(int port) {
         running = true;
+
+        broadcastThread = new Thread(() -> {
+            try (DatagramSocket socket = new DatagramSocket()) {
+                socket.setBroadcast(true);
+                while (running) {
+                    try {
+                        String message = "ZHUZHEE_GAME_SERVER:" + port;
+                        byte[] buffer = message.getBytes();
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("255.255.255.255"), BROADCAST_PORT);
+                        socket.send(packet);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        break;
+                    } catch (Exception e) {
+                        // ignore send errors
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        broadcastThread.start();
+
         // Ping loop ลบคนที่ timeout
         new Thread(() -> {
             while (running) {
@@ -62,6 +87,9 @@ public class GameServerManager {
     // Host ออก stopServer
     public void stopServer() {
         running = false;
+        if (broadcastThread != null) {
+            broadcastThread.interrupt();
+        }
         try {
             // บอก client ว่า Host ออก
             org.json.JSONObject kickPacket = new org.json.JSONObject();

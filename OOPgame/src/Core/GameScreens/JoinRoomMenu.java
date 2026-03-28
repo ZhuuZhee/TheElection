@@ -15,12 +15,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+
 public class JoinRoomMenu extends Screen implements ActionListener {
 
     JTextField ipInput;
     JTextField nameInput;
     NineSliceButton connectBtn;
     NineSliceButton backBtn;
+    
+    JList<String> serverList;
+    DefaultListModel<String> listModel;
+    Thread listenerThread;
+    boolean listening = false;
 
     BufferedImage bgImage;
     BufferedImage btnNormalImg;
@@ -76,6 +84,25 @@ public class JoinRoomMenu extends Screen implements ActionListener {
         btnRow.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
         btnRow.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
         
+        listModel = new DefaultListModel<>();
+        serverList = new JList<>(listModel);
+        serverList.setFont(new Font("Arial", Font.PLAIN, 14));
+        serverList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(serverList);
+        scrollPane.setPreferredSize(new Dimension(250, 100));
+        scrollPane.setMaximumSize(new Dimension(250, 100));
+        scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        serverList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && serverList.getSelectedValue() != null) {
+                String selected = serverList.getSelectedValue();
+                String[] parts = selected.split(":");
+                if (parts.length > 0) {
+                    ipInput.setText(parts[0]);
+                }
+            }
+        });
+
         connectBtn = UIButtonFactory.createMenuButton("Connect", btnNormalImg, btnHoverImg, this);
         backBtn = UIButtonFactory.createMenuButton("Back to Lobby", btnNormalImg, btnHoverImg, this);
 
@@ -94,6 +121,8 @@ public class JoinRoomMenu extends Screen implements ActionListener {
         Panel.add(subtitle);
         Panel.add(Box.createRigidArea(new Dimension(0, 10)));
         Panel.add(ipInput);
+        Panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        Panel.add(scrollPane);
         Panel.add(btnRow);
         Panel.add(Box.createVerticalGlue());
 
@@ -102,6 +131,52 @@ public class JoinRoomMenu extends Screen implements ActionListener {
     }
 
 
+
+    @Override
+    public void onScreenEnter() {
+        super.onScreenEnter();
+        listModel.clear();
+        listening = true;
+        listenerThread = new Thread(() -> {
+            try (DatagramSocket socket = new DatagramSocket(8888)) {
+                socket.setSoTimeout(2000);
+                byte[] buffer = new byte[256];
+                while (listening) {
+                    try {
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                        socket.receive(packet);
+                        String message = new String(packet.getData(), 0, packet.getLength());
+                        if (message.startsWith("ZHUZHEE_GAME_SERVER:")) {
+                            String ip = packet.getAddress().getHostAddress();
+                            String port = message.split(":")[1];
+                            String entry = ip + ":" + port;
+                            SwingUtilities.invokeLater(() -> {
+                                if (!listModel.contains(entry)) {
+                                    listModel.addElement(entry);
+                                }
+                            });
+                        }
+                    } catch (java.net.SocketTimeoutException e) {
+                        // timeout to check listening flag
+                    } catch (Exception e) {
+                        if (listening) e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        listenerThread.start();
+    }
+
+    @Override
+    public void onScreenExit() {
+        super.onScreenExit();
+        listening = false;
+        if (listenerThread != null) {
+            listenerThread.interrupt();
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
