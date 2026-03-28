@@ -9,15 +9,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import ZhuzheeEngine.Scene.NineSliceCanvas;
 import ZhuzheeEngine.Scene.NineSliceButton;
 import Core.UI.UIButtonFactory;
 
 public class MainMenu extends Screen implements ActionListener {
-
-    GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
     NineSliceButton startBtn;
     NineSliceButton optionBtn;
@@ -133,18 +130,6 @@ public class MainMenu extends Screen implements ActionListener {
             System.exit(0);
         }
         AudioManager.getInstance().playSound("click");
-    }
-
-    private void enableFullscreen() {
-        dispose();
-        // device.setFullScreenWindow();
-        setVisible(true);
-    }
-
-    private void disableFullscreen() {
-        device.setFullScreenWindow(null);
-        dispose();
-        setVisible(true);
     }
 
 //    private void addImage(String imagePath) {

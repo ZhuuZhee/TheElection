@@ -28,30 +28,8 @@ public class Propaganda extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-//        boolean active = isActive();
-//
-//        if (active && playedCard != lastProcessedCard
-//                && ZhuzheeGame.CLIENT != null
-//                && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
-//
-//            //เพิ่ม Stats +3 ให้การ์ดที่กำลังจะลง
-//            PoliticsStats stats = playedCard.getStats();
-//            if (stats != null) {
-//                stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 10);
-//                stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 10);
-//                stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 10);
-//            }
-//
-//            //หักเงิน Player -2 Coin
-//            int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();
-//            ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin - 1);
-//            //ปักธงว่าการ์ดใบนี้ประมวลผลไปแล้ว (เหมือนตอนเซ็ต rewardGranted = true)
-//            lastProcessedCard = playedCard;
-//            UINotificationToast.showNotification("📣 [Propaganda] +3 ทุกสแตทให้ " + playedCard.getName() + " (-2 Coin)");
-//        }
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
+
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
         boolean active = isActive();
@@ -62,11 +40,9 @@ public class Propaganda extends PolicyCard {
 
             //เพิ่ม Stats +3 ให้การ์ดที่กำลังจะลง
             PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-            if (stats != null) {
-                stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 10);
-                stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 10);
-                stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 10);
-            }
+            stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 10);
+            stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 10);
+            stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 10);
 
             //หักเงิน Player -2 Coin
             int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();

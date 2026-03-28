@@ -32,26 +32,13 @@ public class ZoningLaw extends PolicyCard {
 
     //ถ้าเงื่อนไขครบ ค่า Stats ทุกอย่างจะเพิ่ม +2 เมื่อเล่นการ์ด
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-        //ถ้าเงื่อนไข isActive ไม่เป็นจริง (การ์ดไม่อยู่ใน slot หรือการ์ดในมือ > 2) ให้หยุดทำงาน
-//        if (!isActive()) return;
-//
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) return;
-//
-//        //เพิ่มค่า Stats ทุกอย่าง +2
-//        stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 2);
-//        stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 2);
-//        stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 2);
-//        UINotificationToast.showNotification("🏢 [Zoning Law] ผังเมืองดีเยี่ยม! +2 ทุกสแตทให้ " + playedCard.getName());
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
+
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
         if (!isActive()) return null;
 
         PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-        if (stats == null) return null;
 
         //เพิ่มค่า Stats ทุกอย่าง +2
         stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) * 2);

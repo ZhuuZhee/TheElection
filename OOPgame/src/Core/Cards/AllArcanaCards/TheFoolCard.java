@@ -2,11 +2,9 @@ package Core.Cards.AllArcanaCards;
 
 import Core.Cards.ActionCard;
 import Core.Cards.ArcanaCard;
-import Core.Cards.PolicyCard;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
 import Core.Network.Client.ClientAdapter;
-import Core.UI.PolicyCardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
 

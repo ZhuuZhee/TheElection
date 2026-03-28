@@ -22,28 +22,14 @@ public class Public_PrivatePartnership extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-//        if (!isActive()) return;
-//        if (playedCard == null || ZhuzheeGame.CLIENT == null || ZhuzheeGame.CLIENT.getLocalPlayer() == null) return;
-//
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) return;
-//        int eco = stats.getStats(PoliticsStats.ECONOMY);
-//        int fac = stats.getStats(PoliticsStats.FACILITY);
-//        if (eco > 0 && fac > 0) {
-//            stats.setStats(PoliticsStats.ECONOMY, eco + 10);
-//            stats.setStats(PoliticsStats.ECONOMY, fac + 10);
-//            UINotificationToast.showNotification("🏢 [PPP] ความร่วมมือรัฐ-เอกชนสำเร็จ! (+10 Economy & Facility)");
-//        }
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
+
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
         if (!isActive()) return null;
         if (playedCard == null || ZhuzheeGame.CLIENT == null || ZhuzheeGame.CLIENT.getLocalPlayer() == null) return null;
 
         PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-        if (stats == null) return null;
         int eco = stats.getStats(PoliticsStats.ECONOMY);
         int fac = stats.getStats(PoliticsStats.FACILITY);
         if (eco > 0 && fac > 0) {

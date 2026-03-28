@@ -4,7 +4,6 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
-import Core.Player.Player;
 import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
@@ -24,29 +23,13 @@ public class InfrastructureBudget extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-        // Guard Clause: ถ้าการ์ดไม่ได้เปิดใช้งานอยู่ ให้ข้ามไปเลย
-//        if (!isActive()) return;
-//
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) return;
-//
-//        // ดึงค่า Facility ปัจจุบันของการ์ดที่เล่น
-//        int currentFacility = stats.getStats(PoliticsStats.FACILITY);
-//
-//        // แก้ไขความสามารถ: บวก 10 Facility ให้กับการ์ดทุกใบที่วาง (ตามเงื่อนไขใหม่)
-//        stats.setStats(PoliticsStats.FACILITY, currentFacility + 10);
-//
-//        UINotificationToast.showNotification("🏗️ [INFRASTRUCTURE BUDGET] " + playedCard.getName() + " (+10 Facility)!");
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
 
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
         if (!isActive()) return null;
 
         PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-        if (stats == null) return null;
 
         // ดึงค่า Facility ปัจจุบันของการ์ดที่เล่น
         int currentFacility = stats.getStats(PoliticsStats.FACILITY);
