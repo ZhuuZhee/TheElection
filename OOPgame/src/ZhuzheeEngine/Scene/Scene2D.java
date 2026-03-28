@@ -64,6 +64,18 @@ public class Scene2D extends Screen {
         }
     }
 
+    public void clearScene() {
+        synchronized (zOrderedObjects) {
+            zOrderedObjects.clear();
+        }
+        synchronized (gameObjects) {
+            gameObjects.clear();
+        }
+        removeAll();
+        revalidate();
+        repaint();
+    }
+
     /// Getter เพื่อให้ Core.Cards สามารถเข้าถึง List ไปเช็ค Slot ได้
     public List<GameObject> getGameObjects() {
         return gameObjects;

@@ -276,7 +276,7 @@ public class GameClientManager {
             listener.onHostLeft();
         }
 
-        Core.ZhuzheeGame.CLIENT = null;
+        Core.ZhuzheeGame.resetGame();
         // กลับ LOBBY_MENU
         ZhuzheeEngine.Screen.ChangeScreen(Core.ZhuzheeGame.LOBBY_MENU);
     }
