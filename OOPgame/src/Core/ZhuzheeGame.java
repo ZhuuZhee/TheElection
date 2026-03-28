@@ -120,6 +120,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     /// MAIN_SCENE
     public static void startMainScene() {
         Screen.ChangeScreen(MAIN_SCENE);
+        CameraControlEvent(MAIN_SCENE);
 
         int playerCountForMap = 4;
         if (CLIENT != null && !CLIENT.getConnectedPlayers().isEmpty()) {
@@ -151,7 +152,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
         Tester.CardTesterUI(MAIN_SCENE);
 
         Tester.ShopTest();
-        CameraControlEvent(MAIN_SCENE);
 
         Player localPlayer = (CLIENT != null) ? CLIENT.getLocalPlayer() : null;
 
@@ -169,11 +169,41 @@ public class ZhuzheeGame implements ApplicationAdapter {
         localPlayer.DrawCard();
     }
 
+    public static void resetGame() {
+        if (CLIENT != null) {
+            CLIENT.disconnect();
+            CLIENT = null;
+        }
+        if (SERVER != null) {
+            SERVER.stopServer();
+            SERVER = null;
+        }
+        if (MAIN_SCENE != null) {
+            MAIN_SCENE.clearScene();
+            MAIN_SCENE.getCamera().setPosition(new java.awt.Point(0, 0));
+            MAIN_SCENE.getCamera().setZoom(1.0f);
+        }
+        MAP = null;
+        CURRENT_PLAYERS = new ArrayList<>();
+        DEVLOPMENT_CARD_HAND = null;
+        POLICY_CARD_HAND = null;
+        ARCANA_CARD_UI = null;
+        PLAYER_LIST_UI = null;
+        PLAYER_PROFILE_UI = null;
+        PLAYER_COIN_UI = null;
+        SETTINGS_UI = null;
+        lastShopOpenedRound = -1;
+    }
+
     private static final float MAX_ZOOM = 1.25f, MIN_ZOOM = 0.75f, NORMAL_ZOOM = 1;
     private static final Dimension CAMERA_BOUND = new Dimension(500, 500);
     private static Point mousePoint;
 
+    private static boolean isCameraListenerAdded = false;
     public static void CameraControlEvent(Scene2D scene) {
+        if (isCameraListenerAdded) return;
+        isCameraListenerAdded = true;
+
         // ใช้ AWTEventListener เพื่อดักจับ Input ของเมาส์แบบ Global ไม่ว่าจะชี้อยู่บน
         // Map หรือ UI ตัวไหนก็จะขยับกล้องได้
         long eventMask = AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK;

@@ -137,9 +137,7 @@ public class OptionMenu extends Screen {
                 AudioManager.getInstance().playSound("click");
                 int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit the game?", "Exit Game", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    if (ZhuzheeGame.CLIENT != null) {
-                        ZhuzheeGame.CLIENT.disconnect();
-                    }
+                    ZhuzheeGame.resetGame();
                     Screen.ChangeScreen(ZhuzheeGame.MAIN_MENU);
                 }
             });
