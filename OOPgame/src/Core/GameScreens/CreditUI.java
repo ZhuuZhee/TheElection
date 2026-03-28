@@ -209,6 +209,6 @@ public class CreditUI extends Screen implements ActionListener{
     @Override
     public void onScreenEnter() {
         super.onScreenEnter();
-        AudioManager.getInstance().playLoop("credit");
+        AudioManager.getInstance().playOnceThenLoop("credit_intro", "credit");
     }
 }

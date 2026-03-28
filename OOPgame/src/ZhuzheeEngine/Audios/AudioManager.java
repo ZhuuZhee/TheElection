@@ -20,6 +20,7 @@ public class AudioManager {
     private static final AudioManager instance = new AudioManager();
 
     private final Map<String, Clip> soundMap = new HashMap<>();
+    private final Map<Clip, LineListener> listenerMap = new HashMap<>();
     private Clip currentBgmClip;
 
     private float bgmVolume = 0.5f;
@@ -67,6 +68,9 @@ public class AudioManager {
     public void unloadSound(String name) {
         Clip clip = soundMap.remove(name);
         if (clip != null) {
+            if (listenerMap.containsKey(clip)) {
+                clip.removeLineListener(listenerMap.remove(clip));
+            }
             if (clip.isRunning()) {
                 clip.stop();
             }
@@ -97,6 +101,47 @@ public class AudioManager {
         if (currentBgmClip != null) {
             updateVolume(currentBgmClip, bgmVolume);
             currentBgmClip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+    }
+
+    /**
+     * เล่นเพลงแรก 1 รอบจนจบ แล้วเล่นเพลงที่สองวนลูปไปเรื่อยๆ
+     */
+    public void playOnceThenLoop(String onceName, String loopName) {
+        if (currentBgmClip != null && currentBgmClip.isRunning()) currentBgmClip.stop();
+
+        Clip firstClip = soundMap.get(onceName);
+        if (firstClip != null) {
+            updateVolume(firstClip, bgmVolume);
+            firstClip.stop();
+            firstClip.setFramePosition(0);
+
+            // ลบ Listener เก่าออกเพื่อกันซ้ำซ้อน
+            if (listenerMap.containsKey(firstClip)) {
+                firstClip.removeLineListener(listenerMap.remove(firstClip));
+            }
+
+            LineListener listener = new LineListener() {
+                @Override
+                public void update(LineEvent event) {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        firstClip.removeLineListener(this);
+                        listenerMap.remove(firstClip);
+                        // เล่นจบเพลงจริงๆ (ไม่ใช่ถูกกดข้าม) ค่อยเล่น loop song
+                        if (firstClip.getFramePosition() >= firstClip.getFrameLength()) {
+                            playLoop(loopName);
+                        }
+                    }
+                }
+            };
+            firstClip.addLineListener(listener);
+            listenerMap.put(firstClip, listener);
+
+            currentBgmClip = firstClip;
+            firstClip.start();
+        } else {
+            // ถ้าเพลงแรกไม่มี ให้เล่นเพลง loop เลย
+            playLoop(loopName);
         }
     }
 
