@@ -11,8 +11,8 @@ import java.util.Map;
 public class TheSun extends ArcanaCard {
 
     public TheSun(int x, int y) {
-        super("The Sun", x, y, 4, "OOPgame/Assets/ImageForCards/Arcana Card/Sun.png");
-        this.description = "Skill: Multiply all your development cards by 20 if they have negative stats change to positive.";
+        super("The Sun", x, y, 3, "OOPgame/Assets/ImageForCards/Arcana Card/Sun.png");
+        this.description = "Skill: Multiply all your development cards by 10 if they have negative stats change to positive.";
     }
 
     @Override
@@ -31,7 +31,7 @@ public class TheSun extends ArcanaCard {
                                 value = Math.abs(value);
                             }
 
-                            value *= 20;
+                            value *= 10;
                             stats.setStats(statType, value);
                         }
                     }
