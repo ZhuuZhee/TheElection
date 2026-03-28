@@ -47,6 +47,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Core.UI.PlayerCoinUI PLAYER_COIN_UI;
     public static GameSettingUI SETTINGS_UI;
     public static Core.UI.TurnUI TURN_UI;
+    public static Core.UI.EndTurnButtonUI END_TURN_UI;
 
     public static List<Player> CURRENT_PLAYERS = new ArrayList<>();
 
@@ -129,6 +130,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.ArcanaCardHolderUITest(MAIN_SCENE);
         PlayerUI.GameSettingUI(MAIN_SCENE);
         PlayerUI.TurnUITest(MAIN_SCENE);
+        PlayerUI.EndTurnUI(MAIN_SCENE);
 
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
@@ -357,11 +359,15 @@ public class ZhuzheeGame implements ApplicationAdapter {
             ZhuzheeGame.TURN_UI = new TurnUI(scene2D);
             return ZhuzheeGame.TURN_UI;
         }
+        public static EndTurnButtonUI EndTurnUI(Scene2D scene2D) {
+            ZhuzheeGame.END_TURN_UI = new EndTurnButtonUI(scene2D);
+            return ZhuzheeGame.END_TURN_UI;
+        }
         public static CardHolderUI CardHolderUITest(Scene2D scene2D){
             CardHolderUI ui = new CardHolderUI(scene2D);
             ui.setStrechToFit(true);
             ui.setPanelSize(100,224);
-            ui.setMargins(224,224,16,16);
+            ui.setMargins(196, 212, 16, 16);
             ui.setAnchorTop(false);
             Color color = ui.getBackground();
             color = new Color(color.getRed(),color.getGreen(),color.getBlue(),100);
