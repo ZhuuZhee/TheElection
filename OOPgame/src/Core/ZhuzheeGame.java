@@ -239,7 +239,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         if (CLIENT == null) return;
 
         int currentTurn = CLIENT.getTurnCounter();
-        int playerCount = Math.max(1, CLIENT.getConnectedPlayers().size());
+        int playerCount = Math.max(1, CURRENT_PLAYERS.size());
         int turnsPerRound = playerCount * 4;
 
         int currentRound = ((currentTurn - 1) / turnsPerRound) + 1;
