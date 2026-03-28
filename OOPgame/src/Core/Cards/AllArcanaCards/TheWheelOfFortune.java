@@ -67,7 +67,7 @@ public class TheWheelOfFortune extends ArcanaCard {
                 }
             }
             temporaryPolicyCards.clear();
-            UINotificationToast.showNotification("The Wheel Of Fortune effect ended. Temporary policy cards removed.");
+            UINotificationToast.showNotification("The Wheel Of Fortune effect ended. Temporary policy cards removed.", 5000, true);
         }
         ZhuzheeGame.POLICY_CARD_HAND.setMaxCard(PolicyCardHolderUI.DEFAULT_MAX_CARD);
     }
