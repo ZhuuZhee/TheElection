@@ -1,6 +1,7 @@
 package Core.Cards.AllArcanaCards;
 
 import Core.Cards.ArcanaCard;
+import Core.UI.UINotificationToast;
 
 public class Death extends ArcanaCard {
     public Death(int x, int y) {
@@ -9,7 +10,7 @@ public class Death extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        System.out.println("Death activate!");
+        UINotificationToast.showNotification("Death activate!");
         // Business Logic
     }
 }
