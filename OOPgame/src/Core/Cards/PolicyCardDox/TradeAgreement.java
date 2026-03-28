@@ -10,7 +10,7 @@ import Core.ZhuzheeGame;
 public class TradeAgreement extends PolicyCard {
     public TradeAgreement(int x, int y, String imagePath) {
         super("Trade Agreement", x, y, imagePath, -4);
-        this.description = "Skill: Negative stats on your played Development card become 0. Lose 1 coin per fixed stat.";
+        this.description = "Skill: Negative stats on your played Development card become 0 and -1 coin per fixed stat.";
     }
 
     @Override
