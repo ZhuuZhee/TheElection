@@ -20,9 +20,9 @@ public class Shop extends Canvas {
 
     private final Player localPlayer;
     private List<PolicyCard> shopCards = new ArrayList<>();
-    private Scene2D scene;
-    private JLabel headerLabel;
-    private JPanel cardContainer;
+    private final Scene2D scene;
+    private final JLabel headerLabel;
+    private final JPanel cardContainer;
 
     public Shop(Scene2D scene) {
         this(scene, PolicyCardRegistry.rollCards(3));
@@ -122,9 +122,7 @@ public class Shop extends Canvas {
 
         this.localPlayer.setCoin(this.localPlayer.getCoin() - price);
         ZhuzheeEngine.Debug.GameLogger.logInfo("ซื้อการ์ด " + card.getName() + " สำเร็จ!");
-        if(AudioManager.getInstance() != null) {
-            AudioManager.getInstance().playSound("click");
-        }
+        AudioManager.getInstance().playSound("click");
 
         if (ZhuzheeGame.PLAYER_COIN_UI != null) {
             ZhuzheeGame.PLAYER_COIN_UI.updateCoinDisplay();

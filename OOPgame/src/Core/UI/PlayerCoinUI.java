@@ -6,7 +6,7 @@ import ZhuzheeEngine.Scene.Scene2D;
 
 public class PlayerCoinUI extends CardHolderUI {
 
-    private Player localPlayer;
+    private final Player localPlayer;
 
     public PlayerCoinUI(Scene2D scene) {
         super(scene);

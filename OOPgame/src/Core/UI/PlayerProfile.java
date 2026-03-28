@@ -1,6 +1,5 @@
 package Core.UI;
 
-import Core.ZhuzheeGame;
 import Core.Player.Player;
 import ZhuzheeEngine.Scene.*;
 import ZhuzheeEngine.Scene.Canvas;

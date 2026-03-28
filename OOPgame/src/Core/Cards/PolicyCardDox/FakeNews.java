@@ -30,7 +30,6 @@ public class FakeNews extends PolicyCard {
         if (localPlayer == null) return null;
 
         PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-        if (stats == null) return null;
 
         int fac = stats.getStats(PoliticsStats.FACILITY);
         if (fac == 0) {
@@ -49,28 +48,5 @@ public class FakeNews extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-//        if (!isActive()) return;
-//        if (ZhuzheeGame.CLIENT == null) return;
-//        Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
-//        if (localPlayer == null) return;
-//
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) return;
-//
-//        int fac = stats.getStats(PoliticsStats.FACILITY);
-//        if (fac == 0) {
-//            int currentCoin = localPlayer.getCoin();
-//            localPlayer.setCoin(currentCoin + 1);
-//
-//            int currentEco = stats.getStats(PoliticsStats.ECONOMY);
-//            stats.setStats(PoliticsStats.ECONOMY, currentEco * 3);
-//
-//            int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
-//            stats.setStats(PoliticsStats.ENVIRONMENT, currentEnv - 2);
-//
-//            UINotificationToast.showNotification("🗣️ [FAKE NEWS] Smear Campaign Active! (+1 Coin, x3 Economy)");
-//        }
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
 }

@@ -42,29 +42,5 @@ public class CabinetShuffle extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-//        if (!isActive()) {
-//            return;
-//        }
-//
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) {
-//            return;
-//        }
-//
-//        int facValue = stats.getStats(PoliticsStats.FACILITY);
-//        int envValue = stats.getStats(PoliticsStats.ENVIRONMENT);
-//        int ecoValue = stats.getStats(PoliticsStats.ECONOMY);
-//
-//        stats.setStats(PoliticsStats.FACILITY, -facValue);
-//        stats.setStats(PoliticsStats.ENVIRONMENT, -envValue);
-//        stats.setStats(PoliticsStats.ECONOMY, -ecoValue);
-//
-//        System.out.println("----------------------------------");
-//        System.out.println("PolicyCard [Cabinet Shuffle] ทำงาน!");
-//        System.out.println("ค่าสถานะของการ์ด " + playedCard.getName() + " ถูกสลับเครื่องหมายทั้งหมด");
-//        System.out.println("----------------------------------");
-//
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
 }

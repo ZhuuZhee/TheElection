@@ -91,9 +91,6 @@ public class Player {
     public String getArcanaCardName() {
         return arcanaCardName;
     }
-    public void setArcanaCardName(String arcanaCardName){
-        this.arcanaCardName = arcanaCardName;
-    }
 
     public void setArcanaCard(ArcanaCard arcanaCard) {
         this.arcanaCard = arcanaCard;

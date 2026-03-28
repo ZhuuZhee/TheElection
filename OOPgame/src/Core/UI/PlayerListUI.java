@@ -8,7 +8,6 @@ import ZhuzheeEngine.Scene.Scene2D;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -97,8 +96,8 @@ public class PlayerListUI extends Canvas {
 
     private static class PlayerItemUI extends JPanel {
         int rank = 1;
-        private static int margin = 12; // เพิ่ม margin พื้นฐาน
-        private static int padding = 24; // เพิ่ม margin พื้นฐาน
+        private final static int margin = 12; // เพิ่ม margin พื้นฐาน
+        private final static int padding = 24; // เพิ่ม margin พื้นฐาน
         public Color teamColor;
         public boolean isActive;
         public boolean isMe;

@@ -146,7 +146,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PLAYER_LIST_UI = new PlayerListUI(MAIN_SCENE, actualPlayers);
         CURRENT_PLAYERS = actualPlayers;
         PlayerUI.PlayerCoinUITest(MAIN_SCENE);
-        Tester.CardTesterUI(MAIN_SCENE);
+//        Tester.CardTesterUI(MAIN_SCENE);
 
         Tester.ShopTest();
 
@@ -250,9 +250,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }, eventMask);
     }
 
-    @Override
-    public void resize(int width, int height) {
-    }
+//    @Override
+//    public void resize(int width, int height) {
+//    }
 
     @Override
     public void render() {
@@ -288,59 +288,59 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
     }
 
-    private static void applyRandomEvent(int round) {
-        if (MAP == null) return;
-        List<Core.Maps.City> cities = MAP.getAllCities();
-        if (cities.isEmpty()) return;
-
-        // Use round number and map seed for deterministic random across all clients
-        java.util.Random rand = new java.util.Random(MAP_SEED + round);
-
-        // Pick a random city to hit with an event
-        Core.Maps.City targetCity = cities.get(rand.nextInt(cities.size()));
-
-        int eventType = rand.nextInt(3);
-        int decayAmount = -(10 + rand.nextInt(15)); // -10 to -24 stats
-
-        String eventName = "";
-        long statType = 0;
-
-        if (eventType == 0) {
-            eventName = "Economic Recession";
-            statType = Core.Maps.PoliticsStats.ECONOMY;
-        } else if (eventType == 1) {
-            eventName = "Infrastructure Decay";
-            statType = Core.Maps.PoliticsStats.FACILITY;
-        } else {
-            eventName = "Pollution Crisis";
-            statType = Core.Maps.PoliticsStats.ENVIRONMENT;
-        }
-
-        // Don't let it go below 1
-        int currentStat = targetCity.stats.getStats(statType);
-        if (currentStat + decayAmount < 1) {
-            decayAmount = 1 - currentStat;
-        }
-
-        if (decayAmount < 0) {
-            targetCity.stats.addStats(statType, decayAmount);
-            ZhuzheeEngine.Debug.GameLogger.logWarning("RANDOM EVENT: " + eventName + " hit " + targetCity.getCityName() + "! Stat changed by " + decayAmount);
-            // Re-calculate scores or just let the next card take advantage of lower stats
-        }
-    }
+//    private static void applyRandomEvent(int round) {
+//        if (MAP == null) return;
+//        List<Core.Maps.City> cities = MAP.getAllCities();
+//        if (cities.isEmpty()) return;
+//
+//        // Use round number and map seed for deterministic random across all clients
+//        java.util.Random rand = new java.util.Random(MAP_SEED + round);
+//
+//        // Pick a random city to hit with an event
+//        Core.Maps.City targetCity = cities.get(rand.nextInt(cities.size()));
+//
+//        int eventType = rand.nextInt(3);
+//        int decayAmount = -(10 + rand.nextInt(15)); // -10 to -24 stats
+//
+//        String eventName;
+//        long statType;
+//
+//        if (eventType == 0) {
+//            eventName = "Economic Recession";
+//            statType = Core.Maps.PoliticsStats.ECONOMY;
+//        } else if (eventType == 1) {
+//            eventName = "Infrastructure Decay";
+//            statType = Core.Maps.PoliticsStats.FACILITY;
+//        } else {
+//            eventName = "Pollution Crisis";
+//            statType = Core.Maps.PoliticsStats.ENVIRONMENT;
+//        }
+//
+//        // Don't let it go below 1
+//        int currentStat = targetCity.stats.getStats(statType);
+//        if (currentStat + decayAmount < 1) {
+//            decayAmount = 1 - currentStat;
+//        }
+//
+//        if (decayAmount < 0) {
+//            targetCity.stats.addStats(statType, decayAmount);
+//            ZhuzheeEngine.Debug.GameLogger.logWarning("RANDOM EVENT: " + eventName + " hit " + targetCity.getCityName() + "! Stat changed by " + decayAmount);
+//            // Re-calculate scores or just let the next card take advantage of lower stats
+//        }
+//    }
     @Override
     public void dispose() {
 
     }
 
     public static class PlayerUI{
-        public static GameSettingUI GameSettingUI(Scene2D scene2D) {
-            ZhuzheeGame.SETTINGS_UI = new GameSettingUI(scene2D);
-            return  ZhuzheeGame.SETTINGS_UI;
-        }
         public static PolicyCardHolderUI PolicyCardHolderUITest(Scene2D scene2D){
             ZhuzheeGame.POLICY_CARD_HAND = new PolicyCardHolderUI(scene2D);
             return ZhuzheeGame.POLICY_CARD_HAND;
+        }
+        public static GameSettingUI GameSettingUI(Scene2D scene2D) {
+            ZhuzheeGame.SETTINGS_UI = new GameSettingUI(scene2D);
+            return  ZhuzheeGame.SETTINGS_UI;
         }
         public static ArcanaCardHolderUI ArcanaCardHolderUITest(Scene2D scene2D){
             ZhuzheeGame.ARCANA_CARD_UI = new ArcanaCardHolderUI(scene2D);

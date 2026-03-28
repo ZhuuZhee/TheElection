@@ -40,12 +40,5 @@ public class CoinBoom extends PolicyCard {
     }
 
     @Override
-    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
-        return null;
-    }
-
-    @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-        // no use.
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
 }

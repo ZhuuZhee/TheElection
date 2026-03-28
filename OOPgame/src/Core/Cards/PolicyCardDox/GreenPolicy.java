@@ -25,35 +25,21 @@ public class GreenPolicy extends PolicyCard {
         return false;
     }
 
-    @Override
     /**
      * Intercepts Action Card stats. If Environment is negative, it sets it to 0
      * to prevent ecological damage.
      */
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-        // เช็คว่าการ์ดที่เล่นเป็น DevelopCard หรือไม่
-//        if (playedCard instanceof ActionCard) {
-//            PoliticsStats stats = playedCard.getStats();
-//            if (stats != null) {
-//                int env = stats.getStats(PoliticsStats.ENVIRONMENT);
-//                if (env < 0) {
-//                    UINotificationToast.showNotification("🌿 [Green Policy] ป้องกันค่า Environment ติดลบให้ " + playedCard.getName());
-//                    stats.setStats(PoliticsStats.ENVIRONMENT, 0);
-//                }
-//            }
-//        }
-        return;
-    }
+    @Override
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
+
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
-        if (playedCard instanceof ActionCard) {
+        if (playedCard != null) {
             PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-            if (stats != null) {
-                int env = stats.getStats(PoliticsStats.ENVIRONMENT);
-                if (env < 0) {
-                    UINotificationToast.showNotification("[Green Policy] Activate! " + playedCard.getName() + "Change Environment to 0!");
-                    stats.setStats(PoliticsStats.ENVIRONMENT, 0);
-                }
+            int env = stats.getStats(PoliticsStats.ENVIRONMENT);
+            if (env < 0) {
+                UINotificationToast.showNotification("[Green Policy] Activate! " + playedCard.getName() + "Change Environment to 0!");
+                stats.setStats(PoliticsStats.ENVIRONMENT, 0);
             }
         }
         return stats;
