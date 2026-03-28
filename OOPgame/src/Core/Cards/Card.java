@@ -7,7 +7,9 @@ package Core.Cards;
 import Core.Maps.Grid;
 import Core.Maps.Map;
 import Core.Maps.PoliticsStats;
+import Core.Player.Player;
 import Core.UI.CardHolderUI;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
 import ZhuzheeEngine.Scene.*;
@@ -216,6 +218,18 @@ public abstract class Card extends GameObject {
     public void onMousePressed(int mouseX, int mouseY) {
         if (getEnable() && isDraggable) {
             // ปิด Tooltip ทันทีที่คลิกเพื่อลาก
+            Player playercoin = ZhuzheeGame.CLIENT.getLocalPlayer();
+            if (playercoin != null && (playercoin.getCoin() + this.coin) < 0) {
+                int missingCoin = Math.abs(playercoin.getCoin() + this.coin);
+                String warnMsg = "Not enough money! Need $" + missingCoin + " more.";
+
+                ZhuzheeEngine.Debug.GameLogger.logWarning(warnMsg);
+
+                UINotificationToast.showNotification("Don't have enough money to place this card");
+                return;
+            }
+            // ==========================================
+
             if (activeTooltip != null) {
                 scene.remove(activeTooltip);
                 activeTooltip = null;
