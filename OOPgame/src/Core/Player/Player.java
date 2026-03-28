@@ -272,6 +272,7 @@ public class Player {
         json.put("playerId", playerId);
         json.put("playerName", playerName);
         json.put("coin", coin);
+        json.put("score", score);
         json.put("color", colorName);
         json.put("profileImagePath", profileImagePath);
         json.put("isLose", isLose);
@@ -308,6 +309,9 @@ public class Player {
         }
         if (data.has("coin")) {
             this.coin = data.getInt("coin");
+        }
+        if (data.has("score")) {
+            this.score = (float) data.getDouble("score");
         }
         if (data.has("color")) {
             String colorName = data.getString("color");

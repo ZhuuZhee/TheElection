@@ -217,6 +217,32 @@ public class GameServerManager {
         JSONObject packet = gameState.generateSyncData();
         packet.put("type",NetworkProtocol.VOTING.name());
         broadcast(packet);
+        
+        // รอ 4 วินาที (ให้ UI หน้า Voting ทำงานที่ Client เสร็จ 3 วิ)
+        new Thread(() -> {
+            try {
+                Thread.sleep(3500); // ดีเลย์เผื่อเวลาที่ Client แสดงผล EliminationUI
+
+                synchronized (GameServerManager.this) {
+                    // จัดลำดับผู้เล่นใหม่
+                    gameState.reorderPlayers();
+                    
+                    // กำหนด currentPlayer เป็นคนที่ยังไม่แพ้ในตำแหน่งแรกสุดของ Players ทันทีหลังจากการเรียงใหม่
+                    for (Player p : gameState.getPlayers()) {
+                        if (!p.isLose()) {
+                            gameState.setCurrentPlayer(p);
+                            break;
+                        }
+                    }
+                    gameState.incrementPhaseCounter();
+                    
+                    // กระจายสถานะกลับไปให้ทุกคนเริ่มรอบใหม่
+                    updateGameStateToClients();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
     // อัปเดตข้อมูลเมือง
     private synchronized void onUseCard(JSONObject action) {
