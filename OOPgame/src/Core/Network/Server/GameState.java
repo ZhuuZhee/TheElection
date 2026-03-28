@@ -41,7 +41,20 @@ public class GameState {
     }
 
     public void reorderPlayers() {
-        // players.sort ???
+        if (players.isEmpty()) return;
+        
+        // เรียงผู้เล่นใหม่ตาม score ผู้ที่มีคะแนนน้อยสุดจะได้เป็นคิวแรก (index 0)
+        // กรณีคะแนนเท่ากัน สามารถเรียงตาม ID เพื่อความเสถียร (ให้เรียงเหมือนกันทุกครั้ง)
+        players.sort((p1, p2) -> {
+            int scoreCompare = Float.compare(p1.getScore(), p2.getScore());
+            if (scoreCompare == 0) {
+                return p1.getPlayerId().compareTo(p2.getPlayerId());
+            }
+            return scoreCompare;
+        });
+        
+        System.out.println("Server: Players reordered by score (Lowest first).");
+        playersLog();
     }
 
     /// game state data as JSON for socket
@@ -113,13 +126,17 @@ public class GameState {
     // --------   game state events method
     //-----------------------------------------
 
-    public synchronized void onStartGame() {
-        Player startPlayer = players.getFirst();
+    public synchronized void onStartTurn() {
+        if (players.isEmpty()) return;
+
+        // ค้นหาผู้เล่นคนแรกที่ยังไม่แพ้
+        Player startPlayer = players.stream()
+                .filter(p -> !p.isLose())
+                .findFirst()
+                .orElse(players.getFirst());
+
         setCurrentPlayer(startPlayer);
         // ไม่ต้องเรียก OnStartTurn ที่นี่ เพราะ Client จะเริ่มเทิร์นเองเมื่อ SYNC_STATE มาถึง
-    }
-    public synchronized void onVoting(){
-        currentPlayer = null;
     }
 
     public synchronized void nextTurn() {

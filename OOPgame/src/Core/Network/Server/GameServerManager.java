@@ -140,6 +140,16 @@ public class GameServerManager {
                 break;
             }
         }
+
+        // ตรวจสอบว่าผู้เล่นที่หลุดไป กำลังถือครองเทิร์นอยู่หรือไม่
+        if (targetPlayer != null && gameState.getCurrentPlayer() != null) {
+            if (gameState.getCurrentPlayer().getPlayerId().equals(playerId)) {
+                System.out.println("Server : Current player disconnected. Advancing turn automatically.");
+                gameState.nextTurn();
+                gameState.incrementPhaseCounter();
+            }
+        }
+
         if (targetPlayer != null)
             gameState.getPlayers().remove(targetPlayer);
 
@@ -184,7 +194,7 @@ public class GameServerManager {
         org.json.JSONObject startPacket = new org.json.JSONObject();
         startPacket.put("type", NetworkProtocol.START_GAME.name());
         startPacket.put("mapSeed", gameState.getMapSeed());
-        gameState.onStartGame();
+        gameState.onStartTurn();
         broadcast(startPacket);
         broadcast(gameState.generateSyncData());
     }
@@ -203,10 +213,35 @@ public class GameServerManager {
         updateGameStateToClients();
     }
     private synchronized void onVoting(){
-        gameState.onVoting();
         JSONObject packet = gameState.generateSyncData();
         packet.put("type",NetworkProtocol.VOTING.name());
         broadcast(packet);
+        
+        // รอ 4 วินาที (ให้ UI หน้า Voting ทำงานที่ Client เสร็จ 3 วิ)
+        new Thread(() -> {
+            try {
+                Thread.sleep(3500); // ดีเลย์เผื่อเวลาที่ Client แสดงผล EliminationUI
+
+                synchronized (GameServerManager.this) {
+                    // จัดลำดับผู้เล่นใหม่
+                    gameState.reorderPlayers();
+                    
+                    // กำหนด currentPlayer เป็นคนที่ยังไม่แพ้ในตำแหน่งแรกสุดของ Players ทันทีหลังจากการเรียงใหม่
+                    for (Player p : gameState.getPlayers()) {
+                        if (!p.isLose()) {
+                            gameState.setCurrentPlayer(p);
+                            break;
+                        }
+                    }
+                    gameState.incrementPhaseCounter();
+                    
+                    // กระจายสถานะกลับไปให้ทุกคนเริ่มรอบใหม่
+                    updateGameStateToClients();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
     // อัปเดตข้อมูลเมือง
     private synchronized void onUseCard(JSONObject action) {

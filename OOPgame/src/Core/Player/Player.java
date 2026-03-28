@@ -59,7 +59,7 @@ public class Player {
         this.playerId = playerId;
         this.playerName = playerName;
         this.isLocal = isLocal;
-        this.coin = 100; // setไว้ 100 ก่อน
+        this.coin = 10; // setไว้ 100 ก่อน
         this.actionCards = new ArrayList<>();
         this.policyCards = new ArrayList<>();
         this.cityOwn = new String[0];
@@ -137,9 +137,10 @@ public class Player {
     }
 
     public void setLose(boolean lose) {
-        isLose = lose;
-        if(lose){
-            onLoose();
+        if (this.isLose == lose) return;
+        this.isLose = lose;
+        if (this.isLocal && lose) {
+            onLoose(); // รันเฉพาะเครื่องตัวเองเพื่อเคลียร์ UI
         }
     }
 
@@ -272,6 +273,7 @@ public class Player {
         json.put("playerId", playerId);
         json.put("playerName", playerName);
         json.put("coin", coin);
+        json.put("score", score);
         json.put("color", colorName);
         json.put("profileImagePath", profileImagePath);
         json.put("isLose", isLose);
@@ -309,6 +311,9 @@ public class Player {
         if (data.has("coin")) {
             this.coin = data.getInt("coin");
         }
+        if (data.has("score")) {
+            this.score = (float) data.getDouble("score");
+        }
         if (data.has("color")) {
             String colorName = data.getString("color");
             setColor(colorName);
@@ -325,7 +330,7 @@ public class Player {
             this.arcanaCardName = data.getString("arcanaCard");
         }
         if(data.has("isLose")){
-            isLose = data.getBoolean("isLose");
+            setLose(data.getBoolean("isLose"));
         }
 
         if (ZhuzheeGame.PLAYER_LIST_UI != null) {
