@@ -52,48 +52,48 @@ public class CreditUI extends Screen implements ActionListener{
         addImage("OOPgame/Assets/ImageForMapBackground/The_Elction_Logo.png");
         addSpace(30);
 
-        addCredit("68070006", 16, true, Color.BLACK);
-        addCredit("Gawintep Chiangka", 14, false, Color.GRAY);
+        addCredit("68070006", 22, true, Color.BLACK);
+        addCredit("Gawintep Chiangka", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/4Pro.png");
         addSpace(20);
 
-        addCredit("68070062", 16, true, Color.BLACK);
-        addCredit("Thana Mingboon", 14, false, Color.GRAY);
+        addCredit("68070062", 22, true, Color.BLACK);
+        addCredit("Thana Mingboon", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/3Pro.png");
         addSpace(20);
 
-        addCredit("68070106", 16, true, Color.BLACK);
-        addCredit("Piyawat Supphaphontakorn", 14, false, Color.GRAY);
+        addCredit("68070106", 22, true, Color.BLACK);
+        addCredit("Piyawat Supphaphontakorn", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/2Pro.png");
         addSpace(20);
 
-        addCredit("68070111", 16, true, Color.BLACK);
-        addCredit("Pongsapak Boonsonthi", 14, false, Color.GRAY);
+        addCredit("68070111", 22, true, Color.BLACK);
+        addCredit("Pongsapak Boonsonthi", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/6Pro.png");
         addSpace(20);
 
-        addCredit("68070143", 16, true, Color.BLACK);
-        addCredit("Puri Ngadeesanguannam", 14, false, Color.GRAY);
+        addCredit("6807073", 22, true, Color.BLACK);
+        addCredit("Puri Ngadeesanguannam", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/1Pro.png");
         addSpace(20);
 
-        addCredit("68070145", 16, true, Color.BLACK);
-        addCredit("Purin Leuprasert", 14, false, Color.GRAY);
+        addCredit("6807075", 22, true, Color.BLACK);
+        addCredit("Purin Leuprasert", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/5Pro.png");
         addSpace(20);
 
-        addCredit("68070149", 16, true, Color.BLACK);
-        addCredit("Muninthon Donliken", 14, false, Color.GRAY);
+        addCredit("68070149", 22, true, Color.BLACK);
+        addCredit("Muninthon Donliken", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/8Pro.png");
         addSpace(20);
 
-        addCredit("68070152", 16, true, Color.BLACK);
-        addCredit("Yossakorn Praharnphap", 14, false, Color.GRAY);
+        addCredit("68070152", 22, true, Color.BLACK);
+        addCredit("Yossakorn Praharnphap", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/9Pro.png");
         addSpace(20);
 
-        addCredit("68070204", 16, true, Color.BLACK);
-        addCredit("Aphiraks Noppakhrao", 14, false, Color.GRAY);
+        addCredit("68070204", 22, true, Color.BLACK);
+        addCredit("Aphiraks Noppakhrao", 20, false, Color.GRAY);
         addImage("OOPgame/Assets/ImageForProfile/7Pro.png");
         addSpace(20);
 
@@ -201,5 +201,11 @@ public class CreditUI extends Screen implements ActionListener{
         } catch (Exception e) {
             System.err.println("หาภาพเครดิตไม่เจอ: " + imagePath);
         }
+    }
+
+    @Override
+    public void onScreenEnter() {
+        super.onScreenEnter();
+        AudioManager.getInstance().playLoop("credit");
     }
 }
