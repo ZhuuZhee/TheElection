@@ -32,7 +32,7 @@ public class LobbyMenu extends Screen implements ActionListener {
         setLayout(new BorderLayout());
 
         try {
-            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/test.png"));
+            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/ImageForMapBackground/LobbyReal.png"));
             btnNormalImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_normal.png"));
             btnHoverImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_hover.png"));
         } catch (Exception e) {
@@ -43,9 +43,10 @@ public class LobbyMenu extends Screen implements ActionListener {
         bgCanvas.setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Game Lobby");
-        title.setFont(title.getFont().deriveFont(40f));
+        title.setFont(title.getFont().deriveFont(100f));
         title.setHorizontalAlignment(JLabel.CENTER);
-        title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
+        title.setBorder(BorderFactory.createEmptyBorder(100, 0, 0, 0));
+        title.setForeground(new Color(195, 169, 82));
         bgCanvas.add(title, BorderLayout.NORTH);
 
         JPanel Panel = new JPanel();
@@ -56,23 +57,24 @@ public class LobbyMenu extends Screen implements ActionListener {
         nameTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         nameInput = new JTextField();
-        nameInput.setMaximumSize(new Dimension(250, 35));
-        nameInput.setPreferredSize(new Dimension(250, 35));
+        nameInput.setMaximumSize(new Dimension(350, 50));
+        nameInput.setPreferredSize(new Dimension(350, 50));
         nameInput.setHorizontalAlignment(JTextField.CENTER);
         nameInput.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         JLabel ipTitle = new JLabel("Enter Host IP (For Join):");
         ipTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        ipTitle.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        ipTitle.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         
         ipInput = new JTextField();
-        ipInput.setMaximumSize(new Dimension(250, 35));
-        ipInput.setPreferredSize(new Dimension(250, 35));
+        ipInput.setMaximumSize(new Dimension(350, 50));
+        ipInput.setPreferredSize(new Dimension(350, 50));
         ipInput.setHorizontalAlignment(JTextField.CENTER);
         ipInput.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel btnPanel = new JPanel();
         btnPanel.setOpaque(false);
+        btnPanel.setPreferredSize(new Dimension(350, 220));
         btnPanel.setLayout(new GridLayout(3, 1, 10, 10));
         btnPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
@@ -89,10 +91,12 @@ public class LobbyMenu extends Screen implements ActionListener {
         btnPanel.add(createBtn);
         btnPanel.add(joinBtn);
         btnPanel.add(backBtn);
-    
+
         JPanel centerWrapper = new JPanel(new GridBagLayout());
         centerWrapper.setOpaque(false);
-        
+
+        centerWrapper.setBorder(BorderFactory.createEmptyBorder(0, 0, 150, 0));
+
         Panel.add(Box.createVerticalGlue());
         Panel.add(nameTitle);
         Panel.add(Box.createRigidArea(new Dimension(0, 5)));

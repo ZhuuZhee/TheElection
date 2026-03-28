@@ -108,12 +108,15 @@ public class ZhuzheeGame implements ApplicationAdapter {
         } else {
             Screen.ChangeScreen(MAIN_MENU); // Run Main จริง
         }
-        AudioManager.getInstance().loadSound("bgm", "UaH.WAV");
-        // AudioManager.getInstance().playLoop("bgm");
+        AudioManager.getInstance().loadSound("beeb", "beeb.WAV");
+        AudioManager.getInstance().loadSound("bgm", "Crucified.WAV");
+        AudioManager.getInstance().playSound("beeb");
+        AudioManager.getInstance().playLoop("bgm");
     }
 
     /// MAIN_SCENE
     public static void startMainScene() {
+        AudioManager.getInstance().loadSound("bgm2", "Napoleon.WAV");
         Screen.ChangeScreen(MAIN_SCENE);
         CameraControlEvent(MAIN_SCENE);
 
@@ -164,6 +167,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
             PlayerUI.PlayerProfileUITest(MAIN_SCENE, localPlayer);
         }
         localPlayer.DrawCard();
+        AudioManager.getInstance().playLoop("bgm2");
     }
     public static void resetGame() {
         if (CLIENT != null) {

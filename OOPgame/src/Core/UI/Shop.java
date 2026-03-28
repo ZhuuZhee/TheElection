@@ -11,6 +11,7 @@ import ZhuzheeEngine.Scene.Canvas;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,6 +81,9 @@ public class Shop extends Canvas {
             buyBtn.setForeground(Color.WHITE);
             buyBtn.setFocusPainted(false);
             buyBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+            MouseAdapter mouseHover = ZhuzheeGame.MOUSE_HOVER_SFX;
+            buyBtn.addMouseListener(mouseHover);
 
             buyBtn.addActionListener(e -> {
                 handleBuy(card, wrapper); // ส่งกล่อง Wrapper ไปให้ระบบเพื่อทำลายทิ้งตอนซื้อ

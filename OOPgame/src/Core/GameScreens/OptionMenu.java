@@ -35,7 +35,7 @@ public class OptionMenu extends Screen {
         setLayout(new BorderLayout());
 
         try {
-            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/test.png"));
+            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/ImageForMapBackground/OptionReal.png"));
             btnNormalImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_normal.png"));
             btnHoverImg  = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_hover.png"));
         } catch (Exception e) {
@@ -51,14 +51,14 @@ public class OptionMenu extends Screen {
         settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
         settingsPanel.setBackground(Color.WHITE);
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(50, 150, 255), 6), // ปรับขอบสีฟ้าให้หนาขึ้น
+                BorderFactory.createLineBorder(new Color(76, 72, 61), 6), // ปรับขอบสีฟ้าให้หนาขึ้น
                 BorderFactory.createEmptyBorder(60, 100, 60, 100) // เพิ่มพื้นที่ขอบด้านในให้กว้างขึ้น
         ));
 
         // หัวข้อ Settings
         JLabel titleLabel = new JLabel("Settings");
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 55f)); // ขยายขนาดฟอนต์หัวข้อใหญ่ขึ้น
-        titleLabel.setForeground(new Color(255, 100, 150));
+        titleLabel.setForeground(new Color(195, 169, 82));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         settingsPanel.add(titleLabel);
         settingsPanel.add(Box.createRigidArea(new Dimension(0, 40)));

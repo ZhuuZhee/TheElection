@@ -35,7 +35,7 @@ public class MainMenu extends Screen implements ActionListener {
         // คำแนะนำ: โหลดรูปภาพ 9-slice ของคุณตรงนี้ (ใช้ try-catch เพื่อป้องกัน error)
         try {
             // ตัวอย่างการโหลดรูป:
-            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/test.png"));
+            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/ImageForMapBackground/MainReal.png"));
             // TODO: ใส่ที่อยู่รูปปุ่มของคุณ (ถ้ายังไม่มี
             // ให้หาหรือสร้างรูปปุ่มมาใส่แทนที่อยู่ตรงนี้)
             btnNormalImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_normal.png"));
@@ -44,41 +44,25 @@ public class MainMenu extends Screen implements ActionListener {
             e.printStackTrace();
         }
 
-        // สร้าง NineSliceCanvas (เนื่องจากไม่ได้ใช้ใน Scene2D จึงใส่ null
-        // ได้เลยหลังจากอัปเดตระบบแล้ว)
-        // อย่าลืมกำหนดระยะตัดขอบ (ซ้าย, ขวา, บน, ล่าง) ตามความเหมาะสมของรูปภาพ
-        bgCanvas = new NineSliceCanvas(bgImage, 25, 25, 25, 25) {
+        bgCanvas = new NineSliceCanvas(bgImage, 0, 0, 0, 0) {
         };
-        bgCanvas.setLayout(new BorderLayout());
+        bgCanvas.setLayout(new GridBagLayout());
 
-        JPanel topTextGroup = new JPanel(new BorderLayout());
-        topTextGroup.setOpaque(false);
-        topTextGroup.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
-
-        JLabel title = new JLabel("The Election");
-        title.setFont(title.getFont().deriveFont(50f));
-        title.setForeground(Color.BLACK);
-        title.setHorizontalAlignment(JLabel.CENTER);
-
-        JLabel bankImageLabel = new JLabel();
-        bankImageLabel.setHorizontalAlignment(JLabel.CENTER);
-        bankImageLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
+        JLabel LogoLabel = new JLabel();
+        LogoLabel.setHorizontalAlignment(JLabel.CENTER);
+        LogoLabel.setBorder(null);
 
         try {
-            ImageIcon originalIcon = new ImageIcon("OOPgame/Assets/ImageForMapBackground/realbank.jpg");
+            ImageIcon originalIcon = new ImageIcon("OOPgame/Assets/ImageForMapBackground/The_Elction_Logo.png");
             if (originalIcon.getIconWidth() > 0) {
-                int scaledWidth = 400;
+                int scaledWidth = 600;
                 int scaledHeight = (originalIcon.getIconHeight() * scaledWidth) / originalIcon.getIconWidth();
                 Image scaledImage = originalIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-                bankImageLabel.setIcon(new ImageIcon(scaledImage));
+                LogoLabel.setIcon(new ImageIcon(scaledImage));
             }
         } catch (Exception e) {
             System.err.println("Load bank image error: " + e.getMessage());
         }
-
-        topTextGroup.add(title, BorderLayout.NORTH);
-        topTextGroup.add(bankImageLabel, BorderLayout.SOUTH);
-        bgCanvas.add(topTextGroup, BorderLayout.NORTH);
 
         startBtn = UIButtonFactory.createMenuButton("START GAME", btnNormalImg, btnHoverImg, this);
         optionBtn = UIButtonFactory.createMenuButton("OPTIONS", btnNormalImg, btnHoverImg, this);
@@ -93,23 +77,29 @@ public class MainMenu extends Screen implements ActionListener {
 
         JPanel buttonBox = new JPanel(new GridLayout(4, 1, 10, 10));
         buttonBox.setOpaque(false);
+        buttonBox.setPreferredSize(new Dimension(350, 320));
         buttonBox.add(startBtn);
         buttonBox.add(optionBtn);
         buttonBox.add(creditBtn);
         buttonBox.add(exitBtn);
 
-        JPanel wrapper = new JPanel(new GridBagLayout());
-        wrapper.setOpaque(false);
+        GridBagConstraints gbcLogo = new GridBagConstraints();
+        gbcLogo.gridx = 0;
+        gbcLogo.gridy = 0;
+        gbcLogo.anchor = GridBagConstraints.PAGE_START;
+        gbcLogo.weightx = 1.0;
+        gbcLogo.weighty = 0.0;
+        gbcLogo.insets = new Insets(100, 0, 0, 0);
+        bgCanvas.add(LogoLabel, gbcLogo);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.weighty = 1.0;
-
-        gbc.insets = new Insets(30, 0, 0, 0);
-
-        wrapper.add(buttonBox, gbc);
-        bgCanvas.add(wrapper, BorderLayout.CENTER);
+        GridBagConstraints gbcButtons = new GridBagConstraints();
+        gbcButtons.gridx = 0;
+        gbcButtons.gridy = 1;
+        gbcButtons.anchor = GridBagConstraints.CENTER;
+        gbcButtons.weightx = 1.0;
+        gbcButtons.weighty = 1.0;
+        gbcButtons.insets = new Insets(20, 0, 50, 0);
+        bgCanvas.add(buttonBox, gbcButtons);
 
         add(bgCanvas, BorderLayout.CENTER);
 
@@ -146,22 +136,4 @@ public class MainMenu extends Screen implements ActionListener {
         dispose();
         setVisible(true);
     }
-
-//    private void addImage(String imagePath) {
-//        try {
-//            ImageIcon originalIcon = new ImageIcon(imagePath);
-//            if (originalIcon.getIconWidth() > 0) {
-//                int targetWidth = 400;
-//                int targetHeight = (originalIcon.getIconHeight() * targetWidth) / originalIcon.getIconWidth();
-//
-//                Image scaledImage = originalIcon.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-//                JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-//
-//                imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-//                creditPanel.add(imageLabel);
-//            }
-//        } catch (Exception e) {
-//            System.err.println("หาภาพเครดิตไม่เจอ: " + imagePath);
-//        }
-//    }
 }

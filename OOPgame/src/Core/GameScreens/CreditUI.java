@@ -32,7 +32,7 @@ public class CreditUI extends Screen implements ActionListener{
     public CreditUI() {
         setLayout(new BorderLayout());
         try {
-            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/test.png"));
+            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/ImageForMapBackground/CreditReal.png"));
             btnNormalImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_normal.png"));
             btnHoverImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_hover.png"));
         } catch (Exception e) {
@@ -41,16 +41,17 @@ public class CreditUI extends Screen implements ActionListener{
         bgCanvas = new NineSliceCanvas(bgImage, 25, 25, 25, 25) {};
         bgCanvas.setLayout(null);
 
-        JLabel title = new JLabel("Credit");
-        title.setHorizontalAlignment(JLabel.CENTER);
-        title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
-        bgCanvas.add(title);
+//        JLabel title = new JLabel("Credit");
+//        title.setHorizontalAlignment(JLabel.CENTER);
+//        title.setBorder(BorderFactory.createEmptyBorder(80, 0, 40, 0));
+//        bgCanvas.add(title);
         creditPanel = new JPanel();
         creditPanel.setLayout(new BoxLayout(creditPanel, BoxLayout.Y_AXIS));
         creditPanel.setOpaque(false);
 
         // เพิ่มข้อความเครดิต
-        addCredit("The Election", 40, true, Color.ORANGE);
+//      addCredit("The Election", 40, true, Color.ORANGE);
+        addImage("OOPgame/Assets/ImageForMapBackground/The_Elction_Logo.png");
         addSpace(30);
 
         addCredit("68070006", 16, true, Color.BLACK);
@@ -116,8 +117,8 @@ public class CreditUI extends Screen implements ActionListener{
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent e) {
-                title.setBounds(0, 0, getWidth(), 100);
-                maskPanel.setBounds(50, 100, getWidth() - 100, getHeight() - 140);
+//                title.setBounds(0, 0, getWidth(), 100);
+                maskPanel.setBounds(50, 50, getWidth() - 100, getHeight() - 100);
             }
         });
 
@@ -163,7 +164,7 @@ public class CreditUI extends Screen implements ActionListener{
                 creditPanel.revalidate(); // บังคับให้กล่องเครดิตประมวลผลขนาดตัวเองให้เสร็จ
             }
 
-            yOffset -= 2; // สั่งเลื่อนขึ้น เอาไว้บังคับความเร็วนะจ้ะ
+            yOffset -= 3; // สั่งเลื่อนขึ้น เอาไว้บังคับความเร็วนะจ้ะ
 
             Dimension size = creditPanel.getPreferredSize();
             int maskWidth = maskPanel.getWidth() > 0 ? maskPanel.getWidth() : getWidth();

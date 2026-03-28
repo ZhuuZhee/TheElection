@@ -57,7 +57,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         setLayout(new BorderLayout());
 
         try {
-            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/test.png"));
+            bgImage = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/ImageForMapBackground/WaitingReal.png"));
             btnNormalImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_normal.png"));
             btnHoverImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_hover.png"));
         } catch (Exception e) {
@@ -68,9 +68,10 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         };
         bgCanvas.setLayout(new BorderLayout());
 
-        JLabel title = UITool.createLabel("Game Lobby", 40f);
+        JLabel title = UITool.createLabel("Waiting Room", 40f);
         title.setHorizontalAlignment(JLabel.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        title.setForeground(new Color(195, 169, 82));
         bgCanvas.add(title, BorderLayout.NORTH);
 
         // ==========================================
@@ -90,7 +91,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         JPanel leftPanel = createLeftPanel();
         mainGbc.gridx = 0;
         mainGbc.gridy = 0;
-        mainGbc.weightx = 0.6; // ให้พื้นที่ฝั่งซ้าย 60%
+        mainGbc.weightx = 0.7; // ให้พื้นที่ฝั่งซ้าย 60%
         mainGbc.insets = new Insets(0, 0, 0, 20);
         mainPanel.add(leftPanel, mainGbc);
 
@@ -100,7 +101,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         JPanel rightPanel = createRightPanel();
         mainGbc.gridx = 1;
         mainGbc.gridy = 0;
-        mainGbc.weightx = 0.4; // ให้พื้นที่ฝั่งขวา 40%
+        mainGbc.weightx = 0.3; // ให้พื้นที่ฝั่งขวา 40%
         mainGbc.insets = new Insets(0, 20, 0, 0);
         mainPanel.add(rightPanel, mainGbc);
 
@@ -174,13 +175,15 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
                 super.paintComponent(g);
             }
         };
-        rightPanel.setOpaque(false); // ต้องปิด Opaque เสมอเมื่อใช้สีโปร่งแสง
-        rightPanel.setBackground(new Color(230, 230, 230, 200)); // สีพื้นหลังโปร่งแสงเล็กน้อย
-        rightPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        rightPanel.setBackground(Color.WHITE);
+        rightPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(76, 72, 61), 6),
+                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
 
         GridBagConstraints rGbc = new GridBagConstraints();
         rGbc.fill = GridBagConstraints.BOTH;
-        rGbc.weightx = 1.0;
+        rGbc.weightx = 1.0;;
         rGbc.gridx = 0;
 
         // 1. Color Selection
