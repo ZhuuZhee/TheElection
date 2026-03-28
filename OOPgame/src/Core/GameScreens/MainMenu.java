@@ -121,16 +121,4 @@ public class MainMenu extends Screen implements ActionListener {
         }
         AudioManager.getInstance().playSound("click");
     }
-
-    private void enableFullscreen() {
-        dispose();
-        // device.setFullScreenWindow();
-        setVisible(true);
-    }
-
-    private void disableFullscreen() {
-        device.setFullScreenWindow(null);
-        dispose();
-        setVisible(true);
-    }
 }
