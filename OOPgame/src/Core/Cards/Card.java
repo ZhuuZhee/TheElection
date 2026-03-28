@@ -284,8 +284,7 @@ public abstract class Card extends GameObject {
         }
     }
 
-    protected void onHoverGrid(Grid grid, Map mapComponent) {
-    }
+    protected void onHoverGrid(Grid grid, Map mapComponent) {}
 
     public void onMouseReleased() {
         if (getEnable() && isGrabbed) {
@@ -387,8 +386,7 @@ public abstract class Card extends GameObject {
     /**
      * Xynezter 14/3/2569 14:12 : Update method is non abstract Arcanacards dont need to Override
      **/
-    protected void onDroppedOnGrid(Grid grid) {
-    }
+    protected void onDroppedOnGrid(Grid grid) {}
 
     @Override
     public void paintComponent(Graphics g) {

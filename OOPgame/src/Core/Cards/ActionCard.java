@@ -11,6 +11,7 @@ import ZhuzheeEngine.Scene.GameObject;
 
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
@@ -104,14 +105,13 @@ public class ActionCard extends Card {
         }
     }
 
-
     @Override
     protected void onHoverGrid(Grid grid, Map mapComponent) {
         super.onHoverGrid(grid, mapComponent);
         if (grid == null) {
             if (currentGrid != null) {
                 currentGrid = null;
-                hideOnDropPreview(null);
+                hideOnDropPreview();
                 if (ZhuzheeGame.POLICY_CARD_HAND != null) {
                     ZhuzheeGame.POLICY_CARD_HAND.hideActiveCards();
                 }
@@ -124,9 +124,9 @@ public class ActionCard extends Card {
             ZhuzheeGame.POLICY_CARD_HAND.showActiveCards();
         }
 
-        if(currentGrid != grid){//new grid
+        if (currentGrid != grid) {//new grid
             currentGrid = grid;
-            hideOnDropPreview(grid);
+            hideOnDropPreview();
             showOnDropPreview(grid);
         } else {
             // อัปเดตตำแหน่ง Tooltip ให้ตามเมาส์ขณะขยับอยู่บน Grid เดิม
@@ -135,7 +135,7 @@ public class ActionCard extends Card {
     }
 
 
-    private void hideOnDropPreview(Grid grid){
+    private void hideOnDropPreview() {
         // --- ปิด Tooltip เมื่อเมาส์ออก ---
         if (onDropPreviewUI != null) {
             System.out.println("hideOnDropPreview");
@@ -193,7 +193,6 @@ public class ActionCard extends Card {
                     int eco = effectStats.getStats(PoliticsStats.ECONOMY);
                     if (eco != 0) description += "[+ %d ECONOMY]".formatted(eco);
                 }
-
             }
         }
         onDropPreviewUI = new SmartTooltipUI(finalStats, "On Drop Card", description, true);
@@ -275,7 +274,7 @@ public class ActionCard extends Card {
         scene.repaint();
 
         // ตั้งเวลาลบทิ้ง
-        javax.swing.Timer timer = new javax.swing.Timer(500, e -> {
+        Timer timer = new Timer(500, _ -> {
             scene.remove(dropPopup);
             scene.repaint();
         });

@@ -6,7 +6,7 @@ public class CardBufferObject {
     private String name;
     private int coin;
     private PoliticsStats stats;
-    private String imgPath;
+    private final String imgPath;
     public CardBufferObject(String name, int coin, PoliticsStats stats, String imgPath){
         this.name = name;
         this.coin = coin;
@@ -40,9 +40,5 @@ public class CardBufferObject {
 
     public String getImgPath() {
         return imgPath;
-    }
-
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
     }
 }

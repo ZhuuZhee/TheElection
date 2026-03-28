@@ -47,23 +47,5 @@ public class EconomicBoom extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-//        if (!isActive()) return;
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) return;
-//
-//        int eco = stats.getStats(PoliticsStats.ECONOMY);
-//        int env = stats.getStats(PoliticsStats.ENVIRONMENT);
-//
-//        if (eco > 0) {
-//            UINotificationToast.showNotification("💰 [ECONOMIC BOOM] x4 Economy & x2 Environment!");
-//            //Economy x4
-//            stats.setStats(PoliticsStats.ECONOMY, eco * 4);
-//
-//            //Environment x2 (คูณจากค่าเดิมที่มีอยู่)
-//            stats.setStats(PoliticsStats.ENVIRONMENT, env * 2);
-//        }
-        return;
-    }
-
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
 }

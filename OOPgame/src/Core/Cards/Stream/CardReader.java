@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CardReader {
     static String FILE_PATH = "OOPgame/Assets/cards_test_data.json";
-    private static List<CardBufferObject> loadedCard = new ArrayList<>();
+    private final static List<CardBufferObject> loadedCard = new ArrayList<>();
 
     public static List<CardBufferObject> getLoadedCards() {
         if (loadedCard.isEmpty())

@@ -7,7 +7,6 @@ import ZhuzheeEngine.Scene.*;
 
 public class PolicyCardHolderUI extends CardHolderUI {
 
-    public static final int SPACING = 64;
     public static final int DEFAULT_MAX_CARD = 5;
     public PolicyCardHolderUI(Scene2D scene){
         super(scene);
