@@ -3,6 +3,7 @@ package Core.Maps;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Ellipse2D; // เพิ่ม Import สำหรับวาดวงกลมแบบทศนิยม (สมูทกว่า)
+import java.awt.geom.Point2D;
 import org.json.JSONArray;
 
 public class Grid {
@@ -177,7 +178,6 @@ public class Grid {
         }
     }
 
-    // --- Helper Methods ---
     private Color getLighterColor(Color color, float factor) {
         int r = Math.min(255, (int)(color.getRed() + (255 - color.getRed()) * factor));
         int g = Math.min(255, (int)(color.getGreen() + (255 - color.getGreen()) * factor));

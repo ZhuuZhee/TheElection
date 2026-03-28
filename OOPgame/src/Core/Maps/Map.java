@@ -40,7 +40,7 @@ public class Map extends GameObject {
     private BufferedImage waterBackground = null;
     private int[] waterPixels;
     private int renderWidth, renderHeight;
-    private final int PIXEL_SIZE = 2; // ปรับ 1 หรือ 2 ได้ตามใจชอบ
+    private final int PIXEL_SIZE = 1;
     private float timeElapsed = 0f; 
     private final float WATER_SPEED = 20f; 
 
@@ -209,63 +209,65 @@ public class Map extends GameObject {
     }
 
     private void initWaterBuffer() {
-        int w = Math.max(1, getWidth());
-        int h = Math.max(1, getHeight());
-        renderWidth = Math.max(1, w / PIXEL_SIZE);
-        renderHeight = Math.max(1, h / PIXEL_SIZE);
+        // ใช้ความละเอียดแบบเต็มหน้าจอเพื่อ Render เฉพาะส่วนที่มองเห็น
+        int w = 1920; 
+        int h = 1080;
+        try {
+            if (ZhuzheeEngine.Application.getInstance() != null) {
+                w = Math.max(w, ZhuzheeEngine.Application.getInstance().getScreenWidth());
+                h = Math.max(h, ZhuzheeEngine.Application.getInstance().getScreenHeight());
+            }
+        } catch (Exception e) {}
+        
+        renderWidth = Math.max(1, w / PIXEL_SIZE) + 2; 
+        renderHeight = Math.max(1, h / PIXEL_SIZE) + 2;
         
         waterBackground = new BufferedImage(renderWidth, renderHeight, BufferedImage.TYPE_INT_RGB);
         waterPixels = ((DataBufferInt) waterBackground.getRaster().getDataBuffer()).getData();
-        drawWaterFrame();
     }
 
-    /**
-     * ระบบวาดน้ำที่อ่านค่าจาก Heightmap เท่านั้น
-     */
-    private void drawWaterFrame() {
+    private void drawWaterFrame(Rectangle clip) {
         if (waterPixels == null) return;
         
         float currentOffsetX = timeElapsed * WATER_SPEED;
         float currentOffsetY = timeElapsed * WATER_SPEED * 0.5f;
 
-        float centerX = renderWidth * PIXEL_SIZE / 2.0f;
-        float centerY = renderHeight * PIXEL_SIZE / 2.0f;
         float safeScale = Math.max(0.01f, scaleRatio); 
-
-        // คำนวณค่าล่วงหน้าเพื่อลดภาระใน Loop
         float safeScaleInv = 1.0f / safeScale;
+        
         float offset1X = currentOffsetX;
         float offset1Y = currentOffsetY;
         float offset2X = -(currentOffsetX * 1.2f);
         float offset2Y = currentOffsetY * 0.8f;
         
-        int index = 0;
-        for (int y = 0; y < renderHeight; y++) {
-            float screenY = y * PIXEL_SIZE;
-            float worldY = (screenY - centerY) * safeScaleInv;
+        int startX = clip.x;
+        int startY = clip.y;
+        
+        int rw = Math.min(renderWidth, (clip.width / PIXEL_SIZE) + 2);
+        int rh = Math.min(renderHeight, (clip.height / PIXEL_SIZE) + 2);
+
+        for (int y = 0; y < rh; y++) {
+            float mapY = startY + (y * PIXEL_SIZE);
+            float worldY = mapY * safeScaleInv;
             float wy1 = worldY + offset1Y;
             float wy2 = worldY + offset2Y;
             
-            for (int x = 0; x < renderWidth; x++) {
-                float screenX = x * PIXEL_SIZE;
-                float worldX = (screenX - centerX) * safeScaleInv;
+            int rowOffset = y * renderWidth;
+            for (int x = 0; x < rw; x++) {
+                float mapX = startX + (x * PIXEL_SIZE);
+                float worldX = mapX * safeScaleInv;
 
-                // 1. อ่านค่า Heightmap ทิศทางหลัก (คลื่นน้ำตื้น/ลึก)
                 float baseHeight = sampleHeightMap(worldX + offset1X, wy1);
-                
-                // 2. อ่านค่า Heightmap อีกทิศทาง เพื่อนำมาทำเส้นตัด (Caustics) แบบไหลสวนกัน
                 float causticHeight = sampleHeightMap(worldX + offset2X, wy2);
 
                 int color = DEEP_WATER;
                 
-                // แบ่งสีตามความสูงของ Heightmap
                 if (baseHeight > 0.7f) {
                     color = MID_WATER;
                 }
                 
-                // สร้างตาข่ายน้ำโดยดึงเฉพาะ "เส้นขอบ" ที่ค่าความสูงตัดกัน
                 float edge = causticHeight - 0.5f;
-                if (edge < 0) edge = -edge; // เร็วกว่า Math.abs()
+                if (edge < 0) edge = -edge; 
                 
                 if (edge < 0.04f) { 
                     if (baseHeight > 0.85f) {
@@ -275,8 +277,7 @@ public class Map extends GameObject {
                     }
                 }
                 
-                // บันทึกสีลง Array โดยตรง (O(1) Access เร็วมาก)
-                waterPixels[index++] = color;
+                waterPixels[rowOffset + x] = color;
             }
         }
     }
@@ -301,6 +302,13 @@ public class Map extends GameObject {
             for (Grid grid : col) {
                 if (grid != null && grid.contains(p)) return grid;
             }
+        }
+        return null;
+    }
+
+    public Grid getGrid(int x, int y) {
+        if (x >= 0 && x < rows && y >= 0 && y < cols) {
+            return gridMap[x][y];
         }
         return null;
     }
@@ -427,8 +435,18 @@ public class Map extends GameObject {
         Graphics2D g2d = (Graphics2D) g.create();
         
         if (waterBackground != null) {
+            Rectangle clip = g2d.getClipBounds();
+            if (clip == null) {
+                clip = new Rectangle(0, 0, getWidth(), getHeight());
+            }
+            drawWaterFrame(clip);
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-            g2d.drawImage(waterBackground, 0, 0, getWidth(), getHeight(), null);
+            
+            // Draw exactly the generated piece at the correct scaled location
+            int drawW = renderWidth * PIXEL_SIZE;
+            int drawH = renderHeight * PIXEL_SIZE;
+            g2d.drawImage(waterBackground, clip.x, clip.y, clip.x + drawW, clip.y + drawH,
+                          0, 0, renderWidth, renderHeight, null);
         }
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -549,13 +567,8 @@ public class Map extends GameObject {
             scaleRatio = (float) getWidth() / (float) startSize.x;
         }
 
-        int w = getWidth();
-        int h = getHeight();
-        
-        if (w > 0 && h > 0 && (renderWidth != Math.max(1, w / PIXEL_SIZE) || renderHeight != Math.max(1, h / PIXEL_SIZE))) {
+        if (waterBackground == null) {
             initWaterBuffer();
-        } else {
-            drawWaterFrame(); 
         }
 
         if (gridMap != null) {

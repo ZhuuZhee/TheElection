@@ -166,7 +166,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         localPlayer.DrawCard();
     }
 
-    private static final float MAX_ZOOM = 2, MIN_ZOOM = 0.75f, NORMAL_ZOOM = 1;
+    private static final float MAX_ZOOM = 1.25f, MIN_ZOOM = 0.75f, NORMAL_ZOOM = 1;
     private static final Dimension CAMERA_BOUND = new Dimension(500, 500);
     private static Point mousePoint;
 
@@ -179,7 +179,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
             // เช็ค MouseWheel ก่อน เพราะมันสืบทอดมาจาก MouseEvent
             if (event instanceof MouseWheelEvent e) {
                 var cam = MAIN_SCENE.getCamera();
-                float zoom = cam.getZoom() - e.getWheelRotation() * ZhuzheeEngine.Application.getDeltaTime();
+                float zoomSpeed = 0.1f;
+                float zoom = cam.getZoom() - e.getWheelRotation() * zoomSpeed;
                 zoom = Math.clamp(zoom, MIN_ZOOM, MAX_ZOOM);
                 cam.setZoom(zoom);
             }
@@ -229,10 +230,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
     }
 
     public void sceneUpdate() {
-        Camera2D cam = MAIN_SCENE.getCamera();
-        if (Card.CURRENT_GRABBED_CARD != null && cam.getZoom() != NORMAL_ZOOM) {
-            cam.smoothZoom(NORMAL_ZOOM, 10);
-        }
         checkRoundAndShop();
     }
     private static int lastShopOpenedRound = -1;
