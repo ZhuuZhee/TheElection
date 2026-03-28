@@ -165,7 +165,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
         localPlayer.DrawCard();
     }
-
     public static void resetGame() {
         if (CLIENT != null) {
             CLIENT.disconnect();

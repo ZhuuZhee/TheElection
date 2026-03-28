@@ -134,6 +134,22 @@ public class Player {
         this.playerName = playerName;
     }
 
+    public boolean isLoose() {
+        return isLoose;
+    }
+
+    public void setLoose(boolean loose) {
+        isLoose = loose;
+        if(loose){
+            onLoose();
+        }
+    }
+    
+    private void onLoose(){
+        //ปิด card holder ทั้งหมด และ ทำลายการ์ด
+        //เปลี่ยน playerList UI เป็นสีเทา
+    }
+
     public void setSkipDrawNextTurn(boolean skip) {
         this.skipDrawNextTurn = skip;
     }
