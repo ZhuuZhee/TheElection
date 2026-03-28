@@ -51,7 +51,7 @@ public class DamageControl extends PolicyCard {
         }
 
         if (isTriggered) {
-            UINotificationToast.showNotification("📰 [DAMAGE CONTROL] พลิกวิกฤตเป็นบวกให้ " + playedCard.getName() + " แล้ว!");
+            UINotificationToast.showNotification("[Damage Control] Activate! " + playedCard.getName() + " Development Card  change - to +!");
         }
         return stats;
     }

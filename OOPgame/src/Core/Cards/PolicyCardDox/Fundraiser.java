@@ -28,7 +28,7 @@ public class Fundraiser extends PolicyCard {
         if (ZhuzheeGame.CLIENT == null) return;
         Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
         if (localPlayer == null) return;
-        UINotificationToast.showNotification("💰 [FUNDRAISER] ระดมทุนจาก " + playedCard.getName() + " ได้รับ 20 Coin!");
+        UINotificationToast.showNotification("[Fundraiser] Activate! " + playedCard.getName() + " Gain 20 Coins!");
         int currentCoin = localPlayer.getCoin();
         localPlayer.setCoin(currentCoin + 20);
     }

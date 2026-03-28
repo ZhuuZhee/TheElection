@@ -23,13 +23,26 @@ public class PublicBriefing extends PolicyCard {
 
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (!isActive()) return;
-        PoliticsStats stats = playedCard.getStats();
-        if (stats == null) return;
+//        if (!isActive()) return;
+//        PoliticsStats stats = playedCard.getStats();
+//        if (stats == null) return;
+//        int fac = stats.getStats(PoliticsStats.FACILITY);
+//        if (fac >= 4) {
+//            stats.setStats(PoliticsStats.FACILITY, fac * 5);
+//            UINotificationToast.showNotification("🎤 [PUBLIC BRIEFING] ชี้แจงโปรเจกต์ " + playedCard.getName() + " สำเร็จ! (x5 Facility)");
+//        }
+        return;
+    }
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        if (!isActive()) return null;
+        PoliticsStats stats = new PoliticsStats(playedCard.getStats());
+        if (stats == null) return null;
         int fac = stats.getStats(PoliticsStats.FACILITY);
         if (fac >= 4) {
             stats.setStats(PoliticsStats.FACILITY, fac * 5);
-            UINotificationToast.showNotification("🎤 [PUBLIC BRIEFING] ชี้แจงโปรเจกต์ " + playedCard.getName() + " สำเร็จ! (x5 Facility)");
+            UINotificationToast.showNotification("[Public Briefing] Activate! " + playedCard.getName() + " Gain x5 Facility!");
         }
+        return stats;
     }
 }

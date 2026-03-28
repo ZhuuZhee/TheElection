@@ -22,8 +22,30 @@ public class Recount extends PolicyCard {
     }
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
+//        if (isActive()) {
+//            PoliticsStats stats = playedCard.getStats();
+//
+//            if (stats != null) {
+//                int envValue = stats.getStats(PoliticsStats.ENVIRONMENT);
+//                int facValue = stats.getStats(PoliticsStats.FACILITY);
+//                int ecoValue = stats.getStats(PoliticsStats.ECONOMY);
+//
+//                // ทำงานเมื่อการ์ด Develop ที่กำลังวางมี stat ติดลบอย่างน้อย 1 ค่า
+//                if (envValue < 0 || facValue < 0 || ecoValue < 0) {
+//                    UINotificationToast.showNotification("🗳️ [Recount] นับคะแนนใหม่! รับโบนัส +3 ทุกสแตทให้ " + playedCard.getName());
+//                    stats.addStats(PoliticsStats.ENVIRONMENT, envValue * 3);
+//                    stats.addStats(PoliticsStats.FACILITY, facValue * 3);
+//                    stats.addStats(PoliticsStats.ECONOMY, ecoValue * 3);
+//                }
+//            }
+//        }
+        return;
+    }
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        if (!isActive()) return null;
         if (isActive()) {
-            PoliticsStats stats = playedCard.getStats();
+            PoliticsStats stats = new PoliticsStats(playedCard.getStats());
 
             if (stats != null) {
                 int envValue = stats.getStats(PoliticsStats.ENVIRONMENT);
@@ -32,12 +54,13 @@ public class Recount extends PolicyCard {
 
                 // ทำงานเมื่อการ์ด Develop ที่กำลังวางมี stat ติดลบอย่างน้อย 1 ค่า
                 if (envValue < 0 || facValue < 0 || ecoValue < 0) {
-                    UINotificationToast.showNotification("🗳️ [Recount] นับคะแนนใหม่! รับโบนัส +3 ทุกสแตทให้ " + playedCard.getName());
+                    UINotificationToast.showNotification("[Recount] Activate! " + playedCard.getName() + " Gain x3 to all stats!");
                     stats.addStats(PoliticsStats.ENVIRONMENT, envValue * 3);
                     stats.addStats(PoliticsStats.FACILITY, facValue * 3);
                     stats.addStats(PoliticsStats.ECONOMY, ecoValue * 3);
                 }
             }
         }
+        return stats;
     }
 }
