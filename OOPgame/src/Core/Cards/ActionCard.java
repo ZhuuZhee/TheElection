@@ -281,8 +281,21 @@ public class ActionCard extends Card {
     }
 
     private void showDropEffectPopup(Grid grid, PoliticsStats finalStat) {
-        String desc = "City: " + grid.getCity().getCityName();
-        SmartTooltipUI dropPopup = new SmartTooltipUI(finalStat, "CARD APPLIED!", desc, true);
+        City targetCity = grid.getCity();
+        int oldFac = targetCity.stats.getStats(PoliticsStats.FACILITY);
+        int oldEnv = targetCity.stats.getStats(PoliticsStats.ENVIRONMENT);
+        int oldEco = targetCity.stats.getStats(PoliticsStats.ECONOMY);
+
+        int newFac = oldFac + finalStat.getStats(PoliticsStats.FACILITY);
+        int newEnv = oldEnv + finalStat.getStats(PoliticsStats.ENVIRONMENT);
+        int newEco = oldEco + finalStat.getStats(PoliticsStats.ECONOMY);
+
+        String desc = "City: " + targetCity.getCityName();
+
+        int[] oldStatsArr = new int[]{oldFac, oldEnv, oldEco};
+        int[] newStatsArr = new int[]{newFac, newEnv, newEco};
+
+        SmartTooltipUI dropPopup = new SmartTooltipUI(finalStat, "CARD APPLIED!", desc, true, oldStatsArr, newStatsArr);
         dropPopup.setSize(dropPopup.getPreferredSize());
 
         // รวบคำสั่งคำนวณพิกัดให้สั้นลง

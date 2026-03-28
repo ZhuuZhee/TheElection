@@ -554,6 +554,9 @@ public abstract class Card extends GameObject {
         private String previewDesc;
         private boolean isPreview = false;
 
+        private int[] oldStats;
+        private int[] newStats;
+
         public SmartTooltipUI(Card card) {
             this.targetCard = card;
             setOpaque(false);
@@ -595,6 +598,12 @@ public abstract class Card extends GameObject {
             }
         }
 
+        public SmartTooltipUI(PoliticsStats stats, String title, String desc, boolean isPreview, int[] oldStats, int[] newStats) {
+            this(stats, title, desc, isPreview);
+            this.oldStats = oldStats;
+            this.newStats = newStats;
+        }
+
         public SmartTooltipUI(PoliticsStats stats, String title, String desc, boolean isPreview) {
             this.previewStats = stats;
             this.previewTitle = title;
@@ -602,7 +611,11 @@ public abstract class Card extends GameObject {
             this.isPreview = isPreview;
             setOpaque(false);
             // กำหนดขนาดพื้นฐานสำหรับโหมดพรีวิว
-            setPreferredSize(new Dimension(240, 150));
+            int height = 150;
+            if (desc != null && !desc.isEmpty()) {
+                height += (desc.split("\n").length - 1) * 15;
+            }
+            setPreferredSize(new Dimension(240, height));
         }
 
         @Override
@@ -637,15 +650,25 @@ public abstract class Card extends GameObject {
                 g2d.drawString("Environment:", 15, 80);
                 g2d.drawString("Economy:", 15, 105);
 
-                g2d.setColor(new Color(0, 102, 204));
-                g2d.drawString((fac > 0 ? "+" : "") + fac, 150, 55);
-                g2d.drawString((env > 0 ? "+" : "") + env, 150, 80);
-                g2d.drawString((eco > 0 ? "+" : "") + eco, 150, 105);
+                if (oldStats != null && newStats != null && oldStats.length == 3 && newStats.length == 3) {
+                    drawStatChange(g2d, oldStats[0], newStats[0], 130, 55);
+                    drawStatChange(g2d, oldStats[1], newStats[1], 130, 80);
+                    drawStatChange(g2d, oldStats[2], newStats[2], 130, 105);
+                } else {
+                    g2d.setColor(new Color(0, 102, 204));
+                    g2d.drawString((fac > 0 ? "+" : "") + fac, 150, 55);
+                    g2d.drawString((env > 0 ? "+" : "") + env, 150, 80);
+                    g2d.drawString((eco > 0 ? "+" : "") + eco, 150, 105);
+                }
 
                 if (isPreview && previewDesc != null && !previewDesc.isEmpty()) {
                     g2d.setFont(new Font("SansSerif", Font.PLAIN, 10));
                     g2d.setColor(new Color(150, 50, 50));
-                    g2d.drawString(previewDesc, 15, 130);
+                    int startYDesc = 130;
+                    for (String line : previewDesc.split("\n")) {
+                        g2d.drawString(line, 15, startYDesc);
+                        startYDesc += 15;
+                    }
                 }
 
             } else {
@@ -680,6 +703,16 @@ public abstract class Card extends GameObject {
                     }
                 }
             }
+        }
+        private void drawStatChange(Graphics2D g2d, int oldVal, int newVal, int x, int y) {
+            if (newVal > oldVal) {
+                g2d.setColor(new Color(34, 139, 34)); // Green
+            } else if (newVal < oldVal) {
+                g2d.setColor(new Color(220, 20, 60)); // Red
+            } else {
+                g2d.setColor(new Color(0, 102, 204)); // Blue
+            }
+            g2d.drawString(oldVal + " -> " + newVal, x, y);
         }
     }
 }
