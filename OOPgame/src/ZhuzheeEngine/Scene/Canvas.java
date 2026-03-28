@@ -85,6 +85,13 @@ public abstract class Canvas extends JPanel implements IZIndex {
     protected void onResize(int width, int height) {
         updateBounds(width, height);
     }
+    public void setAnchorTop(boolean anchorTop) {
+        setAnchors(this.anchorHorizontal, anchorTop ? 1 : -1);
+    }
+    public void setAnchorLeft(boolean anchorLeft){
+        setAnchors(anchorLeft ? -1 : 1, this.anchorVertical);
+    }
+    public void setAnchorRight(boolean anchorRight) { setAnchors(anchorRight ? 1 : -1, this.anchorVertical); }
 
     // --- Setters สำหรับจัดการ Layout ---
     public void setMargins(int left, int right, int top, int bottom) {

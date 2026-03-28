@@ -8,11 +8,15 @@ import ZhuzheeEngine.Scene.Scene2D;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerListUI extends Canvas {
     private final List<Player> players;
     private final JPanel listContainer;
+    private final Map<String, PlayerItemUI> playerItemMap = new ConcurrentHashMap<>();
 
     public PlayerListUI(Scene2D scene, List<Player> players) {
         super(scene);
@@ -37,38 +41,51 @@ public class PlayerListUI extends Canvas {
     }
 
     public void updatePlayerList() {
+        // ล้างข้อมูลใน Container เพื่อจัดลำดับใหม่ตามคะแนน/Rank
         listContainer.removeAll();
 
-        System.out.println("PlayerlistUI : \n ");
-        
         // 1. Get city counts for each player
         int[] cityCounts = new int[players.size()];
         for (int i = 0; i < players.size(); i++) {
             if (Core.ZhuzheeGame.MAP != null) {
-                cityCounts[i] = Core.ZhuzheeGame.MAP.getOwnedCitiesCount(i);
+                cityCounts[i] = Core.ZhuzheeGame.MAP.getOwnedCitiesCount(players.get(i).getPlayerId());
             }
         }
 
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
-            boolean isActive = ZhuzheeGame.CLIENT.getCurrentPlayerId().equals(p.getPlayerId());
+            
+            // ตรวจสอบค่า Null เพื่อป้องกัน Error กรณี Client ยังโหลดไม่เสร็จ
+            String currentPlayerId = (ZhuzheeGame.CLIENT != null) ? ZhuzheeGame.CLIENT.getCurrentPlayerId() : "";
+            boolean isActive = p.getPlayerId().equals(currentPlayerId);
             boolean isMe = p.isLocal();
+            Color playerColor = p.getColor();
+
+            // 2. คำนวณอันดับ (Rank)
             int Rank = 1;
             for (int k = 0; k < players.size(); k++) {
-                if (k == i) continue;
+                if (k == i) {
+                    continue;
+                }
                 if (cityCounts[k] > cityCounts[i] || (cityCounts[k] == cityCounts[i] && k < i)) {
                     Rank++;
                 }
             }
 
             // แปลงและแสดงผลสีตามที่ผู้เล่นตั้งไว้
-            System.out.println(p.toString());
-            Color playerColor = p.getColor();
-            listContainer.add(new PlayerItemUI(p, Rank, playerColor, isActive, isMe));
+//            System.out.println(p.toString());
+            
+            // 3. ตรวจสอบว่ามี UI เดิมอยู่หรือไม่ ถ้าไม่มีให้สร้างใหม่ ถ้ามีให้ดึงมาอัปเดต
+            int finalRank = Rank;
+            PlayerItemUI item = playerItemMap.computeIfAbsent(p.getPlayerId(),
+                id -> new PlayerItemUI(p, finalRank, playerColor, isActive, isMe));
+            
+            item.updateState(Rank, isActive, playerColor);
+            
+            listContainer.add(item);
             listContainer.add(Box.createVerticalStrut(10));
         }
-        System.out.println("-----------------------");
-        revalidate();
+        listContainer.revalidate();
         repaint();
     }
 
@@ -82,19 +99,31 @@ public class PlayerListUI extends Canvas {
         int rank = 1;
         private static int margin = 12; // เพิ่ม margin พื้นฐาน
         private static int padding = 24; // เพิ่ม margin พื้นฐาน
+        public Color teamColor;
+        public boolean isActive;
+        public boolean isMe;
+
+        private final JLabel rankLabel;
+        private final JLabel nameLabel;
+        private final JPanel nameTag;
+        private final JLabel imgLabel;
 
         public PlayerItemUI(Player player, int calculatedRank, Color teamColor, boolean isActive, boolean isMe) {
             this.rank = calculatedRank;
+            this.teamColor = teamColor;
+            this.isActive = isActive;
+            this.isMe = isMe;
+
             setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // เพิ่มช่องว่างแนวตั้งเล็กน้อย
             setOpaque(false);
             setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
-            JPanel nameTag = getJPanel(teamColor, isActive);
+            nameTag = getJPanel();
             JPanel center = new JPanel(new GridBagLayout());
             center.setOpaque(false);
 
-            createPlayerNameLabel(player.getPlayerName(),center);
-            createRankLabel(center);
+            nameLabel = createPlayerNameLabel(player.getPlayerName(), center);
+            rankLabel = createRankLabel(center);
             if (isMe) {
                 createYouLabel(center);
             }
@@ -109,7 +138,7 @@ public class PlayerListUI extends Canvas {
                 System.err.println("[DEBUG] PlayerListUI: Failed to load image for '" + player.getPlayerName() + "' at: " + imgFile.getAbsolutePath());
             }
 
-            JLabel imgLabel = new JLabel(icon);
+            imgLabel = new JLabel(icon);
             imgLabel.setPreferredSize(new Dimension(50, 50));
             imgLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(0, 0, 0, 0), // ระยะห่างซ้ายขวา
@@ -120,13 +149,31 @@ public class PlayerListUI extends Canvas {
             add(nameTag);
         }
 
+        /**
+         * อัปเดตสถานะของ UI แทนการสร้าง Object ใหม่
+         */
+        public void updateState(int rank, boolean isActive, Color teamColor) {
+            this.rank = rank;
+            this.isActive = isActive;
+            this.teamColor = teamColor;
+
+            rankLabel.setText(Integer.toString(rank));
+            int width = isActive ? 300 : 250;
+            nameTag.setPreferredSize(new Dimension(width, 50));
+            imgLabel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createEmptyBorder(0, 0, 0, 0),
+                    BorderFactory.createLineBorder(teamColor, 2)
+            ));
+            revalidate();
+            repaint();
+        }
+
         private static ImageIcon createImageIcon(File file, int size) {
             ImageIcon icon = new ImageIcon(file.getAbsolutePath());
-            System.out.println("image path is {%s}".formatted(file.getAbsolutePath()));
             return new ImageIcon(icon.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH));
         }
 
-        private void createRankLabel(JPanel container) {
+        private JLabel createRankLabel(JPanel container) {
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(0, margin,0, padding); // เพิ่มช่องว่างด้านขวาของอันดับ
             gbc.anchor = GridBagConstraints.CENTER;
@@ -138,9 +185,10 @@ public class PlayerListUI extends Canvas {
             rankLabel.setFont(rankLabel.getFont().deriveFont(Font.ITALIC));
             rankLabel.setHorizontalAlignment(SwingConstants.LEFT);
             container.add(rankLabel, gbc);
+            return rankLabel;
         }
 
-        private void createPlayerNameLabel(String playerName, Container container) {
+        private JLabel createPlayerNameLabel(String playerName, Container container) {
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(0, padding, 0, margin);
             gbc.anchor = GridBagConstraints.WEST; // เปลี่ยนเป็นชิดซ้าย
@@ -152,6 +200,7 @@ public class PlayerListUI extends Canvas {
             nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
             nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
             container.add(nameLabel, gbc);
+            return nameLabel;
         }
 
         private void createYouLabel(Container container) {
@@ -173,8 +222,7 @@ public class PlayerListUI extends Canvas {
             container.add(youLabel, gbc);
         }
 
-        private JPanel getJPanel(Color teamColor, boolean isActive) {
-            int width = isActive ? 300 : 250;
+        private JPanel getJPanel() {
             JPanel nameTag = new JPanel(new BorderLayout()) {
                 @Override
                 protected void paintComponent(Graphics g) {
@@ -194,6 +242,7 @@ public class PlayerListUI extends Canvas {
                     g2d.fillRect(0, getHeight() - 1, getWidth(), 1);
                 }
             };
+            int width = isActive ? 300 : 250;
             nameTag.setPreferredSize(new Dimension(width, 50));
             return nameTag;
         }
