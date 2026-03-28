@@ -9,7 +9,7 @@ import Core.ZhuzheeGame;
 public class Public_PrivatePartnership extends PolicyCard {
     public Public_PrivatePartnership(int x, int y, String imagePath) {
         super("Public-Private Partnership", x, y, imagePath, -4);
-        this.description = "Skill: If you play a Development card with +Economic and +Facility. Gain 10 coins.";
+        this.description = "Skill: If you play a Development card with +Economic and +Facility. Gain that 2 stats +10.";
     }
 
     @Override
@@ -27,14 +27,13 @@ public class Public_PrivatePartnership extends PolicyCard {
 
         PoliticsStats stats = playedCard.getStats();
         if (stats == null) return;
-
         int eco = stats.getStats(PoliticsStats.ECONOMY);
         int fac = stats.getStats(PoliticsStats.FACILITY);
-
         if (eco > 0 && fac > 0) {
-            int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();
-            ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin + 10);
-            System.out.println("Public-Private Partnership activated: +10 coin");
+            stats.setStats(PoliticsStats.ECONOMY, eco + 10);
+            stats.setStats(PoliticsStats.ECONOMY, fac + 10);        
+            System.out.println("Public-Private Partnership activated: +10 Economy");
+            System.out.println("Public-Private Partnership activated: +10 Facility");
         }
     }
 }
