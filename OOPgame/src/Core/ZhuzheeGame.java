@@ -196,7 +196,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
     }
 
     private static final float MAX_ZOOM = 1.25f, MIN_ZOOM = 0.75f, NORMAL_ZOOM = 1;
-    private static final Dimension CAMERA_BOUND = new Dimension(500, 500);
+    private static final Dimension CAMERA_BOUND = new Dimension(500, 700);
     private static Point mousePoint;
 
     private static boolean isCameraListenerAdded = false;

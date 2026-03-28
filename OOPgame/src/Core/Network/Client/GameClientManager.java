@@ -148,11 +148,7 @@ public class GameClientManager {
     public void endTurn() {
         localPlayer.onEndTurn();
 
-        // Notify listeners
-        for (ClientListener listener : clientListeners) {
-            listener.onEndTurn();
-        }
-
+        sendAction(PacketBuilder.createEndTurnPacket());
         //if this turn is Voting turn send voting protocol instead.
         int roundModer = connectedPlayers.size() * 4;
         if (turnCounter % roundModer == 0) {
@@ -160,8 +156,10 @@ public class GameClientManager {
             sendAction(PacketBuilder.createVotingPacket());
             ZhuzheeGame.END_TURN_UI.setEnabled(false);
         }
-        else {
-            sendAction(PacketBuilder.createEndTurnPacket());
+
+        // Notify listeners
+        for (ClientListener listener : clientListeners) {
+            listener.onEndTurn();
         }
     }
 
@@ -257,9 +255,14 @@ public class GameClientManager {
             turnCounter = turn;
             if (turn > 1) {
                 boolean myTurnNow = (localPlayer != null && currentPlayerId.equals(localPlayer.getPlayerId()));
-                // ถ้าเป็นเทิร์นของเรา ให้เริ่มเทิร์น (จั่วการ์ด)
                 if (myTurnNow && localPlayer != null) {
-                    onStartTurn();
+                    // ถ้าเป็นเทิร์นของเราแต่เราแพ้แล้ว ให้ข้ามเทิร์นทันที
+                    if (localPlayer.isLose()) {
+                        System.out.println("Client : It's my turn but I have lost. Automatically skipping...");
+                        endTurn();
+                    } else {
+                        onStartTurn();
+                    }
                 }
             }
         }
@@ -448,6 +451,9 @@ public class GameClientManager {
                 if (localPlayer != null && localPlayer.getPlayerId().equals(loserId)) {
                     System.out.println("Election Result: You have the lowest score. You lose!");
                     localPlayer.setLose(true);
+                    
+                    // ส่งข้อมูล Update กลับไปบอก Server ทันทีว่าเราแพ้แล้ว
+                    sendAction(PacketBuilder.createUpdatePlayerPacket(localPlayer));
                 }
                 Thread.sleep(3000);
                 isVotingState = false;

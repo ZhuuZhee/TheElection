@@ -14,7 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+
 import ZhuzheeEngine.Scene.NineSliceCanvas;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -23,6 +25,7 @@ public class PlayerListUI extends Canvas {
     private final Map<String, PlayerItemUI> playerItemMap = new ConcurrentHashMap<>();
 
     private static BufferedImage frameImage;
+
     static {
         try {
             frameImage = ImageIO.read(new File("OOPgame/Assets/UI/frame.png"));
@@ -54,7 +57,7 @@ public class PlayerListUI extends Canvas {
 
     public void updatePlayerList() {
         if (ZhuzheeGame.CLIENT == null) return;
-        
+
         // ดึงรายชื่อผู้เล่นล่าสุดจาก Client Manager
         List<Player> currentPlayers = ZhuzheeGame.CLIENT.getConnectedPlayers();
 
@@ -77,11 +80,12 @@ public class PlayerListUI extends Canvas {
         // 3. วาด UI และคำนวณ Rank
         for (int i = 0; i < currentPlayers.size(); i++) {
             Player p = currentPlayers.get(i);
-            
+
             // ตรวจสอบค่า Null เพื่อป้องกัน Error กรณี Client ยังโหลดไม่เสร็จ
             String currentPlayerId = (ZhuzheeGame.CLIENT != null) ? ZhuzheeGame.CLIENT.getCurrentPlayerId() : "";
             boolean isActive = p.getPlayerId().equals(currentPlayerId);
             boolean isMe = p.isLocal();
+            boolean isLose = p.isLose();
             Color playerColor = p.getColor();
 
             // คำนวณอันดับ (Rank)
@@ -98,10 +102,10 @@ public class PlayerListUI extends Canvas {
             int finalRank = Rank;
             // ตรวจสอบว่ามี UI เดิมอยู่หรือไม่ ถ้าไม่มีให้สร้างใหม่ ถ้ามีให้ดึงมาอัปเดต
             PlayerItemUI item = playerItemMap.computeIfAbsent(p.getPlayerId(),
-                id -> new PlayerItemUI(p, finalRank, playerColor, isActive, isMe));
-            
-            item.updateState(Rank, isActive, playerColor);
-            
+                    id -> new PlayerItemUI(p, finalRank, playerColor, isActive, isMe, isLose));
+
+            item.updateState(Rank, isActive, playerColor, isLose);
+
             listContainer.add(item);
             listContainer.add(Box.createVerticalStrut(10));
         }
@@ -122,17 +126,19 @@ public class PlayerListUI extends Canvas {
         public Color teamColor;
         public boolean isActive;
         public boolean isMe;
+        public boolean isLose;
 
         private final JLabel rankLabel;
         private final JLabel nameLabel;
         private final JPanel nameTag;
         private final JLabel imgLabel;
 
-        public PlayerItemUI(Player player, int calculatedRank, Color teamColor, boolean isActive, boolean isMe) {
+        public PlayerItemUI(Player player, int calculatedRank, Color teamColor, boolean isActive, boolean isMe, boolean isLose) {
             this.rank = calculatedRank;
             this.teamColor = teamColor;
             this.isActive = isActive;
             this.isMe = isMe;
+            this.isLose = isLose;
 
             setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // เพิ่มช่องว่างแนวตั้งเล็กน้อย
             setOpaque(false);
@@ -153,7 +159,7 @@ public class PlayerListUI extends Canvas {
             // เพิ่มรูปโปรไฟล์พร้อมระยะห่าง
             File imgFile = player.getProfileImageFile();
             ImageIcon icon = createImageIcon(imgFile, 50);
-            
+
             if (icon == null) {
                 System.err.println("[DEBUG] PlayerListUI: Failed to load image for '" + player.getPlayerName() + "' at: " + imgFile.getAbsolutePath());
             }
@@ -161,8 +167,8 @@ public class PlayerListUI extends Canvas {
             imgLabel = new JLabel(icon);
             imgLabel.setPreferredSize(new Dimension(50, 50));
             imgLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(0, 0, 0, 0), // ระยะห่างซ้ายขวา
-                BorderFactory.createLineBorder(teamColor, 2)
+                    BorderFactory.createEmptyBorder(0, 0, 0, 0), // ระยะห่างซ้ายขวา
+                    BorderFactory.createLineBorder(isLose ? Color.GRAY : teamColor, 2)
             ));
             nameTag.add(imgLabel, BorderLayout.WEST);
 
@@ -172,17 +178,23 @@ public class PlayerListUI extends Canvas {
         /**
          * อัปเดตสถานะของ UI แทนการสร้าง Object ใหม่
          */
-        public void updateState(int rank, boolean isActive, Color teamColor) {
+        public void updateState(int rank, boolean isActive, Color teamColor, boolean isLose) {
             this.rank = rank;
             this.isActive = isActive;
             this.teamColor = teamColor;
+            this.isLose = isLose;
 
             rankLabel.setText(Integer.toString(rank));
+
+            nameLabel.setForeground(isLose ? Color.GRAY : Color.BLACK);
+
+            Color statusColor = isLose ? Color.GRAY : teamColor;
+
             int width = isActive ? 300 : 250;
             nameTag.setPreferredSize(new Dimension(width, 50));
             imgLabel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createEmptyBorder(0, 0, 0, 0),
-                    BorderFactory.createLineBorder(teamColor, 2)
+                    BorderFactory.createLineBorder(statusColor, 2)
             ));
             revalidate();
             repaint();
@@ -195,7 +207,7 @@ public class PlayerListUI extends Canvas {
 
         private JLabel createRankLabel(JPanel container) {
             GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(0, margin,0, padding); // เพิ่มช่องว่างด้านขวาของอันดับ
+            gbc.insets = new Insets(0, margin, 0, padding); // เพิ่มช่องว่างด้านขวาของอันดับ
             gbc.anchor = GridBagConstraints.CENTER;
             gbc.gridx = 0;
             gbc.gridy = 0;
@@ -238,7 +250,7 @@ public class PlayerListUI extends Canvas {
             youLabel.setOpaque(true);
             youLabel.setBorder(BorderFactory.createEmptyBorder(2, 6, 2, 6));
             youLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            
+
             container.add(youLabel, gbc);
         }
 
@@ -246,18 +258,27 @@ public class PlayerListUI extends Canvas {
             JPanel nameTag = new JPanel() {
                 @Override
                 protected void paintComponent(Graphics g) {
-                    super.paintComponent(g); // Draws the 9-slice background
                     Graphics2D g2d = (Graphics2D) g;
                     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+                    if (isLose) {
+                        g2d.setColor(new Color(200, 200, 200, 150));
+                    } else {
+                        g2d.setColor(Color.LIGHT_GRAY);
+                    }
+                    g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+
+                    super.paintComponent(g);
+
                     // วาดแถบสีบ่งบอกว่าเป็นผู้เล่นทีมไหน
                     int borderSize = 4;
-                    g2d.setColor(teamColor);
+                    g2d.setColor(isLose ? Color.DARK_GRAY : teamColor);
                     g2d.fillRect(10, 5, getWidth() - 20, borderSize);
                     g2d.fillRect(10, getHeight() - borderSize - 5, getWidth() - 20, borderSize);
                 }
             };
             nameTag.setLayout(new BorderLayout());
+            nameTag.setOpaque(false);
             int width = isActive ? 300 : 250;
             nameTag.setPreferredSize(new Dimension(width, 50));
             return nameTag;
