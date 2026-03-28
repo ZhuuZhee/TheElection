@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import Core.Player.Player;
+import Core.ZhuzheeGame;
 import org.json.*;
 
 /**
@@ -71,6 +72,8 @@ public class City {
         // 1. คำนวณจำนวนที่นั่งสภา (Council Seats)
         this.councilSeats = Math.max(1, this.population / POP_PER_SEAT);
         this.baseScore = this.councilSeats * SCORE_PER_SEAT_BASE;
+
+        // 3. สร้างคะแนนดิบเริ่มต้นให้ผู้เล่นทุกคนเท่ากัน
         for (Player p : playerList) {
             playerIds.add(p.getPlayerId());
             playerScores.put(p.getPlayerId(), baseScore);
@@ -104,14 +107,15 @@ public class City {
      * @param statType The type of stat being modified.
      * @param cardVal  The amount of change.
      */
-    public void applyCard(String playerId, long statType, double cardVal) {
+    public void aplyStat(String playerId, long statType, float cardVal) {
         float currentStat = stats.getStats(statType);
 
         // คำนวณคะแนนที่ได้รับ
         float scoreGained = calculateLogScore(currentStat, cardVal);
 
-        // อัปเดตคะแนนผู้เล่น (Score Weight)
-        playerScores.put(playerId, scoreGained);
+        // อัปเดตคะแนนผู้เล่น (Score Weight) - แก้ไขให้เป็นการบวกเพิ่ม
+        float currentScore = playerScores.getOrDefault(playerId, 0f);
+        playerScores.put(playerId, currentScore + scoreGained);
 
         // อัปเดต Stat เมือง
         stats.addStats(statType, (int) cardVal);
@@ -120,12 +124,11 @@ public class City {
 
         String statName = statType == PoliticsStats.FACILITY ? "Facility" :
                 statType == PoliticsStats.ENVIRONMENT ? "Environment" : "Economy";
-
-        System.out.printf("[%s] Player %s ลงการ์ด %s (+%.1f)%n", cityName, playerId, statName, cardVal);
+        Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
+        String p = playerId.equals(localPlayer.getPlayerId())? localPlayer.getPlayerName() : playerId;
+        System.out.printf("[%s] Player %s ลงการ์ด %s (+%.1f)%n", cityName, p, statName, cardVal);
         System.out.printf("   -> Stat เมืองเปลี่ยนจาก %.1f เป็น %d%n", currentStat, stats.getStats(statType));
         System.out.printf("   -> ได้คะแนนดิบเพิ่ม +%.2f คะแนน%n", scoreGained);
-
-        // TODO: Sound Effect ตัวเอง
     }
 
     /**
@@ -134,15 +137,16 @@ public class City {
      * @param playerId  Index of the player.
      * @param cardStats The PoliticsStats object containing card effects.
      */
-    public void applyStats(String playerId, PoliticsStats cardStats) {
+    public void applyCard(String playerId, PoliticsStats cardStats) {
         if (cardStats != null && cardStats.stats != null) {
+            //add stats to cities
             for (java.util.Map.Entry<Long, Integer> entry : cardStats.stats.entrySet()) {
                 if (entry.getValue() != 0) {
-                    applyCard(playerId, entry.getKey(), entry.getValue());
+                    aplyStat(playerId, entry.getKey(), entry.getValue());
                 }
             }
-            getVotingResults();
         }
+        getVotingResults();
     }
 
     /**
@@ -212,14 +216,21 @@ public class City {
      */
     public void getVotingResults() {
         double totalScore = 0;
-        for (float score : playerScores.values()) totalScore += score;
+        for (float score : playerScores.values()) {
+            totalScore += score;
+        }
 
         System.out.printf("%n--- ผลการเลือกตั้งเมือง: %s (ประชากร: %,d, ที่นั่ง: %d) ---%n", cityName, population, councilSeats);
+        Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
 
+        if (totalScore == 0) return;
         for (String playerId : playerScores.keySet()) {
+
+            String p = playerId.equals(localPlayer.getPlayerId())? localPlayer.getPlayerName() : playerId;
+
             double percent = (playerScores.get(playerId) / totalScore) * 100;
             int votes = (int) ((playerScores.get(playerId) / totalScore) * this.population);
-            System.out.printf("Player %s: %.2f%% (%,d เสียง)%n", playerId, percent, votes);
+            System.out.printf("Player %s: %.2f%% (%,d เสียง)%n", p, percent, votes);
         }
     }
 
@@ -244,8 +255,8 @@ public class City {
             JSONArray playerScoresArr = new JSONArray();
             for (String id : playerIds) {
                 JSONObject pScore = new JSONObject();
-                pScore.put("id",id);
                 pScore.put("score",playerScores.get(id));
+                pScore.put("id",id);
                 playerScoresArr.put(pScore);
             }
             cityJson.put("players score", playerScoresArr);
@@ -271,9 +282,10 @@ public class City {
         if (cityData.has("players score")) {
             JSONArray scores = cityData.getJSONArray("players score");
             for (int i = 0; i < scores.length(); i++) {
-                if (i < playerIds.size()) {
-                    this.playerScores.put(playerIds.get(i), (float) scores.getDouble(i));
-                }
+                JSONObject pScoreData = scores.getJSONObject(i);
+                String pId = pScoreData.getString("id");
+                float pScore = pScoreData.getFloat("score");
+                playerScores.put(pId,pScore);
             }
             updateOwner();
         }
