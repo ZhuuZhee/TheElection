@@ -14,29 +14,47 @@ import org.json.*;
  */
 public class City {
     private final String cityName;
-    /** The political and economic stats of the city. */
+    /**
+     * The political and economic stats of the city.
+     */
     public PoliticsStats stats;
-    /** The total number of citizens in the city. */
+    /**
+     * The total number of citizens in the city.
+     */
     public int population;
-    /** List of map grids that belong to this city. */
+    /**
+     * List of map grids that belong to this city.
+     */
     public ArrayList<Grid> grids = new ArrayList<Grid>();
     private Color color;
 
     // --- Config ค่าคงที่ต่างๆ (ปรับ Balance ที่นี่) ---
-    /** Multiplier for the logarithmic scoring formula. */
+    /**
+     * Multiplier for the logarithmic scoring formula.
+     */
     public static final float K_LOG_MULTIPLIER = 200.0f;
-    /** Ratio of population required to earn one council seat. */
+    /**
+     * Ratio of population required to earn one council seat.
+     */
     public static final int POP_PER_SEAT = 10000;
-    /** Base score added per council seat. */
+    /**
+     * Base score added per council seat.
+     */
     public static final float SCORE_PER_SEAT_BASE = 50.0f;
 
     /** Total number of players in the game. */
-    /** Number of seats available in this city's council. */
+    /**
+     * Number of seats available in this city's council.
+     */
     public int councilSeats;
-    /** The initial base score for the city. */
+    /**
+     * The initial base score for the city.
+     */
     public float baseScore;
-    /** Current weighted scores for each player in this city. */
-    public HashMap<String,Float> playerScores = new HashMap<>();
+    /**
+     * Current weighted scores for each player in this city.
+     */
+    public HashMap<String, Float> playerScores = new HashMap<>();
     public ArrayList<String> playerIds = new ArrayList<>();
 
     private int ownerId = -1;
@@ -53,9 +71,9 @@ public class City {
         // 1. คำนวณจำนวนที่นั่งสภา (Council Seats)
         this.councilSeats = Math.max(1, this.population / POP_PER_SEAT);
         this.baseScore = this.councilSeats * SCORE_PER_SEAT_BASE;
-        for(Player p: playerList){
+        for (Player p : playerList) {
             playerIds.add(p.getPlayerId());
-            playerScores.put(p.getPlayerId(),baseScore);
+            playerScores.put(p.getPlayerId(), baseScore);
         }
     }
 
@@ -65,8 +83,9 @@ public class City {
 
     /**
      * Calculates a score based on logarithmic diminishing returns.
+     *
      * @param currentStatVal The current value of the city's stat.
-     * @param cardVal The value being added by a card.
+     * @param cardVal        The value being added by a card.
      * @return The calculated score increase.
      */
     public float calculateLogScore(double currentStatVal, double cardVal) {
@@ -80,9 +99,10 @@ public class City {
 
     /**
      * Applies a single stat change from a player's card to the city.
+     *
      * @param playerId Index of the player playing the card.
      * @param statType The type of stat being modified.
-     * @param cardVal The amount of change.
+     * @param cardVal  The amount of change.
      */
     public void applyCard(String playerId, long statType, double cardVal) {
         float currentStat = stats.getStats(statType);
@@ -91,7 +111,7 @@ public class City {
         float scoreGained = calculateLogScore(currentStat, cardVal);
 
         // อัปเดตคะแนนผู้เล่น (Score Weight)
-        playerScores.put(playerId,scoreGained);
+        playerScores.put(playerId, scoreGained);
 
         // อัปเดต Stat เมือง
         stats.addStats(statType, (int) cardVal);
@@ -101,15 +121,17 @@ public class City {
         String statName = statType == PoliticsStats.FACILITY ? "Facility" :
                 statType == PoliticsStats.ENVIRONMENT ? "Environment" : "Economy";
 
-        System.out.printf("[%s] Player %d ลงการ์ด %s (+%.1f)%n", cityName, playerId, statName, cardVal);
+        System.out.printf("[%s] Player %s ลงการ์ด %s (+%.1f)%n", cityName, playerId, statName, cardVal);
         System.out.printf("   -> Stat เมืองเปลี่ยนจาก %.1f เป็น %d%n", currentStat, stats.getStats(statType));
         System.out.printf("   -> ได้คะแนนดิบเพิ่ม +%.2f คะแนน%n", scoreGained);
 
         // TODO: Sound Effect ตัวเอง
     }
+
     /**
      * Applies all statistics from a card to the city for a specific player.
-     * @param playerId Index of the player.
+     *
+     * @param playerId  Index of the player.
      * @param cardStats The PoliticsStats object containing card effects.
      */
     public void applyStats(String playerId, PoliticsStats cardStats) {
@@ -130,7 +152,7 @@ public class City {
      * @param playerId ดัชนีของผู้เล่นที่ต้องการตรวจสอบ
      * @return true หากผู้เล่นมีคะแนนมากที่สุดหรือเท่ากับคะแนนสูงสุดในขณะนั้น
      */
-    public boolean isPlayerDominateCity(String playerId){
+    public boolean isPlayerDominateCity(String playerId) {
         double targetScore = playerScores.get(playerId);
         for (double score : playerScores.values()) {
             if (score > targetScore) return false;
@@ -171,11 +193,12 @@ public class City {
 
     /**
      * Calculates the current percentage of influence a player has in the city.
+     *
      * @param playerId Index of the player.
      * @return Percentage (0.0 to 100.0).
      */
     public float getPlayerPercentage(String playerId) {
-        if(playerId.isEmpty() || playerScores.isEmpty()) return 0;
+        if (playerId.isEmpty() || playerScores.isEmpty()) return 0;
         double totalScore = 0;
         for (double score : playerScores.values()) {
             totalScore += score;
@@ -195,8 +218,8 @@ public class City {
 
         for (String playerId : playerScores.keySet()) {
             double percent = (playerScores.get(playerId) / totalScore) * 100;
-            int votes = (int)((playerScores.get(playerId) / totalScore) * this.population);
-            System.out.printf("Player %d: %.2f%% (%,d เสียง)%n", playerId, percent, votes);
+            int votes = (int) ((playerScores.get(playerId) / totalScore) * this.population);
+            System.out.printf("Player %s: %.2f%% (%,d เสียง)%n", playerId, percent, votes);
         }
     }
 
@@ -217,12 +240,21 @@ public class City {
         cityJson.put("name", getCityName());
         cityJson.put("population", population);
 
-        if (playerScores != null) cityJson.put("players score", new JSONArray(playerScores));
+        if (playerScores != null) {
+            JSONArray playerScoresArr = new JSONArray();
+            for (String id : playerIds) {
+                JSONObject pScore = new JSONObject();
+                pScore.put("id",id);
+                pScore.put("score",playerScores.get(id));
+                playerScoresArr.put(pScore);
+            }
+            cityJson.put("players score", playerScoresArr);
+        }
         if (stats != null) cityJson.put("stats", stats.toJson());
 
         cityJson.put("color", color != null
-            ? new JSONArray(new int[]{color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()})
-            : new JSONArray(new int[]{255, 255, 255, 255}));
+                ? new JSONArray(new int[]{color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()})
+                : new JSONArray(new int[]{255, 255, 255, 255}));
 
         if (grids != null) {
             JSONArray gridsArray = new JSONArray();
