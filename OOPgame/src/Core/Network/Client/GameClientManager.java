@@ -28,6 +28,10 @@ public class GameClientManager {
     private final HashSet<ClientListener> clientListeners = new HashSet<>();
     private boolean isVotingState = false;
     private boolean gameEnded = false;
+    
+    public boolean isGameEnded() {
+        return gameEnded;
+    }
 
     public List<Player> getConnectedPlayers() {
         return new ArrayList<>(connectedPlayers.values());
@@ -417,6 +421,7 @@ public class GameClientManager {
         if (ZhuzheeGame.PLAYER_COIN_UI != null) ZhuzheeGame.PLAYER_COIN_UI.setVisible(false);
         if (ZhuzheeGame.TURN_UI != null) ZhuzheeGame.TURN_UI.setVisible(false);
         if (ZhuzheeGame.SETTINGS_UI != null) ZhuzheeGame.SETTINGS_UI.setVisible(false);
+        if (ZhuzheeGame.SHOP_UI != null) ZhuzheeGame.SHOP_UI.setVisible(false);
 
         // สร้างและแสดงหน้าจอ WinUI
         new WinUI(ZhuzheeGame.MAIN_SCENE);

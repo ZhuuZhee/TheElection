@@ -22,23 +22,24 @@ public class CabinetShuffle extends PolicyCard {
     }
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
-        PoliticsStats stats = new PoliticsStats(playedCard.getStats());
         if (!isActive()) {
             return null;
         }
-        if (stats == null) {
+        PoliticsStats originalStats = playedCard.getStats();
+        if (originalStats == null) {
             return null;
         }
-        int facValue = stats.getStats(PoliticsStats.FACILITY);
-        int envValue = stats.getStats(PoliticsStats.ENVIRONMENT);
-        int ecoValue = stats.getStats(PoliticsStats.ECONOMY);
+        PoliticsStats statsDelta = new PoliticsStats(0, 0, 0);
+        int facValue = originalStats.getStats(PoliticsStats.FACILITY);
+        int envValue = originalStats.getStats(PoliticsStats.ENVIRONMENT);
+        int ecoValue = originalStats.getStats(PoliticsStats.ECONOMY);
 
-        stats.setStats(PoliticsStats.FACILITY, -facValue);
-        stats.setStats(PoliticsStats.ENVIRONMENT, -envValue);
-        stats.setStats(PoliticsStats.ECONOMY, -ecoValue);
+        statsDelta.setStats(PoliticsStats.FACILITY, -facValue);
+        statsDelta.setStats(PoliticsStats.ENVIRONMENT, -envValue);
+        statsDelta.setStats(PoliticsStats.ECONOMY, -ecoValue);
 
-        UINotificationToast.showNotification("[Cabinet Shuffle] Activate! " + playedCard.getName() +"positive stats become negative and negative stats become positive!");
-        return stats;
+        UINotificationToast.showNotification("[Cabinet Shuffle] Activate! " + playedCard.getName() + " positive stats become negative and negative stats become positive!");
+        return statsDelta;
     }
 
     @Override

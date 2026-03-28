@@ -32,11 +32,12 @@ public class Shop extends Canvas {
     public Shop(Scene2D scene, List<PolicyCard> allCards) {
         super(scene);
         this.scene = scene;
+        ZhuzheeGame.SHOP_UI = this;
 
         if (ZhuzheeGame.CLIENT != null) {
             this.localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
         } else {
-            this.localPlayer = Dummy.Tester.dummyPlayer;
+            this.localPlayer = null;
         }
 
         // ตั้งค่า Layout ของ Canvas ร้านค้า
@@ -51,6 +52,7 @@ public class Shop extends Canvas {
         // setOpaque(true);
 
         // สร้าง Header ไว้ด้านบน
+        assert localPlayer != null;
         headerLabel = UITool.createLabel("Shop | Money: $ " + localPlayer.getCoin(), 16f);
         headerLabel.setForeground(Color.LIGHT_GRAY);
         headerLabel.setFont(headerLabel.getFont().deriveFont(Font.BOLD));
@@ -192,6 +194,7 @@ public class Shop extends Canvas {
             GameObject.Destroy(card);
         }
         shopCards.clear();
+        if (ZhuzheeGame.SHOP_UI == this) ZhuzheeGame.SHOP_UI = null;
 
         setVisible(false);
         scene.remove((Component) this);
