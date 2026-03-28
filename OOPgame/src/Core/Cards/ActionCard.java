@@ -64,43 +64,52 @@ public class ActionCard extends Card {
         ZhuzheeEngine.Debug.GameLogger.logInfo(name + " was dropped onto Map Grid!");
         City targetCity = grid.getCity();
 
+        Player playercoin = ZhuzheeGame.CLIENT.getLocalPlayer();
+
+        if (playercoin != null && (playercoin.getCoin() + this.coin) < 0) {
+            ZhuzheeEngine.Debug.GameLogger.logWarning("เงินไม่พอลงการ์ด! (ขาดอีก $" + Math.abs(playercoin.getCoin() + this.coin) + ")");
+
+            if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
+                ZhuzheeGame.DEVLOPMENT_CARD_HAND.addCard(this);
+            }
+            return;
+        }
+
+        ZhuzheeEngine.Debug.GameLogger.logInfo(name + " was dropped onto Map Grid!");
+
         if (targetCity != null) {
-            // วิ่งไปหาการ์ดนโยบายจาก UI โดยตรงเลย (ไม่ต้องหาจาก scene แล้ว)
-            // แก้ไขจาก POLICY_CARD_UI เป็น POLICY_CARD_HAND ตามที่มีใน ZhuzheeGame.java
+            // หักเงินผู้เล่นทันทีที่รู้ว่าลงเมืองสำเร็จ
+            if (playercoin != null) {
+                playercoin.setCoin(playercoin.getCoin() + this.coin);
+                System.out.println("playerCoin เหลือ: " + playercoin.getCoin());
+
+                // อัปเดตเงิน
+                if (ZhuzheeGame.PLAYER_COIN_UI != null) {
+                    ZhuzheeGame.PLAYER_COIN_UI.updateCoinDisplay();
+                }
+            }
+
+            // คำนวณบัฟจาก Policy Card ที่มีในมือ
             PoliticsStats finalStat = new PoliticsStats(this.stats);
             if (ZhuzheeGame.POLICY_CARD_HAND != null) {
                 for (Card card : ZhuzheeGame.POLICY_CARD_HAND.getCards()) {
                     if (card instanceof PolicyCard passive) {
-                        // เอา isInSlot() ออก เหลือแค่เช็ค IsActivate() อย่างเดียว
                         if (passive.isActive()) {
                             finalStat.addStats(passive.calculateStats(this, targetCity));
                         }
                     }
                 }
             }
+
             grid.triggerFlash();
             showDropEffectPopup(grid, finalStat);
 
+            // ส่งผลลัพธ์ให้เมือง และทำลายการ์ดทิ้ง
             this.ActionOn(targetCity, finalStat);
             GameObject.Destroy(this);
-
-            this.ActionOn(targetCity, finalStat);
-            GameObject.Destroy(this);
-        }
-        Player playercoin = null;
-        if (ZhuzheeGame.CLIENT != null) {
-            playercoin = ZhuzheeGame.CLIENT.getLocalPlayer();
-        } else {
-            // 👉 ใช้กระเป๋าเดียวกันกับ Shop
-            playercoin = Dummy.Tester.dummyPlayer;
         }
 
-        if (playercoin != null) {
-            playercoin.setCoin(playercoin.getCoin() + this.coin);
-            System.out.println("playerCoin: " + playercoin.getCoin());
-        }
-
-        // ระบบ Broadcast update ค่าเเมืองส่งไปยัง Server
+        // ระบบ Broadcast update ค่าเมืองส่งไปยัง Server (ถ้าเล่นออนไลน์)
         if (ZhuzheeGame.CLIENT != null && targetCity != null) {
             ZhuzheeGame.CLIENT.useCard(targetCity);
         }

@@ -97,6 +97,25 @@ public class Shop extends Canvas {
             cardContainer.add(wrapper);
         }
 
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setOpaque(false);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+
+        JButton closeBtn = new JButton("Close Shop");
+        closeBtn.setBackground(new Color(231, 76, 60));
+        closeBtn.setForeground(Color.WHITE);
+        closeBtn.setPreferredSize(new Dimension(150, 30));
+        closeBtn.setFocusPainted(false);
+        closeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        closeBtn.addMouseListener(ZhuzheeGame.MOUSE_HOVER_SFX);
+        closeBtn.addActionListener(e -> {
+            AudioManager.getInstance().playSound("click");
+            closeShop(); // ปิดร้านค้า คืนการ์ดเข้ากอง
+        });
+
+        bottomPanel.add(closeBtn);
+        add(bottomPanel, BorderLayout.SOUTH);
         scene.add(this);
         scene.setComponentZOrder(this, 0);
         scene.revalidate();
