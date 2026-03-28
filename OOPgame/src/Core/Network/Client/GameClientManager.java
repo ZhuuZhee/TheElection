@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.awt.*;
 
 public class GameClientManager {
     private Socket socket;
@@ -97,6 +98,10 @@ public class GameClientManager {
                 onUpdatePlayer(data);
             }else if (type.equals(NetworkProtocol.DESTROY_AND_SKIP_DRAW.name())) {
                 onDestroyHand(data); // เพิ่ม Handler ตรงนี้
+            }else if (type.equals(NetworkProtocol.NEGATIVE_HAND_STATS.name())) {
+                onNegativeHandStats(data);
+            }else if (type.equals(NetworkProtocol.JUDGEMENT_SKILL.name())) {
+                onJudgementSkill(data);
             }
         }
     }
@@ -131,6 +136,14 @@ public class GameClientManager {
         sendAction(PacketBuilder.createDestroyHandPacket(localPlayer.getPlayerId()));
     }
 
+    public void sendNegativeHandStatsSkill() {
+        sendAction(PacketBuilder.createNegativeHandStatsPacket(localPlayer.getPlayerId()));
+    }
+
+    public void sendJudgementSkill() {
+        sendAction(PacketBuilder.createJudgementSkillPacket(localPlayer.getPlayerId()));
+    }
+
     public void useCard(City targetCity){
         ZhuzheeGame.CLIENT.sendAction(PacketBuilder.createUseCardPacket(targetCity.toJson()));
     }
@@ -157,6 +170,36 @@ public class GameClientManager {
                     ZhuzheeEngine.Scene.GameObject.Destroy(card);
                 }
             }
+        }
+    }
+
+    private synchronized void onNegativeHandStats(JSONObject data) {
+        String fromPlayerId = data.optString("fromPlayerId", "");
+
+        // ถ้าเราไม่ใช่คนที่ใช้การ์ด (เราคือเป้าหมายของผล)
+        if (localPlayer != null && !localPlayer.getPlayerId().equals(fromPlayerId)) {
+            if (Core.ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
+                for (Core.Cards.Card card : Core.ZhuzheeGame.DEVLOPMENT_CARD_HAND.getCards()) {
+                    if (card instanceof Core.Cards.ActionCard actionCard) {
+                        Core.Maps.PoliticsStats stats = actionCard.getStats();
+                        if (stats != null) {
+                            // แปลงสเตตัสทุกอันให้ติดลบ (ถ้าเป็นลบอยู่แล้วก็ให้ติดลบต่อไป)
+                            stats.setStats(Core.Maps.PoliticsStats.FACILITY, -Math.abs(stats.getStats(Core.Maps.PoliticsStats.FACILITY)));
+                            stats.setStats(Core.Maps.PoliticsStats.ENVIRONMENT, -Math.abs(stats.getStats(Core.Maps.PoliticsStats.ENVIRONMENT)));
+                            stats.setStats(Core.Maps.PoliticsStats.ECONOMY, -Math.abs(stats.getStats(Core.Maps.PoliticsStats.ECONOMY)));
+                        }
+                    }
+                }
+                Core.ZhuzheeGame.DEVLOPMENT_CARD_HAND.repaint();
+            }
+        }
+    }
+
+    private synchronized void onJudgementSkill(JSONObject data) {
+        String fromPlayerId = data.optString("fromPlayerId", "");
+        // ถ้าเราไม่ใช่คนที่ใช้การ์ด (เราคือเหยื่อ) ให้เรียกฟังก์ชันรับกรรม
+        if (localPlayer != null && !localPlayer.getPlayerId().equals(fromPlayerId)) {
+            localPlayer.applyJudgementPenalty();
         }
     }
 

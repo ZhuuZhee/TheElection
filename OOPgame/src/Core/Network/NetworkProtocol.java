@@ -11,5 +11,7 @@ public enum NetworkProtocol {
     PONG,
     END_TURN,
     USE_CARD,
-    DESTROY_AND_SKIP_DRAW
+    DESTROY_AND_SKIP_DRAW,
+    NEGATIVE_HAND_STATS,
+    JUDGEMENT_SKILL
 }

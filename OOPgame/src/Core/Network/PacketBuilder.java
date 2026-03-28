@@ -58,6 +58,18 @@ public class PacketBuilder{
         return packet;
     }
 
+    public static JSONObject createNegativeHandStatsPacket(String fromPlayerId) {
+        JSONObject packet = createPacket(NetworkProtocol.NEGATIVE_HAND_STATS);
+        packet.put("fromPlayerId", fromPlayerId);
+        return packet;
+    }
+
+    public static JSONObject createJudgementSkillPacket(String fromPlayerId) {
+        JSONObject packet = createPacket(NetworkProtocol.JUDGEMENT_SKILL);
+        packet.put("fromPlayerId", fromPlayerId);
+        return packet;
+    }
+
     public static JSONObject createKickPacket(){
         return createPacket(NetworkProtocol.HOST_LEFT);
     }
