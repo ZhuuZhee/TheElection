@@ -108,6 +108,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
         AudioManager.getInstance().loadSound("beeb", "beeb.WAV");
         AudioManager.getInstance().loadSound("bgm", "Crucified.WAV");
+        AudioManager.getInstance().loadSound("credit", "BandW.WAV");
         AudioManager.getInstance().playSound("beeb");
         AudioManager.getInstance().playLoop("bgm");
     }
