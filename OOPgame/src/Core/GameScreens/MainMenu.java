@@ -129,7 +129,6 @@ public class MainMenu extends Screen implements ActionListener {
     }
 
     private void disableFullscreen() {
-        device.setFullScreenWindow(null);
         dispose();
         setVisible(true);
     }
