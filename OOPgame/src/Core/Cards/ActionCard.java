@@ -14,8 +14,9 @@ import java.util.ArrayList;
 
 // เพิ่ม Attributes List ที่เอาไว้เก็บค่า Effect ของ card
 public class ActionCard extends Card {
-//    private final PoliticsStats stats;
-
+    //    private final PoliticsStats stats;
+    private SmartTooltipUI onDropPreviewUI;
+    private Grid currentGrid;
     public ActionCard(CardBufferObject bufferObject, int x, int y) {
         this(bufferObject.getName(), x, y, bufferObject.getStats(), bufferObject.getImgPath(), bufferObject.getCoin());
     }
@@ -97,17 +98,109 @@ public class ActionCard extends Card {
         }
     }
 
-    @Override
-    public void onHoverGrid(Grid grid, Map mapComponent) {
-        super.onHoverGrid(grid, mapComponent);
 
-        ZhuzheeGame.POLICY_CARD_HAND.showActiveCards();
-        PoliticsStats finalState = new PoliticsStats(stats);
-        for(Card card : new ArrayList<>(ZhuzheeGame.POLICY_CARD_HAND.getCards())){
-            PolicyCard policyCard = (PolicyCard)card;
-            finalState.addStats(policyCard.calculateStats(this, grid.getCity()));
+    @Override
+    protected void onHoverGrid(Grid grid, Map mapComponent) {
+        super.onHoverGrid(grid, mapComponent);
+        if (grid == null) {
+            if (currentGrid != null) {
+                currentGrid = null;
+                hideOnDropPreview(null);
+                if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+                    ZhuzheeGame.POLICY_CARD_HAND.hideActiveCards();
+                }
+            }
+            return;
         }
-//        SmartTooltipUI tooltipUI = new SmartTooltipUI("");
+
+        System.out.println("Hover Grid "  + grid.getCity().getCityName());
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            ZhuzheeGame.POLICY_CARD_HAND.showActiveCards();
+        }
+
+        if(currentGrid != grid){//new grid
+            currentGrid = grid;
+            hideOnDropPreview(grid);
+            showOnDropPreview(grid);
+        } else {
+            // อัปเดตตำแหน่ง Tooltip ให้ตามเมาส์ขณะขยับอยู่บน Grid เดิม
+            updateTooltipPosition();
+        }
+    }
+
+
+    private void hideOnDropPreview(Grid grid){
+        // --- ปิด Tooltip เมื่อเมาส์ออก ---
+        if (onDropPreviewUI != null) {
+            System.out.println("hideOnDropPreview");
+            scene.remove(onDropPreviewUI); // ถอดออกจากหน้าจอ
+            onDropPreviewUI = null;
+            scene.repaint();
+        }
+        // ----------------------------
+    }
+
+    /**
+     * อัปเดตตำแหน่ง Tooltip ให้แสดงผลตามตำแหน่งเมาส์ปัจจุบันบน Scene
+     */
+    private void updateTooltipPosition() {
+        if (onDropPreviewUI == null || scene == null) return;
+
+        // ดึงตำแหน่งเมาส์สัมพันธ์กับ Scene (JPanel หลักของเกม)
+        Point mousePos = scene.getMousePosition();
+        
+        if (mousePos != null) {
+            int x = mousePos.x + 25;
+            int y = mousePos.y + 25;
+
+            // ป้องกัน UI ล้นขอบจอขวาและล่าง
+            if (x + onDropPreviewUI.getWidth() > scene.getWidth()) {
+                x = mousePos.x - onDropPreviewUI.getWidth() - 25;
+            }
+            if (y + onDropPreviewUI.getHeight() > scene.getHeight()) {
+                y = mousePos.y - onDropPreviewUI.getHeight() - 25;
+            }
+
+            onDropPreviewUI.setLocation(x, y);
+        }
+    }
+
+    private void showOnDropPreview(Grid grid) {
+
+        System.out.println("showOnDropPreview");
+        PoliticsStats finalStats = new PoliticsStats(stats);
+        String description = "";
+        if (ZhuzheeGame.POLICY_CARD_HAND == null) return;
+        
+        for (Card card : new ArrayList<>(ZhuzheeGame.POLICY_CARD_HAND.getCards())) {
+            PolicyCard policyCard = (PolicyCard) card;
+            if (policyCard.isActive()) {
+                PoliticsStats effectStats = policyCard.calculateStats(this, grid.getCity());
+                if (effectStats != null) {
+                    finalStats.addStats(effectStats);
+                    description += "Effect By [%s] : ".formatted(policyCard.getName());
+
+                    int facility = effectStats.getStats(PoliticsStats.FACILITY);
+                    if (facility != 0) description += "[+ %d FACILITY]".formatted(facility);
+                    int environ = effectStats.getStats(PoliticsStats.ENVIRONMENT);
+                    if (environ != 0) description += "[+ %d ENVIRONMENT]".formatted(environ);
+                    int eco = effectStats.getStats(PoliticsStats.ECONOMY);
+                    if (eco != 0) description += "[+ %d ECONOMY]".formatted(eco);
+                }
+
+            }
+        }
+        onDropPreviewUI = new SmartTooltipUI(finalStats, "On Drop Card", description, true);
+
+        // กำหนดขนาดและตำแหน่งเริ่มต้นอ้างอิงจากตำแหน่งเมาส์
+        onDropPreviewUI.setSize(onDropPreviewUI.getPreferredSize());
+        updateTooltipPosition();
+
+        // เอาไปแปะบนจอ แล้วดันขึ้นเลเยอร์บนสุด (0)
+        onDropPreviewUI.setVisible(true);
+        scene.add(onDropPreviewUI);
+        scene.setComponentZOrder(onDropPreviewUI, 0);
+        scene.repaint();
     }
 
     @Override
