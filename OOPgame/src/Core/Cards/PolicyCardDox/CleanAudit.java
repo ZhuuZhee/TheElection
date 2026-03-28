@@ -5,6 +5,7 @@ import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 import Core.Player.Player;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class CleanAudit extends PolicyCard {
@@ -34,13 +35,10 @@ public class CleanAudit extends PolicyCard {
         int env = stats.getStats(PoliticsStats.ENVIRONMENT);
         int eco = stats.getStats(PoliticsStats.ECONOMY);
         if (fac >= 0 && env >= 0 && eco >= 0) {
-            int currentCoin = localPlayer.getCoin();
-            localPlayer.setCoin(currentCoin + 2);
-            System.out.println("----------------------------------");
-            System.out.println("📄 [CLEAN AUDIT] ทำงาน!");
-            System.out.println("ตรวจสอบบัญชีขาวสะอาด! โครงการ " + playedCard.getName() + " ไม่มีข้อเสียเลย");
-            System.out.println(">>> คุณได้รับโบนัสความโปร่งใส 2 Coin! <<<");
-            System.out.println("----------------------------------");
+            stats.setStats(PoliticsStats.ECONOMY, eco * 8);
+            stats.setStats(PoliticsStats.ENVIRONMENT, env * 8);
+            stats.setStats(PoliticsStats.FACILITY, fac * 8);
+            UINotificationToast.showNotification("📄 [CLEAN AUDIT] โครงการ " + playedCard.getName() + " ไม่มีข้อเสีย! ได้รับโบนัส 2 Coin");
         }
     }
 }

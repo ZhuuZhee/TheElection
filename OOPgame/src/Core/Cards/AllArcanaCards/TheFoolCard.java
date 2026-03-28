@@ -13,6 +13,7 @@ import ZhuzheeEngine.Scene.GameObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import Core.UI.UINotificationToast;
 
 public class TheFoolCard extends ArcanaCard {
     private ArrayList<ActionCard> temporaryActionCards = new ArrayList<>();
@@ -32,7 +33,7 @@ public class TheFoolCard extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        System.out.println("The Fool activate!");
+        UINotificationToast.showNotification("The Fool activate!");
         if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
             ZhuzheeGame.DEVLOPMENT_CARD_HAND.setMaxCard(MAX_DEVLOPMENT_CARD_COUNT);
             int maxCards = ZhuzheeGame.DEVLOPMENT_CARD_HAND.getMaxCard();

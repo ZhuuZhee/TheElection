@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class PublicBriefing extends PolicyCard {
@@ -26,14 +27,9 @@ public class PublicBriefing extends PolicyCard {
         PoliticsStats stats = playedCard.getStats();
         if (stats == null) return;
         int fac = stats.getStats(PoliticsStats.FACILITY);
-
         if (fac >= 4) {
             stats.setStats(PoliticsStats.FACILITY, fac * 5);
-            System.out.println("----------------------------------");
-            System.out.println("🎤 [PUBLIC BRIEFING] ทำงาน!");
-            System.out.println("โฆษกชี้แจงโปรเจกต์ยักษ์ใหญ่ " + playedCard.getName() + " จนมวลชนมั่นใจ!");
-            System.out.println(">>> ค่า Facility ของการ์ดใบนี้ถูกคูณ 5 ทันที! (กลายเป็น " + (fac * 5) + ") <<<");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("🎤 [PUBLIC BRIEFING] ชี้แจงโปรเจกต์ " + playedCard.getName() + " สำเร็จ! (x5 Facility)");
         }
     }
 }

@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.ArcanaCard;
 import Core.Cards.Card;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 import java.util.Map;
@@ -37,6 +38,7 @@ public class TheSun extends ArcanaCard {
                     }
                 }
             }
+            UINotificationToast.showNotification("The Sun activate! \nMultiply all your development cards by 20 if they have negative stats change to positive.");
         }
     }
 }

@@ -1,6 +1,7 @@
 package Core.Cards.AllArcanaCards;
 
 import Core.Cards.ArcanaCard;
+import Core.UI.UINotificationToast;
 
 public class TheTower extends ArcanaCard {
 
@@ -12,7 +13,7 @@ public class TheTower extends ArcanaCard {
     @Override
     protected void activateSkill() {
         if (Core.ZhuzheeGame.CLIENT != null) {
-            System.out.println("The Tower activate!");
+            UINotificationToast.showNotification("The Tower activate!");
             Core.ZhuzheeGame.CLIENT.sendDestroyHandSkill();
         }
     }

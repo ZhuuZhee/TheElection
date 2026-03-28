@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Player.Player;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class Fundraiser extends PolicyCard {
@@ -26,12 +27,8 @@ public class Fundraiser extends PolicyCard {
         if (ZhuzheeGame.CLIENT == null) return;
         Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
         if (localPlayer == null) return;
-        System.out.println("----------------------------------");
-        System.out.println("💰 [FUNDRAISER] ทำงาน!");
-        System.out.println("งานระดมทุนจากการโปรโมทโครงการ " + playedCard.getName() + " สำเร็จ!");
-        System.out.println(">>> คุณได้รับเงินสนับสนุน 2 Coin! <<<");
-        System.out.println("----------------------------------");
+        UINotificationToast.showNotification("💰 [FUNDRAISER] ระดมทุนจาก " + playedCard.getName() + " ได้รับ 2 Coin!");
         int currentCoin = localPlayer.getCoin();
-        localPlayer.setCoin(currentCoin + 2);
+        localPlayer.setCoin(currentCoin + 20);
     }
 }

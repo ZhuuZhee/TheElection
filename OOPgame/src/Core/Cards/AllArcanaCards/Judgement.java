@@ -1,6 +1,7 @@
 package Core.Cards.AllArcanaCards;
 
 import Core.Cards.ArcanaCard;
+import Core.UI.UINotificationToast;
 
 public class Judgement extends ArcanaCard {
 
@@ -10,7 +11,7 @@ public class Judgement extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        System.out.println("Judgement activate!");
+        UINotificationToast.showNotification("Judgement activate!");
         // Business Logic
     }
 }

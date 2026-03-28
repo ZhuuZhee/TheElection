@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 
 /**
  * NaturePact: ถ้าการ์ดที่ลงมี Environment > 0 → ทำให้ทุก Stat เพิ่มขึ้น +Environment ด้วย (Synergy)
@@ -24,9 +25,7 @@ public class NaturePact extends PolicyCard {
 
         int env = stats.getStats(PoliticsStats.ENVIRONMENT);
         if (env > 0) {
-            System.out.println("----------------------------------");
-            System.out.println("🌿 [NATURE PACT] All stats +" + env + " synergy bonus!");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("🌿 [NATURE PACT] ทุกสแตทเพิ่มขึ้น +" + env + " จากโบนัส Synergy!");
             stats.addStats(PoliticsStats.FACILITY, env);
             stats.addStats(PoliticsStats.ECONOMY, env);
             // Environment stays the same – it's the catalyst

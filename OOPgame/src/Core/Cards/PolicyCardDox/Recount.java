@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class Recount extends PolicyCard {
@@ -31,10 +32,7 @@ public class Recount extends PolicyCard {
 
                 // ทำงานเมื่อการ์ด Develop ที่กำลังวางมี stat ติดลบอย่างน้อย 1 ค่า
                 if (envValue < 0 || facValue < 0 || ecoValue < 0) {
-                    System.out.println("----------------------------------");
-                    System.out.println("PolicyCard [Recount] ทำงาน!");
-                    System.out.println(">>> คุณได้รับ x3 ในทุกstat <<<");
-                    System.out.println("----------------------------------");
+                    UINotificationToast.showNotification("🗳️ [Recount] นับคะแนนใหม่! รับโบนัส +3 ทุกสแตทให้ " + playedCard.getName());
                     stats.addStats(PoliticsStats.ENVIRONMENT, envValue * 3);
                     stats.addStats(PoliticsStats.FACILITY, facValue * 3);
                     stats.addStats(PoliticsStats.ECONOMY, ecoValue * 3);

@@ -93,6 +93,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         MAIN_SCENE = new Scene2D();
         new Core.UI.GameLogUI(MAIN_SCENE); // เพิ่ม GameLogUI เข้าไปในซีนหลัก
+        new Core.UI.UINotificationToast(MAIN_SCENE); // เพิ่ม UINotificationToast เข้าไปในซีนหลัก
 
         MAIN_MENU = new MainMenu();
         LOBBY_MENU = new Core.GameScreens.LobbyMenu();

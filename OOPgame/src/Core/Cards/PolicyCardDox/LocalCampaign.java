@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class LocalCampaign extends PolicyCard {
@@ -32,12 +33,7 @@ public class LocalCampaign extends PolicyCard {
 
         int ecoValue = stats.getStats(PoliticsStats.ECONOMY);
         if (ecoValue > 0) {
-            System.out.println("----------------------------------");
-            System.out.println("PolicyCard [Local Campaign] ทำงาน!");
-            System.out.println("เนื่องจากคุณเล่นการ์ด " + playedCard.getName() + " ที่มี +Economy");
-            System.out.println(">>> คุณได้รับ 6 Coin <<<");
-            System.out.println("----------------------------------");
-
+            UINotificationToast.showNotification("📢 [Local Campaign] เล่นการ์ด " + playedCard.getName() + " สำเร็จ! ได้รับ 6 Coin");
             if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
                 int currentCoin = ZhuzheeGame.CLIENT.getLocalPlayer().getCoin();
                 ZhuzheeGame.CLIENT.getLocalPlayer().setCoin(currentCoin + 6);

@@ -5,6 +5,7 @@ import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 import Core.ZhuzheeGame;
+import Core.UI.UINotificationToast;
 
 public class ZoningLaw extends PolicyCard {
 
@@ -42,6 +43,6 @@ public class ZoningLaw extends PolicyCard {
         stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 2);
         stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 2);
         stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 2);
-        System.out.println("ZoningLaw +2 all stats");
+        UINotificationToast.showNotification("🏢 [Zoning Law] ผังเมืองดีเยี่ยม! +2 ทุกสแตทให้ " + playedCard.getName());
     }
 }
