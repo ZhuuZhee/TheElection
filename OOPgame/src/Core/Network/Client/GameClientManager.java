@@ -77,6 +77,11 @@ public class GameClientManager {
     public void disconnect() {
         try {
             if (socket != null && !socket.isClosed()) {
+                // ส่งแพ็กเก็ตจบเทิร์น "ก่อน" ปิด Socket เพื่อให้ Server ทราบทันที
+                if (localPlayer != null && currentPlayerId != null && currentPlayerId.equals(localPlayer.getPlayerId())) {
+                    sendAction(PacketBuilder.createEndTurnPacket());
+                }
+                
                 socket.close();
                 System.out.println("Client : Disconnect form server");
             }

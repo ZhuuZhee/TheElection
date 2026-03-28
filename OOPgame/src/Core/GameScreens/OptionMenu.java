@@ -98,20 +98,6 @@ public class OptionMenu extends Screen {
         settingsPanel.add(audioLabel);
         settingsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        JPanel sfxRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 30, 0)); // เพิ่มระยะห่าง
-        sfxRow.setBackground(Color.WHITE);
-        JLabel sfxLabel = new JLabel("SFX Volume");
-        sfxLabel.setFont(sfxLabel.getFont().deriveFont(26f)); // ขยายฟอนต์
-        soundSlider = new JSlider(0, 100, 50);
-        soundSlider.setPreferredSize(new Dimension(250, 40)); // ขยายความยาวของตัวเลื่อนระดับเสียง
-        soundSlider.setBackground(Color.WHITE);
-        soundSlider.addChangeListener(e -> AudioManager.getInstance().setSFXVolume(soundSlider.getValue() / 100f));
-        sfxRow.add(sfxLabel);
-        sfxRow.add(soundSlider);
-        settingsPanel.add(sfxRow);
-
-        settingsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-
         JPanel musicRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 30, 0)); // เพิ่มระยะห่าง
         musicRow.setBackground(Color.WHITE);
         JLabel musicLabel = new JLabel("Music Volume");
@@ -123,6 +109,20 @@ public class OptionMenu extends Screen {
         musicRow.add(musicLabel);
         musicRow.add(musicSlider);
         settingsPanel.add(musicRow);
+
+        settingsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        JPanel sfxRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 30, 0)); // เพิ่มระยะห่าง
+        sfxRow.setBackground(Color.WHITE);
+        JLabel sfxLabel = new JLabel("SFX Volume");
+        sfxLabel.setFont(sfxLabel.getFont().deriveFont(26f)); // ขยายฟอนต์
+        soundSlider = new JSlider(0, 100, 50);
+        soundSlider.setPreferredSize(new Dimension(250, 40)); // ขยายความยาวของตัวเลื่อนระดับเสียง
+        soundSlider.setBackground(Color.WHITE);
+        soundSlider.addChangeListener(e -> AudioManager.getInstance().setSFXVolume(soundSlider.getValue() / 100f));
+        sfxRow.add(sfxLabel);
+        sfxRow.add(soundSlider);
+        settingsPanel.add(sfxRow);
 
         settingsPanel.add(Box.createRigidArea(new Dimension(0, 60)));
 
