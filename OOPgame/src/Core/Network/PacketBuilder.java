@@ -76,6 +76,13 @@ public class PacketBuilder {
         return packet;
     }
 
+    public static JSONObject createNotificationPacket(String message, int durationMs) {
+        JSONObject packet = createPacket(NetworkProtocol.NOTIFICATION);
+        packet.put("message", message);
+        packet.put("durationMs", durationMs);
+        return packet;
+    }
+
     public static JSONObject createKickPacket() {
         return createPacket(NetworkProtocol.HOST_LEFT);
     }

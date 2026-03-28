@@ -79,7 +79,7 @@ public class UINotificationToast extends Canvas {
      * @param message ข้อความที่ต้องการแจ้งเตือน
      */
     public static void showNotification(String message) {
-        showNotification(message, 5000);
+        showNotification(message, 5000, false);
     }
 
     /**
@@ -87,12 +87,25 @@ public class UINotificationToast extends Canvas {
      * @param message ข้อความที่ต้องการแจ้งเตือน
      * @param durationMs ระยะเวลาที่แสดง (มิลลิวินาที)
      */
-    // กำหนดระยะเวลาแสดงผลของ Toast ได้
     public static void showNotification(String message, int durationMs) {
+        showNotification(message, durationMs, false);
+    }
+
+    /**
+     * เรียกใช้งาน Toast จากที่ไหนก็ได้ พร้อมเลือกว่าจะประกาศให้ทุกคนเห็นหรือไม่
+     * @param message ข้อความที่ต้องการแจ้งเตือน
+     * @param durationMs ระยะเวลาที่แสดง (มิลลิวินาที)
+     * @param broadcast ส่งให้ผู้เล่นทุกคนเห็นหรือไม่
+     */
+    public static void showNotification(String message, int durationMs, boolean broadcast) {
         if (instance != null) {
             instance.show(message, durationMs);
         } else {
             System.out.println("[Toast] " + message);
+        }
+
+        if (broadcast && Core.ZhuzheeGame.CLIENT != null) {
+            Core.ZhuzheeGame.CLIENT.sendNotification(message, durationMs);
         }
     }
 

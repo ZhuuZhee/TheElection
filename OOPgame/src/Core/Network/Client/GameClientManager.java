@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.LinkedHashMap;
 
 public class GameClientManager {
     private Socket socket;
@@ -21,7 +22,7 @@ public class GameClientManager {
     private BufferedReader in;
     private Player localPlayer;
     private String currentPlayerId;
-    private final java.util.LinkedHashMap<String, Player> connectedPlayers = new java.util.LinkedHashMap<>();
+    private final LinkedHashMap<String, Player> connectedPlayers = new LinkedHashMap<>();
     private int turnCounter;
     private final HashSet<ClientListener> clientListeners = new HashSet<>();
     private boolean isVotingState = false;
@@ -30,7 +31,7 @@ public class GameClientManager {
         return new ArrayList<>(connectedPlayers.values());
     }
 
-    public java.util.LinkedHashMap<String, Player> getConnectedPlayersWithId() {
+    public LinkedHashMap<String, Player> getConnectedPlayersWithId() {
         return connectedPlayers;
     }
 
@@ -121,6 +122,8 @@ public class GameClientManager {
                 onNegativeHandStats(data);
             } else if (type.equals(NetworkProtocol.JUDGEMENT_SKILL.name())) {
                 onJudgementSkill(data);
+            } else if (type.equals(NetworkProtocol.NOTIFICATION.name())) {
+                onNotification(data);
             }
         }
     }
@@ -173,6 +176,10 @@ public class GameClientManager {
 
     public void sendJudgementSkill() {
         sendAction(PacketBuilder.createJudgementSkillPacket(localPlayer.getPlayerId()));
+    }
+
+    public void sendNotification(String message, int durationMs) {
+        sendAction(PacketBuilder.createNotificationPacket(message, durationMs));
     }
 
     public void useCard(City targetCity) {
@@ -232,6 +239,12 @@ public class GameClientManager {
         if (localPlayer != null && !localPlayer.getPlayerId().equals(fromPlayerId)) {
             localPlayer.applyJudgementPenalty();
         }
+    }
+
+    private synchronized void onNotification(JSONObject data) {
+        String message = data.optString("message", "");
+        int durationMs = data.optInt("durationMs", 5000);
+        Core.UI.UINotificationToast.showNotification(message, durationMs, false);
     }
 
     private synchronized void onJoinAcknowledge(JSONObject data) {

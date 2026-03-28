@@ -14,5 +14,6 @@ public enum NetworkProtocol {
     DESTROY_AND_SKIP_DRAW,
     NEGATIVE_HAND_STATS,
     VOTING,
-    JUDGEMENT_SKILL
+    JUDGEMENT_SKILL,
+    NOTIFICATION
 }

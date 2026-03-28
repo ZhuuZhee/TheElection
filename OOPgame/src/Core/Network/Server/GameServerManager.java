@@ -13,8 +13,8 @@ import static Core.Network.PacketBuilder.createKickPacket;
 public class GameServerManager {
     private static final int PING_INTERVAL_MS = 5000;
     private ServerSocket serverSocket;
-    private List<ClientHandler> clients = new ArrayList<>();
-    private GameState gameState = new GameState();
+    private final List<ClientHandler> clients = new ArrayList<>();
+    private final GameState gameState = new GameState();
     private boolean running = false;
 
     public void startServer(int port) {
@@ -115,8 +115,8 @@ public class GameServerManager {
             onNextTurn();
         } else if (type.equals(NetworkProtocol.USE_CARD.name())) {
             onUseCard(action); // อัพเดตค่าเมืองให้ทุกคนเห็นเหมือนกัน
-        }else if (type.equals(NetworkProtocol.DESTROY_AND_SKIP_DRAW.name()) || type.equals(NetworkProtocol.NEGATIVE_HAND_STATS.name()) || type.equals(NetworkProtocol.JUDGEMENT_SKILL.name())) {
-            broadcast(action); // ส่งให้ทุกคนรับกรรมพร้อมกัน
+        }else if (type.equals(NetworkProtocol.DESTROY_AND_SKIP_DRAW.name()) || type.equals(NetworkProtocol.NEGATIVE_HAND_STATS.name()) || type.equals(NetworkProtocol.JUDGEMENT_SKILL.name()) || type.equals(NetworkProtocol.NOTIFICATION.name())) {
+            broadcast(action); // ส่งให้ทุกคนรับกรรมพร้อมกัน หรือ แจ้งเตือนพร้อมกัน
         }else if (type.equals(NetworkProtocol.VOTING.name())){
             onVoting();
         }
