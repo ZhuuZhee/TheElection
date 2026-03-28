@@ -44,12 +44,13 @@ public class Shop extends Canvas {
         setAnchors(0, 0); // กึ่งกลางหน้าจอ
 
         // ตกแต่งพื้นหลังและขอบ (สไตล์เดียวกับ CardHolderUI)
-        setBackground(new Color(50, 50, 50, 220));
-        setBorder(new LineBorder(new Color(150, 150, 150), 2));
-        setOpaque(true);
+        enableNineSliceBackground(true);
+        // setBackground(new Color(50, 50, 50, 220));
+        // setBorder(new LineBorder(new Color(150, 150, 150), 2));
+        // setOpaque(true);
 
         // สร้าง Header ไว้ด้านบน
-        headerLabel = UITool.createLabel("Shop | Your Money: $ " + localPlayer.getCoin(), 16f);
+        headerLabel = UITool.createLabel("Shop | Money: $ " + localPlayer.getCoin(), 16f);
         headerLabel.setForeground(Color.LIGHT_GRAY);
         headerLabel.setFont(headerLabel.getFont().deriveFont(Font.BOLD));
         headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -105,7 +106,16 @@ public class Shop extends Canvas {
     }
 
     private void updateHeader() {
-        headerLabel.setText("Shop | Your Money: $ " + localPlayer.getCoin());
+        headerLabel.setText("Shop | Money: $ " + localPlayer.getCoin());
+        try {
+            javax.swing.ImageIcon coinIcon = new javax.swing.ImageIcon("OOPgame/Assets/UI/Coin.png");
+            java.awt.Image image = coinIcon.getImage();
+            java.awt.Image newimg = image.getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH); 
+            coinIcon = new javax.swing.ImageIcon(newimg);
+            headerLabel.setIcon(coinIcon);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private int getPrice(PolicyCard card) {
@@ -150,13 +160,6 @@ public class Shop extends Canvas {
         cardContainer.repaint();
         // เอาไว้เปิด shopUI
         closeShop();
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        g.setColor(getBackground());
-        g.fillRect(0, 0, getWidth(), getHeight());
-        super.paintComponent(g);
     }
 
     public void closeShop() {

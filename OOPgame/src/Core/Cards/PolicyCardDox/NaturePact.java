@@ -25,25 +25,12 @@ public class NaturePact extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-//        if (!isActive()) return;
-//        PoliticsStats stats = playedCard.getStats();
-//        if (stats == null) return;
-//
-//        int env = stats.getStats(PoliticsStats.ENVIRONMENT);
-//        if (env > 0) {
-//            UINotificationToast.showNotification("🌿 [NATURE PACT] ทุกสแตทเพิ่มขึ้น +" + env + " จากโบนัส Synergy!");
-//            stats.addStats(PoliticsStats.FACILITY, env);
-//            stats.addStats(PoliticsStats.ECONOMY, env);
-//            // Environment stays the same – it's the catalyst
-//        }
-        return;
-    }
+    public void onActionCardPlayed(ActionCard playedCard, City city) {}
+
     @Override
     public PoliticsStats calculateStats(ActionCard playedCard, City city) {
         if (!isActive()) return null;
         PoliticsStats stats = new PoliticsStats(playedCard.getStats());
-        if (stats == null) return null;
 
         int env = stats.getStats(PoliticsStats.ENVIRONMENT);
         if (env > 0) {

@@ -11,13 +11,12 @@ import ZhuzheeEngine.Scene.NineSliceCanvas;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 
 public class OptionMenu extends Screen {
-    JCheckBox fullscreen = null;
-    JSlider soundSlider = null;
-    JSlider musicSlider = null;
+    JCheckBox fullscreen;
+    JSlider soundSlider;
+    JSlider musicSlider;
     
     BufferedImage bgImage;
     BufferedImage btnNormalImg;

@@ -3,6 +3,8 @@ package Core;
 import Core.GameScreens.CreditUI;
 import Core.GameScreens.MainMenu;
 import Core.GameScreens.OptionMenu;
+import Core.GameScreens.LobbyMenu;
+import Core.GameScreens.WaitingRoomMenu;
 import Core.Maps.Map;
 import Core.Player.Player;
 import Core.UI.*;
@@ -25,10 +27,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static Scene2D MAIN_SCENE;
     public static MainMenu MAIN_MENU;
 
-    public static Core.GameScreens.LobbyMenu LOBBY_MENU;
-    public static Core.GameScreens.CreateRoomMenu CREATE_ROOM_MENU;
-    public static Core.GameScreens.JoinRoomMenu JOIN_ROOM_MENU;
-    public static Core.GameScreens.WaitingRoomMenu WAITING_ROOM_MENU;
+    public static LobbyMenu LOBBY_MENU;
+    public static WaitingRoomMenu WAITING_ROOM_MENU;
     public static CreditUI CREDIT_UI;
     public static OptionMenu OPTION_MENU;
 //    public static CharacterSelectMenu CHARACTER_SELECT_MENU;
@@ -91,13 +91,11 @@ public class ZhuzheeGame implements ApplicationAdapter {
         }
 
         MAIN_SCENE = new Scene2D();
-        new Core.UI.GameLogUI(MAIN_SCENE); // เพิ่ม GameLogUI เข้าไปในซีนหลัก
+//        new Core.UI.GameLogUI(MAIN_SCENE); // เพิ่ม GameLogUI เข้าไปในซีนหลัก
         new Core.UI.UINotificationToast(MAIN_SCENE); // เพิ่ม UINotificationToast เข้าไปในซีนหลัก
 
         MAIN_MENU = new MainMenu();
         LOBBY_MENU = new Core.GameScreens.LobbyMenu();
-        CREATE_ROOM_MENU = new Core.GameScreens.CreateRoomMenu();
-        JOIN_ROOM_MENU = new Core.GameScreens.JoinRoomMenu();
         WAITING_ROOM_MENU = new Core.GameScreens.WaitingRoomMenu();
         CREDIT_UI = new CreditUI();
         OPTION_MENU = new OptionMenu();
@@ -265,6 +263,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
         checkRoundAndShop();
         if (TURN_UI != null) {
             TURN_UI.updateTurnDisplay();
+        }
+        if (END_TURN_UI != null) {
+            END_TURN_UI.updateButtonState();
         }
     }
     private static int lastShopOpenedRound = -1;

@@ -17,6 +17,7 @@ public class ArcanaCardHolderUI extends CardHolderUI {
         setMargins(16, 0, 16, 16);
         setSetLabel("Your Arcana Cards");
         setMaxCard(1);
+        enableNineSliceBackground(true);
     }
 
     private void updateSize(){
@@ -30,9 +31,6 @@ public class ArcanaCardHolderUI extends CardHolderUI {
 
     @Override
     protected void paintComponent(Graphics g) {
-        // วาดสีพื้นหลังแบบโปร่งแสงเอง
-        g.setColor(getBackground());
-        g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
     }
 

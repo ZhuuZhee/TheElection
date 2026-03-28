@@ -28,13 +28,31 @@ public class PlayerCoinUI extends CardHolderUI {
         setPanelSize(180, 30);
         setMaxCard(0);
 
+        try {
+            java.awt.image.BufferedImage customFrame = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_hover.png"));
+            setNineSliceImage(customFrame, 10, 10, 6, 6); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        setTitleColor(java.awt.Color.WHITE);
+
         updateCoinDisplay();
 
     }
 
     public void updateCoinDisplay() {
         if (localPlayer != null) {
-            setSetLabel("Your Money: $ " + localPlayer.getCoin());
+            setSetLabel("Money: $ " + localPlayer.getCoin());
+            try {
+                javax.swing.ImageIcon coinIcon = new javax.swing.ImageIcon("OOPgame/Assets/UI/Coin.png");
+                java.awt.Image image = coinIcon.getImage();
+                java.awt.Image newimg = image.getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH); 
+                coinIcon = new javax.swing.ImageIcon(newimg);
+                setTitleIcon(coinIcon);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         repaint();
     }
