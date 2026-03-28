@@ -264,7 +264,7 @@ public class PlayerListUI extends Canvas {
                     if (isLose) {
                         g2d.setColor(new Color(200, 200, 200, 150));
                     } else {
-                        g2d.setColor(Color.LIGHT_GRAY);
+                        g2d.setColor(Color.WHITE);
                     }
                     g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
 

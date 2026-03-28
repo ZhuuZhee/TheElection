@@ -78,6 +78,11 @@ public class WinnerUI extends Canvas {
             basicBtn.setForeground(Color.BLACK);
             basicBtn.setBorder(BorderFactory.createLineBorder(new Color(255, 215, 0), 3));
             basicBtn.addActionListener(e -> {
+                // ล้างค่าสถานะการเล่นก่อนกลับหน้า Waiting Room
+                if (ZhuzheeGame.CLIENT != null) {
+                    ZhuzheeGame.CLIENT.resetClientState();
+                }
+
                 AudioManager.getInstance().playSound("click");
                 Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
             });
