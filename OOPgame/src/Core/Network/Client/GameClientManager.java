@@ -21,7 +21,7 @@ public class GameClientManager {
     private BufferedReader in;
     private Player localPlayer;
     private String currentPlayerId;
-    private final HashMap<String, Player> connectedPlayers = new HashMap<>();
+    private final java.util.LinkedHashMap<String, Player> connectedPlayers = new java.util.LinkedHashMap<>();
     private int turnCounter;
     private final HashSet<ClientListener> clientListeners = new HashSet<>();
     private boolean isVotingState = false;
@@ -30,7 +30,7 @@ public class GameClientManager {
         return new ArrayList<>(connectedPlayers.values());
     }
 
-    public HashMap<String, Player> getConnectedPlayersWithId() {
+    public java.util.LinkedHashMap<String, Player> getConnectedPlayersWithId() {
         return connectedPlayers;
     }
 

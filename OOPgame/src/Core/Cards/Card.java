@@ -103,7 +103,7 @@ public abstract class Card extends GameObject {
             public void mouseEntered(MouseEvent e) {
                 setHovered(true);
                 // --- โค้ดส่วน Tooltip ที่เพิ่มเข้าไป ---
-                if (!isGrabbed && getEnable()) {
+                if (!isGrabbed) {
 
                     activeTooltip = new SmartTooltipUI(Card.this);
 
@@ -141,7 +141,7 @@ public abstract class Card extends GameObject {
                     scene.repaint();
                 }
                 // ----------------------------
-                if (!isGrabbed && getEnable()) {
+                if (!isGrabbed) {
                     boolean isInHand = (getParent() != null && getParent().getParent() instanceof CardHolderUI);
 
                     if (!isInHand) {

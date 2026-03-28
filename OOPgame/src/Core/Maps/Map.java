@@ -8,11 +8,15 @@ package Core.Maps;
 import Core.Player.Player;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.GameObject;
+import org.json.JSONArray;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
@@ -55,6 +59,8 @@ public class Map extends GameObject {
     private final int MID_WATER     = 0xFF246A9C;
     private final int CAUSTIC_LINE  = 0xFF3EA3D9;
     private final int SPARKLE_FOAM  = 0xFFE5F8FF;
+
+    private static final String CITY_NAMES_PATH = "OOPgame/Assets/names_city.json";
 
     public Map() { this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, new Random().nextLong(), 4); }
     public Map(long seed) { this(DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_CITIES_COUNT, seed, 4); }
@@ -381,17 +387,46 @@ public class Map extends GameObject {
         return null;
     }
 
+    private ArrayList<String> loadCityName(Random random) {
+        ArrayList<String> names = new ArrayList<>();
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(CITY_NAMES_PATH)));
+            JSONArray arr = new JSONArray(content);
+            for (int i = 0; i < arr.length(); i++) {
+                String name = arr.optString(i, "").trim();
+                if (!name.isEmpty()) names.add(name);
+            }
+        } catch (IOException e) {
+            System.err.println("[Map] Cannot read city names from: " + CITY_NAMES_PATH + " | " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("[Map] Invalid JSON in: " + CITY_NAMES_PATH + " | " + e.getMessage());
+        }
+
+        if (!names.isEmpty()) Collections.shuffle(names, random);
+        return names;
+    }
+
+    private String pickCityName(ArrayList<String> namePool, int cityIndex) {
+        if (namePool == null || namePool.isEmpty()) return "City : " + cityIndex;
+        if (cityIndex < namePool.size()) return namePool.get(cityIndex);
+
+        int baseIdx = cityIndex % namePool.size();
+        int round = (cityIndex / namePool.size()) + 1;
+        return namePool.get(baseIdx) + " " + round;
+    }
+
     private Grid[][] generateMap(long seed) {
         Grid[][] grid = new Grid[rows][cols];
         Random random = new Random(seed);
         Color newColor;
         boolean isDuplicate;
         ArrayList<City> cities = new ArrayList<>();
+        ArrayList<String> cityNamePool = loadCityName(random);
 
         Point startPosition = new Point(rows / 2, cols / 2);
 
         for (int i = 0; i < citiesCount; i++) {
-            City city = new City("City Test : " + i,
+            City city = new City(pickCityName(cityNamePool, i),
                     random.nextInt(minStats, maxStats), random.nextInt(minStats, maxStats),
                     random.nextInt(minStats, maxStats), random.nextInt(minPopulation, maxPopulation),
                     (ArrayList<Player>) ZhuzheeGame.CLIENT.getConnectedPlayers());
