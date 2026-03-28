@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 
 public class EndTurnButtonUI extends Canvas {
 
-    private JButton endTurnBtn;
+    private final JButton endTurnBtn;
 
     public EndTurnButtonUI(Scene2D scene) {
         super(scene);

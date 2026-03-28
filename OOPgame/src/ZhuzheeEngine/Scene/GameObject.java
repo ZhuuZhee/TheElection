@@ -1,7 +1,5 @@
 package ZhuzheeEngine.Scene;
 
-import ZhuzheeEngine.Screen;
-
 import javax.swing.*;
 import java.awt.*;
 

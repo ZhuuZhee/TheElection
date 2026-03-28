@@ -47,6 +47,7 @@ public abstract class Canvas extends JPanel implements IZIndex {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
     }
+
     @Override
     public Component asComponent() {
         return this;
