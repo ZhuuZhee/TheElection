@@ -12,7 +12,7 @@ public class InfrastructureBudget extends PolicyCard {
 
     public InfrastructureBudget(int x, int y, String imagePath) {
         super("Infrastructure Budget", x, y, imagePath, -5);
-        this.description = "Skill: While this card is active. Every time you play a Development card, gain +10 Facility.";
+        this.description = "Skill: While this card is active. Every time you play a Development card, Gain +10 Facility.";
     }
 
     @Override
@@ -54,7 +54,7 @@ public class InfrastructureBudget extends PolicyCard {
         // แก้ไขความสามารถ: บวก 10 Facility ให้กับการ์ดทุกใบที่วาง (ตามเงื่อนไขใหม่)
         stats.setStats(PoliticsStats.FACILITY, currentFacility + 10);
 
-        UINotificationToast.showNotification("🏗️ [INFRASTRUCTURE BUDGET] " + playedCard.getName() + " (+10 Facility)!");
+        UINotificationToast.showNotification("[Infrastructure Budget] Activate! " + playedCard.getName() + " Gain +10 Facility!");
         return stats;
     }
 }

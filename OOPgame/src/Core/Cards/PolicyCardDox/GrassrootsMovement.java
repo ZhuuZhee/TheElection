@@ -41,7 +41,7 @@ public class GrassrootsMovement extends PolicyCard {
         int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
         if (currentEnv <= 0) {
             stats.setStats(PoliticsStats.ENVIRONMENT, 20);
-            UINotificationToast.showNotification("🌱 [GRASSROOTS MOVEMENT] พลังรากหญ้าฟื้นฟูสิ่งแวดล้อมให้ " + playedCard.getName() + " (+20)!");
+            UINotificationToast.showNotification("[Grassroots Movement] Activate! " + playedCard.getName() + " Gain Environment to +20");
         }
         return stats;
     }

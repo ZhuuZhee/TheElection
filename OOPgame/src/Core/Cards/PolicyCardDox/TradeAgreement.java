@@ -24,13 +24,57 @@ public class TradeAgreement extends PolicyCard {
 
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
+//        if (!isActive()) {
+//            return;
+//        }
+//
+//        PoliticsStats stats = playedCard.getStats();
+//        if (stats == null) {
+//            return;
+//        }
+//
+//        int fixedStatCount = 0;
+//
+//        if (stats.getStats(PoliticsStats.FACILITY) < 0) {
+//            stats.setStats(PoliticsStats.FACILITY, 0);
+//            fixedStatCount++;
+//        }
+//        if (stats.getStats(PoliticsStats.ENVIRONMENT) < 0) {
+//            stats.setStats(PoliticsStats.ENVIRONMENT, 0);
+//            fixedStatCount++;
+//        }
+//        if (stats.getStats(PoliticsStats.ECONOMY) < 0) {
+//            stats.setStats(PoliticsStats.ECONOMY, 0);
+//            fixedStatCount++;
+//        }
+//
+//        if (fixedStatCount <= 0) {
+//            return;
+//        }
+//
+//        Player player = null;
+//        if (ZhuzheeGame.CLIENT != null) {
+//            player = ZhuzheeGame.CLIENT.getLocalPlayer();
+//        } else {
+//            player = Dummy.Tester.dummyPlayer;
+//        }
+//
+//        if (player != null) {
+//            player.setCoin(player.getCoin() - fixedStatCount);
+//        }
+//
+//        UINotificationToast.showNotification("🤝 [TRADE AGREEMENT] ป้องกันค่าติดลบให้ " + playedCard.getName() + " (-" + fixedStatCount + " Coin)");
+        return;
+    }
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
         if (!isActive()) {
-            return;
+            return null;
         }
 
-        PoliticsStats stats = playedCard.getStats();
+        PoliticsStats stats = new PoliticsStats(playedCard.getStats());
         if (stats == null) {
-            return;
+            return null;
         }
 
         int fixedStatCount = 0;
@@ -49,7 +93,7 @@ public class TradeAgreement extends PolicyCard {
         }
 
         if (fixedStatCount <= 0) {
-            return;
+            return null;
         }
 
         Player player = null;
@@ -63,6 +107,7 @@ public class TradeAgreement extends PolicyCard {
             player.setCoin(player.getCoin() - fixedStatCount);
         }
 
-        UINotificationToast.showNotification("🤝 [TRADE AGREEMENT] ป้องกันค่าติดลบให้ " + playedCard.getName() + " (-" + fixedStatCount + " Coin)");
+        UINotificationToast.showNotification("[Trade Agreement] Activate! " + playedCard.getName() + " card become 0 and (-" + fixedStatCount + " Coin)");
+        return stats;
     }
 }

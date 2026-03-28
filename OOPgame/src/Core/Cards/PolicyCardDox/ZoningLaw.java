@@ -11,7 +11,7 @@ public class ZoningLaw extends PolicyCard {
 
     public ZoningLaw(int x, int y, String imagePath) {
         super("Zoning Law", x, y, imagePath, -5);
-        this.description = "Skill: If Development cards in hand <= 2, all stats of played card gain +2.";
+        this.description = "Skill: If Development cards in hand <= 2, all stats of played card gain x2.";
     }
 
     //เงื่อนไข: เช็คว่าการ์ดอยู่ใน Slot และในมือมี Development Card น้อยกว่า 2 ใบ
@@ -34,15 +34,30 @@ public class ZoningLaw extends PolicyCard {
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
         //ถ้าเงื่อนไข isActive ไม่เป็นจริง (การ์ดไม่อยู่ใน slot หรือการ์ดในมือ > 2) ให้หยุดทำงาน
-        if (!isActive()) return;
+//        if (!isActive()) return;
+//
+//        PoliticsStats stats = playedCard.getStats();
+//        if (stats == null) return;
+//
+//        //เพิ่มค่า Stats ทุกอย่าง +2
+//        stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 2);
+//        stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 2);
+//        stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 2);
+//        UINotificationToast.showNotification("🏢 [Zoning Law] ผังเมืองดีเยี่ยม! +2 ทุกสแตทให้ " + playedCard.getName());
+        return;
+    }
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        if (!isActive()) return null;
 
-        PoliticsStats stats = playedCard.getStats();
-        if (stats == null) return;
+        PoliticsStats stats = new PoliticsStats(playedCard.getStats());
+        if (stats == null) return null;
 
         //เพิ่มค่า Stats ทุกอย่าง +2
-        stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) + 2);
-        stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) + 2);
-        stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) + 2);
-        UINotificationToast.showNotification("🏢 [Zoning Law] ผังเมืองดีเยี่ยม! +2 ทุกสแตทให้ " + playedCard.getName());
+        stats.setStats(PoliticsStats.FACILITY, stats.getStats(PoliticsStats.FACILITY) * 2);
+        stats.setStats(PoliticsStats.ENVIRONMENT, stats.getStats(PoliticsStats.ENVIRONMENT) * 2);
+        stats.setStats(PoliticsStats.ECONOMY, stats.getStats(PoliticsStats.ECONOMY) * 2);
+        UINotificationToast.showNotification("[Zoning Law] Activate! " + playedCard.getName() + " Gain x2 All stats!");
+        return stats;
     }
 }

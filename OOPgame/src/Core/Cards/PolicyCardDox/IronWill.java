@@ -26,18 +26,19 @@ public class  IronWill extends PolicyCard {
 
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (!isActive()) return;
-        PoliticsStats stats = playedCard.getStats();
-        if (stats == null) return;
-
-        int fac = stats.getStats(PoliticsStats.FACILITY);
-        if (fac < 0) {
-            UINotificationToast.showNotification("🛡️ [IRON WILL] ป้องกันความเสียหาย Facility ให้ " + playedCard.getName());
-            stats.setStats(PoliticsStats.FACILITY, 0);
-        } else if (fac > 0) {
-            UINotificationToast.showNotification("🛡️ [IRON WILL] เพิ่มโบนัส Facility (+5) ให้ " + playedCard.getName());
-            stats.addStats(PoliticsStats.FACILITY, fac + 5);
-        }
+//        if (!isActive()) return;
+//        PoliticsStats stats = playedCard.getStats();
+//        if (stats == null) return;
+//
+//        int fac = stats.getStats(PoliticsStats.FACILITY);
+//        if (fac < 0) {
+//            UINotificationToast.showNotification("🛡️ [IRON WILL] ป้องกันความเสียหาย Facility ให้ " + playedCard.getName());
+//            stats.setStats(PoliticsStats.FACILITY, 0);
+//        } else if (fac > 0) {
+//            UINotificationToast.showNotification("🛡️ [IRON WILL] เพิ่มโบนัส Facility (+5) ให้ " + playedCard.getName());
+//            stats.addStats(PoliticsStats.FACILITY, fac + 5);
+//        }
+        return;
     }
 
     @Override
@@ -48,10 +49,10 @@ public class  IronWill extends PolicyCard {
 
         int fac = stats.getStats(PoliticsStats.FACILITY);
         if (fac < 0) {
-            UINotificationToast.showNotification("🛡️ [IRON WILL] ป้องกันความเสียหาย Facility ให้ " + playedCard.getName());
+            UINotificationToast.showNotification("[Iron Will] Activate! " + playedCard.getName() + " Change to 0!");
             stats.setStats(PoliticsStats.FACILITY, 0);
         } else if (fac > 0) {
-            UINotificationToast.showNotification("🛡️ [IRON WILL] เพิ่มโบนัส Facility (+5) ให้ " + playedCard.getName());
+            UINotificationToast.showNotification("[Iron Will] Activate! " + playedCard.getName() + " Gain Facility +5!");
             stats.addStats(PoliticsStats.FACILITY, fac + 5);
         }
         return stats;

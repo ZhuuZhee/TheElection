@@ -36,7 +36,7 @@ public class EconomicBoom extends PolicyCard {
         int env = stats.getStats(PoliticsStats.ENVIRONMENT);
 
         if (eco > 0) {
-            UINotificationToast.showNotification("💰 [ECONOMIC BOOM] x4 Economy & x2 Environment!");
+            UINotificationToast.showNotification("[Economic Boom] Activate! " + playedCard.getName()  + " Economy x4 and Environment x2 bonus!");
             //Economy x4
             stats.setStats(PoliticsStats.ECONOMY, eco * 4);
 

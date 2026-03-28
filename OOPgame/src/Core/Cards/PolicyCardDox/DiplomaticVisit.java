@@ -60,7 +60,7 @@ public class DiplomaticVisit extends PolicyCard {
             //บันทึกไว้ว่าการ์ดใบนี้ทำงานไปแล้วนะ รอบหน้าถ้า Engine ส่งมาอีกจะได้ไม่บวกเงินซ้ำ
             lastTriggeredCard = playedCard;
 
-            UINotificationToast.showNotification("🤝 [DIPLOMATIC VISIT] ได้รับโบนัส +" + bonusAmount + " Coin!");
+            UINotificationToast.showNotification("[Diplomatic Visit] Activate! " + "Gain +" + bonusAmount + " Coin!");
         }
     }
 }
