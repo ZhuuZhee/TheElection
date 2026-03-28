@@ -32,6 +32,7 @@ public class Player {
     private String profileImagePath;
     private boolean isLose;//แพ้ป่าว
     private boolean skipDrawNextTurn = false; // ตัวแปรสำหรับสถานะห้ามจั่วการ์ด
+    private int drawAmountNextTurn = -1;
     private float score;
 
     // เพิ่มตัวแปรสำหรับสกิล Judgement
@@ -171,10 +172,14 @@ public class Player {
         this.skipDrawNextTurn = skip;
     }
 
+    public void setDrawAmountNextTurn(int amount) {
+        this.drawAmountNextTurn = amount;
+    }
+
     public void onStartTurn() {
         if (isLocal) {
             if (skipDrawNextTurn) {
-                System.out.println("⚡ [The Tower Effect] You cannot draw cards this turn!");
+                System.out.println("⚡ [Effect] You cannot draw cards this turn!");
                 skipDrawNextTurn = false; // เคลียร์สถานะหลังจากโดนข้ามไปแล้ว 1 เทิร์น
             } else {
                 drawCard();
@@ -228,7 +233,10 @@ public class Player {
             return;
         }
 
-        CardBufferObject[] cardBufferObjects = DrawActionCardBufferObjects(DEFAULT_DRAW_DEV_CARD_AMOUNT);
+        int amount = (drawAmountNextTurn != -1) ? drawAmountNextTurn : DEFAULT_DRAW_DEV_CARD_AMOUNT;
+        drawAmountNextTurn = -1;
+
+        CardBufferObject[] cardBufferObjects = DrawActionCardBufferObjects(amount);
 
         new Thread(() -> {
             while (true) {
