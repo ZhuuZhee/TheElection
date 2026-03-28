@@ -39,4 +39,21 @@ public class  IronWill extends PolicyCard {
             stats.addStats(PoliticsStats.FACILITY, fac + 5);
         }
     }
+
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        if (!isActive()) return null;
+        PoliticsStats stats = new PoliticsStats(playedCard.getStats());
+        if (stats == null) return null;
+
+        int fac = stats.getStats(PoliticsStats.FACILITY);
+        if (fac < 0) {
+            UINotificationToast.showNotification("🛡️ [IRON WILL] ป้องกันความเสียหาย Facility ให้ " + playedCard.getName());
+            stats.setStats(PoliticsStats.FACILITY, 0);
+        } else if (fac > 0) {
+            UINotificationToast.showNotification("🛡️ [IRON WILL] เพิ่มโบนัส Facility (+5) ให้ " + playedCard.getName());
+            stats.addStats(PoliticsStats.FACILITY, fac + 5);
+        }
+        return stats;
+    }
 }

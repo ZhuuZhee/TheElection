@@ -22,10 +22,14 @@ public class DamageControl extends PolicyCard {
     }
 
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (!isActive()) return;
-        PoliticsStats stats = playedCard.getStats();
-        if (stats == null) return;
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        PoliticsStats stats = new PoliticsStats(playedCard.getStats());
+        if (!isActive()) {
+            return null;
+        }
+        if (stats == null) {
+            return null;
+        }
         boolean isTriggered = false; // ตัวแปรเช็คว่ามีการกลับค่าสแตทหรือไม่
 
         int currentFac = stats.getStats(PoliticsStats.FACILITY);
@@ -49,5 +53,37 @@ public class DamageControl extends PolicyCard {
         if (isTriggered) {
             UINotificationToast.showNotification("📰 [DAMAGE CONTROL] พลิกวิกฤตเป็นบวกให้ " + playedCard.getName() + " แล้ว!");
         }
+        return stats;
+    }
+
+    @Override
+    public void onActionCardPlayed(ActionCard playedCard, City city) {
+//        if (!isActive()) return;
+//        PoliticsStats stats = playedCard.getStats();
+//        if (stats == null) return;
+//        boolean isTriggered = false; // ตัวแปรเช็คว่ามีการกลับค่าสแตทหรือไม่
+//
+//        int currentFac = stats.getStats(PoliticsStats.FACILITY);
+//        if (currentFac < 0) {
+//            stats.setStats(PoliticsStats.FACILITY, Math.abs(currentFac));
+//            isTriggered = true;
+//        }
+//
+//        int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
+//        if (currentEnv < 0) {
+//            stats.setStats(PoliticsStats.ENVIRONMENT, Math.abs(currentEnv));
+//            isTriggered = true;
+//        }
+//
+//        int currentEco = stats.getStats(PoliticsStats.ECONOMY);
+//        if (currentEco < 0) {
+//            stats.setStats(PoliticsStats.ECONOMY, Math.abs(currentEco));
+//            isTriggered = true;
+//        }
+//
+//        if (isTriggered) {
+//            UINotificationToast.showNotification("📰 [DAMAGE CONTROL] พลิกวิกฤตเป็นบวกให้ " + playedCard.getName() + " แล้ว!");
+//        }
+        return;
     }
 }

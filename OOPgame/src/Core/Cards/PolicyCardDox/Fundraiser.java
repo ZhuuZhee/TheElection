@@ -3,6 +3,7 @@ package Core.Cards.PolicyCardDox;
 import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
+import Core.Maps.PoliticsStats;
 import Core.Player.Player;
 import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
@@ -10,7 +11,7 @@ import Core.ZhuzheeGame;
 public class Fundraiser extends PolicyCard {
     public Fundraiser(int x, int y, String imagePath) {
         super("Fundraiser", x, y, imagePath, -4);
-        this.description = "Skill: Gain 2 Coins every time you play a Develop Card.";
+        this.description = "Skill: Gain 20 Coins every time you play a Develop Card.";
     }
 
     @Override
@@ -27,8 +28,12 @@ public class Fundraiser extends PolicyCard {
         if (ZhuzheeGame.CLIENT == null) return;
         Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
         if (localPlayer == null) return;
-        UINotificationToast.showNotification("💰 [FUNDRAISER] ระดมทุนจาก " + playedCard.getName() + " ได้รับ 2 Coin!");
+        UINotificationToast.showNotification("💰 [FUNDRAISER] ระดมทุนจาก " + playedCard.getName() + " ได้รับ 20 Coin!");
         int currentCoin = localPlayer.getCoin();
         localPlayer.setCoin(currentCoin + 20);
+    }
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        return null;
     }
 }
