@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class Public_PrivatePartnership extends PolicyCard {
@@ -32,8 +33,7 @@ public class Public_PrivatePartnership extends PolicyCard {
         if (eco > 0 && fac > 0) {
             stats.setStats(PoliticsStats.ECONOMY, eco + 10);
             stats.setStats(PoliticsStats.ECONOMY, fac + 10);
-            System.out.println("Public-Private Partnership activated: +10 Economy");
-            System.out.println("Public-Private Partnership activated: +10 Facility");
+            UINotificationToast.showNotification("🏢 [PPP] ความร่วมมือรัฐ-เอกชนสำเร็จ! (+10 Economy & Facility)");
         }
     }
 }

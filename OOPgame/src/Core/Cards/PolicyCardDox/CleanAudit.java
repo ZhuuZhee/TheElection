@@ -5,12 +5,13 @@ import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
 import Core.Player.Player;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class CleanAudit extends PolicyCard {
     public CleanAudit(int x, int y, String imagePath) {
         super("Clean Audit", x, y, imagePath, -4);
-        this.description = "Skill: Play Dev Card with all stats >= 0. Gain all stats *8.";
+        this.description = "Skill: Play Dev Card with all stats >= 0 gain 2 Coins.";
     }
 
     @Override
@@ -37,11 +38,7 @@ public class CleanAudit extends PolicyCard {
             stats.setStats(PoliticsStats.ECONOMY, eco * 8);
             stats.setStats(PoliticsStats.ENVIRONMENT, env * 8);
             stats.setStats(PoliticsStats.FACILITY, fac * 8);
-            System.out.println("----------------------------------");
-            System.out.println("📄 [CLEAN AUDIT] ทำงาน!");
-            System.out.println("ตรวจสอบบัญชีขาวสะอาด! โครงการ " + playedCard.getName() + " ไม่มีข้อเสียเลย");
-            System.out.println(">>> Stats ทั้งหมดคูณ 8 <<<");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("📄 [CLEAN AUDIT] โครงการ " + playedCard.getName() + " ไม่มีข้อเสีย! ได้รับโบนัส 2 Coin");
         }
     }
 }

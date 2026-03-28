@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class DamageControl extends PolicyCard {
@@ -46,10 +47,7 @@ public class DamageControl extends PolicyCard {
         }
 
         if (isTriggered) {
-            System.out.println("----------------------------------");
-            System.out.println("📰 [DAMAGE CONTROL] ทำงาน!");
-            System.out.println("สื่อช่วยฟอกขาว! สแตทที่ติดลบของย่าน " + playedCard.getName() + " ถูกพลิกวิกฤตให้เป็นบวกแล้ว!");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("📰 [DAMAGE CONTROL] พลิกวิกฤตเป็นบวกให้ " + playedCard.getName() + " แล้ว!");
         }
     }
 }

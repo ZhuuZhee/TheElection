@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 /**
@@ -33,10 +34,7 @@ public class EconomicBoom extends PolicyCard {
         int env = stats.getStats(PoliticsStats.ENVIRONMENT);
 
         if (eco > 0) {
-            System.out.println("----------------------------------");
-            System.out.println("💰 [ECONOMIC BOOM] Economy x4 ENVIRONMENT x2!");
-            System.out.println("----------------------------------");
-
+            UINotificationToast.showNotification("💰 [ECONOMIC BOOM] x4 Economy & x2 Environment!");
             //Economy x4
             stats.setStats(PoliticsStats.ECONOMY, eco * 4);
 

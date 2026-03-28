@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class GrassrootsMovement extends PolicyCard {
@@ -28,11 +29,7 @@ public class GrassrootsMovement extends PolicyCard {
         int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
         if (currentEnv <= 0) {
             stats.setStats(PoliticsStats.ENVIRONMENT, 20);
-            System.out.println("----------------------------------");
-            System.out.println("🌱 [GRASSROOTS MOVEMENT] ทำงาน!");
-            System.out.println("พลังรากหญ้า! พลิกฟื้นสิ่งแวดล้อมให้การ์ด " + playedCard.getName());
-            System.out.println(">>> ค่า Environment เปลี่ยนเป็น +20 ทันที! <<<");
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("🌱 [GRASSROOTS MOVEMENT] พลังรากหญ้าฟื้นฟูสิ่งแวดล้อมให้ " + playedCard.getName() + " (+20)!");
         }
     }
 }

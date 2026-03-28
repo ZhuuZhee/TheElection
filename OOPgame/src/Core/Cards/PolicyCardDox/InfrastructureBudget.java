@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Maps.PoliticsStats;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class InfrastructureBudget extends PolicyCard {
@@ -35,11 +36,6 @@ public class InfrastructureBudget extends PolicyCard {
         // แก้ไขความสามารถ: บวก 10 Facility ให้กับการ์ดทุกใบที่วาง (ตามเงื่อนไขใหม่)
         stats.setStats(PoliticsStats.FACILITY, currentFacility + 10);
 
-        // แสดงผลใน Console เพื่อยืนยันการทำงาน
-        System.out.println("----------------------------------");
-        System.out.println("🏗️ [INFRASTRUCTURE BUDGET] Active!");
-        System.out.println("Building bridges and skyscrapers...");
-        System.out.println(">>> Card: " + playedCard.getName() + " gained +10 Facility! <<<");
-        System.out.println("----------------------------------");
+        UINotificationToast.showNotification("🏗️ [INFRASTRUCTURE BUDGET] " + playedCard.getName() + " (+10 Facility)!");
     }
 }

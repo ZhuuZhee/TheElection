@@ -4,6 +4,7 @@ import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
 import Core.Player.Player;
+import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
 public class DiplomaticVisit extends PolicyCard {
@@ -53,12 +54,7 @@ public class DiplomaticVisit extends PolicyCard {
             //บันทึกไว้ว่าการ์ดใบนี้ทำงานไปแล้วนะ รอบหน้าถ้า Engine ส่งมาอีกจะได้ไม่บวกเงินซ้ำ
             lastTriggeredCard = playedCard;
 
-            // พิมพ์บอกใน Console เพื่อความชัวร์
-            System.out.println("----------------------------------");
-            System.out.println("🤝 [DIPLOMATIC VISIT] ทำงานสำเร็จ!");
-            System.out.println("เงินก่อนบวก: " + currentCoin + " | โบนัสที่ได้: +" + bonusAmount);
-            System.out.println("เงินปัจจุบันอัปเดตเป็น: " + localPlayer.getCoin());
-            System.out.println("----------------------------------");
+            UINotificationToast.showNotification("🤝 [DIPLOMATIC VISIT] ได้รับโบนัส +" + bonusAmount + " Coin!");
         }
     }
 }
