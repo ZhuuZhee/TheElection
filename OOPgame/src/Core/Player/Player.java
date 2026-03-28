@@ -97,6 +97,22 @@ public class Player {
 
     public void setCoin(int coin) {
         this.coin = coin;
+        if (isLocal) {
+            if (ZhuzheeGame.PLAYER_COIN_UI != null) {
+                ZhuzheeGame.PLAYER_COIN_UI.updateCoinDisplay();
+            }
+            if (ZhuzheeGame.PLAYER_PROFILE_UI != null) {
+                ZhuzheeGame.PLAYER_PROFILE_UI.updateProfile();
+            }
+            if (ZhuzheeGame.PLAYER_LIST_UI != null) {
+                ZhuzheeGame.PLAYER_LIST_UI.updatePlayerList();
+            }
+            if (ZhuzheeGame.CLIENT != null) {
+                ZhuzheeGame.CLIENT.sendAction(Core.Network.PacketBuilder.createPlayerDataPacket(
+                        playerId, playerName, coin, colorName, profileImagePath, arcanaCardName
+                ));
+            }
+        }
     }
 
     public Color getColor() { return color; }
@@ -220,6 +236,10 @@ public class Player {
         }
         if (data.has("arcanaCard")) {
             this.arcanaCardName = data.getString("arcanaCard");
+        }
+
+        if (ZhuzheeGame.PLAYER_LIST_UI != null) {
+            ZhuzheeGame.PLAYER_LIST_UI.updatePlayerList();
         }
 
         System.out.println("Player{%s} : update data form json successfully!\n%s".formatted(playerName, toString()));

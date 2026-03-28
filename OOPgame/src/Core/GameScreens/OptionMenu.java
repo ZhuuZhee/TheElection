@@ -146,15 +146,18 @@ public class OptionMenu extends Screen {
     }
 
     private void enableFullscreen() {
-        dispose();
-        device.setFullScreenWindow(Application.getMainFrame());
-        setVisible(true);
+        JFrame frame = Application.getMainFrame();
+        frame.dispose();
+        frame.setUndecorated(true);
+        device.setFullScreenWindow(frame);
+        frame.setVisible(true);
     }
 
     private void disableFullscreen() {
+        JFrame frame = Application.getMainFrame();
+        frame.dispose();
+        frame.setUndecorated(false);
         device.setFullScreenWindow(null);
-        dispose();
-        setSize(800, 600); // Set default windowed size
-        setVisible(true);
+        frame.setVisible(true);
     }
 }

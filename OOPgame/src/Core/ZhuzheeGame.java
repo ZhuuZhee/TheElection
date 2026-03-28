@@ -161,7 +161,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
                 ARCANA_CARD_UI.addCard(card);    // ยัดไพ่ลงกระดาน UI
             }
             // เอาไว้เปิด PlayerProfileUI
-//            PlayerUI.PlayerProfileUITest(MAIN_SCENE, localPlayer);
+            PlayerUI.PlayerProfileUITest(MAIN_SCENE, localPlayer);
         }
         localPlayer.DrawCard();
     }
@@ -321,8 +321,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
         public static CardHolderUI CardHolderUITest(Scene2D scene2D){
             CardHolderUI ui = new CardHolderUI(scene2D);
             ui.setStrechToFit(true);
-            ui.setPanelSize(164,224);
-            ui.setMargins(224,16,16,16);
+            ui.setPanelSize(100,224);
+            ui.setMargins(224,224,16,16);
             ui.setAnchorTop(false);
             Color color = ui.getBackground();
             color = new Color(color.getRed(),color.getGreen(),color.getBlue(),100);

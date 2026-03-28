@@ -59,7 +59,10 @@ public class CardHolderUI extends Canvas {
         add(cardContainer, BorderLayout.CENTER);
 
         onResize(scene.getWidth(), scene.getHeight());
-
+        if (strechToFit) {
+            this.marginLeft = (int) (width * 0.1f);
+            this.marginRight = (int) (width * 0.125f);
+        }
         scene.revalidate();
         setVisible(true);
     }

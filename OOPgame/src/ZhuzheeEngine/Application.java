@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * and coordinates ApplicationAdapters for game logic and rendering.
  */
 public final class Application {
-    private static int TARGET_FPS = 120;
+    private static int TARGET_FPS = 60;
 
     /// frame time delay in milliseconds
     private static int FRAME_DELAY_MS = 1000 / TARGET_FPS;
@@ -169,14 +169,17 @@ public final class Application {
     /// Create JFrame
     private void create() {
         mainFrame = new JFrame(getTitle());
-        mainFrame.setSize(screenWidth, screenHeight);
+        mainFrame.setUndecorated(true); // ทำเป็น Borderless
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        mainFrame.getContentPane().setBackground(Color.BLACK); // แก้บั๊ก OpenGL วาดฉากหลังไม่ติด
+
+        // หาขนาดหน้าจอทั้งหมดแล้วตั้งค่าให้เต็มจอ (Borderless Fullscreen)
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        mainFrame.setSize(screenSize.width, screenSize.height);
+        mainFrame.setLocation(0, 0);
+
         mainFrame.setVisible(true);
-        // Enable exclusive fullscreen on launch
-        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        if (device.isFullScreenSupported()) {
-            device.setFullScreenWindow(mainFrame);
-        }
+        GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(mainFrame);
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
