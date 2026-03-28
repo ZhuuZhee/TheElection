@@ -3,6 +3,7 @@ package Core.Cards.PolicyCardDox;
 import Core.Cards.ActionCard;
 import Core.Cards.PolicyCard;
 import Core.Maps.City;
+import Core.Maps.PoliticsStats;
 import Core.Player.Player;
 import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
@@ -21,6 +22,11 @@ public class DiplomaticVisit extends PolicyCard {
     public boolean isActive() {
         return ZhuzheeGame.POLICY_CARD_HAND != null
                 && ZhuzheeGame.POLICY_CARD_HAND.containsCard(this);
+    }
+
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        return null;
     }
 
     @Override

@@ -23,13 +23,26 @@ public class GrassrootsMovement extends PolicyCard {
 
     @Override
     public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (!isActive()) return;
-        PoliticsStats stats = playedCard.getStats();
-        if (stats == null) return;
+//        if (!isActive()) return;
+//        PoliticsStats stats = playedCard.getStats();
+//        if (stats == null) return;
+//        int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
+//        if (currentEnv <= 0) {
+//            stats.setStats(PoliticsStats.ENVIRONMENT, 20);
+//            UINotificationToast.showNotification("🌱 [GRASSROOTS MOVEMENT] พลังรากหญ้าฟื้นฟูสิ่งแวดล้อมให้ " + playedCard.getName() + " (+20)!");
+//        }
+        return;
+    }
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        if (!isActive()) return null;
+        PoliticsStats stats = new PoliticsStats(playedCard.getStats());
+        if (stats == null) return null;
         int currentEnv = stats.getStats(PoliticsStats.ENVIRONMENT);
         if (currentEnv <= 0) {
             stats.setStats(PoliticsStats.ENVIRONMENT, 20);
             UINotificationToast.showNotification("🌱 [GRASSROOTS MOVEMENT] พลังรากหญ้าฟื้นฟูสิ่งแวดล้อมให้ " + playedCard.getName() + " (+20)!");
         }
+        return stats;
     }
 }

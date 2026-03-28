@@ -32,8 +32,22 @@ public class GreenPolicy extends PolicyCard {
      */
     public void onActionCardPlayed(ActionCard playedCard, City city) {
         // เช็คว่าการ์ดที่เล่นเป็น DevelopCard หรือไม่
+//        if (playedCard instanceof ActionCard) {
+//            PoliticsStats stats = playedCard.getStats();
+//            if (stats != null) {
+//                int env = stats.getStats(PoliticsStats.ENVIRONMENT);
+//                if (env < 0) {
+//                    UINotificationToast.showNotification("🌿 [Green Policy] ป้องกันค่า Environment ติดลบให้ " + playedCard.getName());
+//                    stats.setStats(PoliticsStats.ENVIRONMENT, 0);
+//                }
+//            }
+//        }
+        return;
+    }
+    @Override
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
         if (playedCard instanceof ActionCard) {
-            PoliticsStats stats = playedCard.getStats();
+            PoliticsStats stats = new PoliticsStats(playedCard.getStats());
             if (stats != null) {
                 int env = stats.getStats(PoliticsStats.ENVIRONMENT);
                 if (env < 0) {
@@ -42,5 +56,6 @@ public class GreenPolicy extends PolicyCard {
                 }
             }
         }
+        return stats;
     }
 }

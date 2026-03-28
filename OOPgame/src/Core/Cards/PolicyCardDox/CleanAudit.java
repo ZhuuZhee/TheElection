@@ -21,16 +21,15 @@ public class CleanAudit extends PolicyCard {
         }
         return false;
     }
-
     @Override
-    public void onActionCardPlayed(ActionCard playedCard, City city) {
-        if (!isActive()) return;
-        if (ZhuzheeGame.CLIENT == null) return;
-        Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
-        if (localPlayer == null) return;
-
-        PoliticsStats stats = playedCard.getStats();
-        if (stats == null) return;
+    public PoliticsStats calculateStats(ActionCard playedCard, City city) {
+        PoliticsStats stats = new PoliticsStats(playedCard.getStats());
+        if (!isActive()) {
+            return null;
+        }
+        if (stats == null) {
+            return null;
+        }
         int fac = stats.getStats(PoliticsStats.FACILITY);
         int env = stats.getStats(PoliticsStats.ENVIRONMENT);
         int eco = stats.getStats(PoliticsStats.ECONOMY);
@@ -38,7 +37,29 @@ public class CleanAudit extends PolicyCard {
             stats.setStats(PoliticsStats.ECONOMY, eco * 8);
             stats.setStats(PoliticsStats.ENVIRONMENT, env * 8);
             stats.setStats(PoliticsStats.FACILITY, fac * 8);
-            UINotificationToast.showNotification("📄 [CLEAN AUDIT] โครงการ " + playedCard.getName() + " ไม่มีข้อเสีย! ได้รับโบนัส 2 Coin");
+            UINotificationToast.showNotification("📄 [CLEAN AUDIT] โครงการ " + playedCard.getName() + " ไม่มีข้อเสีย! ได้รับ x8 ทุกstats");
         }
+            return stats;
+
+    }
+    @Override
+    public void onActionCardPlayed(ActionCard playedCard, City city) {
+//        if (!isActive()) return;
+//        if (ZhuzheeGame.CLIENT == null) return;
+//        Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
+//        if (localPlayer == null) return;
+//
+//        PoliticsStats stats = playedCard.getStats();
+//        if (stats == null) return;
+//        int fac = stats.getStats(PoliticsStats.FACILITY);
+//        int env = stats.getStats(PoliticsStats.ENVIRONMENT);
+//        int eco = stats.getStats(PoliticsStats.ECONOMY);
+//        if (fac >= 0 && env >= 0 && eco >= 0) {
+//            stats.setStats(PoliticsStats.ECONOMY, eco * 8);
+//            stats.setStats(PoliticsStats.ENVIRONMENT, env * 8);
+//            stats.setStats(PoliticsStats.FACILITY, fac * 8);
+//            UINotificationToast.showNotification("📄 [CLEAN AUDIT] โครงการ " + playedCard.getName() + " ไม่มีข้อเสีย! ได้รับโบนัส 2 Coin");
+//        }
+      return;
     }
 }
