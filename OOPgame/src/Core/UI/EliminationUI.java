@@ -1,6 +1,7 @@
 package Core.UI;
 
 import Core.Player.Player;
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 import ZhuzheeEngine.Scene.NineSliceButton;
@@ -12,17 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EliminationUI extends Canvas {
-    private List<Player> players;
+    private final List<Player> players;
     private final JPanel panel;
 
 //    public EliminationUI(Scene2D scene, ArrayList<Player> players) {
     public EliminationUI(Scene2D scene) {
         super(scene);
-        this.players = new ArrayList<>();
-        this.players.add(new Player("1", "P'Few", true));
-        this.players.add(new Player("2", "Xynezter", false));
-        this.players.add(new Player("3", "Thana", false));
-        this.players.add(new Player("4", "KUY", false));
+        this.players = new ArrayList<>(ZhuzheeGame.CLIENT.getConnectedPlayers());
 
         setPanelSize(600, 500);
         setLayout(new BorderLayout());
@@ -44,7 +41,7 @@ public class EliminationUI extends Canvas {
         try {
             btnNormalImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_normal.png"));
             btnHoverImg = javax.imageio.ImageIO.read(new java.io.File("OOPgame/Assets/UI/btn_hover.png"));
-        } catch (Exception e) {}
+        } catch (Exception _) {}
 
         JLabel titleLabel = new JLabel("ELIMINATION PHASE");
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 40f));
@@ -67,7 +64,7 @@ public class EliminationUI extends Canvas {
         panel.add(Box.createVerticalGlue());
 
         if (btnNormalImg != null && btnHoverImg != null) {
-            NineSliceButton dismissBtn = UIButtonFactory.createMenuButton("DISMISS", btnNormalImg, btnHoverImg, e -> setVisible(false));
+            NineSliceButton dismissBtn = UIButtonFactory.createMenuButton("DISMISS", btnNormalImg, btnHoverImg, _ -> setVisible(false));
             dismissBtn.setPreferredSize(new Dimension(200, 45));
             dismissBtn.setMaximumSize(new Dimension(200, 45));
             dismissBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -79,7 +76,7 @@ public class EliminationUI extends Canvas {
             dismissBtn.setForeground(Color.BLACK);
             dismissBtn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
             dismissBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-            dismissBtn.addActionListener(e -> setVisible(false));
+            dismissBtn.addActionListener(_ -> setVisible(false));
             panel.add(dismissBtn);
         }
     }
@@ -101,11 +98,6 @@ public class EliminationUI extends Canvas {
         JLabel infoLbl = new JLabel(p.getPlayerName().toUpperCase() + " (" + status + ")");
         infoLbl.setForeground(Color.WHITE);
         row.add(infoLbl, BorderLayout.CENTER);
-
-        // Stats
-        JLabel statsLbl = new JLabel( "0 CITIES ");
-        statsLbl.setForeground(Color.LIGHT_GRAY);
-        row.add(statsLbl, BorderLayout.EAST);
 
         return row;
     }

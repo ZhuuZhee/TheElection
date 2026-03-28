@@ -6,6 +6,8 @@ import Core.GameScreens.OptionMenu;
 import Core.GameScreens.LobbyMenu;
 import Core.GameScreens.WaitingRoomMenu;
 import Core.Maps.Map;
+import Core.Network.Client.GameClientManager;
+import Core.Network.Server.GameServerManager;
 import Core.Player.Player;
 import Core.UI.*;
 import ZhuzheeEngine.Application;
@@ -32,10 +34,10 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static OptionMenu OPTION_MENU;
 //    public static CharacterSelectMenu CHARACTER_SELECT_MENU;
 
-    public static Core.Network.Server.GameServerManager SERVER;
-    public static Core.Network.Client.GameClientManager CLIENT;
+    public static GameServerManager SERVER;
+    public static GameClientManager CLIENT;
 
-    public static Core.Maps.Map MAP;
+    public static Map MAP;
     public static long MAP_SEED = new java.util.Random().nextLong();
 
     public static CardHolderUI DEVLOPMENT_CARD_HAND;
@@ -45,8 +47,8 @@ public class ZhuzheeGame implements ApplicationAdapter {
     public static PlayerProfile PLAYER_PROFILE_UI;
     public static Core.UI.PlayerCoinUI PLAYER_COIN_UI;
     public static GameSettingUI SETTINGS_UI;
-    public static Core.UI.TurnUI TURN_UI;
-    public static Core.UI.EndTurnButtonUI END_TURN_UI;
+    public static TurnUI TURN_UI;
+    public static EndTurnButtonUI END_TURN_UI;
     public static Shop SHOP_UI;
 
     public static List<Player> CURRENT_PLAYERS = new ArrayList<>();
@@ -131,7 +133,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         PlayerUI.GameSettingUI(MAIN_SCENE);
         PlayerUI.TurnUITest(MAIN_SCENE);
         PlayerUI.EndTurnUI(MAIN_SCENE);
-        PlayerUI.ShopUI(MAIN_SCENE);
+        // PlayerUI.ShopUI(MAIN_SCENE); // เปิด Shop ผ่าน checkRoundAndShop() อัตโนมัติทุก Round
 
         // Player List UI
         List<Player> actualPlayers = new ArrayList<>();
@@ -290,15 +292,15 @@ public class ZhuzheeGame implements ApplicationAdapter {
 
         int currentTurn = CLIENT.getTurnCounter();
         int playerCount = Math.max(1, CURRENT_PLAYERS.size());
-        int turnsPerRound = playerCount;
 
-        int currentRound = ((currentTurn - 1) / turnsPerRound) + 1;
+        int currentRound = ((currentTurn - 1) / playerCount) + 1;
 
-        if (currentTurn > 1 && currentTurn % turnsPerRound == 1) {
-
+        if (currentTurn % playerCount == 1) {
             if (currentRound != lastShopOpenedRound) {
-                ZhuzheeEngine.Debug.GameLogger.logInfo("====== START OF ROUND " + currentRound + "! OPENING SHOP ======");
-
+                if (SHOP_UI == null) {
+                    ZhuzheeEngine.Debug.GameLogger.logInfo("====== START OF ROUND " + currentRound + "! OPENING SHOP ======");
+                    PlayerUI.ShopUI(MAIN_SCENE);
+                }
                 lastShopOpenedRound = currentRound;
             }
         }
