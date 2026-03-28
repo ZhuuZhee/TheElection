@@ -8,6 +8,7 @@ import Core.Network.PacketBuilder;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
+import ZhuzheeEngine.Scene.GameObject;
 import org.json.JSONObject;
 
 import java.awt.*;
@@ -147,16 +148,22 @@ public class Player {
         //เปลี่ยน playerList UI เป็นสีเทา
         Core.UI.UINotificationToast.showNotification("You lost the election! Better luck next time.", 5000);
 
-        ZhuzheeGame.ARCANA_CARD_UI.removeAllCards();
+        ArrayList<Card> removedCards = new ArrayList<>();
+        removedCards.addAll(ZhuzheeGame.ARCANA_CARD_UI.removeAllCards());
         ZhuzheeGame.ARCANA_CARD_UI.setVisible(false);
 
-        ZhuzheeGame.POLICY_CARD_HAND.removeAllCards();
+        removedCards.addAll(ZhuzheeGame.POLICY_CARD_HAND.removeAllCards());
         ZhuzheeGame.POLICY_CARD_HAND.setVisible(false);
 
-        ZhuzheeGame.DEVLOPMENT_CARD_HAND.removeAllCards();
+        removedCards.addAll(ZhuzheeGame.DEVLOPMENT_CARD_HAND.removeAllCards());
         ZhuzheeGame.DEVLOPMENT_CARD_HAND.setVisible(false);
 
+        ZhuzheeGame.END_TURN_UI.setVisible(false);
         ZhuzheeGame.CLIENT.sendAction(PacketBuilder.createUpdatePlayerPacket(this));
+
+        for(Card card : removedCards){
+            GameObject.Destroy(card);
+        }
     }
 
     public void setSkipDrawNextTurn(boolean skip) {
@@ -318,7 +325,7 @@ public class Player {
             this.arcanaCardName = data.getString("arcanaCard");
         }
         if(data.has("isLose")){
-            this.isLose = data.getBoolean("isLose");
+            isLose = data.getBoolean("isLose");
         }
 
         if (ZhuzheeGame.PLAYER_LIST_UI != null) {

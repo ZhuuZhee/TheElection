@@ -4,6 +4,7 @@ import Core.Network.NetworkProtocol;
 import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import Core.Maps.City;
+import Core.UI.EliminationUI;
 import Core.ZhuzheeGame;
 import org.json.JSONObject;
 
@@ -152,6 +153,7 @@ public class GameClientManager {
         if (turnCounter % roundModer == 0) {
             //send player score packet to server
             sendAction(PacketBuilder.createVotingPacket());
+            ZhuzheeGame.END_TURN_UI.setEnabled(false);
         }
         else {
             sendAction(PacketBuilder.createEndTurnPacket());
@@ -396,12 +398,10 @@ public class GameClientManager {
         isVotingState = true;
 
         //open ui for Voting
-
+        new EliminationUI(ZhuzheeGame.MAIN_SCENE);
         // หน่วงเวลา 3 วิ
         new Thread(() -> {
             try {
-                Thread.sleep(3000);
-
                 // ดึงคะแนนรวมเปอร์เซ็นต์ของผู้เล่นทุกคนจากแผนที่
                 HashMap<String, Float> percentages = ZhuzheeGame.MAP.getAllPlayerPercentages();
                 if (percentages.isEmpty()) return;
@@ -411,9 +411,18 @@ public class GameClientManager {
 
                 // ค้นหา Player ID ที่มีคะแนน (Percentage) น้อยที่สุด
                 for (java.util.Map.Entry<String, Float> entry : percentages.entrySet()) {
-                    if (entry.getValue() < minScore) {
-                        minScore = entry.getValue();
-                        loserId = entry.getKey();
+                    float currentScore = entry.getValue();
+                    String currentId = entry.getKey();
+
+                    if (currentScore < minScore) {
+                        minScore = currentScore;
+                        loserId = currentId;
+                    } else if (currentScore == minScore && !loserId.isEmpty()) {
+                        // Tie-breaker: กรณีคะแนนต่ำสุดเท่ากัน ให้เลือก ID ที่มีค่าตัวอักษรน้อยกว่า
+                        // เพื่อให้ทุก Client ใน Network สรุปผลได้ ID ผู้แพ้ที่ตรงกัน (Deterministic)
+                        if (currentId.compareTo(loserId) < 0) {
+                            loserId = currentId;
+                        }
                     }
                 }
 
@@ -422,7 +431,7 @@ public class GameClientManager {
                     System.out.println("Election Result: You have the lowest score. You lose!");
                     localPlayer.setLose(true);
                 }
-
+                Thread.sleep(3000);
                 isVotingState = false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
