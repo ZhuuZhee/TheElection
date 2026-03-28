@@ -89,7 +89,6 @@ public class ZhuzheeGame implements ApplicationAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         MAIN_SCENE = new Scene2D();
 //        new Core.UI.GameLogUI(MAIN_SCENE); // เพิ่ม GameLogUI เข้าไปในซีนหลัก
         new Core.UI.UINotificationToast(MAIN_SCENE); // เพิ่ม UINotificationToast เข้าไปในซีนหลัก
