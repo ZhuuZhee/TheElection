@@ -54,16 +54,8 @@ public class GameObject extends JPanel implements IZIndex {
         return baseSize;
     }
 
-    public void setWorldPosition(Point pos) {
-        this.worldPosition = pos;
-    }
-
     public void setPosition(Point position) {
         this.worldPosition = position;
-    }
-
-    public void setPosition(int x, int y) {
-        this.worldPosition.setLocation(x, y);
     }
 
     public void setEnable(boolean e){
@@ -83,12 +75,6 @@ public class GameObject extends JPanel implements IZIndex {
 
     public void update() {
 
-    }
-
-    //is position inside bounds of this object
-    public boolean isInsideBoundaries(int x, int y) {
-        // ใช้ความสามารถของ Swing ตรวจสอบขอบเขต (x,y ต้องเป็นพิกัดเทียบกับ Parent/Scene)
-        return super.contains(x, y);
     }
 
     //destroying game object

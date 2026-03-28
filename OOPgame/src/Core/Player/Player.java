@@ -4,8 +4,6 @@ import Core.Cards.*;
 import Core.Cards.Stream.ArcanaCardName;
 import Core.Cards.Stream.CardBufferObject;
 import Core.Cards.Stream.CardReader;
-import Core.Maps.City;
-import Core.Network.PacketBuilder;
 import Core.UI.CardHolderUI;
 import Core.ZhuzheeGame;
 import ZhuzheeEngine.Application;
@@ -242,11 +240,6 @@ public class Player {
         }
         return cards.toArray(new CardBufferObject[0]);
     }
-
-    public void UseCard() {
-    }
-
-
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();

@@ -36,14 +36,6 @@ public class NineSliceButton extends JButton {
         this.sourceImage = sourceImage;
         repaint();
     }
-    
-    public void setSlices(int left, int right, int top, int bottom) {
-        this.leftSlice = left;
-        this.rightSlice = right;
-        this.topSlice = top;
-        this.bottomSlice = bottom;
-        repaint();
-    }
 
     @Override
     protected void paintComponent(Graphics g) {

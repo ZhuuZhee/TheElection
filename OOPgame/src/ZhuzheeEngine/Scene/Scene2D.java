@@ -13,8 +13,6 @@ public class Scene2D extends Screen {
     protected List<IZIndex> zOrderedObjects;
 
     public static class Layer {
-        public static final int BACKGROUND = -100;
-        public static final int SLOT = -10;
         public static final int DEFAULT = 0;      // สำหรับ GameObject ทั่วไป
         public static final int UI = 100;         // UI ควรอยู่เหนือ Game Object เสมอ
         public static final int DRAGGED = 999;    // ของที่กำลังลาก ต้องอยู่บนสุด

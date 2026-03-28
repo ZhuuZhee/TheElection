@@ -27,23 +27,6 @@ public abstract class NineSliceCanvas extends JPanel {
         this.bottomSlice = bottom;
         setOpaque(false); // Make sure the panel itself is transparent
     }
-    
-    public NineSliceCanvas() {
-        setOpaque(false);
-    }
-    
-    public void setSourceImage(BufferedImage sourceImage) {
-        this.sourceImage = sourceImage;
-        repaint();
-    }
-    
-    public void setSlices(int left, int right, int top, int bottom) {
-        this.leftSlice = left;
-        this.rightSlice = right;
-        this.topSlice = top;
-        this.bottomSlice = bottom;
-        repaint();
-    }
 
     @Override
     protected void paintComponent(Graphics g) {

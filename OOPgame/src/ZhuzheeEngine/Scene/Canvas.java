@@ -1,12 +1,9 @@
 package ZhuzheeEngine.Scene;
 
-import Core.Cards.Card;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
 
 public abstract class Canvas extends JPanel implements IZIndex {
     private int zIndex = Scene2D.Layer.UI; // Default UI ให้สูงกว่า GameObject
