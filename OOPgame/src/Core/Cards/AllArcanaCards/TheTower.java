@@ -13,7 +13,7 @@ public class TheTower extends ArcanaCard {
     @Override
     protected void activateSkill() {
         if (Core.ZhuzheeGame.CLIENT != null) {
-            UINotificationToast.showNotification("The Tower activate!");
+            UINotificationToast.showNotification("The Tower activate!", 5000, true);
             Core.ZhuzheeGame.CLIENT.sendDestroyHandSkill();
         }
     }

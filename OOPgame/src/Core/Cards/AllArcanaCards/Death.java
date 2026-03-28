@@ -12,7 +12,7 @@ public class Death extends ArcanaCard {
     @Override
     protected void activateSkill() {
         if (Core.ZhuzheeGame.CLIENT != null) {
-            UINotificationToast.showNotification("Death activate!");
+            UINotificationToast.showNotification("Death activate!", 5000, true);
             Core.ZhuzheeGame.CLIENT.sendNegativeHandStatsSkill();
         }
     }

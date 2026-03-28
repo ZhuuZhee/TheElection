@@ -12,7 +12,7 @@ public class Judgement extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        UINotificationToast.showNotification("Judgement activate!");
+        UINotificationToast.showNotification("Judgement activate!", 5000, true);
         Core.ZhuzheeGame.CLIENT.sendJudgementSkill();
     }
 }

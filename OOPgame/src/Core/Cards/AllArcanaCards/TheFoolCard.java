@@ -31,7 +31,7 @@ public class TheFoolCard extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
-        UINotificationToast.showNotification("The Fool activate!");
+        UINotificationToast.showNotification("The Fool activate!", 5000, true);
         if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
             ZhuzheeGame.DEVLOPMENT_CARD_HAND.setMaxCard(MAX_DEVLOPMENT_CARD_COUNT);
             int maxCards = ZhuzheeGame.DEVLOPMENT_CARD_HAND.getMaxCard();
