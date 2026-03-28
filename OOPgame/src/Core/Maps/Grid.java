@@ -139,6 +139,30 @@ public class Grid {
         }
     }
 
+    private Grid getNeighbor(int edgeIndex) {
+        int dx = 0, dy = 0;
+        if (gridY % 2 == 0) {
+            switch (edgeIndex) {
+                case 0: dx = -1; dy = -1; break;
+                case 1: dx = 0; dy = -1; break;
+                case 2: dx = 1; dy = 0; break;
+                case 3: dx = 0; dy = 1; break;
+                case 4: dx = -1; dy = 1; break;
+                case 5: dx = -1; dy = 0; break;
+            }
+        } else {
+            switch (edgeIndex) {
+                case 0: dx = 0; dy = -1; break;
+                case 1: dx = 1; dy = -1; break;
+                case 2: dx = 1; dy = 0; break;
+                case 3: dx = 1; dy = 1; break;
+                case 4: dx = 0; dy = 1; break;
+                case 5: dx = -1; dy = 0; break;
+            }
+        }
+        return map.getGrid(gridX + dx, gridY + dy);
+    }
+
     public void render(Graphics2D g2d) {
         setGridPosition(gridX, gridY);
 
@@ -194,16 +218,44 @@ public class Grid {
         // --- 5. วาดเส้นขอบนอกสุด ---
         if (isHovered) {
             g2d.setColor(Color.WHITE);
-            g2d.setStroke(new BasicStroke(4 * map.getScaleRatio()));
+            g2d.setStroke(new BasicStroke(8 * map.getScaleRatio()));
+            g2d.draw(hexagon);
         } else {
             if (owner != null) {
-                g2d.setColor(getDarkerColor(baseColor, 0.6f));
+                g2d.setColor(Color.WHITE);
+                g2d.setStroke(new BasicStroke(6 * map.getScaleRatio()));
+                
+                boolean[] drawEdge = new boolean[6];
+                boolean drawAny = false;
+                for (int i = 0; i < 6; i++) {
+                    Grid n = getNeighbor(i);
+                    if (n == null || n.getCity() != this.city) {
+                        drawEdge[i] = true;
+                        drawAny = true;
+                    }
+                }
+                
+                if (drawAny) {
+                    for (int i = 0; i < 6; i++) {
+                        if (drawEdge[i]) {
+                            double angle1 = Math.PI / 3 * i + Math.PI / 6;
+                            double px1 = x + finalRadius * Math.cos(angle1);
+                            double py1 = y + finalRadius * Math.sin(angle1);
+                            
+                            double angle2 = Math.PI / 3 * ((i + 1) % 6) + Math.PI / 6;
+                            double px2 = x + finalRadius * Math.cos(angle2);
+                            double py2 = y + finalRadius * Math.sin(angle2);
+                            
+                            g2d.draw(new java.awt.geom.Line2D.Double(px1, py1, px2, py2));
+                        }
+                    }
+                }
             } else {
                 g2d.setColor(city.getColor());
+                g2d.setStroke(new BasicStroke(3 * map.getScaleRatio())); // ทำให้กรอบหนาขึ้นเพื่อให้เห็นสีเมืองชัดขึ้น
+                g2d.draw(hexagon);
             }
-            g2d.setStroke(new BasicStroke(3 * map.getScaleRatio())); // ทำให้กรอบหนาขึ้นเพื่อให้เห็นสีเมืองชัดขึ้น
         }
-        g2d.draw(hexagon);
     }
 
     private Color getLighterColor(Color color, float factor) {
