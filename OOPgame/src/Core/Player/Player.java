@@ -144,7 +144,7 @@ public class Player {
             onLoose();
         }
     }
-    
+
     private void onLoose(){
         //ปิด card holder ทั้งหมด และ ทำลายการ์ด
         //เปลี่ยน playerList UI เป็นสีเทา

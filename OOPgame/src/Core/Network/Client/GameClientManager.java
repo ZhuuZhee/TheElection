@@ -5,6 +5,7 @@ import Core.Network.PacketBuilder;
 import Core.Player.Player;
 import Core.Maps.City;
 import Core.ZhuzheeGame;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.awt.*;
 
 public class GameClientManager {
     private Socket socket;
@@ -30,6 +30,16 @@ public class GameClientManager {
     }
     public HashMap<String,Player> getConnectedPlayersWithId(){
         return connectedPlayers;
+    }
+
+    public Player getPlayerFormId(String playerId){
+        Player p = connectedPlayers.get(playerId);
+        if(p != null){
+            return p;
+        }
+        else {
+            throw new NullPointerException("Cannot get Player Id : %s \n player not found!".formatted(playerId));
+        }
     }
 
     public void connect(String ip, int port, String playerName) {
@@ -124,11 +134,21 @@ public class GameClientManager {
 
     public void endTurn() {
         localPlayer.onEndTurn();
-        sendAction(PacketBuilder.createEndTurnPacket());
+        JSONObject packet = PacketBuilder.createEndTurnPacket();
+        HashMap<String,Float> playerPercentages = new HashMap<>(ZhuzheeGame.MAP.getAllPlayerPercentages());
+
+        packet.put("voting data",PacketBuilder.createVotingPacket(playerPercentages));
+
+        sendAction(packet);
 
         // Notify listeners
         for (ClientListener listener : clientListeners) {
             listener.onEndTurn();
+        }
+
+        int roundModer = connectedPlayers.size() * 4;
+        if(turnCounter % roundModer == 0){
+            //create voting event
         }
     }
 
@@ -361,6 +381,20 @@ public class GameClientManager {
         }
     }
 
+    private synchronized void onVotingEvent(JSONObject data){
+        if (data.has("players score")) {
+
+            JSONArray scores = data.getJSONArray("players score");
+            HashMap<String,Float> playerSocres = new HashMap<String,Float>();
+
+            for (int i = 0; i < scores.length(); i++) {
+                JSONObject pScoreData = scores.getJSONObject(i);
+                String pId = pScoreData.getString("id");
+                float pScore = pScoreData.getFloat("score");
+                playerSocres.put(pId,pScore);
+            }
+        }
+    }
     //--------------------------------
     //--------- event handler --------
     //--------------------------------

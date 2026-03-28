@@ -1,7 +1,10 @@
 package Core.Network;
 
 import Core.Player.Player;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class PacketBuilder{
 
@@ -36,10 +39,6 @@ public class PacketBuilder{
         JSONObject packet = createPacket(NetworkProtocol.PONG);;
         return packet;
     }
-    public static JSONObject createPingPacket(){
-        JSONObject packet = createPacket(NetworkProtocol.PING);;
-        return packet;
-    }
 
     public static JSONObject createStartPacket(){
         JSONObject startReq = createPacket(NetworkProtocol.START_GAME);
@@ -72,5 +71,18 @@ public class PacketBuilder{
 
     public static JSONObject createKickPacket(){
         return createPacket(NetworkProtocol.HOST_LEFT);
+    }
+    public static JSONObject createVotingPacket(HashMap<String,Float> playerScores)
+    {
+        JSONObject packet = createPacket(NetworkProtocol.VOTING);
+        JSONArray playerScoreJSON = new JSONArray();
+        for(String pId : playerScores.keySet()) {
+            float pScore = playerScores.getOrDefault(pId,0f);
+            JSONObject pScoreJSON = new JSONObject();
+            pScoreJSON.put(pId,pScore);
+            playerScoreJSON.put(pScoreJSON);
+        }
+        packet.put("players score", playerScoreJSON);
+        return packet;
     }
 }

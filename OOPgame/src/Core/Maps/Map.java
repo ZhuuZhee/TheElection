@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -288,6 +289,31 @@ public class Map extends GameObject {
             currentHoveredGrid.setHovered(false);
             currentHoveredGrid = null;
         }
+    }
+
+    public HashMap<String, Float> getAllPlayerPercentages(){
+        HashMap<String,Float> playerScores = new HashMap<>();
+        float totalScore = 0f;
+
+        //รวมคะแนนสะสมของผู้เล่นแต่ละคนจากทุกเมือง
+        for (City city : getAllCities()) {
+            for (java.util.Map.Entry<String, Float> entry : city.playerScores.entrySet()) {
+                String pId = entry.getKey();
+                float score = entry.getValue();
+                
+                playerScores.put(pId, playerScores.getOrDefault(pId, 0f) + score);
+                totalScore += score;
+            }
+        }
+
+        //แปลงเป็น %
+        HashMap<String, Float> playerPercentages = new HashMap<>();
+        if (totalScore > 0) {
+            for (java.util.Map.Entry<String, Float> entry : playerScores.entrySet()) {
+                playerPercentages.put(entry.getKey(), (entry.getValue() / totalScore) * 100f);
+            }
+        }
+        return playerPercentages;
     }
 
     public void setHoveredGrid(Grid grid) {
