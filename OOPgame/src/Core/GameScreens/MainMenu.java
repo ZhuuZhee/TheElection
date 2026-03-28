@@ -51,52 +51,70 @@ public class MainMenu extends Screen implements ActionListener {
         };
         bgCanvas.setLayout(new BorderLayout());
 
+        JPanel topTextGroup = new JPanel(new BorderLayout());
+        topTextGroup.setOpaque(false);
+        topTextGroup.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
 
-        JLabel title = new JLabel("Divide and conquer");
-        title.setFont(title.getFont().deriveFont(40f));
+        JLabel title = new JLabel("DIVIDE AND CONQUER");
+        title.setFont(title.getFont().deriveFont(50f));
         title.setForeground(Color.BLACK);
-        // ไม่ต้อง setFont แล้ว ใช้ default font จาก UIManager
         title.setHorizontalAlignment(JLabel.CENTER);
-        title.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
-        bgCanvas.add(title, BorderLayout.NORTH); // เพิ่ม title ลงใน bgCanvas
 
-        // นี่คือส่วนปุ่มต่างๆ
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false); // ทำให้ปุ่มโปร่งใสเพื่อเห็นพื้นหลัง
-        buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));
+        JLabel bankImageLabel = new JLabel();
+        bankImageLabel.setHorizontalAlignment(JLabel.CENTER);
+        bankImageLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 
-        // สร้างปุ้มโดยใช้ UIButtonFactory
-        startBtn = UIButtonFactory.createMenuButton("Start Game", btnNormalImg, btnHoverImg, this);
-        optionBtn = UIButtonFactory.createMenuButton("Options", btnNormalImg, btnHoverImg, this);
-        creditBtn = UIButtonFactory.createMenuButton("Credits", btnNormalImg, btnHoverImg, this);
-        exitBtn = UIButtonFactory.createMenuButton("Exit", btnNormalImg, btnHoverImg, this);
+        try {
+            ImageIcon originalIcon = new ImageIcon("OOPgame/Assets/ImageForMapBackground/realbank.jpg");
+            if (originalIcon.getIconWidth() > 0) {
+                int scaledWidth = 400;
+                int scaledHeight = (originalIcon.getIconHeight() * scaledWidth) / originalIcon.getIconWidth();
+                Image scaledImage = originalIcon.getImage().getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+                bankImageLabel.setIcon(new ImageIcon(scaledImage));
+            }
+        } catch (Exception e) {
+            System.err.println("Load bank image error: " + e.getMessage());
+        }
+
+        topTextGroup.add(title, BorderLayout.NORTH);
+        topTextGroup.add(bankImageLabel, BorderLayout.SOUTH);
+        bgCanvas.add(topTextGroup, BorderLayout.NORTH);
+
+        startBtn = UIButtonFactory.createMenuButton("START GAME", btnNormalImg, btnHoverImg, this);
+        optionBtn = UIButtonFactory.createMenuButton("OPTIONS", btnNormalImg, btnHoverImg, this);
+        creditBtn = UIButtonFactory.createMenuButton("CREDITS", btnNormalImg, btnHoverImg, this);
+        exitBtn = UIButtonFactory.createMenuButton("EXIT", btnNormalImg, btnHoverImg, this);
 
         MouseAdapter mouseHover = ZhuzheeGame.MOUSE_HOVER_SFX;
-
         startBtn.addMouseListener(mouseHover);
         optionBtn.addMouseListener(mouseHover);
-        // ตั้งค่า font ให้ปุ่มเมนู
-        // ไม่ต้อง setFont แล้ว ใช้ default font จาก UIManager
         creditBtn.addMouseListener(mouseHover);
         exitBtn.addMouseListener(mouseHover);
 
-        buttonPanel.add(startBtn);
-        buttonPanel.add(optionBtn);
-        buttonPanel.add(creditBtn);
-        buttonPanel.add(exitBtn);
+        JPanel buttonBox = new JPanel(new GridLayout(4, 1, 10, 10));
+        buttonBox.setOpaque(false);
+        buttonBox.add(startBtn);
+        buttonBox.add(optionBtn);
+        buttonBox.add(creditBtn);
+        buttonBox.add(exitBtn);
 
         JPanel wrapper = new JPanel(new GridBagLayout());
-        wrapper.setOpaque(false); // ทำให้ wrapper โปร่งใส
-        wrapper.add(buttonPanel);
+        wrapper.setOpaque(false);
 
-        bgCanvas.add(wrapper, BorderLayout.CENTER); // เพิ่มปุ่มลงใน bgCanvas ตรงกลาง
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        // นำ bgCanvas เพิ่มลงในหน้าจอหลัก
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.weighty = 1.0;
+
+        gbc.insets = new Insets(30, 0, 0, 0);
+
+        wrapper.add(buttonBox, gbc);
+        bgCanvas.add(wrapper, BorderLayout.CENTER);
+
         add(bgCanvas, BorderLayout.CENTER);
 
-        // audio test
-        AudioManager.getInstance().loadSound("click","click.WAV");
-        AudioManager.getInstance().loadSound("hover","hover.WAV");
+        AudioManager.getInstance().loadSound("click", "click.WAV");
+        AudioManager.getInstance().loadSound("hover", "hover.WAV");
     }
 
     @Override
@@ -128,4 +146,22 @@ public class MainMenu extends Screen implements ActionListener {
         dispose();
         setVisible(true);
     }
+
+//    private void addImage(String imagePath) {
+//        try {
+//            ImageIcon originalIcon = new ImageIcon(imagePath);
+//            if (originalIcon.getIconWidth() > 0) {
+//                int targetWidth = 400;
+//                int targetHeight = (originalIcon.getIconHeight() * targetWidth) / originalIcon.getIconWidth();
+//
+//                Image scaledImage = originalIcon.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+//                JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+//
+//                imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+//                creditPanel.add(imageLabel);
+//            }
+//        } catch (Exception e) {
+//            System.err.println("หาภาพเครดิตไม่เจอ: " + imagePath);
+//        }
+//    }
 }
