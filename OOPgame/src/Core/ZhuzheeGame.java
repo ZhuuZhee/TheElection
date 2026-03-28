@@ -179,8 +179,9 @@ public class ZhuzheeGame implements ApplicationAdapter {
             // เช็ค MouseWheel ก่อน เพราะมันสืบทอดมาจาก MouseEvent
             if (event instanceof MouseWheelEvent e) {
                 var cam = MAIN_SCENE.getCamera();
-                float zoomSpeed = 0.1f;
-                float zoom = cam.getZoom() - e.getWheelRotation() * zoomSpeed;
+                float zoom = cam.getZoom() - e.getWheelRotation() * ZhuzheeEngine.Application.getDeltaTime();
+//                float zoomSpeed = 0.1f;
+//                float zoom = cam.getZoom() - e.getWheelRotation() * zoomSpeed;
                 zoom = Math.clamp(zoom, MIN_ZOOM, MAX_ZOOM);
                 cam.setZoom(zoom);
             }

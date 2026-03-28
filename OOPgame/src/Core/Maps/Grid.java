@@ -2,12 +2,16 @@ package Core.Maps;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
-import java.awt.geom.Ellipse2D; // เพิ่ม Import สำหรับวาดวงกลมแบบทศนิยม (สมูทกว่า)
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
+import javax.imageio.ImageIO;
 import org.json.JSONArray;
 
 public class Grid {
-    private final Map map;
+    private final Core.Maps.Map map;
     private City city;
     private float x, y;
     private int gridX, gridY;
@@ -19,7 +23,9 @@ public class Grid {
     private static final float LERP_SPEED = 15.0f;
     private Path2D.Double hexagon;
 
-    public Grid(Map map, City city, int gridX, int gridY, float radius, float xOffset) {
+    private static java.util.Map<String, Image> profileImageCache = new HashMap<>();
+
+    public Grid(Core.Maps.Map map, City city, int gridX, int gridY, float radius, float xOffset) {
         setCity(city);
         this.map = map;
         this.xOffset = xOffset;
@@ -77,31 +83,60 @@ public class Grid {
         }
     }
 
-    /**
-     * ฟังก์ชันหาว่า Player คนไหนมีคะแนนนำ (ครองพื้นที่นี้อยู่)
-     * @return สีของ Player ที่นำอยู่ (ถ้าคะแนน 0 หมด จะคืนค่า null)
-     */
-    private Color getLeadingPlayerColor() {
+    private Core.Player.Player getDominatingPlayer() {
         if (city == null || city.playerScores == null) return null;
         java.util.List<Core.Player.Player> players = Core.ZhuzheeGame.CURRENT_PLAYERS;
         if (players == null || players.isEmpty()) return null;
 
-        int leadingPlayerIndex = -1;
-        int maxScore = 0;
+        double totalScore = 0;
+        for (double score : city.playerScores) {
+            totalScore += score;
+        }
+        if (totalScore == 0) return null;
 
-        // วนหาคนที่คะแนนมากที่สุด (และต้องมากกว่า 0)
+        double highestPct = -1;
+        double secondHighestPct = -1;
+        int leaderId = -1;
+
         for (int i = 0; i < city.playerScores.length; i++) {
-            if (i < players.size() && city.playerScores[i] > maxScore) {
-                maxScore = (int) city.playerScores[i];
-                leadingPlayerIndex = i;
+            double pct = (city.playerScores[i] / totalScore) * 100.0;
+            if (pct > highestPct) {
+                secondHighestPct = highestPct;
+                highestPct = pct;
+                leaderId = i;
+            } else if (pct > secondHighestPct) {
+                secondHighestPct = pct;
             }
         }
 
-        // ถ้าเจอคนนำ ให้ส่งสีของคนนั้นกลับไป
-        if (leadingPlayerIndex != -1 && players.get(leadingPlayerIndex) != null) {
-            return players.get(leadingPlayerIndex).getColor();
+        if (highestPct - secondHighestPct <= 1.0) {
+            return null; // สีเทาถ้าสูสีกันไม่เกิน 1%
         }
-        return null; // ยังไม่มีใครยึดเมืองนี้
+
+        if (leaderId >= 0 && leaderId < players.size()) {
+            return players.get(leaderId);
+        }
+        return null;
+    }
+
+    private Image getPlayerProfileImage(Core.Player.Player player) {
+        if (player == null) return null;
+        String path = player.getProfileImagePath();
+        if (path == null) return null;
+
+        if (profileImageCache.containsKey(path)) {
+            return profileImageCache.get(path);
+        }
+
+        try {
+            Image img = ImageIO.read(player.getProfileImageFile());
+            profileImageCache.put(path, img);
+            return img;
+        } catch (Exception e) {
+            System.err.println("Cannot load profile image: " + path);
+            profileImageCache.put(path, null);
+            return null;
+        }
     }
 
     public void render(Graphics2D g2d) {
@@ -119,7 +154,9 @@ public class Grid {
         g2d.fill(shadowHex);
 
         // --- 2. วาดพื้นผิวตัวหลักแบบไล่สี ---
-        Color baseColor = city.getColor();
+        Core.Player.Player owner = getDominatingPlayer();
+        Color baseColor = (owner != null && owner.getColor() != null) ? owner.getColor() : new Color(120, 120, 120); // สีเทาถ้าสูสีหรือไม่มีเจ้าของ
+
         Color lightColor = getLighterColor(baseColor, 0.3f);
         Color darkColor = getDarkerColor(baseColor, 0.2f);
 
@@ -130,13 +167,31 @@ public class Grid {
         g2d.setPaint(gradient);
         g2d.fill(hexagon);
 
-        // --- 3. วาด Inner Bevel (ขอบแสงสันนูนด้านใน) ---
+        // --- 3. วาดรูปภาพเจ้าของเมืองจางๆ (ถ้ามี) ---
+        if (owner != null) {
+            Image profileImg = getPlayerProfileImage(owner);
+            if (profileImg != null) {
+                Shape oldClip = g2d.getClip();
+                g2d.setClip(hexagon);
+
+                Composite oldComposite = g2d.getComposite();
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.35f)); // opacity จางๆ
+
+                float imgSize = finalRadius * 1.8f; // ขนาดรูปเกือบเต็มหกเหลี่ยม
+                g2d.drawImage(profileImg, (int)(x - imgSize/2), (int)(y - imgSize/2), (int)imgSize, (int)imgSize, null);
+
+                g2d.setComposite(oldComposite);
+                g2d.setClip(oldClip);
+            }
+        }
+
+        // --- 4. วาด Inner Bevel (ขอบแสงสันนูนด้านใน) ---
         Path2D.Double innerHex = createHexagon(x, y, finalRadius * 0.9f);
         g2d.setStroke(new BasicStroke(finalRadius * 0.08f));
         g2d.setColor(new Color(255, 255, 255, 40));
         g2d.draw(innerHex);
 
-        // --- 4. วาดเส้นขอบนอกสุด ---
+        // --- 5. วาดเส้นขอบนอกสุด ---
         if (isHovered) {
             g2d.setColor(Color.WHITE);
             g2d.setStroke(new BasicStroke(4 * map.getScaleRatio()));
@@ -145,37 +200,6 @@ public class Grid {
             g2d.setStroke(new BasicStroke(2 * map.getScaleRatio()));
         }
         g2d.draw(hexagon);
-
-
-        // ========================================================
-        // 5. วาดจุดบอกสถานะการยึดครอง (Owner Marker) ตรงกลางหกเหลี่ยม
-        // ========================================================
-        Color ownerColor = getLeadingPlayerColor();
-        if (ownerColor != null) {
-            // ขนาดของจุด (ตั้งไว้ที่ 25% ของขนาด Grid)
-            float dotRadius = finalRadius * 0.25f;
-            float dotSize = dotRadius * 2;
-
-            // 5.1 เงาของจุด (ทำให้ดูเหมือนเม็ดนูนขึ้นมา)
-            Ellipse2D.Double shadowDot = new Ellipse2D.Double(x - dotRadius + 2, y - dotRadius + 2, dotSize, dotSize);
-            g2d.setColor(new Color(0, 0, 0, 100));
-            g2d.fill(shadowDot);
-
-            // 5.2 สีหลักของจุด (สีของ Player ที่ยึด)
-            Ellipse2D.Double mainDot = new Ellipse2D.Double(x - dotRadius, y - dotRadius, dotSize, dotSize);
-            g2d.setColor(ownerColor);
-            g2d.fill(mainDot);
-
-            // 5.3 แสงตกกระทบ (Highlight) ให้ดูเป็นอัญมณี
-            Ellipse2D.Double highlightDot = new Ellipse2D.Double(x - dotRadius * 0.5f, y - dotRadius * 0.7f, dotRadius, dotRadius);
-            g2d.setColor(new Color(255, 255, 255, 120));
-            g2d.fill(highlightDot);
-
-            // 5.4 เส้นขอบของจุด
-            g2d.setColor(getDarkerColor(ownerColor, 0.5f));
-            g2d.setStroke(new BasicStroke(1.5f * map.getScaleRatio()));
-            g2d.draw(mainDot);
-        }
     }
 
     private Color getLighterColor(Color color, float factor) {
