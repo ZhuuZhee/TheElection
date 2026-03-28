@@ -48,8 +48,12 @@ public class ActionCard extends Card {
         if (!getEnable()) return;
 
         // ใน City.java มี applyStats(PoliticsStats cardStats) อยู่แล้ว
-        String playerId = ZhuzheeGame.CLIENT.getLocalPlayer().getPlayerId();
-        city.applyStats(playerId, this.stats);
+        String pId = "";
+        if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
+            pId = ZhuzheeGame.CLIENT.getLocalPlayer().getPlayerId();
+        }
+        
+        city.applyCard(pId, this.stats);
     }
 
     @Override

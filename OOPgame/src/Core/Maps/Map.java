@@ -523,8 +523,9 @@ public class Map extends GameObject {
         for (int i = 0; i < playersToShow; i++) {
             Core.Player.Player p = players.get(i);
             String name = (p != null) ? p.getPlayerName() : ("Player " + i);
+            String pId = (p != null) ? p.getPlayerId() : "";
             Color c = (p != null && p.getColor() != null) ? p.getColor() : Color.GRAY;
-            float percent = city.getPlayerPercentage(p.getPlayerId());
+            double percent = city.getPlayerPercentage(pId);
 
             g2d.setColor(Color.DARK_GRAY);
             g2d.drawString(String.format("%s: %.2f%%", name, percent), barX, yCursor + 10);
