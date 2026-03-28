@@ -11,7 +11,7 @@ import Core.ZhuzheeGame;
 public class CleanAudit extends PolicyCard {
     public CleanAudit(int x, int y, String imagePath) {
         super("Clean Audit", x, y, imagePath, -4);
-        this.description = "Skill: Play Dev Card with all stats >= 0 gain 2 Coins.";
+        this.description = "Skill: Play Dev Card with all stats >= 0. Gain x8 all stats.";
     }
 
     @Override
@@ -37,7 +37,7 @@ public class CleanAudit extends PolicyCard {
             stats.setStats(PoliticsStats.ECONOMY, eco * 8);
             stats.setStats(PoliticsStats.ENVIRONMENT, env * 8);
             stats.setStats(PoliticsStats.FACILITY, fac * 8);
-            UINotificationToast.showNotification("📄 [CLEAN AUDIT] โครงการ " + playedCard.getName() + " ไม่มีข้อเสีย! ได้รับ x8 ทุกstats");
+            UINotificationToast.showNotification("[Clean Audit] Activate! " + playedCard.getName() + " Gain x8 all stats!");
         }
             return stats;
 
