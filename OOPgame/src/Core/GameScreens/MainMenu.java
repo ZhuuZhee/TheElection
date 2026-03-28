@@ -121,4 +121,9 @@ public class MainMenu extends Screen implements ActionListener {
         }
         AudioManager.getInstance().playSound("click");
     }
+    @Override
+    public void onScreenEnter() {
+        super.onScreenEnter();
+        AudioManager.getInstance().playLoop("bgm");
+    }
 }
