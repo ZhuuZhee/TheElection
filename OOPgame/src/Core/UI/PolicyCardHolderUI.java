@@ -8,7 +8,7 @@ import ZhuzheeEngine.Scene.*;
 public class PolicyCardHolderUI extends CardHolderUI {
 
     public static final int SPACING = 64;
-
+    public static final int DEFAULT_MAX_CARD = 5;
     public PolicyCardHolderUI(Scene2D scene){
         super(scene);
         setAnchorTop(true);
@@ -16,11 +16,23 @@ public class PolicyCardHolderUI extends CardHolderUI {
         setPanelSize(164,224);
         setMargins(16, 0, 16, 16);
         setSetLabel("Your Policies");
-        setMaxCard(5);
+        setMaxCard(DEFAULT_MAX_CARD);
     }
 
     private void updateSize(){
-        setPanelSize((Card.DEFAULT_CARD_WIDTH * Math.max(1,cards.size())) + SPACING,224);
+        if (cards.isEmpty()) {
+            setPanelSize(164, 224);
+            return;
+        }
+        // การ์ดจะถูกปรับความสูงเป็น (panelHeight - 60) = 164px
+        // อัตราส่วนความกว้างต่อความสูงของการ์ดคือ 100/150
+        int actualCardWidth = (int) ((224 - 60) * (100.0 / 150.0));
+        
+        // 2. คำนวณความกว้างรวม: (ความกว้างการ์ด * จำนวน) + (Gap 10px * จำนวนช่องว่าง) + Padding เผื่อขอบ
+        int hGap = 10; 
+        int totalWidth = (actualCardWidth * cards.size()) + (hGap * (cards.size() + 1)) + 30;
+        
+        setPanelSize(Math.max(164, totalWidth), 224);
     }
 
     @Override

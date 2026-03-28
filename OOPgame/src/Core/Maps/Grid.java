@@ -114,7 +114,6 @@ public class Grid {
         if (highestScore - secondHighestScore <= 0.1f) {
             return null; // สีเทาถ้าสูสีกันไม่เกิน 1%
         }
-        
         return ZhuzheeGame.CLIENT.getConnectedPlayersWithId().get(leaderId);
     }
 

@@ -3,7 +3,10 @@ package Core.Cards.AllArcanaCards;
 import Core.Cards.ArcanaCard;
 import Core.Cards.PolicyCard;
 import Core.Cards.Stream.PolicyCardRegistry;
+import Core.Network.Client.ClientAdapter;
+import Core.UI.PolicyCardHolderUI;
 import Core.ZhuzheeGame;
+import ZhuzheeEngine.Scene.GameObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +15,17 @@ public class TheWheelOfFortune extends ArcanaCard {
 
     // เก็บรายการ Policy Card ที่สุ่มมาในเทิร์นนี้ เพื่อรอเคลียร์ตอนจบเทิร์น
     private final ArrayList<PolicyCard> temporaryPolicyCards = new ArrayList<>();
-
+    public static final int MAX_POLICY_CARD_COUNT = 8;
     public TheWheelOfFortune(int x, int y) {
         super("The Wheel of Fortune", x, y, 2, "OOPgame/Assets/ImageForCards/Arcana Card/WOF.png");
         this.description = "Skill: fill up your Policy Hand with random Policy Card until end of turn.";
+
+        ZhuzheeGame.CLIENT.addClientListener(new ClientAdapter(){
+            @Override
+            public void onEndTurn() {
+                onTurnEnded();
+            }
+        });
     }
 
     @Override
@@ -24,6 +34,7 @@ public class TheWheelOfFortune extends ArcanaCard {
         
         // เช็กก่อนว่ามีที่วาง Policy Card ไหม
         if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+            ZhuzheeGame.POLICY_CARD_HAND.setMaxCard(MAX_POLICY_CARD_COUNT);
             int maxCards = ZhuzheeGame.POLICY_CARD_HAND.getMaxCard();
             int currentCardsCount = ZhuzheeGame.POLICY_CARD_HAND.getCards().size();
             int cardsToDraw = maxCards - currentCardsCount;
@@ -47,23 +58,17 @@ public class TheWheelOfFortune extends ArcanaCard {
 
     // !! สำคัญ: อย่าลืมหาที่เรียกใช้ onTurnEnded() เมื่อผู้เล่นจบเทิร์น !!
     public void onTurnEnded() {
-        if (ZhuzheeGame.POLICY_CARD_HAND != null && !temporaryPolicyCards.isEmpty()) {
-            // แก้ไขประเภทตัวแปรให้ตรงกับที่ getCards() คืนค่ามา
-            java.util.List<Core.Cards.Card> currentHand = ZhuzheeGame.POLICY_CARD_HAND.getCards();
-            
+        if (ZhuzheeGame.POLICY_CARD_HAND != null) {
             for (PolicyCard tempCard : temporaryPolicyCards) {
-                // วนลูปหาการ์ดในมือที่อ้างอิงถึง Object เดียวกันเป๊ะๆ (ป้องกันการลบการ์ดอื่นที่ชื่อซ้ำกัน)
-                for (int i = 0; i < currentHand.size(); i++) {
-                    // เปลี่ยนเป็น Card ธรรมดา
-                    Core.Cards.Card cardInHand = currentHand.get(i);
-                    if (cardInHand == tempCard) {
-                        ZhuzheeGame.POLICY_CARD_HAND.removeCard(cardInHand);
-                        break; // เจอแล้วลบออก แล้วข้ามไปหาใบต่อไป
-                    }
+                // ตรวจสอบว่าการ์ดยังอยู่ในมือ (เผื่อถูกใช้ออกไปก่อน) แล้วลบโดยอ้างอิง Object ตรงๆ
+                if (ZhuzheeGame.POLICY_CARD_HAND.getCards().contains(tempCard)) {
+                    ZhuzheeGame.POLICY_CARD_HAND.removeCard(tempCard);
+                    GameObject.Destroy(tempCard);
                 }
             }
             temporaryPolicyCards.clear();
             System.out.println("The Wheel Of Fortune effect ended. Temporary policy cards removed.");
         }
+        ZhuzheeGame.POLICY_CARD_HAND.setMaxCard(PolicyCardHolderUI.DEFAULT_MAX_CARD);
     }
 }

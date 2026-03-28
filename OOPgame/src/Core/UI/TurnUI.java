@@ -26,10 +26,9 @@ public class TurnUI extends CardHolderUI{
             currentTurn = ZhuzheeGame.CLIENT.getTurnCounter();
 
             int playerCount = Math.max(1, ZhuzheeGame.CURRENT_PLAYERS.size());
-            int turnsPerRound = playerCount * 4;
 
             if (currentTurn > 0) {
-                currentRound = ((currentTurn - 1) / turnsPerRound) + 1;
+                currentRound = ((currentTurn - 1) / playerCount) + 1;
             }
         }
 

@@ -1,6 +1,7 @@
 package Core.UI;
 
 import Core.Player.Player;
+import Core.ZhuzheeGame;
 import ZhuzheeEngine.Scene.Canvas;
 import ZhuzheeEngine.Scene.Scene2D;
 
@@ -50,9 +51,8 @@ public class PlayerListUI extends Canvas {
 
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
-            boolean isActive = (i == 0);
+            boolean isActive = ZhuzheeGame.CLIENT.getCurrentPlayerId().equals(p.getPlayerId());
             boolean isMe = p.isLocal();
-
             int Rank = 1;
             for (int k = 0; k < players.size(); k++) {
                 if (k == i) continue;
