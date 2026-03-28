@@ -51,7 +51,7 @@ public class GreenPolicy extends PolicyCard {
             if (stats != null) {
                 int env = stats.getStats(PoliticsStats.ENVIRONMENT);
                 if (env < 0) {
-                    UINotificationToast.showNotification("🌿 [Green Policy] ป้องกันค่า Environment ติดลบให้ " + playedCard.getName());
+                    UINotificationToast.showNotification("[Green Policy] Activate! " + playedCard.getName() + "Change Environment to 0!");
                     stats.setStats(PoliticsStats.ENVIRONMENT, 0);
                 }
             }

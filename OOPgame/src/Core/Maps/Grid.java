@@ -24,6 +24,10 @@ public class Grid {
     private static final float NORMAL_SCALE = 1.0f;
     private static final float LERP_SPEED = 15.0f;
     private Path2D.Double hexagon;
+    private float flashAlpha = 0f;
+
+    public Core.Maps.Map getMap() { return map; }
+    public void triggerFlash() { this.flashAlpha = 1.0f; }
 
     private static java.util.Map<String, Image> profileImageCache = new HashMap<>();
 
@@ -82,6 +86,11 @@ public class Grid {
             currentScale += (target - currentScale) * LERP_SPEED * deltaTime;
         } else {
             currentScale = target;
+        }
+
+        if (flashAlpha > 0) {
+            flashAlpha -= deltaTime * 0.5f;
+            if (flashAlpha < 0) flashAlpha = 0;
         }
     }
 
@@ -202,6 +211,9 @@ public class Grid {
             g2d.setStroke(new BasicStroke(3 * map.getScaleRatio())); // ทำให้กรอบหนาขึ้นเพื่อให้เห็นสีเมืองชัดขึ้น
         }
         g2d.draw(hexagon);
+
+        g2d.draw(hexagon);
+        drawFlashHighlight(g2d);
     }
 
     private Color getLighterColor(Color color, float factor) {
@@ -220,5 +232,28 @@ public class Grid {
 
     public JSONArray toJsonPosition() {
         return new JSONArray(new int[]{gridX, gridY});
+    }
+
+
+    private void drawFlashHighlight(Graphics2D g2d) {
+        if (flashAlpha <= 0) return;
+
+        // ดึงสีผู้เล่นแบบปลอดภัย (ถ้าไม่มีให้ใช้สีเหลืองทองเริ่มต้น)
+        Color pColor = new Color(255, 230, 50);
+        if (Core.ZhuzheeGame.CLIENT != null && Core.ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
+            Color c = Core.ZhuzheeGame.CLIENT.getLocalPlayer().getColor();
+            if (c != null) pColor = c;
+        }
+
+        int r = pColor.getRed(), g = pColor.getGreen(), b = pColor.getBlue();
+
+        // ถมสีด้านใน
+        g2d.setColor(new Color(r, g, b, (int)(150 * flashAlpha)));
+        g2d.fill(hexagon);
+
+        // วาดเส้นขอบเรืองแสง
+        g2d.setColor(new Color(r, g, b, (int)(255 * flashAlpha)));
+        g2d.setStroke(new BasicStroke(6 * map.getScaleRatio()));
+        g2d.draw(hexagon);
     }
 }

@@ -11,7 +11,7 @@ import Core.ZhuzheeGame;
 public class HipsterCafeBubble extends PolicyCard {
     public HipsterCafeBubble(int x, int y, String imagePath) {
         super("Hipster Cafe Bubble", x, y, imagePath, -5);
-        this.description = "Skill: Play Dev Card with Economy > 0 gain x2 Economy and -3 Coins.";
+        this.description = "Skill: Play Dev Card with Economy > 0. Gain x2 Economy and -3 Coins.";
     }
 
     @Override
@@ -55,7 +55,7 @@ public class HipsterCafeBubble extends PolicyCard {
             stats.setStats(PoliticsStats.ECONOMY, currentEco * 2);
             int currentCoin = localPlayer.getCoin();
             localPlayer.setCoin(Math.max(0, currentCoin - 3));
-            UINotificationToast.showNotification("☕ [HIPSTER CAFE] ปั่นกระแสคาเฟ่ฮิปสเตอร์ให้ " + playedCard.getName() + "! (x2 Economy, -3 Coin)");
+            UINotificationToast.showNotification("[Hipster Cafe Bubble] Activate! " + playedCard.getName() + " Gain x2 Economy and -3 Coins!");
         }
         return stats;
     }

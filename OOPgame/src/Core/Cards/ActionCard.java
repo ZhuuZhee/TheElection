@@ -76,6 +76,12 @@ public class ActionCard extends Card {
                     }
                 }
             }
+            grid.triggerFlash();
+            showDropEffectPopup(grid, finalStat);
+
+            this.ActionOn(targetCity, finalStat);
+            GameObject.Destroy(this);
+
             this.ActionOn(targetCity, finalStat);
             GameObject.Destroy(this);
         }
@@ -252,5 +258,28 @@ public class ActionCard extends Card {
 
         g2d.setColor(Color.BLACK);
         g2d.drawString(text, textX, textY);
+    }
+
+    private void showDropEffectPopup(Grid grid, PoliticsStats finalStat) {
+        String desc = "City: " + grid.getCity().getCityName();
+        SmartTooltipUI dropPopup = new SmartTooltipUI(finalStat, "CARD APPLIED!", desc, true);
+        dropPopup.setSize(dropPopup.getPreferredSize());
+
+        // รวบคำสั่งคำนวณพิกัดให้สั้นลง
+        Point screenPoint = javax.swing.SwingUtilities.convertPoint(
+                grid.getMap(), (int)grid.getX(), (int)grid.getY(), scene);
+        dropPopup.setLocation(screenPoint.x + 20, screenPoint.y - 40);
+
+        scene.add(dropPopup);
+        scene.setComponentZOrder(dropPopup, 0);
+        scene.repaint();
+
+        // ตั้งเวลาลบทิ้ง
+        javax.swing.Timer timer = new javax.swing.Timer(2500, e -> {
+            scene.remove(dropPopup);
+            scene.repaint();
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 }
