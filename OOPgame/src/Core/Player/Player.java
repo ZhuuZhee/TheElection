@@ -59,7 +59,7 @@ public class Player {
         this.playerId = playerId;
         this.playerName = playerName;
         this.isLocal = isLocal;
-        this.coin = 100; // setไว้ 100 ก่อน
+        this.coin = 10; // setไว้ 100 ก่อน
         this.actionCards = new ArrayList<>();
         this.policyCards = new ArrayList<>();
         this.cityOwn = new String[0];
