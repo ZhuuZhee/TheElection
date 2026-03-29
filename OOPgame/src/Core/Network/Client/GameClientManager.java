@@ -430,6 +430,15 @@ public class GameClientManager {
     private synchronized void onStartGame(JSONObject data) {
         System.out.println("Host start game");
         gameEnded = false; // รีเซ็ตสถานะเมื่อเริ่มเกมใหม่
+        
+        // บังคับรีเซ็ตข้อมูลผู้เล่นทั้งหมดกลับเป็นค่าเริ่มต้น
+        for (Player p : connectedPlayers.values()) {
+            p.resetState();
+        }
+        
+        // ลบ MainScene ผี และ UI ขยะต่างๆ (เช่น Arcana Card เก่า / Shop)
+        Core.ZhuzheeGame.resetMainScene();
+
         if (data.has("mapSeed")) {
             Core.ZhuzheeGame.MAP_SEED = data.getLong("mapSeed");
         }

@@ -205,6 +205,7 @@ public class ZhuzheeGame implements ApplicationAdapter {
         SETTINGS_UI = null;
         TURN_UI = null;
         END_TURN_UI = null;
+        SHOP_UI = null;
         lastShopOpenedRound = -1;
         lastStatResetMarker = -1;
     }
