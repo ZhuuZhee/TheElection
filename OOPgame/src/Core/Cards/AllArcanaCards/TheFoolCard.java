@@ -16,6 +16,7 @@ import Core.UI.UINotificationToast;
 public class TheFoolCard extends ArcanaCard {
     private ArrayList<ActionCard> temporaryActionCards = new ArrayList<>();
     public static final int MAX_DEVLOPMENT_CARD_COUNT = 10;
+    private boolean isSkillActive = false;
 
     public TheFoolCard(int x, int y) {
         // สามารถกำหนด maxCooldown ได้จาก contractor ตรงนี้ได้เลย
@@ -31,6 +32,7 @@ public class TheFoolCard extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
+        isSkillActive = true;
         UINotificationToast.showNotification("The Fool activate!", 5000, true);
         if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
             ZhuzheeGame.DEVLOPMENT_CARD_HAND.setMaxCard(MAX_DEVLOPMENT_CARD_COUNT);
@@ -55,6 +57,8 @@ public class TheFoolCard extends ArcanaCard {
     }
 
     public void onTurnEnded() {
+        if (!isSkillActive) return;
+        
         if (ZhuzheeGame.DEVLOPMENT_CARD_HAND != null) {
             for (ActionCard tempCard : temporaryActionCards) {
                 // ตรวจสอบว่าการ์ดยังอยู่ในมือ (เผื่อถูกใช้ออกไปก่อน) แล้วลบโดยอ้างอิง Object ตรงๆ
@@ -69,5 +73,6 @@ public class TheFoolCard extends ArcanaCard {
             // คืนค่าจำนวนการ์ดสูงสุดกลับเป็นค่า Default
             ZhuzheeGame.DEVLOPMENT_CARD_HAND.setMaxCard(5); // เปลี่ยนเป็นค่าคงที่ Default ของ Development Card ถ้ามี
         }
+        isSkillActive = false;
     }
 }

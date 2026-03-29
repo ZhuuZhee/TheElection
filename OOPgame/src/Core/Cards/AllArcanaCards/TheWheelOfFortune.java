@@ -17,6 +17,8 @@ public class TheWheelOfFortune extends ArcanaCard {
     // เก็บรายการ Policy Card ที่สุ่มมาในเทิร์นนี้ เพื่อรอเคลียร์ตอนจบเทิร์น
     private final ArrayList<PolicyCard> temporaryPolicyCards = new ArrayList<>();
     public static final int MAX_POLICY_CARD_COUNT = 8;
+    private boolean isSkillActive = false;
+
     public TheWheelOfFortune(int x, int y) {
         super("The Wheel of Fortune", x, y, 2, "OOPgame/Assets/ImageForCards/Arcana Card/WOF.png");
         this.description = "Skill: fill up your Policy Hand with random Policy Card until end of turn.";
@@ -31,6 +33,7 @@ public class TheWheelOfFortune extends ArcanaCard {
 
     @Override
     protected void activateSkill() {
+        isSkillActive = true;
         UINotificationToast.showNotification("The Wheel Of Fortune Activate!");
         // เช็กก่อนว่ามีที่วาง Policy Card ไหม
         if (ZhuzheeGame.POLICY_CARD_HAND != null) {
@@ -58,6 +61,8 @@ public class TheWheelOfFortune extends ArcanaCard {
 
     // !! สำคัญ: อย่าลืมหาที่เรียกใช้ onTurnEnded() เมื่อผู้เล่นจบเทิร์น !!
     public void onTurnEnded() {
+        if (!isSkillActive) return;
+        
         if (ZhuzheeGame.POLICY_CARD_HAND != null) {
             for (PolicyCard tempCard : temporaryPolicyCards) {
                 // ตรวจสอบว่าการ์ดยังอยู่ในมือ (เผื่อถูกใช้ออกไปก่อน) แล้วลบโดยอ้างอิง Object ตรงๆ
@@ -70,5 +75,6 @@ public class TheWheelOfFortune extends ArcanaCard {
             UINotificationToast.showNotification("The Wheel Of Fortune effect ended. Temporary policy cards removed.", 5000, true);
         }
         ZhuzheeGame.POLICY_CARD_HAND.setMaxCard(PolicyCardHolderUI.DEFAULT_MAX_CARD);
+        isSkillActive = false;
     }
 }
