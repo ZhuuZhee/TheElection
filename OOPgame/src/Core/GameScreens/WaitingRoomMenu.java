@@ -43,7 +43,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     private String selectedColor = "";
     // ลบ private JLabel selectedProfileImagePreview; ออกไป
     private String selectedProfileFilepath = "";
-    private String selectedArcanaName = "";
+    private String selectedArcanaName = ArcanaCardName.THE_FOOL;
     private JPanel activeTooltipUI = null;
     private Color[] getColors() {
         return Player.COLOR_MAP.values().toArray(new Color[0]);
