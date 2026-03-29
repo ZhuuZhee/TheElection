@@ -64,13 +64,7 @@ public class EliminationUI extends Canvas {
         panel.add(Box.createVerticalGlue());
 
         if (btnNormalImg != null && btnHoverImg != null) {
-            NineSliceButton dismissBtn = UIButtonFactory.createMenuButton("DISMISS", btnNormalImg, btnHoverImg, _ -> {
-                setVisible(false);
-                if (getParent() instanceof ZhuzheeEngine.Scene.Scene2D s) {
-                    s.remove(this);
-                    s.repaint();
-                }
-            });
+            NineSliceButton dismissBtn = UIButtonFactory.createMenuButton("DISMISS", btnNormalImg, btnHoverImg, _ -> setVisible(false));
             dismissBtn.setPreferredSize(new Dimension(200, 45));
             dismissBtn.setMaximumSize(new Dimension(200, 45));
             dismissBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -82,13 +76,7 @@ public class EliminationUI extends Canvas {
             dismissBtn.setForeground(Color.BLACK);
             dismissBtn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
             dismissBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-            dismissBtn.addActionListener(_ -> {
-                setVisible(false);
-                if (getParent() instanceof ZhuzheeEngine.Scene.Scene2D s) {
-                    s.remove(this);
-                    s.repaint();
-                }
-            });
+            dismissBtn.addActionListener(_ -> setVisible(false));
             panel.add(dismissBtn);
         }
     }

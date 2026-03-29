@@ -60,9 +60,6 @@ public class WinnerUI extends Canvas {
                     btnNormalImg,
                     btnHoverImg,
                     e -> {
-                        if (ZhuzheeGame.CLIENT != null) {
-                            ZhuzheeGame.CLIENT.resetClientState();
-                        }
                         AudioManager.getInstance().playSound("click");
                         Screen.ChangeScreen(ZhuzheeGame.WAITING_ROOM_MENU);
                     }
