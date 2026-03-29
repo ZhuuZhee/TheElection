@@ -43,7 +43,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     private String selectedColor = "";
     // ลบ private JLabel selectedProfileImagePreview; ออกไป
     private String selectedProfileFilepath = "";
-    private String selectedArcanaName = ArcanaCardName.THE_FOOL;
+    private String selectedArcanaName = "";
     private JPanel activeTooltipUI = null;
     private Color[] getColors() {
         return Player.COLOR_MAP.values().toArray(new Color[0]);
@@ -128,12 +128,26 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
         add(bgCanvas, BorderLayout.CENTER);
 
         // Initial setup for character selection
+        if (ZhuzheeGame.CLIENT != null && ZhuzheeGame.CLIENT.getLocalPlayer() != null) {
+            Player localPlayer = ZhuzheeGame.CLIENT.getLocalPlayer();
+            selectedProfileFilepath = localPlayer.getProfileImagePath();
+            if (selectedProfileFilepath == null) selectedProfileFilepath = "";
+            
+            selectedArcanaName = localPlayer.getArcanaCardName();
+            if (selectedArcanaName == null) selectedArcanaName = "";
+        }
+        
         File[] profileFiles = loadImageFiles(ZhuzheeGame.PROFILE_FILE_PATH);
-        if (profileFiles != null && profileFiles.length > 0) {
+        if (selectedProfileFilepath.isEmpty() && profileFiles != null && profileFiles.length > 0) {
             selectedProfileFilepath = profileFiles[0].getName();
         }
+        
+        if (selectedArcanaName.isEmpty()) {
+            selectedArcanaName = ArcanaCardName.THE_FOOL;
+        }
+        
         String[] names = getColorNames();
-        if (names.length > 0) selectedColor = names[0];
+        if (selectedColor.isEmpty() && names.length > 0) selectedColor = names[0];
         refreshTimer = new Timer(1000, e -> refreshPlayerList());
     }
 
@@ -463,7 +477,7 @@ public class WaitingRoomMenu extends Screen implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startBtn) {
             if (ZhuzheeGame.CLIENT != null) {
-                JSONObject startReq = createStartPacket();
+                org.json.JSONObject startReq = createStartPacket();
                 ZhuzheeGame.CLIENT.sendAction(startReq);
                 sendPlayerDataUpdate();
             }
