@@ -206,7 +206,17 @@ public class Player {
     }
 
     public void onEndTurn(){
-
+        if (isLocal && isPolicySilenced) {
+            isPolicySilenced = false;
+            if (ZhuzheeGame.POLICY_CARD_HAND != null) {
+                for (Core.Cards.Card p : silencedPolicyCards) {
+                    ZhuzheeGame.POLICY_CARD_HAND.addCard(p);
+                }
+                silencedPolicyCards.clear();
+                ZhuzheeGame.POLICY_CARD_HAND.revalidate();
+                ZhuzheeGame.POLICY_CARD_HAND.repaint();
+            }
+        }
     }
 
     public void applyJudgementPenalty() {
