@@ -7,8 +7,8 @@ import Core.Maps.PoliticsStats;
 import Core.UI.UINotificationToast;
 import Core.ZhuzheeGame;
 
-public class Public_PrivatePartnership extends PolicyCard {
-    public Public_PrivatePartnership(int x, int y, String imagePath) {
+public class PublicPrivatePartnership extends PolicyCard {
+    public PublicPrivatePartnership(int x, int y, String imagePath) {
         super("Public-Private Partnership", x, y, imagePath, -4);
         this.description = "Skill: If you play a Development card with +Economic and +Facility. Gain that 2 stats +10.";
     }
